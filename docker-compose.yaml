@@ -1,0 +1,63 @@
+version: "3.9"
+
+################################################################################
+# DEFAULT CONF https://stackoverflow.com/a/65522511
+
+x-healthcheck_conf: &healthcheck_conf
+      interval: 1s
+      timeout: 1s
+      retries: 50
+
+x-restart: &restart
+    restart: on-failure
+
+################################################################################
+
+services:
+  ##############################################################################
+  # NodeJS
+  nodejs:
+    container_name: nodejs
+    build:
+      context: "./nodejs"
+      target: "packed"
+    networks:
+      inception_net:
+        ipv4_address: "13.37.42.13"
+    volumes:
+      - node:/Shared
+    << : *restart
+    # healthcheck:
+    #   test: [ "CMD", "pgrep", "node" ]
+    #   << : *healthcheck_conf
+  #
+  ##############################################################################
+
+networks:
+  ##############################################################################
+  # MAIN INTERNAL NETWORK
+  inception_net:
+    name: transendence
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: transendence
+    ipam:
+      driver: default
+      config:
+        - subnet: 13.37.42.0/27
+          ip_range: 13.37.42.0/27
+          gateway: 13.37.42.1
+  #
+  ##############################################################################
+
+volumes:
+  ##############################################################################
+  # SOME LOGS
+  node:
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: ${SHARE_BASE}/node
+  #
+  ##############################################################################
