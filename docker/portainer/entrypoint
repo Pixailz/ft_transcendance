@@ -1,0 +1,49 @@
+#!/bin/ash
+
+if [ "${DEBUG}" != "" ]; then
+	printf "debuging \x1b[38:5:39mPortainer\x1b[00m \n\n"
+	printf "ADMIN_PASS %s\n" "${ADMIN_PASS}"
+	printf "CERT_SUBJ  %s\n" "${CERT_SUBJ}"
+	printf "DEBUG      %s\n\n" "${DEBUG}"
+fi
+
+function	portainer_create_cert()
+{
+	mkdir -p /data/ssl
+	openssl req \
+		-x509 \
+		-newkey rsa:4096 \
+		-sha256 \
+		-nodes \
+		-days 365 \
+		-subj "${CERT_SUBJ}" \
+		-keyout /data/ssl/portainer-selfsigned.key \
+		-out /data/ssl/portainer-selfsigned.crt
+}
+
+function	portainer_configure()
+{
+	tar xf /run/latest.tar.gz && rm /run/latest.tar.gz
+	mv portainer /data/portainer
+	printf "${ADMIN_PASS}" > /data/admin_pass
+}
+
+if [ ! -f /data/portainer/portainer ]; then
+	printf "Portainer \x1b[38:5:160mnot found\x1b[00m, initialize it\n"
+
+	portainer_create_cert
+	portainer_configure
+else
+	printf "Portainer \x1b[38:5:76mfound\x1b[00m, Skiping initialization\n"
+fi
+
+printf "Portainer launched on port: \x1b[38:5:208m9443\x1b[00m\n"
+
+# PATH=/data/portainer:${PATH} /data/portainer/portainer \
+# 	--no-analytics \
+# 	--http-disabled \
+# 	--logo="https://avatars.githubusercontent.com/u/35565530?s=400&u=5736e17afd90175be603664b2b941c49e81b9f44&v=4" \
+# 	--sslcert="/data/ssl/portainer-selfsigned.crt" \
+# 	--sslkey="/data/ssl/portainer-selfsigned.key" \
+# 	-H unix:///var/run/docker.sock \
+# 	--admin-password-file=/data/admin_pass

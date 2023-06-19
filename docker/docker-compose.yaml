@@ -19,11 +19,11 @@ services:
   nodejs:
     container_name: nodejs
     build:
-      context: "./nodejs"
+      context: "./docker/nodejs"
       target: "packed"
     networks:
       inception_net:
-        ipv4_address: "13.37.42.13"
+        ipv4_address: "13.37.42.11"
     volumes:
       - node:/Shared
     << : *restart
@@ -33,9 +33,35 @@ services:
   #
   ##############################################################################
 
+  ##############################################################################
+  # Portainer
+  portainer:
+    container_name: portainer
+    build:
+      context: "./docker/portainer"
+      target: "packed"
+    environment:
+      - CERT_SUBJ=${CERT_SUBJ}
+      - ADMIN_PASS=${ADMIN_PASS}
+      - DEBUG=${DEBUG:-}
+    ports:
+      - 9443:9443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      inception_net:
+        ipv4_address: "13.37.42.10"
+    << : *restart
+    healthcheck:
+      test: [ "CMD", "pgrep", "portainer" ]
+      << : *healthcheck_conf
+  #
+  ##############################################################################
+
 networks:
   ##############################################################################
-  # MAIN INTERNAL NETWORK
+  # MAIN INTERNAL NETWORK (netpractice)
   inception_net:
     name: transendence
     driver: bridge
@@ -51,6 +77,7 @@ networks:
   ##############################################################################
 
 volumes:
+
   ##############################################################################
   # SOME LOGS
   node:
@@ -58,6 +85,17 @@ volumes:
     driver_opts:
       type: "none"
       o: "bind"
-      device: ${SHARE_BASE}/node
+      device: ./Shared/node
+  #
+  ##############################################################################
+
+  ##############################################################################
+  # Portainer
+  portainer_data:
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: ./Shared/portainer
   #
   ##############################################################################
