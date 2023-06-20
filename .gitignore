@@ -1,2 +1,8 @@
+# never, ever push .env file. never
+docker/.env
+
+# downloaded thing
 docker/portainer/latest.tar.gz
-docker/Shared
+
+# shared folder
+shared

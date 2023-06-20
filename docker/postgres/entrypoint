@@ -1,0 +1,45 @@
+#!/bin/ash
+
+if [ "${DEBUG}" != "" ]; then
+	printf "debuging \x1b[38:5:39mPostgreSQL\x1b[00m \n\n"
+	printf "PGDATA    %s\n" "${PGDATA}"
+	printf "CERT_SUBJ %s\n" "${CERT_SUBJ}"
+	printf "DEBUG     %s\n\n" "${DEBUG}"
+fi
+
+function	do_as_postgres()
+{
+	local	cmd="${@}"
+
+	echo ${cmd}
+	su - postgres -c "${cmd}"
+}
+
+function	mkdir_as_postgres()
+{
+	local	path="${1}"
+
+	[ ! -d "${path}" ] && mkdir "${path}"
+	chown postgres:postgres "${path}"
+}
+
+if [ ! -f "${PGDATA}/postgresql.conf" ]; then
+	printf "PostgreSQL \x1b[38:5:160mnot found\x1b[00m, initialize it\n"
+
+	mkdir_as_postgres "${PGDATA%\/*}"
+	mkdir_as_postgres /run/postgresql/
+	do_as_postgres "initdb -D ${PGDATA}"
+
+else
+	printf "PostgreSQL \x1b[38:5:76mfound\x1b[00m, Skiping initialization\n"
+fi
+
+printf "PostgreSQL launched\n"
+
+# do_as_postgres \
+# 	"pg_ctl start \
+# 		-D ${PGDATA} \
+#  		-l /var/log/postgresql/postgres.log"
+
+do_as_postgres \
+	"postgres -D ${PGDATA}"

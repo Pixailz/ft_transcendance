@@ -1,11 +1,14 @@
-FROM		alpine:latest	AS packed
+FROM		alpine:latest	AS base
 
 RUN			apk add --upgrade --progress --virtual base \
 				nodejs \
 				npm \
 				curl \
 			&& rm -f /var/cache/apk/* \
-			&& curl https://www.npmjs.com/install.sh --output install.sh \
-			&& chmod +x ./install.sh \
-			&& ./install.sh \
-			&& rm -f ./install.sh
+			&& curl -qL https://www.npmjs.com/install.sh | sh
+
+#=#=#
+
+FROM		base			AS packed
+
+RUN			npm i -g @nestjs/cli

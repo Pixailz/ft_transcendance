@@ -34,6 +34,27 @@ services:
   ##############################################################################
 
   ##############################################################################
+  # PostgreSQL
+  postgres:
+    container_name: postgres
+    build:
+      context: "./docker/postgres"
+      target: "packed"
+    # volumes:
+    #   - postgres:/usr/local/pgsql/data
+    environment:
+      - PGDATA=/usr/local/pgsql/data
+    networks:
+      inception_net:
+        ipv4_address: "13.37.42.12"
+    << : *restart
+    healthcheck:
+      test: [ "CMD", "pgrep", "postgres" ]
+      << : *healthcheck_conf
+  #
+  ##############################################################################
+
+  ##############################################################################
   # Portainer
   portainer:
     container_name: portainer
@@ -48,7 +69,7 @@ services:
       - 9443:9443
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
+      - portainer:/data
     networks:
       inception_net:
         ipv4_address: "13.37.42.10"
@@ -85,17 +106,28 @@ volumes:
     driver_opts:
       type: "none"
       o: "bind"
-      device: ./Shared/node
+      device: ../shared/node
   #
   ##############################################################################
 
+  # ##############################################################################
+  # # PostgreSQL
+  # postgres:
+  #   driver: local
+  #   driver_opts:
+  #     type: "none"
+  #     o: "bind"
+  #     device: ../shared/postgres
+  # #
+  # ##############################################################################
+
   ##############################################################################
   # Portainer
-  portainer_data:
+  portainer:
     driver: local
     driver_opts:
       type: "none"
       o: "bind"
-      device: ./Shared/portainer
+      device: ../shared/portainer
   #
   ##############################################################################

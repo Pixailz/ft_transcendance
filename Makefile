@@ -2,13 +2,15 @@
 SHELL				:= /bin/bash
 DOCKER_COMPOSE		:= docker compose -f ./docker/docker-compose.yaml
 CURL				:= curl -L -\#
+VERSION				:= 0.0.1-alpha
 
 ENV_FILE			:= ./docker/.env
 
 # VOLUMES DIR
-SHARE_BASE			:= ./docker/Shared
+SHARE_BASE			:= ./shared
 export SHARE_BASE
 SHARE_DIR			:= node \
+					   postgres \
 					   portainer
 
 SHARE_DIR			:= $(addprefix $(SHARE_BASE)/,$(SHARE_DIR))
@@ -88,6 +90,9 @@ clean:				kill
 	docker rmi $(shell docker images -qa) 2>/dev/null; true
 	docker volume rm $(shell docker volume ls -q) 2>/dev/null; true
 	docker network rm $(shell docker network ls -q) 2>/dev/null; true
+
+fclean:				clean
+	sudo rm -rf $(SHARE_BASE)
 
 $(PORTAINER):
 	$(CURL) $(PORTAINER_LINK) --output $(@)

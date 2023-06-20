@@ -23,8 +23,9 @@ function	portainer_create_cert()
 
 function	portainer_configure()
 {
-	tar xf /run/latest.tar.gz && rm /run/latest.tar.gz
+	tar xf /run/latest.tar.gz
 	mv portainer /data/portainer
+	cp /run/portainer.db /data/portainer.db
 	printf "${ADMIN_PASS}" > /data/admin_pass
 }
 
@@ -39,11 +40,11 @@ fi
 
 printf "Portainer launched on port: \x1b[38:5:208m9443\x1b[00m\n"
 
-# PATH=/data/portainer:${PATH} /data/portainer/portainer \
-# 	--no-analytics \
-# 	--http-disabled \
-# 	--logo="https://avatars.githubusercontent.com/u/35565530?s=400&u=5736e17afd90175be603664b2b941c49e81b9f44&v=4" \
-# 	--sslcert="/data/ssl/portainer-selfsigned.crt" \
-# 	--sslkey="/data/ssl/portainer-selfsigned.key" \
-# 	-H unix:///var/run/docker.sock \
-# 	--admin-password-file=/data/admin_pass
+PATH=/data/portainer:${PATH} /data/portainer/portainer \
+	--no-analytics \
+	--http-disabled \
+	--logo="https://avatars.githubusercontent.com/u/35565530?s=400&u=5736e17afd90175be603664b2b941c49e81b9f44&v=4" \
+	--sslcert="/data/ssl/portainer-selfsigned.crt" \
+	--sslkey="/data/ssl/portainer-selfsigned.key" \
+	-H unix:///var/run/docker.sock \
+	--admin-password-file=/data/admin_pass
