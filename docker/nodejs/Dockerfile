@@ -4,6 +4,7 @@ RUN			apk add --upgrade --progress --virtual base \
 				nodejs \
 				npm \
 				curl \
+				git \
 			&& rm -f /var/cache/apk/* \
 			&& curl -qL https://www.npmjs.com/install.sh | sh
 
@@ -12,3 +13,5 @@ RUN			apk add --upgrade --progress --virtual base \
 FROM		base			AS packed
 
 RUN			npm i -g @nestjs/cli
+
+COPY		src/ /

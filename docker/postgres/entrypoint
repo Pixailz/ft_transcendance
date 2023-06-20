@@ -2,17 +2,27 @@
 
 if [ "${DEBUG}" != "" ]; then
 	printf "debuging \x1b[38:5:39mPostgreSQL\x1b[00m \n\n"
-	printf "PGDATA    %s\n" "${PGDATA}"
-	printf "CERT_SUBJ %s\n" "${CERT_SUBJ}"
-	printf "DEBUG     %s\n\n" "${DEBUG}"
+	printf "PGDATA     %s\n" "${PGDATA}"
+	printf "ADMIN_USER %s\n" "${ADMIN_USER}"
+	printf "ADMIN_PASS %s\n" "${ADMIN_PASS}"
+	printf "DB_NAME    %s\n" "${DB_NAME}"
+	printf "DEBUG      %s\n\n" "${DEBUG}"
 fi
 
+# UTILS
 function	do_as_postgres()
 {
 	local	cmd="${@}"
 
-	echo ${cmd}
+	[ "${DEBUG}" != "" ] && echo ${cmd}
 	su - postgres -c "${cmd}"
+}
+
+function	do_sql()
+{
+	local	req="${1}"
+
+	do_as_postgres "psql -c \"${req};\""
 }
 
 function	mkdir_as_postgres()
@@ -23,13 +33,29 @@ function	mkdir_as_postgres()
 	chown postgres:postgres "${path}"
 }
 
-if [ ! -f "${PGDATA}/postgresql.conf" ]; then
-	printf "PostgreSQL \x1b[38:5:160mnot found\x1b[00m, initialize it\n"
 
+# POSTGRES
+function	postgres_init()
+{
 	mkdir_as_postgres "${PGDATA%\/*}"
 	mkdir_as_postgres /run/postgresql/
 	do_as_postgres "initdb -D ${PGDATA}"
+}
 
+function	postgres_db()
+{
+	do_as_postgres "pg_ctl start -D ${PGDATA}"
+	do_sql "CREATE DATABASE ${DB_NAME}"
+	do_sql "CREATE USER ${ADMIN_USER} WITH ENCRYPTED PASSWORD '${ADMIN_PASS}'"
+	do_sql "GRANT ALL PRIVILEGES ON DATABASE ${DB_NAME} TO ${ADMIN_USER}"
+	do_as_postgres "pg_ctl stop -D ${PGDATA}"
+}
+
+if [ ! -f "${PGDATA}/postgresql.conf" ]; then
+	printf "PostgreSQL \x1b[38:5:160mnot found\x1b[00m, initialize it\n"
+
+	postgres_init
+	postgres_db
 else
 	printf "PostgreSQL \x1b[38:5:76mfound\x1b[00m, Skiping initialization\n"
 fi

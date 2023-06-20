@@ -36,7 +36,7 @@ printf "var %b%s%b " "$(G)" "$(1)" "$(RST)" ; \
 printf "set to %b%s%b\n" "$(R)" "$(2)" "$(RST)" ;
 
 SET_PASS			= \
-printf "%bAdmin%b pass\n" "$(R)" "$(RST)" ; \
+printf "%bAdmin%b pass\n> " "$(R)" "$(RST)" ; \
 read -s ADMIN_PASS ; \
 $(call SET_VAR,ADMIN_PASS,$${ADMIN_PASS})
 
@@ -62,7 +62,7 @@ SEC					:=$(O)
 RST					:=$(ESC)00m
 
 # RULES
-.PHONY:				up run build kill exec re clean fclean  $(SHARE_DIR)
+.PHONY:				up run build kill exec $(SHARE_DIR)
 
 up:					build
 	$(DOCKER_COMPOSE) up $(TARGET)
@@ -78,21 +78,6 @@ kill:
 
 exec:
 	$(DOCKER_COMPOSE) exec -it $(TARGET) ash
-
-re:					clean up
-
-fre:				fclean up
-
-clean:				kill
-	docker system prune -af
-	docker stop $(shell docker ps -qa) 2>/dev/null; true
-	docker rm $(shell docker ps -qa ) 2>/dev/null; true
-	docker rmi $(shell docker images -qa) 2>/dev/null; true
-	docker volume rm $(shell docker volume ls -q) 2>/dev/null; true
-	docker network rm $(shell docker network ls -q) 2>/dev/null; true
-
-fclean:				clean
-	sudo rm -rf $(SHARE_BASE)
 
 $(PORTAINER):
 	$(CURL) $(PORTAINER_LINK) --output $(@)

@@ -25,7 +25,7 @@ services:
       inception_net:
         ipv4_address: "13.37.42.11"
     volumes:
-      - node:/Shared
+      - node:/src
     << : *restart
     # healthcheck:
     #   test: [ "CMD", "pgrep", "node" ]
@@ -43,7 +43,11 @@ services:
     # volumes:
     #   - postgres:/usr/local/pgsql/data
     environment:
+      - ADMIN_USER=${ADMIN_USER}
+      - ADMIN_PASS=${ADMIN_PASS}
+      - DB_NAME=${DB_NAME}
       - PGDATA=/usr/local/pgsql/data
+      - DEBUG=${DEBUG}
     networks:
       inception_net:
         ipv4_address: "13.37.42.12"
@@ -64,7 +68,7 @@ services:
     environment:
       - CERT_SUBJ=${CERT_SUBJ}
       - ADMIN_PASS=${ADMIN_PASS}
-      - DEBUG=${DEBUG:-}
+      - DEBUG=${DEBUG}
     ports:
       - 9443:9443
     volumes:
@@ -100,7 +104,7 @@ networks:
 volumes:
 
   ##############################################################################
-  # SOME LOGS
+  # Node src
   node:
     driver: local
     driver_opts:

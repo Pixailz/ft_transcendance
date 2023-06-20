@@ -6,4 +6,4 @@ ADMIN_PASS -> what's set in the [.env](./docker/.env) file
 ## Portainer
 
 user:admin
-pass:ADMIN_PASS
+pass:1234
