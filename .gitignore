@@ -2,7 +2,7 @@
 docker/.env
 
 # downloaded thing
-docker/portainer/latest.tar.gz
+*.tar.gz
 
 # shared folder
 shared
