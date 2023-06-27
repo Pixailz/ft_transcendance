@@ -43,7 +43,11 @@ services:
     # volumes:
     #   - postgres:/usr/local/pgsql/data
     environment:
+      - ADMIN_USER=${ADMIN_USER}
+      - ADMIN_PASS=${ADMIN_PASS}
+      - DB_NAME=${DB_NAME}
       - PGDATA=/usr/local/pgsql/data
+      - DEBUG=${DEBUG}
     networks:
       transendence:
         ipv4_address: "13.37.42.12"
@@ -64,7 +68,7 @@ services:
     environment:
       - CERT_SUBJ=${CERT_SUBJ}
       - ADMIN_PASS=${ADMIN_PASS}
-      - DEBUG=${DEBUG:-}
+      - DEBUG=${DEBUG}
     ports:
       - 9443:9443
     volumes:
