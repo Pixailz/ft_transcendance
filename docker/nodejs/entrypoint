@@ -1,0 +1,31 @@
+#!/bin/ash
+
+SERVICE_NAME="NodeJS"
+export PATH="/usr/local/lib/nodejs/bin:${PATH}"
+
+if [ "${DEBUG}" != "" ]; then
+	printf "debuging \x1b[38:5:39m${SERVICE_NAME}\x1b[00m \n\n"
+	printf "DEBUG     %s\n\n" "${DEBUG}"
+fi
+
+function	install_nodejs()
+{
+	mkdir -p /usr/local/lib/nodejs && cd /usr/local/lib/nodejs
+	tar xf /tmp/latest.tar.gz
+	mv node-*/* . && rm -rf node-*
+	npm update -g && npm upgrade -g
+	npx --yes npm-check --global --update-all
+	cd /
+}
+
+if [ ! -f "/usr/local/lib/nodejs/bin/node" ]; then
+	printf "${SERVICE_NAME} \x1b[38:5:160mnot found\x1b[00m, initialize it\n"
+
+	install_nodejs
+else
+	printf "${SERVICE_NAME} \x1b[38:5:76mfound\x1b[00m, Skiping initialization\n"
+fi
+
+printf "${SERVICE_NAME} launched\n"
+
+exec ${@}
