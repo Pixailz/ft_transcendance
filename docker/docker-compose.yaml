@@ -21,11 +21,16 @@ services:
     build:
       context: "./docker/nodejs"
       target: "packed"
+      args:
+        - PROJECT_NAME=${PROJECT_NAME}
+    environment:
+      - PROJECT_NAME=${PROJECT_NAME}
     networks:
       transendence:
         ipv4_address: "13.37.42.11"
     volumes:
       - nodejs:/usr/local/lib/nodejs
+      - node_src:/shared/${PROJECT_NAME}
     << : *restart
     # healthcheck:
     #   test: [ "CMD", "pgrep", "node" ]
@@ -104,13 +109,24 @@ networks:
 volumes:
 
   ##############################################################################
-  # SOME LOGS
+  # NodeJS install dir
   nodejs:
     driver: local
     driver_opts:
       type: "none"
       o: "bind"
       device: ../shared/nodejs
+  #
+  ##############################################################################
+
+  ##############################################################################
+  # NodeJS Shared src
+  node_src:
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: ./nodejs/src/${PROJECT_NAME}
   #
   ##############################################################################
 

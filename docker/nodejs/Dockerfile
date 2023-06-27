@@ -9,9 +9,15 @@ RUN			apk add --upgrade --progress --virtual dependencies \
 
 FROM		base			AS packed
 
+ARG			PROJECT_NAME
+
+ENV			PATH="/usr/local/lib/nodejs/bin:${PATH}"
+
 COPY		--chown=root:root latest.tar.gz /tmp/latest.tar.gz
 COPY		--chown=root:root --chmod=755 entrypoint /run
 
+WORKDIR		/shared/${PROJECT_NAME}
+
 ENTRYPOINT	[ "/run/entrypoint" ]
 
-CMD			[ "/bin/ash" ]
+CMD			[ "npm", "run", "start:dev" ]
