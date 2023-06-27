@@ -22,10 +22,10 @@ services:
       context: "./docker/nodejs"
       target: "packed"
     networks:
-      inception_net:
+      transendence:
         ipv4_address: "13.37.42.11"
     volumes:
-      - node:/Shared
+      - nodejs:/usr/local/lib/nodejs
     << : *restart
     # healthcheck:
     #   test: [ "CMD", "pgrep", "node" ]
@@ -45,7 +45,7 @@ services:
     environment:
       - PGDATA=/usr/local/pgsql/data
     networks:
-      inception_net:
+      transendence:
         ipv4_address: "13.37.42.12"
     << : *restart
     healthcheck:
@@ -71,7 +71,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer:/data
     networks:
-      inception_net:
+      transendence:
         ipv4_address: "13.37.42.10"
     << : *restart
     healthcheck:
@@ -83,7 +83,7 @@ services:
 networks:
   ##############################################################################
   # MAIN INTERNAL NETWORK (netpractice)
-  inception_net:
+  transendence:
     name: transendence
     driver: bridge
     driver_opts:
@@ -101,12 +101,12 @@ volumes:
 
   ##############################################################################
   # SOME LOGS
-  node:
+  nodejs:
     driver: local
     driver_opts:
       type: "none"
       o: "bind"
-      device: ../shared/node
+      device: ../shared/nodejs
   #
   ##############################################################################
 
