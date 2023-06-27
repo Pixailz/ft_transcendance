@@ -157,23 +157,33 @@ kill:
 exec:
 > $(DOCKER_COMPOSE) exec -it $(TARGET) ash
 
+$(PORTAINER):
+> $(CURL) $(PORTAINER_LINK) --output $(@)
+
+$(NODEJS):
+> @$(eval RESULT=$(shell $(CURL) -s https://unofficial-builds.nodejs.org/download/release/v$(NODEJS_VERSION)/SHASUMS256.txt | grep "musl.tar.gz" | cut -d" " -f1)) \
+if [ "$(RESULT)" != "$(shell sha256sum ./docker/nodejs/latest.tar.gz | cut -d' ' -f1 )" ]; then \
+printf "Sha256sum $(R)didn't$(RST) match or not found, downloading again\n" ; \
+rm -rf $(@) ; \
+$(CURL) $(NODEJS_LINK) --output $(@) ; \
+else \
+printf "Sha256sum $(G)match$(RST) don't redownload\n" ; \
+fi ;
+
 re:					clean up
 
-fre:				fclean up
+fre:				full_clean up
 
-clean:				kill
-	docker system prune -af
-	docker stop $(shell docker ps -qa) 2>/dev/null; true
-	docker rm $(shell docker ps -qa ) 2>/dev/null; true
-	docker rmi $(shell docker images -qa) 2>/dev/null; true
-	docker volume rm $(shell docker volume ls -q) 2>/dev/null; true
-	docker network rm $(shell docker network ls -q) 2>/dev/null; true
+clean:
+> sudo rm -rf $(SHARE_BASE)
 
-fclean:				clean
-	sudo rm -rf $(SHARE_BASE)
-
-$(PORTAINER):
-	$(CURL) $(PORTAINER_LINK) --output $(@)
+full_clean:			clean
+> docker system prune -af
+> docker stop $(shell docker ps -qa) 2>/dev/null; true
+> docker rm $(shell docker ps -qa) 2>/dev/null; true
+> docker rmi $(shell docker images -qa) 2>/dev/null; true
+> docker volume rm $(shell docker volume ls -q) 2>/dev/null; true
+> docker network rm $(shell docker network ls -q) 2>/dev/null; true
 
 $(ENV_FILE):
 > cp -f $(ENV_FILE){.template,}
