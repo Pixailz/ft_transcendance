@@ -2,7 +2,7 @@
 SHELL				:= /bin/bash
 DOCKER_COMPOSE		:= docker compose -f ./docker/docker-compose.yaml
 ENV_FILE			:= ./docker/.env
-VERSION				:= 0.0.1-prealpha
+VERSION				:= 0.0.2-prealpha
 
 # Always use GNU Make.
 ifeq ($(origin .RECIPEPREFIX), undefined)
