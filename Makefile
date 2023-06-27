@@ -25,7 +25,8 @@ TARGET				?=
 # VOLUMES DIR
 SHARE_BASE			:= shared
 SHARE_DIR			:= nodejs \
-					   postgres \
+					   postgresql \
+					   postgresql_log \
 					   portainer
 
 SHARE_DIR			:= $(addprefix $(SHARE_BASE)/,$(SHARE_DIR))

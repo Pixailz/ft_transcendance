@@ -40,13 +40,11 @@ services:
 
   ##############################################################################
   # PostgreSQL
-  postgres:
-    container_name: postgres
+  postgresql:
+    container_name: postgresql
     build:
-      context: "./docker/postgres"
+      context: "./docker/postgresql"
       target: "packed"
-    # volumes:
-    #   - postgres:/usr/local/pgsql/data
     environment:
       - ADMIN_USER=${ADMIN_USER}
       - ADMIN_PASS=${ADMIN_PASS}
@@ -56,6 +54,9 @@ services:
     networks:
       transendence:
         ipv4_address: "13.37.42.12"
+    volumes:
+      - postgresql:/usr/local/pgsql/data
+      - postgresql_log:/var/log/postgresql
     << : *restart
     healthcheck:
       test: [ "CMD", "pgrep", "postgres" ]
@@ -130,16 +131,24 @@ volumes:
   #
   ##############################################################################
 
-  # ##############################################################################
-  # # PostgreSQL
-  # postgres:
-  #   driver: local
-  #   driver_opts:
-  #     type: "none"
-  #     o: "bind"
-  #     device: ../shared/postgres
-  # #
-  # ##############################################################################
+  ##############################################################################
+  # PostgreSQL
+  postgresql:
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: ../shared/postgresql
+
+  # PostgreSQL Log
+  postgresql_log:
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: ../shared/postgresql_log
+  #
+  ##############################################################################
 
   ##############################################################################
   # Portainer

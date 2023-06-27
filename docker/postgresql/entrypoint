@@ -9,7 +9,6 @@ if [ "${DEBUG}" != "" ]; then
 	printf "DEBUG     %s\n\n" "${DEBUG}"
 fi
 
-# UTILS
 function	do_as_postgres()
 {
 	local	cmd="${@}"
@@ -33,15 +32,12 @@ function	mkdir_as_postgres()
 	chown postgres:postgres "${path}"
 }
 
-if [ ! -f "${PGDATA}/postgresql.conf" ]; then
-	printf "${SERVICE_NAME} \x1b[38:5:160mnot found\x1b[00m, initialize it\n"
-
-# POSTGRES
 function	postgres_init()
 {
 	mkdir_as_postgres "${PGDATA%\/*}"
 	mkdir_as_postgres /run/postgresql/
 	do_as_postgres "initdb -D ${PGDATA}"
+	cp /run/postgresql.conf "${PGDATA}"
 }
 
 function	postgres_db()
@@ -53,8 +49,12 @@ function	postgres_db()
 	do_as_postgres "pg_ctl stop -D ${PGDATA}"
 }
 
-if [ ! -f "${PGDATA}/postgresql.conf" ]; then
-	printf "PostgreSQL \x1b[38:5:160mnot found\x1b[00m, initialize it\n"
+mkdir_as_postgres "${PGDATA}"
+rm -rf "/run/postgresql"
+mkdir_as_postgres "/run/postgresql"
+
+if [ ! -f "${PGDATA}/PG_VERSION" ]; then
+	printf "${SERVICE_NAME} \x1b[38:5:160mnot found\x1b[00m, initialize it\n"
 
 	postgres_init
 	postgres_db
@@ -62,12 +62,10 @@ else
 	printf "${SERVICE_NAME} \x1b[38:5:76mfound\x1b[00m, Skiping initialization\n"
 fi
 
-printf "${SERVICE_NAME} launched\n"
+chown -R root:root /var/log/postgresql
+chmod -R 777 /var/log/postgresql
 
-# do_as_postgres \
-# 	"pg_ctl start \
-# 		-D ${PGDATA} \
-#  		-l /var/log/postgresql/postgres.log"
+printf "${SERVICE_NAME} launched\n"
 
 do_as_postgres \
 	"postgres -D ${PGDATA}"
