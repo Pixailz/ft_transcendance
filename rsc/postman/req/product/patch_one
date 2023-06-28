@@ -1,6 +1,9 @@
 req="PATCH /prod/patch/${ID} HTTP/1.1"
 
-body='{
+body=$(cat << EOBODY
+{
 	"title": "id ${ID} changed",
 	"price": ${ID}
-}'
+}
+EOBODY
+)

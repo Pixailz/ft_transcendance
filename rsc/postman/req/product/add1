@@ -1,7 +1,10 @@
 req="POST /prod/add HTTP/1.1"
 
-body='{
+body=$(cat << EOBODY
+{
 	"title": "this is first test",
 	"description": "test description",
 	"price": 420.69
-}'
+}
+EOBODY
+)
