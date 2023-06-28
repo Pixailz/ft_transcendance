@@ -24,6 +24,20 @@ function	do_sql()
 	do_as_postgres "psql -c \"${req};\""
 }
 
+function	set_var()
+{
+	local	var_name="${1}"
+	local	var_value="${2}"
+	local	var_file="${PGDATA}/postgresql.conf"
+	local	pos
+	local	pos_last
+
+	pos=$(grep -n "${var_name} =" "${var_file}" | cut -d':' -f1)
+	sed -i "${pos}d" "${var_file}"
+	sed -i "${pos}i${var_name} = ${var_value}" "${var_file}"
+	printf "pos : %s\n" "${pos}"
+}
+
 function	mkdir_as_postgres()
 {
 	local	path="${1}"
@@ -34,10 +48,17 @@ function	mkdir_as_postgres()
 
 function	postgres_init()
 {
+	local	nb_line=$(($(wc -l ${PGDATA}/pg_hba.conf | cut -d" " -f1) - 1))
+
 	mkdir_as_postgres "${PGDATA%\/*}"
 	mkdir_as_postgres /run/postgresql/
 	do_as_postgres "initdb -D ${PGDATA}"
-	cp /run/postgresql.conf "${PGDATA}"
+	set_var "listen_addresses" "*"
+	set_var "logging_collector" "on"
+	set_var "log_directory" "/var/log/postgresql/"
+	set_var "log_filename" "postgresql.log"
+	set_var "log_file_mode" "0666"
+	sed -i "${nb_line}ihost all all 0.0.0.0/0 md5" "${PGDATA}/pg_hba.conf"
 }
 
 function	postgres_db()
@@ -67,5 +88,4 @@ chmod -R 777 /var/log/postgresql
 
 printf "${SERVICE_NAME} launched\n"
 
-do_as_postgres \
-	"postgres -D ${PGDATA}"
+do_as_postgres "postgres -D ${PGDATA}"

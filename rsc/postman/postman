@@ -54,4 +54,6 @@ printf "Response type: %s\n" "${response_type}"
 if [ "${response_type}" == "application/json" ]; then
 	# prettifier json output
 	<<<${response} jq --tab -C
+else
+	printf "%s\n" "${response}"
 fi
