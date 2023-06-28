@@ -25,6 +25,8 @@ services:
         - PROJECT_NAME=${PROJECT_NAME}
     environment:
       - PROJECT_NAME=${PROJECT_NAME}
+    ports:
+      - 3000:3000
     networks:
       transendence:
         ipv4_address: "13.37.42.11"
