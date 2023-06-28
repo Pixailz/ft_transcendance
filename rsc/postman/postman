@@ -41,10 +41,17 @@ printf "<>\n"
 printf "%s\n><\n" "${full_req}" | cat -e
 
 # send the full request, and remove all '\r' from response
-response=$(<<<${full_req} nc -C -q1 localhost 3000 | tr -d '\r')
+response="$(<<<${full_req} nc -C -q1 localhost 3000 | tr -d '\r')"
 
 # remove header from response
-response=$(<<<${response} tr '\n' '#' | sed 's/.*##//' | tr '#' '\n')
+response="$(<<<${response} tr '\n' '#' | sed 's/.*##//' | tr '#' '\n')"
 
-# format output as json
-<<<${response} jq --tab -C 2>/dev/null
+# get response mime type
+response_type="$(<<<${response} file -b --mime-type -)"
+
+printf "Response type: %s\n" "${response_type}"
+
+if [ "${response_type}" == "application/json" ]; then
+	# prettifier json output
+	<<<${response} jq --tab -C
+fi
