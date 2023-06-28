@@ -1,0 +1,7 @@
+req="POST /prod/add HTTP/1.1"
+
+body='{
+	"title": "this is third test",
+	"description": "3 test description",
+	"price": 300000
+}'

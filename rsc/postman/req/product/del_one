@@ -1,0 +1,1 @@
+req="DELETE /prod/delete/${ID} HTTP/1.1"

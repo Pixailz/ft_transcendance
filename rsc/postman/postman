@@ -1,0 +1,50 @@
+#!/bin/bash
+
+function	usage()
+{
+	printf "Error: wrong args\n" >&2
+	printf "Usage: ${0} req_file\n" >&2
+	printf "\twhere req_file is one of the request file in the req folder\n" >&2
+	exit
+}
+
+# if argv != 1
+[ "${#@}" != "1" ] && usage
+# if argv[1] is not a file
+[ ! -f "${1}" ] && usage
+
+# retrieve req file from user
+file_path="${1}"
+
+# source req file, should contain a req and a body var
+ID=${ID:-0} source "${file_path}"
+
+# formating full_req
+full_req="${req}"
+# if no body in the req file, like a GET request
+if [ "${body}" != "" ]; then
+	full_req+=$'\n'
+	# add Content-Type header
+	full_req+="Content-Type: $(<<<${body} file -b --mime-type -)"
+	full_req+=$'\n'
+	# add Content-Length header
+	full_req+="Content-Length: $(<<<${body} perl -p -e 's/\n/\r\n/' | wc -c)"
+	full_req+=$'\n'$'\n'
+	# add the body
+	full_req+="${body}"
+fi
+
+full_req+=$'\n'
+
+# debug print the full request
+printf "<>\n"
+printf "%s\n><\n" "${full_req}" | cat -e
+
+# send the full request, and remove all '\r' from response
+response=$(<<<${full_req} nc -C -q1 localhost 3000 | tr -d '\r')
+
+# remove header from response
+response=$(<<<${response} tr '\n' '#' | sed 's/.*##//' | tr '#' '\n')
+
+# format output as json
+<<<${response} jq --tab -C 2>/dev/null
