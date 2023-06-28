@@ -6,3 +6,7 @@ docker/.env
 
 # shared folder
 shared
+
+# NestJS .gitignore
+docker/nodejs/src/**/dist/
+docker/nodejs/src/**/node_modules/
