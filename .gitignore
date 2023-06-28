@@ -8,5 +8,5 @@ docker/.env
 shared
 
 # NestJS .gitignore
-docker/nodejs/src/**/dist/
+#docker/nodejs/src/**/dist/
 docker/nodejs/src/**/node_modules/
