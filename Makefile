@@ -1,7 +1,7 @@
 # CONFIG
 SHELL				:= /bin/bash
-DOCKER_COMPOSE		:= docker compose -f ./docker/docker-compose.yaml
-ENV_FILE			:= ./docker/.env
+DOCKER_COMPOSE		:= docker compose -f ./service/docker-compose.yaml
+ENV_FILE			:= ./service/.env
 VERSION				:= 0.0.2-prealpha
 
 # Always use GNU Make.
@@ -23,22 +23,24 @@ RE_STR				?=
 TARGET				?=
 
 # VOLUMES DIR
-SHARE_BASE			:= shared
-SHARE_DIR			:= nodejs \
+VOLUME_BASE			:= volume
+VOLUME_DIR			:= nodejs \
 					   postgresql \
 					   postgresql_log \
 					   portainer
 
-SHARE_DIR			:= $(addprefix $(SHARE_BASE)/,$(SHARE_DIR))
+VOLUME_DIR			:= $(addprefix $(VOLUME_BASE)/,$(VOLUME_DIR))
 
 # PACKAGE TO DOWNLOAD
-PORTAINER			:= ./docker/portainer/latest.tar.gz
+PORTAINER			:= ./service/portainer/latest.tar.gz
 PORTAINER_LINK		:= https://github.com/portainer/portainer/releases/download/2.18.3/portainer-2.18.3-linux-amd64.tar.gz
 
-NODEJS				:= ./docker/nodejs/latest.tar.gz
+NODEJS				:= ./service/nodejs/latest.tar.gz
 NODEJS_VERSION		:= 18.16.1
 # NODEJS_VERSION		:= 20.3.1
-NODEJS_LINK			:= https://unofficial-builds.nodejs.org/download/release/v$(NODEJS_VERSION)/node-v$(NODEJS_VERSION)-linux-x64-musl.tar.gz
+NODEJS_LINK			:= https://unofficial-builds.nodejs.org/download/release/v$(NODEJS_VERSION)
+NODEJS_SHA_LINK		:= $(NODEJS_LINK)/SHASUMS256.txt
+NODEJS_LINK			:= $(NODEJS_LINK)/node-v$(NODEJS_VERSION)-linux-x64-musl.tar.gz
 
 PACKAGES			:= $(PORTAINER) $(NODEJS)
 
@@ -71,7 +73,7 @@ printf "\nvar $(G)$(1)$(RST) set to $(R)%s$(RST)\n" "$${TMPVAR}" ;
 
 define USAGE
 $(S)BRIEF$(P)
-	$(P)Makefile create the '$(S)$(SHARE_BASE)$(P)' skeleton automatically and also
+	$(P)Makefile create the '$(S)$(VOLUME_BASE)$(P)' skeleton automatically and also
 	copy the '$(S)$(ENV_FILE).template$(P)' into '$(S)$(ENV_FILE)$(P)' if it not exists
 
 	The rules $(S)up$(P), $(S)run$(P), $(S)build$(P), $(S)kill$(P), $(S)exec$(P), have a variable $(S)TARGET$(P) to set for specifying
@@ -99,7 +101,7 @@ $(S)RULES$(P)
 		call 'build', and then call 'docker compose run -it' to run a containers
 
 	$(S)build$(P)
-		call '$(S)$$(PACKAGES)$(P)' '$(S)$$(SHARE_DIR)$(P)' and '$(S)$$(ENV_FILE)$(P)', and then call
+		call '$(S)$$(PACKAGES)$(P)' '$(S)$$(VOLUME_DIR)$(P)' and '$(S)$$(ENV_FILE)$(P)', and then call
 		'docker compose build' to first build the containers
 
 	$(S)kill$(P)
@@ -115,21 +117,26 @@ $(S)RULES$(P)
 		call 'full_clean' and then 'up'
 
 	$(S)clean$(P)
-		clean the $(S)$$(SHARE_DIR)$(P) folder, by removing it
+		clean the $(S)$$(VOLUME_DIR)$(P) folder, by removing it
 
-	$(S)full_clean
+	$(S)full_clean$(P)
 		call 'clean' then 'docker system prune -af' and then remove all image,
 		network volumes, to make sure we start from a good base
 
 	$(S)$$(PACKAGES)$(P)
-		download all necessary package before attempting to create docker image
+		download all necessary package before attempting to create docker image,
+		this make
 
 	$(S)$$(ENV_FILE)$(P)
 		copy the '$(S)$(ENV_FILE).template$(P)' onto '$(S)$(ENV_FILE)$(P)' and then read from
-		stdin the PASS
+		stdin to set the PASS
 
-	$(S)$$(SHARE_DIR)$(P)
-		make whole skeleton of the '$(S)$$(SHARE_DIR)$(P)' folder
+	$(S)$$(VOLUME_DIR)$(P)
+		make whole directory tree for docker volumes
+
+	$(S)get_struct$(P)
+		wrapper to make the docker happy. by happy i mean downloading all the
+		necessary as well as the directory tree for the volumes
 
 	$(S)help$(P)
 		display this help message
@@ -141,7 +148,7 @@ endef
 export USAGE
 
 # RULES
-.PHONY:				up run build kill exec re clean $(SHARE_DIR) $(NODEJS)
+.PHONY:				up run build kill exec re clean $(VOLUME_DIR) $(NODEJS)
 
 up:					build
 > $(DOCKER_COMPOSE) up $(TARGET)
@@ -149,8 +156,7 @@ up:					build
 run:				build
 > $(DOCKER_COMPOSE) run -it $(ENTRYPOINT) $(TARGET)
 
-build:				$(PACKAGES) $(SHARE_DIR) $(ENV_FILE)
-> $(DOCKER_COMPOSE) build $(TARGET) $(RE_STR)
+build:				$(PACKAGES) $(VOLUME_DIR) $(ENV_FILE)
 
 kill:
 > $(DOCKER_COMPOSE) kill $(TARGET)
@@ -162,8 +168,8 @@ $(PORTAINER):
 > $(CURL) $(PORTAINER_LINK) --output $(@)
 
 $(NODEJS):
-> @$(eval RESULT=$(shell $(CURL) -s https://unofficial-builds.nodejs.org/download/release/v$(NODEJS_VERSION)/SHASUMS256.txt | grep "musl.tar.gz" | cut -d" " -f1)) \
-if [ "$(RESULT)" != "$(shell sha256sum ./docker/nodejs/latest.tar.gz | cut -d' ' -f1 )" ]; then \
+> @$(eval RESULT=$(shell $(CURL) -s $(NODEJS_SHA_LINK) | grep "musl.tar.gz" | cut -d" " -f1)) \
+if [ "$(RESULT)" != "$(shell sha256sum ./service/nodejs/latest.tar.gz | cut -d' ' -f1 )" ]; then \
 printf "Sha256sum $(R)didn't$(RST) match or not found, downloading again\n" ; \
 rm -rf $(@) ; \
 $(CURL) $(NODEJS_LINK) --output $(@) ; \
@@ -176,7 +182,7 @@ re:					clean up
 fre:				full_clean up
 
 clean:
-> sudo rm -rf $(SHARE_BASE)
+> sudo rm -rf $(VOLUME_BASE)
 
 full_clean:			clean
 > docker system prune -af
@@ -191,8 +197,12 @@ $(ENV_FILE):
 > @printf "$(R)Admin$(RST) pass\n"
 > @$(call SET_PASS,ADMIN_PASS)
 
-$(SHARE_DIR):
+
+$(VOLUME_DIR):
 > $(call MKDIR,$(@))
+
+get_struct:			$(PACKAGES) $(VOLUME_DIR) $(ENV_FILE)
+> @printf "Ready to use \`docker compose up\` $(G):)$(RST)\n"
 
 help:
 > @printf "%b" "$${USAGE}"

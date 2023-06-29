@@ -19,7 +19,7 @@ services:
   nodejs:
     container_name: nodejs
     build:
-      context: "./docker/nodejs"
+      context: "./nodejs"
       target: "packed"
       args:
         - PROJECT_NAME=${PROJECT_NAME}
@@ -45,7 +45,7 @@ services:
   postgresql:
     container_name: postgresql
     build:
-      context: "./docker/postgresql"
+      context: "./postgresql"
       target: "packed"
     environment:
       - ADMIN_USER=${ADMIN_USER}
@@ -71,7 +71,7 @@ services:
   portainer:
     container_name: portainer
     build:
-      context: "./docker/portainer"
+      context: "./portainer"
       target: "packed"
     environment:
       - CERT_SUBJ=${CERT_SUBJ}
@@ -118,12 +118,12 @@ volumes:
     driver_opts:
       type: "none"
       o: "bind"
-      device: ../shared/nodejs
+      device: ../volume/nodejs
   #
   ##############################################################################
 
   ##############################################################################
-  # NodeJS Shared src
+  # NodeJS Project Volume
   node_src:
     driver: local
     driver_opts:
@@ -140,7 +140,7 @@ volumes:
     driver_opts:
       type: "none"
       o: "bind"
-      device: ../shared/postgresql
+      device: ./volume/postgresql
 
   # PostgreSQL Log
   postgresql_log:
@@ -148,7 +148,7 @@ volumes:
     driver_opts:
       type: "none"
       o: "bind"
-      device: ../shared/postgresql_log
+      device: ./volume/postgresql_log
   #
   ##############################################################################
 
@@ -159,6 +159,6 @@ volumes:
     driver_opts:
       type: "none"
       o: "bind"
-      device: ../shared/portainer
+      device: ./volume/portainer
   #
   ##############################################################################

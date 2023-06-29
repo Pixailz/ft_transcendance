@@ -21,3 +21,8 @@ ADMIN_PASS -> what's set in the [.env](./docker/.env) file
 
 user:admin
 pass:1234
+
+## TODO
+
+1. make docker folder `docker compose up`'able
+2. install Angular

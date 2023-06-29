@@ -5,8 +5,8 @@ docker/.env
 *.tar.gz
 
 # shared folder
-shared
+volume
 
 # NestJS .gitignore
-docker/nodejs/src/**/dist/
-docker/nodejs/src/**/node_modules/
+service/nodejs/src/**/dist/
+service/nodejs/src/**/node_modules/

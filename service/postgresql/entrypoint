@@ -53,10 +53,10 @@ function	postgres_init()
 	mkdir_as_postgres "${PGDATA%\/*}"
 	mkdir_as_postgres /run/postgresql/
 	do_as_postgres "initdb -D ${PGDATA}"
-	set_var "listen_addresses" "*"
+	set_var "listen_addresses" "'*'"
 	set_var "logging_collector" "on"
-	set_var "log_directory" "/var/log/postgresql/"
-	set_var "log_filename" "postgresql.log"
+	set_var "log_directory" "'/var/log/postgresql/'"
+	set_var "log_filename" "'postgresql.log'"
 	set_var "log_file_mode" "0666"
 	sed -i "${nb_line}ihost all all 0.0.0.0/0 md5" "${PGDATA}/pg_hba.conf"
 }

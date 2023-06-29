@@ -8,9 +8,8 @@ RUN			apk add --update --virtual base \
 
 FROM		base			AS packed
 
-COPY		--chown=root:root entrypoint /run
+COPY		--chown=root:root entrypoint run /run
 
 STOPSIGNAL	SIGINT
 
 ENTRYPOINT	[ "/run/entrypoint" ]
-
