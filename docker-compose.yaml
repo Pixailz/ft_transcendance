@@ -118,35 +118,6 @@ services:
 
   ##############################################################################
   # Portainer
-  portainer:
-    container_name: portainer
-    build:
-      context: "./service/portainer"
-      target: "packed"
-    environment:
-      - CERT_SUBJ=${CERT_SUBJ}
-      - ADMIN_PASS=${ADMIN_PASS}
-      - DEBUG=${DEBUG}
-    ports:
-      - 9443:9443
-    volumes:
-      - type: bind
-        source: /var/run/docker.sock
-        target: /var/run/docker.sock
-        bind:
-          create_host_path: true
-      - type: bind
-        source: ./volume/portainer
-        target: /data
-        bind:
-          create_host_path: true
-    networks:
-      transendence:
-        ipv4_address: "13.37.42.10"
-    << : *restart
-    healthcheck:
-      test: [ "CMD", "pgrep", "portainer" ]
-      << : *healthcheck_conf
   #
   ##############################################################################
 

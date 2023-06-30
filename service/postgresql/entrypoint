@@ -67,6 +67,7 @@ function	postgres_db()
 	do_sql "CREATE DATABASE ${DB_NAME}"
 	do_sql "CREATE USER ${ADMIN_USER} WITH ENCRYPTED PASSWORD '${ADMIN_PASS}'"
 	do_sql "GRANT ALL PRIVILEGES ON DATABASE ${DB_NAME} TO ${ADMIN_USER}"
+	do_sql "ALTER DATABASE ${DB_NAME} OWNER TO ${ADMIN_USER}"
 	do_as_postgres "pg_ctl stop -D ${PGDATA}"
 }
 

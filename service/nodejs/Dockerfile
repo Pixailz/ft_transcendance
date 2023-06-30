@@ -2,6 +2,7 @@ FROM		alpine:latest	AS base
 
 RUN			apk add --upgrade --progress --virtual dependencies \
 				nodejs \
+				npm \
 			&& rm -f /var/cache/apk/*
 
 #=#=#
