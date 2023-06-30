@@ -1,7 +1,7 @@
 # CONFIG
 SHELL				:= /bin/bash
-DOCKER_COMPOSE		:= docker compose -f ./service/docker-compose.yaml
-ENV_FILE			:= ./service/.env
+DOCKER_COMPOSE		:= docker compose
+ENV_FILE			:= ./.env
 VERSION				:= 0.0.2-prealpha
 
 # Always use GNU Make.
@@ -134,7 +134,7 @@ $(S)RULES$(P)
 	$(S)$$(VOLUME_DIR)$(P)
 		make whole directory tree for docker volumes
 
-	$(S)get_struct$(P)
+	$(S)setup$(P)
 		wrapper to make the docker happy. by happy i mean downloading all the
 		necessary as well as the directory tree for the volumes
 
@@ -170,7 +170,7 @@ $(PORTAINER):
 $(NODEJS):
 > @$(eval RESULT=$(shell $(CURL) -s $(NODEJS_SHA_LINK) | grep "musl.tar.gz" | cut -d" " -f1)) \
 if [ "$(RESULT)" != "$(shell sha256sum ./service/nodejs/latest.tar.gz | cut -d' ' -f1 )" ]; then \
-printf "Sha256sum $(R)didn't$(RST) match or not found, downloading again\n" ; \
+printf "Sha256sum $(R)didn't$(RST) match or not found, downloading\n" ; \
 rm -rf $(@) ; \
 $(CURL) $(NODEJS_LINK) --output $(@) ; \
 else \
@@ -201,7 +201,7 @@ $(ENV_FILE):
 $(VOLUME_DIR):
 > $(call MKDIR,$(@))
 
-get_struct:			$(PACKAGES) $(VOLUME_DIR) $(ENV_FILE)
+setup:				$(PACKAGES) $(VOLUME_DIR) $(ENV_FILE)
 > @printf "Ready to use \`docker compose up\` $(G):)$(RST)\n"
 
 help:

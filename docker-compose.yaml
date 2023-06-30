@@ -19,7 +19,7 @@ services:
   nodejs:
     container_name: nodejs
     build:
-      context: "./nodejs"
+      context: "./service/nodejs"
       target: "packed"
       args:
         - PROJECT_NAME=${PROJECT_NAME}
@@ -45,7 +45,7 @@ services:
   postgresql:
     container_name: postgresql
     build:
-      context: "./postgresql"
+      context: "./service/postgresql"
       target: "packed"
     environment:
       - ADMIN_USER=${ADMIN_USER}
@@ -71,7 +71,7 @@ services:
   portainer:
     container_name: portainer
     build:
-      context: "./portainer"
+      context: "./service/portainer"
       target: "packed"
     environment:
       - CERT_SUBJ=${CERT_SUBJ}
@@ -118,7 +118,7 @@ volumes:
     driver_opts:
       type: "none"
       o: "bind"
-      device: ../volume/nodejs
+      device: ./volume/nodejs
   #
   ##############################################################################
 
@@ -129,7 +129,7 @@ volumes:
     driver_opts:
       type: "none"
       o: "bind"
-      device: ./nodejs/src/${PROJECT_NAME}
+      device: ./service/nodejs/src/${PROJECT_NAME}
   #
   ##############################################################################
 
