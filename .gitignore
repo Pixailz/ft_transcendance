@@ -8,5 +8,5 @@
 volume
 
 # NestJS .gitignore
-src/**/dist/
+#src/**/dist/
 src/**/node_modules/
