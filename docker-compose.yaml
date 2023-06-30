@@ -15,24 +15,66 @@ x-restart: &restart
 
 services:
   ##############################################################################
-  # NodeJS
-  nodejs:
-    container_name: nodejs
+  # NestJS
+  nestjs:
+    container_name: nestjs
+    hostname: nestjs
     build:
       context: "./service/nodejs"
-      target: "packed"
+      target: "nodejs"
       args:
-        - PROJECT_NAME=${PROJECT_NAME}
+        - PROJECT_NAME=${PROJECT_NAME_NEST}
     environment:
-      - PROJECT_NAME=${PROJECT_NAME}
+      - PROJECT_NAME=${PROJECT_NAME_NEST}
     ports:
       - 3000:3000
     networks:
       transendence:
         ipv4_address: "13.37.42.11"
     volumes:
-      - nodejs:/usr/local/lib/nodejs
-      - node_src:/shared/${PROJECT_NAME}
+      - type: bind
+        source: ./volume/nodejs
+        target: /usr/local/lib/nodejs
+        bind:
+          create_host_path: true
+      - type: bind
+        source: ./src/nestjs/${PROJECT_NAME_NEST}
+        target: /shared/${PROJECT_NAME_NEST}
+        bind:
+          create_host_path: true
+    << : *restart
+    # healthcheck:
+    #   test: [ "CMD", "pgrep", "node" ]
+    #   << : *healthcheck_conf
+  #
+  ##############################################################################
+
+  ##############################################################################
+  # AngularJS
+  angularjs:
+    container_name: angularjs
+    hostname: angularjs
+    build:
+      context: "./service/nodejs"
+      target: "nodejs"
+      args:
+        - PROJECT_NAME=${PROJECT_NAME_ANGU}
+    environment:
+      - PROJECT_NAME=${PROJECT_NAME_ANGU}
+    networks:
+      transendence:
+        ipv4_address: "13.37.42.12"
+    volumes:
+      - type: bind
+        source: ./volume/nodejs
+        target: /usr/local/lib/nodejs
+        bind:
+          create_host_path: true
+      - type: bind
+        source: ./src/nestjs/${PROJECT_NAME_ANGU}
+        target: /shared/${PROJECT_NAME_ANGU}
+        bind:
+          create_host_path: true
     << : *restart
     # healthcheck:
     #   test: [ "CMD", "pgrep", "node" ]
@@ -55,10 +97,18 @@ services:
       - DEBUG=${DEBUG}
     networks:
       transendence:
-        ipv4_address: "13.37.42.12"
+        ipv4_address: "13.37.42.13"
     volumes:
-      - postgresql:/usr/local/pgsql/data
-      - postgresql_log:/var/log/postgresql
+      - type: bind
+        source: ./volume/postgresql
+        target: /usr/local/pgsql/data
+        bind:
+          create_host_path: true
+      - type: bind
+        source: ./volume/postgresql_log
+        target: /var/log/postgresql
+        bind:
+          create_host_path: true
     << : *restart
     healthcheck:
       test: [ "CMD", "pgrep", "postgres" ]
@@ -80,8 +130,16 @@ services:
     ports:
       - 9443:9443
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer:/data
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        bind:
+          create_host_path: true
+      - type: bind
+        source: ./volume/portainer
+        target: /data
+        bind:
+          create_host_path: true
     networks:
       transendence:
         ipv4_address: "13.37.42.10"
@@ -114,51 +172,32 @@ volumes:
   ##############################################################################
   # NodeJS install dir
   nodejs:
-    driver: local
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: ./volume/nodejs
   #
   ##############################################################################
 
   ##############################################################################
-  # NodeJS Project Volume
-  node_src:
-    driver: local
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: ./service/nodejs/src/${PROJECT_NAME}
+  # NestJS Project Volume
+  nestjs_src:
+  #
+  ##############################################################################
+
+  ##############################################################################
+  # AngularJS Project Volume
+  angularjs_src:
   #
   ##############################################################################
 
   ##############################################################################
   # PostgreSQL
   postgresql:
-    driver: local
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: ./volume/postgresql
 
   # PostgreSQL Log
   postgresql_log:
-    driver: local
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: ./volume/postgresql_log
   #
   ##############################################################################
 
   ##############################################################################
   # Portainer
   portainer:
-    driver: local
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: ./volume/portainer
   #
   ##############################################################################

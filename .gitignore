@@ -1,5 +1,5 @@
 # never, ever push .env file. never
-docker/.env
+.env
 
 # downloaded thing
 *.tar.gz
@@ -8,5 +8,5 @@ docker/.env
 volume
 
 # NestJS .gitignore
-service/nodejs/src/**/dist/
-service/nodejs/src/**/node_modules/
+src/**/dist/
+src/**/node_modules/

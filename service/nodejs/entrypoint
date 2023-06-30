@@ -7,14 +7,6 @@ if [ "${DEBUG}" != "" ]; then
 	printf "DEBUG     %s\n\n" "${DEBUG}"
 fi
 
-function	install_nodejs()
-{
-	mkdir -p /usr/local/lib/nodejs && cd /usr/local/lib/nodejs
-	tar xf /tmp/latest.tar.gz
-	mv node-*/* . && rm -rf node-*
-	cd - 1>/dev/null
-}
-
 function	update_nodejs()
 {
 	npm update -g && npm upgrade -g
@@ -26,22 +18,20 @@ function	install_nestjs()
 	npm i -g @nestjs/cli
 }
 
+function	install_angularjs()
+{
+	npm i -g @angular/cli
+}
+
 function	init_project()
 {
 	cd "/shared/${PROJECT_NAME}"
 	npm install
 }
 
-if [ ! -f "/usr/local/lib/nodejs/bin/node" ]; then
-	printf "${SERVICE_NAME} \x1b[38:5:160mnot found\x1b[00m, initialize it\n"
-
-	install_nodejs
-	update_nodejs
-	install_nestjs
-	init_project
-else
-	printf "${SERVICE_NAME} \x1b[38:5:76mfound\x1b[00m, Skiping initialization\n"
-fi
+update_nodejs
+[ "$(hostname)" == "nestjs" ] && install_nestjs || install_angularjs
+init_project
 
 printf "${SERVICE_NAME} launched\n"
 
