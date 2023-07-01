@@ -16,6 +16,7 @@ function	update_nodejs()
 function	install_nestjs()
 {
 	npm i -g @nestjs/cli
+	init_project_nestjs
 }
 
 function	install_angularjs()
@@ -23,16 +24,18 @@ function	install_angularjs()
 	npm i -g @angular/cli
 }
 
-function	init_project()
+function	init_project_nestjs()
 {
 	cd "/shared/${PROJECT_NAME}"
+	if [ ! -d "/shared/${PROJECT_NAME}/src" ]; then
+		nest new --package-manager npm --directory . ${PROJECT_NAME}
+	fi
 	npm install
 }
 
 if [ ! -d "/shared/${PROJECT_NAME}/node_modules" ]; then
 	update_nodejs
 	[ "$(hostname)" == "nestjs" ] && install_nestjs || install_angularjs
-	init_project
 fi
 
 printf "${SERVICE_NAME} launched\n"
