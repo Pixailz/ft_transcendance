@@ -38,6 +38,8 @@ if [ ! -d "/shared/${PROJECT_NAME}/node_modules" ]; then
 	[ "$(hostname)" == "nestjs" ] && install_nestjs || install_angularjs
 fi
 
+chmod -R 777 /shared/${PROJECT_NAME}
+
 printf "${SERVICE_NAME} launched\n"
 
 exec ${@}
