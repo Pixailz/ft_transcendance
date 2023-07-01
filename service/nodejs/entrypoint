@@ -29,9 +29,11 @@ function	init_project()
 	npm install
 }
 
-update_nodejs
-[ "$(hostname)" == "nestjs" ] && install_nestjs || install_angularjs
-init_project
+if [ ! -d "/shared/${PROJECT_NAME}/node_modules" ]; then
+	update_nodejs
+	[ "$(hostname)" == "nestjs" ] && install_nestjs || install_angularjs
+	init_project
+fi
 
 printf "${SERVICE_NAME} launched\n"
 
