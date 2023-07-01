@@ -1,7 +1,12 @@
 # ft_transcendence
 Recreat pong, on a website, with a looooooot of features
 
-ADMIN_PASS -> what's set in the [.env](./docker/.env) file
+
+## TOSET
+
+ADMIN_PASS -> [.env](./.env)
+API42_UID -> [.env](./src/nestjs/pix/.env)
+API42_SEC -> [.env](./src/nestjs/pix/.env)
 
 ## Version
 
@@ -13,13 +18,5 @@ ADMIN_PASS -> what's set in the [.env](./docker/.env) file
 
 > \* Contain a link for a proof,
 > by latest we mean maintained by the dev
-
-
-## Docker image
-
-### Portainer
-
-user:admin
-pass:1234
 
 ## TODO
