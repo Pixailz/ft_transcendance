@@ -3,9 +3,9 @@ Recreat pong, on a website, with a looooooot of features
 
 ## TOSET
 
-ADMIN_PASS -> [.env](./.env)
-API42_UID -> [.env](./src/nestjs/pix/.env)
-API42_SEC -> [.env](./src/nestjs/pix/.env)
+- ADMIN_PASS -> [.env](./.env)
+- API42_UID -> [.env](./src/nestjs/pix/.env)
+- API42_SEC -> [.env](./src/nestjs/pix/.env)
 
 ## Version
 
