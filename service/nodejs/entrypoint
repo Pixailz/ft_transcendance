@@ -13,6 +13,25 @@ function	update_nodejs()
 	# npx --yes npm-check --global --update-all
 }
 
+function	init_project_nestjs()
+{
+	cd "/shared/${PROJECT_NAME}"
+	if [ ! -d "/shared/${PROJECT_NAME}/src" ]; then
+		nest new --package-manager npm --directory . ${PROJECT_NAME}
+	fi
+	npm install
+}
+
+function	init_project_angularjs()
+{
+	cd "/shared/${PROJECT_NAME}"
+	if [ ! -d "/shared/${PROJECT_NAME}/src" ]; then
+		# TO FINISH
+		ng new --package-manager npm --directory . --routing false --style scss ${PROJECT_NAME}
+	fi
+	npm install
+}
+
 function	install_nestjs()
 {
 	npm i -g @nestjs/cli
@@ -22,15 +41,7 @@ function	install_nestjs()
 function	install_angularjs()
 {
 	npm i -g @angular/cli
-}
-
-function	init_project_nestjs()
-{
-	cd "/shared/${PROJECT_NAME}"
-	if [ ! -d "/shared/${PROJECT_NAME}/src" ]; then
-		nest new --package-manager npm --directory . ${PROJECT_NAME}
-	fi
-	npm install
+	init_project_angularjs
 }
 
 if [ ! -d "/shared/${PROJECT_NAME}/node_modules" ]; then
