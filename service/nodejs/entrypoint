@@ -1,6 +1,7 @@
 #!/bin/ash
 
 SERVICE_NAME="NodeJS"
+NODE_OPT="--package-manager npm --directory . --skip-git"
 
 if [ "${DEBUG}" != "" ]; then
 	printf "debuging \x1b[38:5:39m${SERVICE_NAME}\x1b[00m \n\n"
@@ -17,7 +18,7 @@ function	init_project_nestjs()
 {
 	cd "/shared/${PROJECT_NAME}"
 	if [ ! -d "/shared/${PROJECT_NAME}/src" ]; then
-		nest new --package-manager npm --directory . ${PROJECT_NAME}
+		nest new ${NODE_OPT} "${PROJECT_NAME}"
 	fi
 	npm install
 }
@@ -26,9 +27,9 @@ function	init_project_angularjs()
 {
 	cd "/shared/${PROJECT_NAME}"
 	if [ ! -d "/shared/${PROJECT_NAME}/src" ]; then
-		# TO FINISH
-		ng new --package-manager npm --directory . --routing false --style scss ${PROJECT_NAME}
+		ng new ${NODE_OPT} --routing false --style scss "${PROJECT_NAME}"
 	fi
+	sed -i "s/^    \"start\":.*/    \"start\":\"ng serve --host 0.0.0.0\",/g" package.json
 	npm install
 }
 
@@ -49,7 +50,7 @@ if [ ! -d "/shared/${PROJECT_NAME}/node_modules" ]; then
 	[ "$(hostname)" == "nestjs" ] && install_nestjs || install_angularjs
 fi
 
-chmod -R 777 /shared/${PROJECT_NAME}
+chmod -R 777 "/shared/${PROJECT_NAME}"
 
 printf "${SERVICE_NAME} launched\n"
 
