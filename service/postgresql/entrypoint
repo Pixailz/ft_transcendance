@@ -71,9 +71,13 @@ function	postgres_db()
 	do_as_postgres "pg_ctl stop -D ${PGDATA}"
 }
 
+mkdir_as_postgres "/var/log/postgresql"
 mkdir_as_postgres "${PGDATA}"
 rm -rf "/run/postgresql"
 mkdir_as_postgres "/run/postgresql"
+
+chown -R root:root /var/log/postgresql
+chmod -R 777 /var/log/postgresql
 
 if [ ! -f "${PGDATA}/PG_VERSION" ]; then
 	printf "${SERVICE_NAME} \x1b[38:5:160mnot found\x1b[00m, initialize it\n"
@@ -84,8 +88,6 @@ else
 	printf "${SERVICE_NAME} \x1b[38:5:76mfound\x1b[00m, Skiping initialization\n"
 fi
 
-chown -R root:root /var/log/postgresql
-chmod -R 777 /var/log/postgresql
 
 printf "${SERVICE_NAME} launched\n"
 
