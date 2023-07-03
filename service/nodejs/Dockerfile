@@ -18,5 +18,3 @@ COPY		--chown=root:root --chmod=755 entrypoint /run
 WORKDIR		/shared/${PROJECT_NAME}
 
 ENTRYPOINT	[ "/run/entrypoint" ]
-
-CMD			[ "npm", "run", "start:dev" ]

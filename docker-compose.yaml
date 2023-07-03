@@ -24,6 +24,7 @@ services:
       target: "nodejs"
       args:
         - PROJECT_NAME=${PROJECT_NAME_NEST}
+    command: [ "npm", "run", "start:dev" ]
     environment:
       - PROJECT_NAME=${PROJECT_NAME_NEST}
     ports:
@@ -59,8 +60,11 @@ services:
       target: "nodejs"
       args:
         - PROJECT_NAME=${PROJECT_NAME_ANGU}
+    command: [ "npm", "run", "start" ]
     environment:
       - PROJECT_NAME=${PROJECT_NAME_ANGU}
+    ports:
+      - 4200:4200
     networks:
       transendence:
         ipv4_address: "13.37.42.12"
@@ -71,7 +75,7 @@ services:
         bind:
           create_host_path: true
       - type: bind
-        source: ./src/nestjs/${PROJECT_NAME_ANGU}
+        source: ./src/angular/${PROJECT_NAME_ANGU}
         target: /shared/${PROJECT_NAME_ANGU}
         bind:
           create_host_path: true
