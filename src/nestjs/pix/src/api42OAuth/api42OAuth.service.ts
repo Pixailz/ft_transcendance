@@ -10,8 +10,8 @@ export class Api42OAuthService {
 			},
 			body: JSON.stringify({
 				grant_type:		"authorization_code",
-				client_id:		process.env.API42_UID,
-				client_secret:	process.env.API42_SEC,
+				client_id:		process.env.API42_USERID,
+				client_secret:	process.env.API42_SECRET,
 				code:			code,
 				redirect_uri:	"http://localhost:3000/auth",
 			})
