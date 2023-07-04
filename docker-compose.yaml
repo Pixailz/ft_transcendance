@@ -28,6 +28,10 @@ services:
     networks:
       transendence:
         ipv4_address: "13.37.42.11"
+    environment:
+      - DB_USER=${ADMIN_USER}
+      - DB_PASS=${ADMIN_PASS}
+      - DB_NAME=${DB_NAME}
     volumes:
       - type: bind
         source: ./volume/nodejs
@@ -114,7 +118,7 @@ services:
 
   ##############################################################################
   # PgAdmin
-  pgadmin:
+  # pgadmin:
 
   #
   ##############################################################################
