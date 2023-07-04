@@ -13,6 +13,6 @@ ENV			PATH="/usr/local/lib/nodejs/bin:${PATH}"
 
 COPY		--chown=root:root --chmod=755 entrypoint /run
 
-WORKDIR		/shared/
+WORKDIR		/shared/transcendence
 
 ENTRYPOINT	[ "/run/entrypoint" ]

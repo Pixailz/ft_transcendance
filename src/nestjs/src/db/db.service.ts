@@ -1,26 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreateUserDto } from './db.dto';
-import { User } from './db.entity';
+import { Injectable } from "@nestjs/common";
+import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
+import { from, Observable } from "rxjs";
+
+import { UserEntity } from "src/db/db.entity";
+import { UserPost } from "src/db/db.interface";
 
 @Injectable()
 export class DbService {
 	constructor(
-		@InjectRepository(User)
-		private readonly repository: Repository<User>,
-	){ }
+		@InjectRepository(UserEntity)
+		private readonly userRepo: Repository<UserEntity>
+	) {}
 
-	public getUser(id: number): Promise<User> {
-		return this.repository.findOneById(id);
-	}
-
-	public createUser(body: CreateUserDto): Promise<User> {
-		const user: User = new User();
-
-		user.name = body.name;
-		user.email = body.email;
-
-		return this.repository.save(user);
+	createUser(userPost: UserPost): Observable<UserPost> {
+		console.log("db_user " + process.env.DB_USER);
+		console.log("db_pass " + process.env.DB_PASS);
+		console.log("db_name " + process.env.DB_NAME);
+		return from(this.userRepo.save(userPost));
 	}
 }

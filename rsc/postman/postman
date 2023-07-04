@@ -17,7 +17,7 @@ function	usage()
 file_path="${1}"
 
 # source req file, should contain a req and a body var
-ID=${ID:-0} source "${file_path}"
+ID="${ID:-0}" source "${file_path}"
 
 # formating full_req
 full_req="${req}"
@@ -38,10 +38,12 @@ full_req+=$'\n'
 
 # debug print the full request
 printf "<>\n"
-printf "%s\n><\n" "${full_req}" | cat -e
+printf "%s\n" "${full_req}" | cat -e
+printf "><\n"
 
 # send the full request, and remove all '\r' from response
-response="$(<<<${full_req} nc -C -q1 localhost 3000 | tr -d '\r')"
+# response="$(<<<${full_req} nc -C -q1 localhost 3000 | tr -d '\r')"
+response="$(printf "%s\n" "${full_req}" | nc -C -q1 localhost 3000 | tr -d '\r')"
 
 # remove header from response
 response="$(<<<${response} tr '\n' '#' | sed 's/.*##//' | tr '#' '\n')"

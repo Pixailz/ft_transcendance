@@ -1,0 +1,8 @@
+req="POST /db HTTP/1.1"
+
+body=$(cat << EOBODY
+{
+	"body": "this is third test"
+}
+EOBODY
+)

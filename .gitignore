@@ -7,9 +7,10 @@
 # shared folder
 volume
 
-# NestJS .gitignore
+# NodeJS .gitignore
 src/**/dist
 src/**/node_modules
+src/**/.angular/cache
 
 # vscode folder
 .vscode
