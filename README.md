@@ -52,7 +52,7 @@ Create a pull request to merge your branch with `main`. ***It needs to be review
 ft_transcendence/
 ├─rsc/
 │ ├─postman/       #lib to make requests
-  └─en.subject.pdf #current subject PDF
+│ └─en.subject.pdf #current subject PDF
 ├─build/           #dockerfiles directories
 │ ├─nodejs/
 │ └─postgresql/
