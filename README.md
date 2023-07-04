@@ -45,6 +45,20 @@ Repeat steps 2 to 4 until your feature is perfect!
 - API42_USERID -> [.env](./src/nestjs/pix/.env)
 - API42_SECRET -> [.env](./src/nestjs/pix/.env)
 
+## Directory Structure
+```bash
+ft_transcendence/
+├─rsc
+  ├─postman  #lib to make requests
+├─service    #dockerfiles directories
+  ├─nodejs
+  ├─postgresql
+├─src        #sources
+  ├─angular
+  ├─nestjs
+    ├─code   #main app directory
+```
+
 ## Versioning
 
 |Service Name|Latest version*                                                  |
