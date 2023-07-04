@@ -38,6 +38,8 @@ Please refer to above instructions.
 Everytime you go away of your PC, and preferably after each commits, push your modifications ! Do not wait until your feature works, as you push it on a dedicated branch that will be merged into main when finished. This also permits multiple people to work on the same feature remotely!
 ### Step 5: Repeat It
 Repeat steps 2 to 4 until your feature is perfect!
+### Step 6: Pull Request It
+Create a pull request to merge your branch with `main`. ***It needs to be reviewed by someone before you merge it!***
 # Project Infos
 ## Things To Set
 
