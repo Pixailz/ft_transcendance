@@ -16,18 +16,28 @@ function	update_nodejs()
 
 function	init_project_nestjs()
 {
-	cd "/shared/${PROJECT_NAME}"
-	if [ ! -d "/shared/${PROJECT_NAME}/src" ]; then
-		nest new ${NODE_OPT} "${PROJECT_NAME}"
+	#cd "/shared/${PROJECT_NAME}"
+	#if [ ! -d "/shared/${PROJECT_NAME}/src" ]; then
+	#	nest new ${NODE_OPT} "${PROJECT_NAME}"
+	#fi
+	cd "/shared/nestjs"
+	if [ ! -d "/shared/nestjs/src" ]; then
+		printf "Cannot find folder 'src' in 'nestjs/'"
+		exit 1
 	fi
 	npm install
 }
 
 function	init_project_angularjs()
 {
-	cd "/shared/${PROJECT_NAME}"
-	if [ ! -d "/shared/${PROJECT_NAME}/src" ]; then
-		ng new ${NODE_OPT} --routing false --style scss "${PROJECT_NAME}"
+	#cd "/shared/${PROJECT_NAME}"
+	#if [ ! -d "/shared/${PROJECT_NAME}/src" ]; then
+	#	ng new ${NODE_OPT} --routing false --style scss "${PROJECT_NAME}"
+	#fi
+	cd "/shared/angularjs"
+	if [ ! -d "/shared/angularjs/src" ]; then
+		printf "Cannot find folder 'src' in 'angularjs/'"
+		exit 1
 	fi
 	sed -i "s/^    \"start\":.*/    \"start\":\"ng serve --host 0.0.0.0\",/g" package.json
 	npm install
@@ -45,13 +55,13 @@ function	install_angularjs()
 	init_project_angularjs
 }
 
-if [ ! -d "/shared/${PROJECT_NAME}/node_modules" ]; then
+if [ ! -d "/shared/$(hostname)/node_modules" ]; then
 	update_nodejs
 	[ "$(hostname)" == "nestjs" ] && install_nestjs || install_angularjs
 fi
 
-chmod -R 777 "/shared/${PROJECT_NAME}"
+chmod -R 777 "/shared/$(hostname)"
 
-printf "${SERVICE_NAME} launched\n"
+printf "$(hostname) launched\n"
 
 exec ${@}

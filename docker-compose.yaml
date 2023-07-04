@@ -20,13 +20,13 @@ services:
     container_name: nestjs
     hostname: nestjs
     build:
-      context: "./service/nodejs"
+      context: "./build/nodejs"
       target: "nodejs"
-      args:
-        - PROJECT_NAME=${PROJECT_NAME_NEST}
+    #  args:
+    #    - PROJECT_NAME=${PROJECT_NAME_NEST}
     command: [ "npm", "run", "start:dev" ]
-    environment:
-      - PROJECT_NAME=${PROJECT_NAME_NEST}
+    #environment:
+    #  - PROJECT_NAME=${PROJECT_NAME_NEST}
     ports:
       - 3000:3000
     networks:
@@ -39,8 +39,8 @@ services:
         bind:
           create_host_path: true
       - type: bind
-        source: ./src/nestjs/${PROJECT_NAME_NEST}
-        target: /shared/${PROJECT_NAME_NEST}
+        source: ./src/nestjs
+        target: /shared/nestjs
         bind:
           create_host_path: true
     << : *restart
@@ -56,13 +56,13 @@ services:
     container_name: angularjs
     hostname: angularjs
     build:
-      context: "./service/nodejs"
+      context: "./build/nodejs"
       target: "nodejs"
-      args:
-        - PROJECT_NAME=${PROJECT_NAME_ANGU}
+    #   args:
+    #    - PROJECT_NAME=${PROJECT_NAME_ANGU}
     command: [ "npm", "run", "start" ]
-    environment:
-      - PROJECT_NAME=${PROJECT_NAME_ANGU}
+    # environment:
+    #  - PROJECT_NAME=${PROJECT_NAME_ANGU}
     ports:
       - 4200:4200
     networks:
@@ -75,8 +75,8 @@ services:
         bind:
           create_host_path: true
       - type: bind
-        source: ./src/angular/${PROJECT_NAME_ANGU}
-        target: /shared/${PROJECT_NAME_ANGU}
+        source: ./src/angularjs
+        target: /shared/angularjs
         bind:
           create_host_path: true
     << : *restart
@@ -91,7 +91,7 @@ services:
   postgresql:
     container_name: postgresql
     build:
-      context: "./service/postgresql"
+      context: "./build/postgresql"
       target: "packed"
     environment:
       - ADMIN_USER=${ADMIN_USER}
