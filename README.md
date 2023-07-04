@@ -54,9 +54,8 @@ ft_transcendence/
   ├─nodejs
   ├─postgresql
 ├─src        #sources
-  ├─angular
-  ├─nestjs
-    ├─code   #main app directory
+  ├─angular  #frontend
+  ├─nestjs   #backend
 ```
 
 ## Versioning
