@@ -5,7 +5,7 @@ Recreate pong, on a website, with a looooooot of features
 ## Commits
 When creating a new commit, try to break it into as many pieces you can. For example, if you modified both front-end and back-end files for your new feature, add files one by one instead of doing `git add .` and choose a concise but factual commit message. This makes it easier to revert a bad commit and keep good ones if something goes wrong. Repeat for all modified files until you added them all.
 If you can, try to follow [this spec](https://gitmoji.dev/specification), which makes it easier *in therory* to know what the commit does to the project.
-### Example: 
+### Example:
 You implemented a password recovery tool and needed to implement the logic in the back-end and the components in the front-end. You also added the components to the login page. You can do as follow :
 ```bash
 git add src/backend/controllers/passwordrecovery
@@ -26,7 +26,7 @@ Explained [here](https://www.atlassian.com/git/tutorials/comparing-workflows/fea
 If you think of a new feature to implement, first check if there isn't already a branch trying to implement it. If there isn't, pull from origin then create a new branch named by the feature :
 ```bash
 git checkout main
-git fetch origin 
+git fetch origin
 git reset --hard origin/main
 git checkout -b new-feature
 ```
@@ -35,7 +35,7 @@ git checkout -b new-feature
 ### Step 3: Commit It
 Please refer to above instructions.
 ### Step 4: Push It
-Everytime you go away of your PC, and preferably after each commits, push your modifications ! Do not wait until your feature works, as you push it on a dedicated branch that will be merged into main when finished. This also permits multiple people to work on the same feature remotely! 
+Everytime you go away of your PC, and preferably after each commits, push your modifications ! Do not wait until your feature works, as you push it on a dedicated branch that will be merged into main when finished. This also permits multiple people to work on the same feature remotely!
 ### Step 5: Repeat It
 Repeat steps 2 to 4 until your feature is perfect!
 # Project Infos
@@ -48,14 +48,15 @@ Repeat steps 2 to 4 until your feature is perfect!
 ## Directory Structure
 ```bash
 ft_transcendence/
-├─rsc
-  ├─postman  #lib to make requests
-├─service    #dockerfiles directories
-  ├─nodejs
-  ├─postgresql
-├─src        #sources
-  ├─angular  #frontend
-  ├─nestjs   #backend
+├─rsc/
+│ ├─postman/       #lib to make requests
+  └─en.subject.pdf #current subject PDF
+├─build/           #dockerfiles directories
+│ ├─nodejs/
+│ └─postgresql/
+└─src/             #sources
+  ├─angular/       #frontend
+  └─nestjs/        #backend
 ```
 
 ## Versioning

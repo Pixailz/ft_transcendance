@@ -22,11 +22,7 @@ services:
     build:
       context: "./build/nodejs"
       target: "nodejs"
-    #  args:
-    #    - PROJECT_NAME=${PROJECT_NAME_NEST}
     command: [ "npm", "run", "start:dev" ]
-    #environment:
-    #  - PROJECT_NAME=${PROJECT_NAME_NEST}
     ports:
       - 3000:3000
     networks:
@@ -40,7 +36,7 @@ services:
           create_host_path: true
       - type: bind
         source: ./src/nestjs
-        target: /shared/nestjs
+        target: /shared/transcendence
         bind:
           create_host_path: true
     << : *restart
@@ -58,11 +54,7 @@ services:
     build:
       context: "./build/nodejs"
       target: "nodejs"
-    #   args:
-    #    - PROJECT_NAME=${PROJECT_NAME_ANGU}
     command: [ "npm", "run", "start" ]
-    # environment:
-    #  - PROJECT_NAME=${PROJECT_NAME_ANGU}
     ports:
       - 4200:4200
     networks:
@@ -76,7 +68,7 @@ services:
           create_host_path: true
       - type: bind
         source: ./src/angularjs
-        target: /shared/angularjs
+        target: /shared/transcendence
         bind:
           create_host_path: true
     << : *restart

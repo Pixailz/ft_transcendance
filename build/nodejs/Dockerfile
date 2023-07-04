@@ -9,8 +9,6 @@ RUN			apk add --upgrade --progress --virtual dependencies \
 
 FROM		base			AS nodejs
 
-ARG			PROJECT_NAME
-
 ENV			PATH="/usr/local/lib/nodejs/bin:${PATH}"
 
 COPY		--chown=root:root --chmod=755 entrypoint /run

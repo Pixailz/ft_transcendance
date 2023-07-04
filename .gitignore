@@ -10,3 +10,6 @@ volume
 # NestJS .gitignore
 src/**/dist
 src/**/node_modules
+
+# vscode folder
+.vscode
