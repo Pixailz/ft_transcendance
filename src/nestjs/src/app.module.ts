@@ -12,6 +12,7 @@ import { DbModule } from './modules/database/database.module';
 	],
 	controllers: [
 	],
+	// controller
 	providers: [],
 })
 export class AppModule {}
