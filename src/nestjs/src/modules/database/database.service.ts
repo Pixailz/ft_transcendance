@@ -13,10 +13,19 @@ export class DbService {
 		private readonly userRepo: Repository<UserEntity>
 	) {}
 
-	createUser(userPost: UserPost): Observable<UserPost> {
+	createUser(userPost: UserPost){
 		console.log("db_user " + process.env.DB_USER);
 		console.log("db_pass " + process.env.DB_PASS);
 		console.log("db_name " + process.env.DB_NAME);
+		console.log(userPost);
 		return from(this.userRepo.save(userPost));
+	}
+
+	async returnUser(userId: number){
+		console.log(userId);
+		console.log(await this.userRepo.findOneBy({id: userId}));
+		return await this.userRepo.findOneBy({
+			id: userId
+		})
 	}
 }

@@ -1,8 +1,12 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { UserEntity } from "src/database/user.entity";
+import { UserEntity } from "./user.entity";
 import { ConfigModule } from "@nestjs/config";
+
+import { DbController } from "./database.controller"
+import { DbService } from "./database.service"
+
 
 @Module({
 	imports: [
