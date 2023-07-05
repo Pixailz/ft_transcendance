@@ -11,6 +11,12 @@ export class UserEntity {
 	@Column({ type: 'varchar', length: 120 })
 	public email: string;
 
+	@Column({ type: 'string' })
+	public ft_id: number;
+
+	@Column({ type: 'varchar', length: 120 })
+	public ft_login: string;
+
 	@Column({ type: 'boolean', default: false })
 	public isDeleted: boolean;
 

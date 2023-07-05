@@ -1,8 +1,12 @@
 import { Body, Controller, Post } from "@nestjs/common";
-import { DbService } from "src/db/db.service";
+import { DbService } from "./database.service";
 import { Observable } from "rxjs";
 
-import { UserPost } from "./db.interface";
+export interface UserPost {
+	name?: string;
+	email?: string;
+	isDeleted?: boolean;
+}
 
 @Controller("db")
 export class DbController {
