@@ -12,6 +12,7 @@ import { DbController } from './modules/database/database.controller';
 	controllers: [
 		DbController
 	],
+	// controller
 	providers: [],
 })
 export class AppModule {}
