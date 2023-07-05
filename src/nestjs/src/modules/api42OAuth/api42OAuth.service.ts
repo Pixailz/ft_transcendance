@@ -8,10 +8,17 @@ export class Api42OAuthService {
 	async getToken(code: string, @Req() req: Request, @Res({ passthrough: true }) res: Response): Promise<string> {
 		console.log(req);
 		if (req.cookies && req.cookies.access_token) {
-			return await this.getTokenJwt(req.cookies.access_token);
+			console.log("Cookie found");
+			try {
+				return await this.getTokenJwt(req.cookies.access_token);
+			}
+			catch {
+				throw new UnauthorizedException();
+			}
 		}
 		else
 		{
+			console.log("Cookie not found");
 			const user_token = await this.getTokenApi(code);
 			const payload = await this.jwtService.signAsync({user_token});
 			res.cookie(
@@ -20,7 +27,7 @@ export class Api42OAuthService {
 					secure: false,
 					expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
 				}
-			).send({status: "ok"});
+			);
 			return (user_token);
 		}
 	}
