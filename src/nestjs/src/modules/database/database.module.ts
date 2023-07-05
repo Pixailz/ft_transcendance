@@ -1,12 +1,12 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { UserEntity } from "./user.entity";
+import { UserEntity } from "./database.entity";
+import { UserInfoEntity } from "./database.entity";
 import { ConfigModule } from "@nestjs/config";
 
 import { DbController } from "./database.controller"
 import { DbService } from "./database.service"
-
 
 @Module({
 	imports: [
@@ -18,10 +18,10 @@ import { DbService } from "./database.service"
 			username: process.env.DB_USER.toString(),
 			password: process.env.DB_PASS.toString(),
 			database: process.env.DB_NAME.toString(),
-			entities: [UserEntity],
+			entities: [UserEntity, UserInfoEntity],
 			synchronize: true
 		}),
-		TypeOrmModule.forFeature([UserEntity])
+		TypeOrmModule.forFeature([UserEntity, UserInfoEntity])
 	],
 	controllers: [DbController],
 	providers: [DbService]
