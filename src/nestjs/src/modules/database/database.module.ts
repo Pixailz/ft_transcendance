@@ -1,9 +1,7 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { DbController } from "src/db/db.controler"
-import { DbService } from "src/db/db.service"
-import { UserEntity } from "src/db/db.entity";
+import { UserEntity } from "src/database/user.entity";
 import { ConfigModule } from "@nestjs/config";
 
 @Module({
@@ -13,9 +11,6 @@ import { ConfigModule } from "@nestjs/config";
 			type: "postgres",
 			host: "postgresql",
 			port: 5432,
-			// username: "pix",
-			// password: "1234",
-			// database: "nest_api",
 			username: process.env.DB_USER.toString(),
 			password: process.env.DB_PASS.toString(),
 			database: process.env.DB_NAME.toString(),

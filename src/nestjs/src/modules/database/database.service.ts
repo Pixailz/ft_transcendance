@@ -3,8 +3,8 @@ import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { from, Observable } from "rxjs";
 
-import { UserEntity } from "src/db/db.entity";
-import { UserPost } from "src/db/db.interface";
+import { UserEntity } from "./user.entity";
+import { UserPost } from "./database.controller";
 
 @Injectable()
 export class DbService {
