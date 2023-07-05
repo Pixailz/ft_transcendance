@@ -92,6 +92,8 @@ services:
     build:
       context: "./build/postgresql"
       target: "packed"
+    ports:
+      - 5432:5432
     environment:
       - ADMIN_USER=${ADMIN_USER}
       - ADMIN_PASS=${ADMIN_PASS}
