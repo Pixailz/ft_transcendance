@@ -12,26 +12,26 @@ export class DbService {
 		@InjectRepository(UserEntity)
 		private readonly userRepo: Repository<UserEntity>,
 		@InjectRepository(UserInfoEntity)
-		private readonly userInfoRepo: Repository<UserInfoEntity>
+		private readonly userInfoRepo: Repository<UserInfoEntity>,
 	) {}
 
-	createUser(userPost: UserPost){
+	createUser(userPost: UserPost) {
 		console.log(userPost);
 		return from(this.userRepo.save(userPost));
 	}
 
-	registerUser(userInfoPost: UserInfoPost){
+	registerUser(userInfoPost: UserInfoPost) {
 		console.log(userInfoPost);
 		return from(this.userInfoRepo.save(userInfoPost));
 	}
 
-	async returnUser(userId: number){
+	async returnUser(userId: number) {
 		console.log(userId);
-		return await this.userRepo.findOneBy({ ft_id: userId })
+		return await this.userRepo.findOneBy({ ft_id: userId });
 	}
 
-	async returnUserInfo(userId: number){
+	async returnUserInfo(userId: number) {
 		console.log(userId);
-		return await this.userInfoRepo.findOneBy({ id: userId })
+		return await this.userInfoRepo.findOneBy({ id: userId });
 	}
 }

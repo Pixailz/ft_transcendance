@@ -5,8 +5,8 @@ import { UserEntity } from "./database.entity";
 import { UserInfoEntity } from "./database.entity";
 import { ConfigModule } from "@nestjs/config";
 
-import { DbController } from "./database.controller"
-import { DbService } from "./database.service"
+import { DbController } from "./database.controller";
+import { DbService } from "./database.service";
 
 @Module({
 	imports: [
@@ -19,11 +19,11 @@ import { DbService } from "./database.service"
 			password: process.env.DB_PASS.toString(),
 			database: process.env.DB_NAME.toString(),
 			entities: [UserEntity, UserInfoEntity],
-			synchronize: true
+			synchronize: true,
 		}),
-		TypeOrmModule.forFeature([UserEntity, UserInfoEntity])
+		TypeOrmModule.forFeature([UserEntity, UserInfoEntity]),
 	],
 	controllers: [DbController],
-	providers: [DbService]
+	providers: [DbService],
 })
 export class DbModule {}
