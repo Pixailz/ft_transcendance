@@ -15,18 +15,18 @@ export class HomeDashboardComponent {
     map(({ matches }) => {
       if (matches) {
         return [
-          { title: 'Card 1', cols: 1, rows: 1 },
-          { title: 'Card 2', cols: 1, rows: 1 },
-          { title: 'Card 3', cols: 1, rows: 1 },
-          { title: 'Card 4', cols: 1, rows: 1 }
+          { title: 'LeaderBoard', cols: 1, rows: 1 },
+          { title: 'Global Chatroom', cols: 1, rows: 1 },
+          { title: 'Online Users', cols: 1, rows: 1 },
+          { title: 'Private Chatrooms', cols: 1, rows: 1 }
         ];
       }
 
       return [
-        { title: 'Card 1', cols: 2, rows: 1 },
-        { title: 'Card 2', cols: 1, rows: 1 },
-        { title: 'Card 3', cols: 1, rows: 2 },
-        { title: 'Card 4', cols: 1, rows: 1 }
+        { title: 'LeaderBoard', cols: 2, rows: 1 },
+        { title: 'Global Chatroom', cols: 1, rows: 1 },
+        { title: 'Private Chatrooms', cols: 1, rows: 2 },
+        { title: 'Online Users', cols: 1, rows: 1 }
       ];
     })
   );
