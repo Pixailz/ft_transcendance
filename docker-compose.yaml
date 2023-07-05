@@ -29,9 +29,11 @@ services:
       transendence:
         ipv4_address: "13.37.42.11"
     environment:
-      - DB_USER=${ADMIN_USER}
-      - DB_PASS=${ADMIN_PASS}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
       - DB_NAME=${DB_NAME}
+      - API42_USERID=${API42_USERID}
+      - API42_SECRET=${API42_SECRET}
     volumes:
       - type: bind
         source: ./volume/nodejs
