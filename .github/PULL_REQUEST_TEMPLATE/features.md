@@ -1,3 +1,12 @@
+---
+name: "Pull Request"
+about: "Merge your work"
+title: "[PL] "
+labels: "✨ ENHENCEMENT"
+assignees: Pixailz, clinche
+
+---
+
 ### Explain feature
 A clear and consise explanation about what you are about to merge
 
