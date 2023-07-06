@@ -15,6 +15,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { AppRoutingModule } from './app-routing.module';
 import { PongComponent } from './pong/pong.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { AvatarComponent } from './avatar/avatar.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,9 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     FooterComponent,
     HomeDashboardComponent,
     PongComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    UserProfileComponent,
+    AvatarComponent
   ],
   imports: [
     BrowserModule,
