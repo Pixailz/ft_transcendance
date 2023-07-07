@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
 	styleUrls: ['./user-profile.component.scss']
 })
 export class UserProfileComponent {
-
+	public ft_login: string = 'ft_login';
 }
