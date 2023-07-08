@@ -1,7 +1,6 @@
 import { Module } from "@nestjs/common";
+import { api42OAuthModule } from "./modules/api42OAuth/module";
 import { ConfigModule } from "@nestjs/config";
-
-import { api42OAuthModule } from "./modules/api42OAuth/api42OAuth.module";
 import { DbModule } from "./modules/database/database.module";
 
 @Module({

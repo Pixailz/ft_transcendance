@@ -25,8 +25,9 @@ function	install_angularjs()
 if [ ! -d "/shared/transcendence/node_modules" ]; then
 	update_nodejs
 	[ "${SERVICE_NAME}" == "nestjs" ] && install_nestjs || install_angularjs
-	npm install
 fi
+
+npm install
 
 chmod -R 777 "/shared/transcendence"
 
