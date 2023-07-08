@@ -1,0 +1,9 @@
+req="PUT /user/${ID} HTTP/1.1"
+
+body=$(cat << EOBODY
+{
+	"ft_id": 1235,
+	"ft_login": "pix"
+}
+EOBODY
+)

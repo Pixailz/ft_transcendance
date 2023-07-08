@@ -1,4 +1,4 @@
-req="POST /db/user HTTP/1.1"
+req="POST /user HTTP/1.1"
 
 body=$(cat << EOBODY
 {
