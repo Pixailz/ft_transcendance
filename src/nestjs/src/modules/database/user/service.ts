@@ -25,4 +25,15 @@ export class UserService {
 		console.log(userId);
 		return await this.userRepo.findOneBy({ ft_id: userId });
 	}
+
+	async update(userId: number, userPost: UserPost) {
+		console.log(userId);
+		console.log(userPost);
+		return await this.userRepo.update(userId, userPost);
+	}
+
+	async delete(userId: number) {
+		console.log(userId);
+		return await this.userRepo.delete(userId);
+	}
 }

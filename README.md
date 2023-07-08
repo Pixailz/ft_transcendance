@@ -85,14 +85,14 @@ ft_transcendence/
 | POST    | /user                    | Create user      |
 | GET     | /user                    | Get all user     |
 | GET     | /user/:id                | Get one user     |
-| *PUT    | /user/:id                | Modify an user   |
-| *DELETE | /user/:id                | Delete an user   |
+| PUT     | /user/:id                | Modify an user   |
+| DELETE  | /user/:id                | Delete an user   |
 ||||
 | POST    | /user_info               | Create userInfo      |
 | GET     | /user_info               | Get all userInfo     |
 | GET     | /user_info/:id           | Get one userInfo     |
-| *PUT    | /user_info/:id           | Modify an userInfo   |
-| *DELETE | /user_info/:id           | Delete an userInfo   |
+| PUT     | /user_info/:id           | Modify an userInfo   |
+| DELETE  | /user_info/:id           | Delete an userInfo   |
 
 > method marked with `*` is not implemented yet
 

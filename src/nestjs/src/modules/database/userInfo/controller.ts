@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, Res, Get, Param } from "@nestjs/common";
+import { Body, Controller, Post, Put, Get, Delete, Res, Param } from "@nestjs/common";
 import { Response } from "express";
 
 import { UserInfoService } from "./service";
@@ -9,8 +9,7 @@ export class UserInfoController {
 	constructor(private readonly userInfoService: UserInfoService) {}
 
 	@Post()
-	register(@Body() post: UserInfoPost) {
-		console.log(post);
+	create(@Body() post: UserInfoPost) {
 		return this.userInfoService.create(post);
 	}
 
@@ -27,6 +26,23 @@ export class UserInfoController {
 		@Res() res: Response,
 	) {
 		res.send(await this.userInfoService.returnOne(userId));
+	}
+
+	@Put(":id")
+	async update(
+		@Param("id") userId: number,
+		@Body() userPost: UserInfoPost,
+		@Res() res: Response,
+	) {
+		res.send(await this.userInfoService.update(userId, userPost));
+	}
+
+	@Delete(":id")
+	async delete(
+		@Param("id") userId: number,
+		@Res() res: Response,
+	) {
+		res.send(await this.userInfoService.delete(userId));
 	}
 }
 
