@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 
-import { Api42OAuthController } from "./api42OAuth.controller";
-import { Api42OAuthService } from "./api42OAuth.service";
+import { Api42OAuthController } from "./controller";
+import { Api42OAuthService } from "./service";
 import { ConfigModule } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 
@@ -10,7 +10,7 @@ import { JwtModule } from "@nestjs/jwt";
 		ConfigModule.forRoot({ isGlobal: true }),
 		JwtModule.register({
 			global: true,
-			secretOrPrivateKey: process.env.JWT_SECRET,
+			secret: process.env.JWT_SECRET,
 			signOptions: {
 				expiresIn: "2h",
 			},
