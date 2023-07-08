@@ -1,0 +1,9 @@
+req="POST /user HTTP/1.1"
+
+body=$(cat << EOBODY
+{
+	"ft_id": 1234,
+	"ft_login": "brda-sil"
+}
+EOBODY
+)
