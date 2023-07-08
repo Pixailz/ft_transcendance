@@ -1,12 +1,14 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-
-import { UserEntity } from "./database.entity";
-import { UserInfoEntity } from "./database.entity";
 import { ConfigModule } from "@nestjs/config";
 
-import { DbController } from "./database.controller";
-import { DbService } from "./database.service";
+import { UserEntity } from "./user/entity";
+import { UserService } from "./user/service";
+import { UserController } from "./user/controller";
+
+import { UserInfoEntity } from "./userInfo/entity";
+import { UserInfoService } from "./userInfo/service";
+import { UserInfoController } from "./userInfo/controller";
 
 @Module({
 	imports: [
@@ -23,7 +25,7 @@ import { DbService } from "./database.service";
 		}),
 		TypeOrmModule.forFeature([UserEntity, UserInfoEntity]),
 	],
-	controllers: [DbController],
-	providers: [DbService],
+	controllers: [UserController, UserInfoController],
+	providers: [UserService, UserInfoService],
 })
 export class DbModule {}

@@ -1,28 +1,10 @@
 import {
 	Entity,
-	Unique,
 	OneToOne,
-	JoinColumn,
 	Column,
-	CreateDateColumn,
 	UpdateDateColumn,
 	PrimaryGeneratedColumn,
 } from "typeorm";
-
-@Entity()
-export class UserEntity {
-	@PrimaryGeneratedColumn()
-	public ft_id: number;
-
-	@Column({ type: "varchar", length: 120, default: "" })
-	public ft_login: string;
-
-	@Column({ type: "boolean", default: false })
-	public isDeleted: boolean;
-
-	@CreateDateColumn({ type: "timestamp" })
-	public createdAt!: Date;
-}
 
 @Entity()
 export class UserInfoEntity {
@@ -44,6 +26,6 @@ export class UserInfoEntity {
 	@UpdateDateColumn({ type: "timestamp" })
 	public updatedAt!: Date;
 
-	@OneToOne(() => UserEntity, (user: UserEntity) => user.ft_id)
-	public user_info: UserEntity;
+	// @OneToOne(() => UserEntity, (user: UserEntity) => user.ft_id)
+	// public user_info: UserEntity;
 }
