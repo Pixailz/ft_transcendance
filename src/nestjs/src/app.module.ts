@@ -1,11 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
 
-import { api42OAuthModule } from './modules/api42OAuth/api42OAuth.module';
+import { api42OAuthModule } from "./modules/api42OAuth/module";
 
 @Module({
-	imports: [
-		api42OAuthModule
-	],
+	imports: [api42OAuthModule],
 	controllers: [],
 	providers: [],
 })
