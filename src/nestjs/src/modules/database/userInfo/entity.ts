@@ -4,7 +4,10 @@ import {
 	Column,
 	UpdateDateColumn,
 	PrimaryGeneratedColumn,
+	JoinColumn,
 } from "typeorm";
+
+import { UserEntity } from "../user/entity";
 
 @Entity()
 export class UserInfoEntity {
@@ -16,7 +19,7 @@ export class UserInfoEntity {
 
 	@Column({ type: "varchar", length: 120, default: "" })
 	public nickname: string;
-
+	
 	@Column({ type: "varchar", length: 120, default: "" })
 	public name: string;
 
@@ -26,6 +29,8 @@ export class UserInfoEntity {
 	@UpdateDateColumn({ type: "timestamp" })
 	public updatedAt!: Date;
 
-	// @OneToOne(() => UserEntity, (user: UserEntity) => user.ft_id)
-	// public user_info: UserEntity;
+	@OneToOne(type => UserEntity, { onDelete: 'CASCADE' })
+	@JoinColumn({ name: 'user_id' }) 
+	user_id: UserEntity;
 }
+
