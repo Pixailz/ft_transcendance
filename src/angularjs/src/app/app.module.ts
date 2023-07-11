@@ -20,6 +20,8 @@ import { PongComponent } from './pong/pong.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { AvatarComponent } from './avatar/avatar.component';
+import { LoginComponent } from './login/login.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,8 @@ import { AvatarComponent } from './avatar/avatar.component';
     PongComponent,
     PageNotFoundComponent,
     UserProfileComponent,
-    AvatarComponent
+    AvatarComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -44,7 +47,8 @@ import { AvatarComponent } from './avatar/avatar.component';
 	MatSlideToggleModule,
 	MatFormFieldModule,
 	MatInputModule,
-    AppRoutingModule
+    AppRoutingModule,
+	HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
