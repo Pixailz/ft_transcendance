@@ -1,0 +1,10 @@
+req="POST /user_info HTTP/1.1"
+
+body=$(cat << EOBODY
+{
+	"nickname": "user",
+	"name": "Username",
+	"email": "a@a.com"
+}
+EOBODY
+)

@@ -1,0 +1,10 @@
+req="PUT /user_info/${ID} HTTP/1.1"
+
+body=$(cat << EOBODY
+{
+	"nickname": "user2",
+	"name": "Username2",
+	"email": "b@b.com"
+}
+EOBODY
+)
