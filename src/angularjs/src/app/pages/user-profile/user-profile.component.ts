@@ -7,4 +7,6 @@ import { Component } from '@angular/core';
 })
 export class UserProfileComponent {
 	public ft_login: string = 'ft_login';
+	public twofa: boolean = false;
+	public userLoggedIn: boolean = false;
 }
