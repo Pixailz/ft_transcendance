@@ -24,7 +24,7 @@ export class UserController {
 	async getOne(
 		@Param("id") userId: number,
 		@Res() res: Response,
-	) {
+		) {
 		res.send(await this.userService.returnOne(userId));
 	}
 
