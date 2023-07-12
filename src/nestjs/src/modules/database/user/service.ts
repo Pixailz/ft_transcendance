@@ -16,34 +16,21 @@ export class UserService {
 		private readonly userInfoRepo: Repository<UserInfoEntity>,
 	) {}
 
-	// async create(userPost: UserPost) {
-	// 	console.log(userPost);
-	// 	return await this.userRepo.save(userPost);
-	// }
-
-
 	async create(userPost: UserPost) {
 		
 		const user = new UserEntity();
-		const userInfo = new UserInfoEntity();
 		
-		user.ft_id = userPost.ft_id;
 		user.ft_login = userPost.ft_login;
-
+		
 		await this.userRepo.save(user);
-		// await this.userInfoRepo.save(userInfo);
-		// console.log('id = ', userInfo.id);	
-		
-		userInfo.user_id = user;
+
+		const userInfo = new UserInfoEntity();
 		userInfo.nickname = userPost.ft_login + '_name';
+		userInfo.name = userPost.ft_login;
+		userInfo.user_id = user;
 		
-		user.info_id = userInfo;
 		await this.userInfoRepo.save(userInfo);
-		
-		await this.userInfoRepo.update(userInfo.id, {email: userInfo.nickname + '@mail.com'});
-		console.log('my nickname = ', user.info_id.nickname)
-		// return from(this.userInfoRepo.save(userInfo));
-		return "User created\n";
+		return user.id;
 	  }
 
 	async returnAll() {
@@ -52,7 +39,7 @@ export class UserService {
 
 	async returnOne(userId: number) {
 		console.log(userId);
-		return await this.userRepo.findOneBy({ ft_id: userId });
+		return await this.userRepo.findOneBy({ id: userId });
 	}
 
 	async update(userId: number, userPost: UserPost) {
