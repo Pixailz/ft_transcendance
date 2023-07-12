@@ -25,7 +25,6 @@ export class UserService {
 		await this.userRepo.save(user);
 
 		const userInfo = new UserInfoEntity();
-		userInfo.nickname = userPost.ft_login + '_name';
 		userInfo.name = userPost.ft_login;
 		userInfo.user_id = user;
 		
