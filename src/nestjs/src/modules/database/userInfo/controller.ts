@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Put, Get, Delete, Res, Param } from "@nestjs/common";
+import { Body, Controller, Post, Put, Get, Delete, Res, Req, Param } from "@nestjs/common";
 import { Response } from "express";
 
 import { UserInfoService } from "./service";
@@ -18,6 +18,14 @@ export class UserInfoController {
 		@Res() res: Response,
 	) {
 		res.send(await this.userInfoService.returnAll());
+	}
+
+	@Get("me")
+	async getMe(
+		@Req() req: Request,
+		@Res() res: Response,
+	) {
+		res.send(await this.userInfoService.returnMe(req));
 	}
 
 	@Get(":id")

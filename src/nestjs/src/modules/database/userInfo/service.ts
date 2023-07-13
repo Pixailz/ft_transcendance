@@ -4,6 +4,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { UserInfoEntity } from "./entity";
 import { UserInfoPost } from "./dto";
+import { Api42OAuthService } from "src/modules/api42OAuth/service";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class UserInfoService {
@@ -15,6 +17,12 @@ export class UserInfoService {
 	async create(userInfoPost: UserInfoPost) {
 		console.log(userInfoPost);
 		return await this.userInfoRepo.save(userInfoPost);
+	}
+
+	async returnMe(req: Request) {
+		const api = new Api42OAuthService(JwtService);
+		const token = await api.getTokenJwt(req.headers["authorization"]);
+		return await this.userInfoRepo.findOneBy({ id: token.id });
 	}
 
 	async returnAll() {
