@@ -1,4 +1,3 @@
-import { ɵparseCookieValue } from '@angular/common';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -6,14 +5,14 @@ import { Injectable } from '@angular/core';
 })
 
 export class AuthService {
-  public currentUser = null;
-  constructor() { };
-
   isAuthenticated(): boolean {
-    const token = ɵparseCookieValue(document.cookie, 'access_token');
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      return false;
+    }
     const request = new XMLHttpRequest();
 
-    request.setRequestHeader('Cookies', 'access_token=' + token);
+    request.setRequestHeader('Authorization', 'Bearer: ' + token);
     request.open('GET', 'http://nestjs:3000/auth/verify', false);
     request.send();
 
@@ -32,8 +31,28 @@ export class AuthService {
     if (request.status !== 200) {
       throw new Error('login failed');
     }
-    this.currentUser = request.response.user_id;
     localStorage.setItem('access_token', request.response);
     return Promise.resolve();
   };
+
+  getUser(): any {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      return null;
+    }
+    const request = new XMLHttpRequest();
+
+    request.setRequestHeader('Authorization', 'Bearer: ' + token);
+    request.open('GET', 'http://nestjs:3000/user_info/me', false);
+    request.send();
+
+    if (request.status !== 200) {
+      return null;
+    }
+    return JSON.parse(request.response);
+  };
+
+  logout(): void {
+    localStorage.removeItem('access_token');
+  }
 }

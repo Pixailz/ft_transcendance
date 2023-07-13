@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { AuthComponent } from './auth.component';
 import { AuthService } from './auth.service';
-import { AuthGuard } from './auth.guard';
 
 @NgModule({
   declarations: [
