@@ -22,6 +22,7 @@ import { UserProfileComponent } from './pages/user-profile/user-profile.componen
 import { AvatarComponent } from './components/avatar/avatar.component';
 import { LoginComponent } from './pages/login/login.component';
 import { HttpClientModule } from '@angular/common/http';
+import { AuthModule } from '../../projects/auth/src/lib/auth.module';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { HttpClientModule } from '@angular/common/http';
 	MatFormFieldModule,
 	MatInputModule,
     AppRoutingModule,
-	HttpClientModule
+	HttpClientModule,
+  AuthModule
   ],
   providers: [],
   bootstrap: [AppComponent]
