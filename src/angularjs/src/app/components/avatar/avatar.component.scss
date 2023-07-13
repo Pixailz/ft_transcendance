@@ -1,0 +1,55 @@
+.avatar-container {
+	position: relative;
+	width: fit-content;
+}
+
+.image-container {
+	position: relative;
+	height: 100px;
+	width: 100px;
+	z-index: 1;
+	border-radius: 50%;
+	background-color: #fff;
+	background-position: center;
+	background-size: cover;
+
+	&.avatar-placeholder{
+		background-image: url('~/src/assets/img/avatar-placeholder.jpg');
+	}
+}
+
+.icon-wrapper {
+	position: absolute;
+	height: 20px;
+	width: 20px;
+	padding: .35rem;
+	background-color: #2962FF;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	right: 0;
+	top: 75%;
+	z-index: 2;
+	cursor: pointer;
+
+	&:hover {
+		transition: all .25s;
+		background-color: darken(#2962FF, 15%);
+	}
+
+	.icon {
+		color: white;
+	}
+
+	label {
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	input[type='file'] {
+		display: none;
+	}
+}
