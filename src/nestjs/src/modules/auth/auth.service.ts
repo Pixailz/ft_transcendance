@@ -14,18 +14,30 @@ export class AuthService {
 		if (!code) {
 			return null;
 		}
-
+		
 		let token = await this.api42Service.getTokenFromCode(code);
-		let user_id = await this.api42Service.getIdFromToken(token);
-		let user = await this.userService.returnOne(user_id);
+		let login = await this.api42Service.getLoginFromToken(token);
+		let user = await this.userService.returnOne(null, login);
 
 		if (!user) {
 			let user42 = await this.api42Service.getUserFromToken(token);
-			user_id = await this.userService.create({
+			let user_id = await this.userService.create({
 				ft_login: user42.login,
 			});
+			user = await this.userService.returnOne(user_id);
 		}
-		const payload = { sub: user_id };
+		const payload = { sub: user.id };
+		return {
+			access_token: await this.jwtService.signAsync(payload),
+		};
+	}
+
+	async validateUser(payload: any): Promise<any> {
+		return await this.userService.returnOne(payload.sub);
+	}
+
+	async login(user: any) {
+		const payload = { sub: user.id };
 		return {
 			access_token: await this.jwtService.signAsync(payload),
 		};

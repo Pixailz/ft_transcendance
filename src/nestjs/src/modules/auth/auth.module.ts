@@ -5,6 +5,8 @@ import { JwtModule } from "@nestjs/jwt";
 import { Api42Module } from '../api42/api42.module';
 import { UserService } from '../database/user/service';
 import { DbModule } from '../database/database.module';
+import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
   imports: [JwtModule.register({
@@ -13,9 +15,11 @@ import { DbModule } from '../database/database.module';
 				signOptions: { expiresIn: '1d' },
 			}),
 			Api42Module,
-			DbModule
+			DbModule,
+			PassportModule.register({ defaultStrategy: 'jwt' })
 			],
   controllers: [AuthController],
-  providers: [AuthService]
+  providers: [AuthService, JwtStrategy],
+  exports: [AuthService, JwtModule]
 })
 export class AuthModule {}
