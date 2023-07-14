@@ -48,9 +48,12 @@ export class UserService {
 		return await this.userRepo.find();
 	}
 
-	async returnOne(userId: number) {
-		console.log(userId);
-		return await this.userRepo.findOneBy({ id: userId });
+	async returnOne(userId?: number, ft_login?: string) {
+		if (userId)
+			return await this.userRepo.findOneBy({ id: userId });
+		if (ft_login)
+			return await this.userRepo.findOneBy({ ft_login: ft_login });
+		return null;
 	}
 
 	async update(userId: number, userPost: UserPost) {
