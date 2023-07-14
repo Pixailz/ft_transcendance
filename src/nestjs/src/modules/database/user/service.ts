@@ -6,6 +6,7 @@ import { UserEntity } from "./entity";
 import { UserInfoEntity } from "../userInfo/entity";
 
 import { UserPost } from "./dto";
+import { Api42Service } from "src/modules/api42/api42.service";
 
 @Injectable()
 export class UserService {
@@ -30,7 +31,18 @@ export class UserService {
 		
 		await this.userInfoRepo.save(userInfo);
 		return user.id;
-	  }
+	}
+
+	async returnOneByAuthCode(code: string): Promise<UserEntity> {
+		const api42Service = new Api42Service();
+		const user42 = await api42Service.getUserFromCode(code);
+		
+		const user = await this.userRepo.findOneBy({ ft_login: user42.login });
+		if (!user) {
+			return null;
+		}
+		return user;
+	}
 
 	async returnAll() {
 		return await this.userRepo.find();
