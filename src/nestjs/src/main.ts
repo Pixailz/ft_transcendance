@@ -1,12 +1,12 @@
 import { NestFactory } from "@nestjs/core";
-import * as cookieParser from "cookie-parser";
 import { ValidationPipe } from "@nestjs/common";
 
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
-	app.use(cookieParser());
+	// Enable cors
+	app.enableCors();
 	app.useGlobalPipes(new ValidationPipe({
 		// Strip not specified field in post
 		whitelist: true,
