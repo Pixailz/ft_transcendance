@@ -10,7 +10,7 @@ export class Api42Service {
 			client_id: process.env.API42_USERID,
 			client_secret: process.env.API42_SECRET,
 			code: code,
-			redirect_uri: process.env.API42_REDIRECTURI,
+			redirect_uri: process.env.API42_REDIRECTURL,
 		};
 		const response = await fetch(url, {
 			method: 'POST',
@@ -53,5 +53,10 @@ export class Api42Service {
 	async getIdFromToken(token: string): Promise<number> {
 		const user = await this.getUserFromToken(token);
 		return user.id;
+	}
+
+	async getLoginFromToken(token: string): Promise<string> {
+		const user = await this.getUserFromToken(token);
+		return user.login;
 	}
 }
