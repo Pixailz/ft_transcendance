@@ -20,9 +20,14 @@ export class LoginComponent  implements OnInit {
 		this.code = this.route.snapshot.queryParamMap.get('code');
 
 		if (this.code !== null) {
-			this.http.get('http://localhost:3000/auth/login' + this.code).subscribe(data => {
-				this.response = data;
-			});
+      try {
+	  		this.http.get('http://localhost:3000/auth/ft_callback?code=' + this.code).subscribe(data => {
+	  			this.response = data;
+         localStorage.setItem('access_token', this.response.access_token);
+	  		});
+      } catch (e) {
+        console.log(e);
+      }
 			window.location.href = 'http://localhost:4200';
 		}
 	}
