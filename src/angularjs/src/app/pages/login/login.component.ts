@@ -20,7 +20,7 @@ export class LoginComponent  implements OnInit {
 		this.code = this.route.snapshot.queryParamMap.get('code');
 
 		if (this.code !== null) {
-			this.http.get('http://localhost:3000/auth?code=' + this.code).subscribe(data => {
+			this.http.get('http://localhost:3000/auth/login' + this.code).subscribe(data => {
 				this.response = data;
 			});
 			window.location.href = 'http://localhost:4200';
