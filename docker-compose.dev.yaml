@@ -22,7 +22,9 @@ services:
     build:
       context: "./build/nodejs"
       target: "nodejs"
-    command: [ "npm", "run", "start:prod" ]
+    command: [ "npm", "run", "start:dev" ]
+    ports:
+      - 3000:3000
     networks:
       transendence:
         ipv4_address: "13.37.42.11"
@@ -59,7 +61,7 @@ services:
     build:
       context: "./build/nodejs"
       target: "nodejs"
-    command: [ "npm", "run", "build" ]
+    command: [ "npm", "run", "start" ]
     ports:
       - 4200:4200
     networks:
@@ -90,6 +92,8 @@ services:
     build:
       context: "./build/postgresql"
       target: "packed"
+    ports:
+      - 5432:5432
     environment:
       - ADMIN_USER=${ADMIN_USER}
       - ADMIN_PASS=${ADMIN_PASS}
