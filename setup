@@ -1,0 +1,88 @@
+#!/bin/bash
+
+# CONFIG
+ENV_FILE="./.env"
+VAR_TO_EDIT=(
+	"ADMIN_USER"
+	"ADMIN_PASS"
+	"API42_USERID"
+	"API42_SECRET"
+)
+JWT_LEN="64"
+
+function	utils::ask()
+{
+	: "
+	INFO
+		LIB				base
+		FUNCTION		ask
+		DESC			My version of ask (http://djm.me/ask)
+		ARG				[1] message=${1}
+							> question to ask
+						[2] default=${2:-NULL}
+							> default value to return
+		RETURN_VALUE	1 if user agree, 0 if not. if DEFAULT is not NULL and
+						choice is not y or n, DEFAULT is returned
+	"
+	local message="${1}"
+	local default="${2:-NULL}"
+	local choice=""
+
+	while true; do
+		# set default prompt according to $default
+		if [ "${default}" == "y" ]; then
+			printf "${message} (Y/n)\n"
+		elif [ "${default}" == "n" ]; then
+			printf "${message} (y/N)\n"
+		else
+			printf "${message} (y/n)\n"
+		fi
+		# read on char
+		read -n 1 choice
+		# make char lower
+		choice="${choice,,}"
+		# if choice is not empty, print return line
+		[ "${choice}" ] && printf "\x0a"
+		case ${choice} in
+			y) return 1 ;;
+			n) return 0 ;;
+			*)  if [ "${default}" == 'y' ]; then
+					return 1
+				elif [ "${default}" == 'n' ]; then
+					return 0
+				else
+					printf "[${choice}] wrong choice (y|n)\n"
+				fi
+				;;
+		esac
+	done
+}
+
+function	install::env::replace_var()
+{
+	local	var_name="${1}"
+	local	var_value="${2}"
+
+	sed -i "s/${var_name}=\"\"/${var_name}=\"${var_value}\"/g" "${ENV_FILE}"
+}
+
+function	install::env()
+{
+	if [ -f "${ENV_FILE}" ]; then
+		utils::ask "env file already setup, redo it ?" "n"
+		[ ${?} == "0" ] && return 0
+	fi
+
+	rm -rf "${ENV_FILE}" && cp "${ENV_FILE}"{.template,}
+
+	for var_name in ${VAR_TO_EDIT[@]}; do
+		printf "\x1b[31m%s\x1b[00m > " "${var_name}"
+		read choice
+		install::env::replace_var "${var_name}" "${choice}"
+	done
+
+	JWT_PASS="$(head -c${JWT_LEN} /dev/urandom | xxd -ps -c ${JWT_LEN})"
+	install::env::replace_var "JWT_SECRET" "${JWT_PASS}"
+}
+
+install::env
