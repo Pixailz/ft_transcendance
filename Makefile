@@ -2,7 +2,7 @@ ifeq ($(findstring dev,$(MAKECMDGOALS)),dev)
 DEV						:= 1
 endif
 
-ifeq ($(DEV),1)
+ifeq ($(DEV),)
 COMPOSE					:= docker compose
 else
 COMPOSE					:= docker compose -f docker-compose.dev.yaml
