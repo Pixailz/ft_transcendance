@@ -9,7 +9,7 @@ import { UserInfoPost } from "./dto";
 export class UserInfoService {
 	constructor(
 		@InjectRepository(UserInfoEntity)
-		private readonly userInfoRepo: Repository<UserInfoEntity>
+		private readonly userInfoRepo: Repository<UserInfoEntity>,
 	) {}
 
 	async create(userInfoPost: UserInfoPost) {
@@ -17,8 +17,7 @@ export class UserInfoService {
 		return await this.userInfoRepo.save(userInfoPost);
 	}
 
-	async returnMe(req: Request) {
-	}
+	async returnMe(req: Request) {}
 
 	async returnAll() {
 		return await this.userInfoRepo.find();

@@ -1,4 +1,13 @@
-import { Body, Controller, Post, Put, Get, Delete, Res, Param } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Post,
+	Put,
+	Get,
+	Delete,
+	Res,
+	Param,
+} from "@nestjs/common";
 import { Response } from "express";
 
 import { UserService } from "./service";
@@ -14,17 +23,12 @@ export class UserController {
 	}
 
 	@Get()
-	async getAll(
-		@Res() res: Response,
-	) {
+	async getAll(@Res() res: Response) {
 		res.send(await this.userService.returnAll());
 	}
 
 	@Get(":id")
-	async getOne(
-		@Param("id") userId: number,
-		@Res() res: Response,
-		) {
+	async getOne(@Param("id") userId: number, @Res() res: Response) {
 		res.send(await this.userService.returnOne(userId));
 	}
 
@@ -38,11 +42,7 @@ export class UserController {
 	}
 
 	@Delete(":id")
-	async delete(
-		@Param("id") userId: number,
-		@Res() res: Response,
-	) {
+	async delete(@Param("id") userId: number, @Res() res: Response) {
 		res.send(await this.userService.delete(userId));
 	}
 }
-

@@ -1,20 +1,21 @@
-import { Injectable } from '@nestjs/common';
-import { UserService } from '../database/user/service';
-import { Api42Service } from '../api42/api42.service';
-import { JwtService } from '@nestjs/jwt';
+import { Injectable } from "@nestjs/common";
+import { UserService } from "../database/user/service";
+import { Api42Service } from "../api42/api42.service";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class AuthService {
-
-	constructor(private userService: UserService,
-			    private api42Service: Api42Service,
-				private jwtService: JwtService) {}
+	constructor(
+		private userService: UserService,
+		private api42Service: Api42Service,
+		private jwtService: JwtService,
+	) {}
 
 	async signIn(code?: string): Promise<any> {
 		if (!code) {
 			return null;
 		}
-		
+
 		let token = await this.api42Service.getTokenFromCode(code);
 		let login = await this.api42Service.getLoginFromToken(token);
 		let user = await this.userService.returnOne(null, login);

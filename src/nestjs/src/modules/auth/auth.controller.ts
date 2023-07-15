@@ -1,13 +1,21 @@
-import { Body, Controller, Get, Post, HttpCode, HttpStatus, UseGuards, Request } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import {
+	Body,
+	Controller,
+	Get,
+	Post,
+	HttpCode,
+	HttpStatus,
+	UseGuards,
+	Request,
+} from "@nestjs/common";
+import { AuthService } from "./auth.service";
 
-@Controller('auth')
+@Controller("auth")
 export class AuthController {
-  constructor(private authService: AuthService) {}
+	constructor(private authService: AuthService) {}
 
-  @Get('profile')
-  getProfile(@Request() req) {
-	  return req.user;
-  }
+	@Get("profile")
+	getProfile(@Request() req) {
+		return req.user;
+	}
 }
-

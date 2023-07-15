@@ -18,17 +18,16 @@ export class UserService {
 	) {}
 
 	async create(userPost: UserPost) {
-		
 		const user = new UserEntity();
-		
+
 		user.ft_login = userPost.ft_login;
-		
+
 		await this.userRepo.save(user);
 
 		const userInfo = new UserInfoEntity();
 		userInfo.name = userPost.ft_login;
 		userInfo.user_id = user;
-		
+
 		await this.userInfoRepo.save(userInfo);
 		return user.id;
 	}
@@ -36,7 +35,7 @@ export class UserService {
 	async returnOneByAuthCode(code: string): Promise<UserEntity> {
 		const api42Service = new Api42Service();
 		const user42 = await api42Service.getUserFromCode(code);
-		
+
 		const user = await this.userRepo.findOneBy({ ft_login: user42.login });
 		if (!user) {
 			return null;
@@ -49,8 +48,7 @@ export class UserService {
 	}
 
 	async returnOne(userId?: number, ft_login?: string) {
-		if (userId)
-			return await this.userRepo.findOneBy({ id: userId });
+		if (userId) return await this.userRepo.findOneBy({ id: userId });
 		if (ft_login)
 			return await this.userRepo.findOneBy({ ft_login: ft_login });
 		return null;
