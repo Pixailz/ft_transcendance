@@ -11,18 +11,18 @@ export class AuthService {
 		private jwtService: JwtService,
 	) {}
 
-	async signIn(code?: string): Promise<any> {
+	async ftSignIn(code?: string): Promise<any> {
 		if (!code) {
 			return null;
 		}
 
-		let token = await this.api42Service.getTokenFromCode(code);
-		let login = await this.api42Service.getLoginFromToken(token);
+		const token = await this.api42Service.getTokenFromCode(code);
+		const login = await this.api42Service.getLoginFromToken(token);
 		let user = await this.userService.returnOne(null, login);
 
 		if (!user) {
-			let user42 = await this.api42Service.getUserFromToken(token);
-			let user_id = await this.userService.create({
+			const user42 = await this.api42Service.getUserFromToken(token);
+			const user_id = await this.userService.create({
 				ft_login: user42.login,
 			});
 			user = await this.userService.returnOne(user_id);

@@ -1,9 +1,4 @@
-import {
-	Controller,
-	Get,
-	Request,
-	Query
-} from "@nestjs/common";
+import { Controller, Get, Request, Query } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { Public } from "src/public.decorator";
 
@@ -14,7 +9,7 @@ export class AuthController {
 	@Public()
 	@Get("ft_callback")
 	async login(@Query("code") code: string) {
-		return this.authService.signIn(code);
+		return this.authService.ftSignIn(code);
 	}
 
 	@Get("profile")
