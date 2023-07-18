@@ -19,7 +19,7 @@ export class UserInfoEntity {
 
 	@Column({ type: "varchar", length: 120, default: "" })
 	public nickname: string;
-	
+
 	@Column({ type: "varchar", length: 120, default: "" })
 	public name: string;
 
@@ -29,8 +29,7 @@ export class UserInfoEntity {
 	@UpdateDateColumn({ type: "timestamp" })
 	public updatedAt!: Date;
 
-	@OneToOne(type => UserEntity, { onDelete: 'CASCADE' })
-	@JoinColumn({ name: 'user_id' }) 
+	@OneToOne((type) => UserEntity, { onDelete: "CASCADE" })
+	@JoinColumn({ name: "user_id" })
 	user_id: UserEntity;
 }
-

@@ -27,5 +27,6 @@ import { UserInfoController } from "./userInfo/controller";
 	],
 	controllers: [UserController, UserInfoController],
 	providers: [UserService, UserInfoService],
+	exports: [UserService, UserInfoService],
 })
 export class DbModule {}
