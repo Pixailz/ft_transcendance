@@ -26,11 +26,10 @@ export class LoginComponent  implements OnInit {
 
   async getToken() {
       try {
-	  		this.http.get('http://localhost:4200/auth/ft_callback?code=' + this.code).subscribe((data) => {
+	  		this.http.get('/api/auth/ft_callback?code=' + this.code).subscribe((data) => {
           this.response = data;
-          console.log(this.response);
           localStorage.setItem('access_token', this.response.access_token);
-			    window.location.href = 'http://localhost:4200';
+			    window.location.href = '/home';
         });
       } catch (e) {
         console.log(e);
