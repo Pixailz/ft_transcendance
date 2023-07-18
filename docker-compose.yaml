@@ -22,6 +22,9 @@ services:
     build:
       context: "./build/nodejs"
       target: "nodejs"
+    depends_on:
+      postgresql:
+        condition: service_healthy
     command: [ "${CMD_NODE}" ]
     networks:
       transendence:
@@ -60,6 +63,9 @@ services:
     build:
       context: "./build/nodejs"
       target: "nodejs"
+    depends_on:
+      nestjs:
+        condition: service_healthy
     command: [ "${CMD_NODE}" ]
     ports:
       - 4200:4200
