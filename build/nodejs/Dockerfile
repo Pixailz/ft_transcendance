@@ -15,4 +15,6 @@ COPY		--chown=root:root --chmod=755 entrypoint /run
 
 WORKDIR		/shared/transcendence
 
+STOPSIGNAL	SIGINT
+
 ENTRYPOINT	[ "/run/entrypoint" ]
