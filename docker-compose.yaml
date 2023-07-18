@@ -22,7 +22,7 @@ services:
     build:
       context: "./build/nodejs"
       target: "nodejs"
-    command: [ "npm", "run", "start:prod" ]
+    command: [ "${CMD_NODE}" ]
     networks:
       transendence:
         ipv4_address: "13.37.42.11"
@@ -60,7 +60,7 @@ services:
     build:
       context: "./build/nodejs"
       target: "nodejs"
-    command: [ "npm", "run", "build" ]
+    command: [ "${CMD_NODE}" ]
     ports:
       - 4200:4200
     networks:
