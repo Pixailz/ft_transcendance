@@ -32,6 +32,7 @@ services:
       - DB_NAME=${DB_NAME}
       - API42_USERID=${API42_USERID}
       - API42_SECRET=${API42_SECRET}
+      - API42_REDIRECTURL=${API42_REDIRECTURL}
       - JWT_SECRET=${JWT_SECRET}
     volumes:
       - type: bind

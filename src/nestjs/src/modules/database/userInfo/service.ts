@@ -4,14 +4,12 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { UserInfoEntity } from "./entity";
 import { UserInfoPost } from "./dto";
-import { Api42OAuthService } from "src/modules/api42OAuth/service";
-import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class UserInfoService {
 	constructor(
 		@InjectRepository(UserInfoEntity)
-		private readonly userInfoRepo: Repository<UserInfoEntity>
+		private readonly userInfoRepo: Repository<UserInfoEntity>,
 	) {}
 
 	async create(userInfoPost: UserInfoPost) {
@@ -19,11 +17,7 @@ export class UserInfoService {
 		return await this.userInfoRepo.save(userInfoPost);
 	}
 
-	async returnMe(req: Request) {
-		const api = new Api42OAuthService(JwtService);
-		const token = await api.getTokenJwt(req.headers["authorization"]);
-		return await this.userInfoRepo.findOneBy({ id: token.id });
-	}
+	async returnMe(req: Request) {}
 
 	async returnAll() {
 		return await this.userInfoRepo.find();
