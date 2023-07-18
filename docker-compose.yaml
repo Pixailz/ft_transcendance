@@ -15,6 +15,34 @@ x-restart: &restart
 
 services:
   ##############################################################################
+  # Nginx (reverse proxy)
+  nginx:
+    container_name: nginx
+    build:
+      context: "./build/nginx"
+      target: packed
+    environment:
+      - CERT_SUBJ=${CERT_SUBJ}
+      - DEBUG=${DEBUG}
+    ports:
+      - 443:443
+    networks:
+      transendence:
+        ipv4_address: "13.37.42.10"
+    volumes:
+      - type: bind
+        source: ./volume/log/nginx
+        target: /var/log/nginx
+        bind:
+          create_host_path: true
+    << : *restart
+    healthcheck:
+      test: [ "CMD", "pgrep", "nginx" ]
+      << : *healthcheck_conf
+  #
+  ##############################################################################
+
+  ##############################################################################
   # NestJS
   nestjs:
     container_name: nestjs
@@ -113,7 +141,7 @@ services:
         bind:
           create_host_path: true
       - type: bind
-        source: ./volume/postgresql_log
+        source: ./volume/log/postgresql
         target: /var/log/postgresql
         bind:
           create_host_path: true

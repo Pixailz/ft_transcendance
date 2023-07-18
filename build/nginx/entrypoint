@@ -1,0 +1,38 @@
+#!/bin/ash
+
+SERVICE_NAME="Nginx"
+
+if [ "${DEBUG}" != "" ]; then
+	printf "debuging \x1b[38:5:39m${SERVICE_NAME}\x1b[00m \n\n"
+	printf "CERT_SUBJ %s\n" "${CERT_SUBJ}"
+	printf "DEBUG     %s\n\n" "${DEBUG}"
+fi
+
+function	nginx_create_ssl()
+{
+	mkdir -p /etc/nginx/ssl
+	openssl req \
+		-x509 \
+		-newkey rsa:4096 \
+		-sha256 \
+		-nodes \
+		-days 365 \
+		-subj "${CERT_SUBJ}" \
+		-keyout /etc/nginx/ssl/nginx-selfsigned.key \
+		-out /etc/nginx/ssl/nginx-selfsigned.crt
+}
+
+if [ ! -d /etc/nginx/ssl ]; then
+	printf "Nginx \x1b[38:5:160mnot found\x1b[00m, initialize it\n"
+
+	nginx_create_ssl
+else
+	printf "Nginx \x1b[38:5:76mfound\x1b[00m, Skiping initialization\n"
+fi
+
+if [ "${#@}" == "0" ]; then
+	printf "${SERVICE_NAME} launched on port: \x1b[38:5:208m443\x1b[00m\n"
+	/usr/sbin/nginx -g "daemon off;"
+else
+	exec ${@}
+fi
