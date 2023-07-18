@@ -21,6 +21,9 @@ services:
     build:
       context: "./build/nginx"
       target: packed
+    depends_on:
+      nestjs:
+        condition: service_healthy
     environment:
       - CERT_SUBJ=${CERT_SUBJ}
       - DEBUG=${DEBUG}
