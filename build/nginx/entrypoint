@@ -11,6 +11,7 @@ fi
 function	nginx_create_ssl()
 {
 	mkdir -p /etc/nginx/ssl
+	printf "Generating SSL certificate\n"
 	openssl req \
 		-x509 \
 		-newkey rsa:4096 \
@@ -19,7 +20,8 @@ function	nginx_create_ssl()
 		-days 365 \
 		-subj "${CERT_SUBJ}" \
 		-keyout /etc/nginx/ssl/nginx-selfsigned.key \
-		-out /etc/nginx/ssl/nginx-selfsigned.crt
+		-out /etc/nginx/ssl/nginx-selfsigned.crt \
+		> /dev/null 2>&1
 }
 
 if [ ! -d /etc/nginx/ssl ]; then
