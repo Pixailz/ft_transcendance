@@ -15,6 +15,42 @@ x-restart: &restart
 
 services:
   ##############################################################################
+  # Nginx (reverse proxy)
+  nginx:
+    container_name: nginx
+    build:
+      context: "./build/nginx"
+      target: packed
+    depends_on:
+      angularjs:
+        condition: service_completed_successfully
+    environment:
+      - CERT_SUBJ=${CERT_SUBJ}
+      - DEBUG=${DEBUG}
+    ports:
+      - 443:443
+    networks:
+      transendence:
+        ipv4_address: "13.37.42.10"
+    volumes:
+      - type: bind
+        source: ./volume/log/nginx
+        target: /var/log/nginx
+        bind:
+          create_host_path: true
+      - type: bind
+        source: ./volume/angularjs
+        target: /app
+        bind:
+          create_host_path: true
+    << : *restart
+    healthcheck:
+      test: [ "CMD", "pgrep", "nginx" ]
+      << : *healthcheck_conf
+  #
+  ##############################################################################
+
+  ##############################################################################
   # NestJS
   nestjs:
     container_name: nestjs
@@ -22,9 +58,10 @@ services:
     build:
       context: "./build/nodejs"
       target: "nodejs"
-    command: [ "npm", "run", "start:dev" ]
-    ports:
-      - 3000:3000
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    command: [ "${CMD_NPM}" ]
     networks:
       transendence:
         ipv4_address: "13.37.42.11"
@@ -48,9 +85,9 @@ services:
         bind:
           create_host_path: true
     << : *restart
-    # healthcheck:
-    #   test: [ "CMD", "pgrep", "node" ]
-    #   << : *healthcheck_conf
+    healthcheck:
+      test: [ "CMD", "pgrep", "npm run" ]
+      << : *healthcheck_conf
   #
   ##############################################################################
 
@@ -62,9 +99,12 @@ services:
     build:
       context: "./build/nodejs"
       target: "nodejs"
-    command: [ "npm", "run", "start" ]
+        #depends_on:
+        #nestjs:
+        #condition: service_healthy
+    command: [ "${CMD_NPM}" ]
     ports:
-      - 4200:4200
+      - 127.0.0.1:4200:4200
     networks:
       transendence:
         ipv4_address: "13.37.42.12"
@@ -79,10 +119,15 @@ services:
         target: /shared/transcendence
         bind:
           create_host_path: true
+      - type: bind
+        source: ./volume/angularjs
+        target: /build/
+        bind:
+          create_host_path: true
     << : *restart
-    # healthcheck:
-    #   test: [ "CMD", "pgrep", "node" ]
-    #   << : *healthcheck_conf
+    healthcheck:
+      test: [ "CMD", "pgrep", "npm run" ]
+      << : *healthcheck_conf
   #
   ##############################################################################
 
@@ -93,8 +138,6 @@ services:
     build:
       context: "./build/postgresql"
       target: "packed"
-    ports:
-      - 5432:5432
     environment:
       - ADMIN_USER=${ADMIN_USER}
       - ADMIN_PASS=${ADMIN_PASS}
@@ -111,7 +154,7 @@ services:
         bind:
           create_host_path: true
       - type: bind
-        source: ./volume/postgresql_log
+        source: ./volume/log/postgresql
         target: /var/log/postgresql
         bind:
           create_host_path: true
@@ -119,13 +162,6 @@ services:
     healthcheck:
       test: [ "CMD", "pgrep", "postgres" ]
       << : *healthcheck_conf
-  #
-  ##############################################################################
-
-  ##############################################################################
-  # PgAdmin
-  # pgadmin:
-
   #
   ##############################################################################
 
@@ -143,34 +179,5 @@ networks:
         - subnet: 13.37.42.0/27
           ip_range: 13.37.42.0/27
           gateway: 13.37.42.1
-  #
-  ##############################################################################
-
-volumes:
-
-  ##############################################################################
-  # NodeJS install dir
-  nodejs:
-  #
-  ##############################################################################
-
-  ##############################################################################
-  # NestJS Project Volume
-  nestjs_src:
-  #
-  ##############################################################################
-
-  ##############################################################################
-  # AngularJS Project Volume
-  angularjs_src:
-  #
-  ##############################################################################
-
-  ##############################################################################
-  # PostgreSQL
-  postgresql:
-
-  # PostgreSQL Log
-  postgresql_log:
   #
   ##############################################################################

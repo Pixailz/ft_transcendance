@@ -5,7 +5,6 @@ SERVICE_NAME="PostgreSQL"
 if [ "${DEBUG}" != "" ]; then
 	printf "debuging \x1b[38:5:39m${SERVICE_NAME}\x1b[00m \n\n"
 	printf "PGDATA    %s\n" "${PGDATA}"
-	printf "CERT_SUBJ %s\n" "${CERT_SUBJ}"
 	printf "DEBUG     %s\n\n" "${DEBUG}"
 fi
 
