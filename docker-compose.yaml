@@ -22,10 +22,8 @@ services:
       context: "./build/nginx"
       target: packed
     depends_on:
-      nestjs:
-        condition: service_healthy
       angularjs:
-        condition: service_healthy
+        condition: service_completed_successfully
     environment:
       - CERT_SUBJ=${CERT_SUBJ}
       - DEBUG=${DEBUG}
@@ -38,6 +36,11 @@ services:
       - type: bind
         source: ./volume/log/nginx
         target: /var/log/nginx
+        bind:
+          create_host_path: true
+      - type: bind
+        source: ./volume/angularjs
+        target: /app
         bind:
           create_host_path: true
     << : *restart
@@ -58,7 +61,7 @@ services:
     depends_on:
       postgresql:
         condition: service_healthy
-    command: [ "${CMD_NODE}" ]
+    command: [ "${CMD_NPM}" ]
     networks:
       transendence:
         ipv4_address: "13.37.42.11"
@@ -96,12 +99,12 @@ services:
     build:
       context: "./build/nodejs"
       target: "nodejs"
-    depends_on:
-      nestjs:
-        condition: service_healthy
-    command: [ "${CMD_NODE}" ]
+        #depends_on:
+        #nestjs:
+        #condition: service_healthy
+    command: [ "${CMD_NPM}" ]
     ports:
-      - 4200:4200
+      - 127.0.0.1:4200:4200
     networks:
       transendence:
         ipv4_address: "13.37.42.12"
@@ -114,6 +117,11 @@ services:
       - type: bind
         source: ./src/angularjs
         target: /shared/transcendence
+        bind:
+          create_host_path: true
+      - type: bind
+        source: ./volume/angularjs
+        target: /build/
         bind:
           create_host_path: true
     << : *restart
