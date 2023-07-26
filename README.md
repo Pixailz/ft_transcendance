@@ -41,11 +41,6 @@ Repeat steps 2 to 4 until your feature is perfect!
 ### Step 6: Pull Request It
 Create a pull request to merge your branch with `main`. ***It needs to be reviewed by someone before you merge it!***
 # Project Infos
-## Things To Set
-
-- ADMIN_PASS -> [.env](./.env)
-- API42_USERID -> [.env](./src/nestjs/pix/.env)
-- API42_SECRET -> [.env](./src/nestjs/pix/.env)
 
 ## Directory Structure
 ```bash
