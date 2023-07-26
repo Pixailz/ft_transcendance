@@ -4,9 +4,6 @@ run-name: check if debug and prod mode mode is working
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
 
 jobs:
   docker-test:
