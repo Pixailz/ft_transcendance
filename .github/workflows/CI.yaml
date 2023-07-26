@@ -9,6 +9,7 @@ jobs:
   docker-test:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - run: cp .env{.template,}
       - run: docker compose up --build
       - run: sed -i "s|DEBUG=|DEBUG=1|g" .env
