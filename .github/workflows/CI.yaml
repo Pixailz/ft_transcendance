@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
       - run: cp .env{.template,}
       - run: docker build
       - run: sed -i "s|DEBUG=|DEBUG=1|g" .env
