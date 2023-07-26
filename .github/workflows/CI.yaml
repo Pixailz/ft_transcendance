@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: printf "%s triggered the actions\n" "${ACTOR}"
+      - name: "Who push ${{ github.actor }}"
 
   docker-build:
     runs-on: ubuntu-latest
