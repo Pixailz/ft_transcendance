@@ -82,6 +82,7 @@ ft_transcendence/
 ## Useful Things
 
 - how to setup oauth with [42 Api](https://api.intra.42.fr/apidoc/guides/web_application_flow)
+- how to setup [github actions](https://docs.github.com/fr/actions/using-workflows/workflow-syntax-for-github-actions)
 - generate strong password (JWT token)
 > `pwgen 32 10 -s -n -v -B -1`
 
