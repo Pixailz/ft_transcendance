@@ -1,5 +1,12 @@
 # ft_transcendence
+
 Recreate pong, on a website, with a looooooot of features
+
+# CI Status
+
+|Branch|Status|
+|:-:|:-:|
+| main | [![Docker compose check](https://github.com/Pixailz/ft_transcendence/actions/workflows/CI.yaml/badge.svg?branch=main)](https://github.com/Pixailz/ft_transcendence/actions/workflows/CI.yaml)|
 
 # How To Commit
 ## Commits
