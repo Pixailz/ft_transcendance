@@ -23,3 +23,8 @@ jobs:
       - run: docker compose build --no-cache
       - run: sed -i "s|DEBUG=|DEBUG=1|g" .env
       - run: docker compose build --no-cache
+
+  # docker-run:
+  #   needs: docker-build
+  #   runs-on: ubuntu-latest
+  #   steps:
