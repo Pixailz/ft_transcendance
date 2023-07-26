@@ -6,10 +6,15 @@ on:
   push:
 
 jobs:
-  docker-build:
+  startup:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - run: |
+        printf "%s triggered the actions\n" "${{ github.actor }}"
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
       - run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
       - run: cp .env{.template,}
       - run: docker compose build --no-cache
