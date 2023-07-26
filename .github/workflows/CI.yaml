@@ -1,6 +1,6 @@
 name: Docker compose check
 
-run-name: check if debug and prod mode mode is working
+run-name: Docker compose CI
 
 on:
   push:
@@ -11,6 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: cp .env{.template,}
-      - run: docker compose up --build
+      - run: docker build
       - run: sed -i "s|DEBUG=|DEBUG=1|g" .env
-      - run: docker compose up --build
+      - run: docker build
