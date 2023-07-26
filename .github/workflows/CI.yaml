@@ -1,0 +1,18 @@
+name: Docker compose check
+
+run-name: check if debug and prod mode mode is working
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  docker-test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: cp .env{.template,}
+      - run: docker compose up --build
+      - run: sed -i "s|DEBUG=|DEBUG=1|g" .env
+      - run: docker compose up --build
