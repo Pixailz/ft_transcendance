@@ -46,14 +46,19 @@ Create a pull request to merge your branch with `main`. ***It needs to be review
 ```bash
 ft_transcendence/
 ├─rsc/
-│ ├─postman/       #lib to make requests
-│ └─en.subject.pdf #current subject PDF
-├─build/           #dockerfiles directories
-│ ├─nodejs/
-│ └─postgresql/
-└─src/             #sources
-  ├─angular/       #frontend
-  └─nestjs/        #backend
+│ ├─postman/                 #lib to make requests
+│ └─en.subject.pdf           #current subject PDF
+├─build/                     #dockerfiles directories
+│ ├─nodejs/                  #node 18 + npm 9.7.2
+│ ├─postgresql/              #postgresql 15.3
+│ └─nginx/                   #nginx (reverse proxy)
+├─src/                       #sources
+│ ├─angular/                 #frontend
+│ └─nestjs/                  #backend
+├─setup                      #setup for .env
+├─docker-compose.yaml
+├─.gitignore
+└─.env.template
 ```
 
 ## Versioning
