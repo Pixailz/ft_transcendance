@@ -23,7 +23,7 @@ export class AuthService {
 		if (!user) {
 			const user42 = await this.api42Service.getUserFromToken(token);
 			const user_id = await this.userService.create({
-				ft_login: user42.login,
+				ftLogin: user42.login,
 			});
 			user = await this.userService.returnOne(user_id);
 		}
