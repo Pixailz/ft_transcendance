@@ -125,9 +125,6 @@ services:
         bind:
           create_host_path: true
     << : *restart
-    healthcheck:
-      test: [ "CMD", "pgrep", "npm run" ]
-      << : *healthcheck_conf
   #
   ##############################################################################
 
