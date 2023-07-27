@@ -17,6 +17,10 @@ jobs:
           echo "Who launched: ${{github.actor}}"
           echo "On branch:    ${{github.ref_name}}"
           echo "Commit sha:   ${{github.sha}}"
+      - name: "docker | compose"
+        run: |+
+          docker version
+          docker compose version
 
   docker-prod-build:
     runs-on: ubuntu-latest
