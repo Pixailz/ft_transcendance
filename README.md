@@ -1,12 +1,10 @@
 # ft_transcendence
 
-Recreate pong, on a website, with a looooooot of features
+[![Docker compose check](https://github.com/Pixailz/ft_transcendence/actions/workflows/CI.yaml/badge.svg)](https://github.com/Pixailz/ft_transcendence/actions/workflows/CI.yaml)
 
-# CI Status
-
-|Branch|Status|
-|:-:|:-:|
-| main | [![Docker compose check](https://github.com/Pixailz/ft_transcendence/actions/workflows/CI.yaml/badge.svg?branch=main)](https://github.com/Pixailz/ft_transcendence/actions/workflows/CI.yaml)|
+[![node](https://img.shields.io/badge/node-v18.17.0-blue)](https://npm.im/npm)
+[![npm](https://img.shields.io/npm/v/npm.svg)](https://npm.im/npm)
+[![postgresql](https://img.shields.io/badge/postgresql-15.3-blue)](https://www.postgresql.org/support/versioning/)
 
 # How To Commit
 ## Commits
@@ -67,17 +65,6 @@ ft_transcendence/
 ├─.gitignore
 └─.env.template
 ```
-
-## Versioning
-
-|Service Name|Latest version*                                                  |
-|:-----------|:---------------------------------------------------------------:|
-|NodeJS      |[18.16.1](https://nodejs.dev/en/about/releases/)                 |
-|Npm         |[9.7.2](https://www.npmjs.com/package/npm)                       |
-|PostgreSQL  |[15.3](https://www.postgresql.org/support/versioning/)           |
-
-> \*Contains a link for a proof,
-> by latest we mean latest LTS version if there's one, else the latest stable version maintained by the devs
 
 ## Useful Things
 
