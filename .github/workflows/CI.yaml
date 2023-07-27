@@ -51,4 +51,4 @@ jobs:
         run: sed -i "s|DEBUG=|DEBUG=1|g" .env
 
       - name: Executing debug
-        run: docker compose up --no-cache -d --wait
+        run: docker compose up -d --wait
