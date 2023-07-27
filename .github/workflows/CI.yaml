@@ -5,6 +5,9 @@ run-name: Docker compose CI
 on:
   push:
 
+env:
+  TIMEOUT_MIN: 10
+
 jobs:
   info:
     runs-on: ubuntu-latest
@@ -16,6 +19,7 @@ jobs:
           echo "Commit sha:   ${{github.sha}}"
 
   docker-build-prod:
+    timeout-minutes: ${TIMEOUT_MIN}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -25,6 +29,7 @@ jobs:
         run: docker compose build --no-cache
 
   docker-run-prod:
+    timeout-minutes: ${TIMEOUT_MIN}
     needs: docker-build-prod
     runs-on: ubuntu-latest
     steps:
@@ -35,6 +40,7 @@ jobs:
         run: docker compose up --build -d --wait
 
   docker-build-dev:
+    timeout-minutes: ${TIMEOUT_MIN}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -46,6 +52,7 @@ jobs:
         run: docker compose build --no-cache
 
   docker-run-dev:
+    timeout-minutes: ${TIMEOUT_MIN}
     needs: docker-build-dev
     runs-on: ubuntu-latest
     steps:
