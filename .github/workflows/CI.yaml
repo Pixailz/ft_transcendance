@@ -27,7 +27,7 @@ jobs:
         run: docker compose build --no-cache
 
   docker-run-prod:
-    needs: docker-build
+    needs: docker-build-prod
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -50,7 +50,7 @@ jobs:
         run: docker compose build --no-cache
 
   docker-run-dev:
-    needs: docker-build
+    needs: docker-build-dev
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
