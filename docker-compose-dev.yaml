@@ -1,0 +1,145 @@
+version: "3.9"
+
+################################################################################
+# DEFAULT CONF https://stackoverflow.com/a/65522511
+
+x-healthcheck_conf: &healthcheck_conf
+      interval: 1s
+      timeout: 1s
+      retries: 50
+
+x-restart: &restart
+    restart: on-failure
+
+################################################################################
+
+services:
+  ##############################################################################
+  # NestJS
+  nestjs:
+    container_name: nestjs
+    hostname: nestjs
+    build:
+      context: "./build/nodejs"
+      target: "nodejs"
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    command: [ "npm", "run", "prod" ]
+    ports:
+      - 3000:3000
+    networks:
+      transendence:
+        ipv4_address: "13.37.42.11"
+    environment:
+      - DB_USER=${ADMIN_USER}
+      - DB_PASS=${ADMIN_PASS}
+      - DB_NAME=${DB_NAME}
+      - API42_USERID=${API42_USERID}
+      - API42_SECRET=${API42_SECRET}
+      - API42_REDIRECTURL=${API42_REDIRECTURL}
+      - JWT_SECRET=${JWT_SECRET}
+    volumes:
+      - type: bind
+        source: ./volume/nodejs
+        target: /usr/local/lib/nodejs
+        bind:
+          create_host_path: true
+      - type: bind
+        source: ./src/nestjs
+        target: /shared/transcendence
+        bind:
+          create_host_path: true
+    << : *restart
+    healthcheck:
+      test: [ "CMD", "pgrep", "npm run" ]
+      << : *healthcheck_conf
+  #
+  ##############################################################################
+
+  ##############################################################################
+  # AngularJS
+  angularjs:
+    container_name: angularjs
+    hostname: angularjs
+    build:
+      context: "./build/nodejs"
+      target: "nodejs"
+    command: [ "npm", "run", "prod" ]
+    ports:
+      - 4200:4200
+    networks:
+      transendence:
+        ipv4_address: "13.37.42.12"
+    volumes:
+      - type: bind
+        source: ./volume/nodejs
+        target: /usr/local/lib/nodejs
+        bind:
+          create_host_path: true
+      - type: bind
+        source: ./src/angularjs
+        target: /shared/transcendence
+        bind:
+          create_host_path: true
+      - type: bind
+        source: ./volume/angularjs
+        target: /build/
+        bind:
+          create_host_path: true
+    << : *restart
+  #
+  ##############################################################################
+
+  ##############################################################################
+  # PostgreSQL
+  postgresql:
+    container_name: postgresql
+    build:
+      context: "./build/postgresql"
+      target: "packed"
+    environment:
+      - ADMIN_USER=${ADMIN_USER}
+      - ADMIN_PASS=${ADMIN_PASS}
+      - DB_NAME=${DB_NAME}
+      - PGDATA=/usr/local/pgsql/data
+      - DEBUG=${DEBUG}
+    ports:
+      - 5432:5432
+    networks:
+      transendence:
+        ipv4_address: "13.37.42.13"
+    volumes:
+      - type: bind
+        source: ./volume/postgresql
+        target: /usr/local/pgsql/data
+        bind:
+          create_host_path: true
+      - type: bind
+        source: ./volume/log/postgresql
+        target: /var/log/postgresql
+        bind:
+          create_host_path: true
+    << : *restart
+    healthcheck:
+      test: [ "CMD", "pgrep", "postgres" ]
+      << : *healthcheck_conf
+  #
+  ##############################################################################
+
+networks:
+  ##############################################################################
+  # MAIN INTERNAL NETWORK (netpractice)
+  transendence:
+    name: transendence
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: transendence
+    ipam:
+      driver: default
+      config:
+        - subnet: 13.37.42.0/27
+          ip_range: 13.37.42.0/27
+          gateway: 13.37.42.1
+  #
+  ##############################################################################
