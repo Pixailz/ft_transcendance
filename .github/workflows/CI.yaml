@@ -1,4 +1,4 @@
-name: Docker compose check
+name: CI
 
 run-name: Docker compose CI
 
