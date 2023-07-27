@@ -52,7 +52,7 @@ services:
           create_host_path: true
     << : *restart
     healthcheck:
-      test: [ "CMD", "nc -w 1 127.0.0.1 3000" ]
+      test: "nc -w 1 127.0.0.1 3000"
       << : *healthcheck_conf
   #
   ##############################################################################
@@ -92,7 +92,7 @@ services:
           create_host_path: true
     << : *restart
     healthcheck:
-      test: [ "CMD", "nc -w 1 127.0.0.1 4200" ]
+      test: "nc -w 1 127.0.0.1 4200"
       << : *healthcheck_conf
   #
   ##############################################################################
@@ -128,7 +128,7 @@ services:
           create_host_path: true
     << : *restart
     healthcheck:
-      test: [ "CMD", "nc -w 1 127.0.0.1 5432" ]
+      test: "nc -w 1 127.0.0.1 5432"
       << : *healthcheck_conf
   #
   ##############################################################################
