@@ -4,6 +4,7 @@ run-name: Docker compose CI
 
 on:
   push:
+    branches: [main]
 
 jobs:
   info:
