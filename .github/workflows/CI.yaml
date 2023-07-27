@@ -46,10 +46,10 @@ jobs:
           cp .env{.template,}
 
       - name: Executing prod
-        run: docker compose up -d
+        run: docker compose up --wait
 
       - name: Switching to debug
         run: sed -i "s|DEBUG=|DEBUG=1|g" .env
 
       - name: Executing debug
-        run: docker compose up -d
+        run: docker compose up --wait
