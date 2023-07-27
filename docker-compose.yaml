@@ -24,6 +24,8 @@ services:
     depends_on:
       angularjs:
         condition: service_completed_successfully
+      nestjs:
+        condition: service_healthy
     environment:
       - CERT_SUBJ=${CERT_SUBJ}
       - DEBUG=${DEBUG}
