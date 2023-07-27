@@ -22,6 +22,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Cleaning up previous run
+        run: |+
+          rm -rf ./volume
+          docker compose down
+          docker system prune -af
       - name: Setup .env
         run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
       - name: Build prod
@@ -33,6 +38,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Cleaning up previous run
+        run: |+
+          rm -rf ./volume
+          docker compose down
+          docker system prune -af
       - name: Setup .env
         run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
       - name: Executing prod
@@ -43,6 +53,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Cleaning up previous run
+        run: |+
+          rm -rf ./volume
+          docker compose down
+          docker system prune -af
       - name: Setup .env
         run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
       - name: Build debug
@@ -54,6 +69,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Cleaning up previous run
+        run: |+
+          rm -rf ./volume
+          docker compose down
+          docker system prune -af
       - name: Setup .env
         run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
       - name: Executing debug
