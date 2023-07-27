@@ -9,8 +9,11 @@ jobs:
   info:
     runs-on: ubuntu-latest
     steps:
-      - name: "Who push"
-        run: echo "${{github.actor}}"
+      - name: "github"
+        # https://stackoverflow.com/a/66809682
+        run: >+
+          echo "Who launched: ${{github.actor}}"
+          echo "On branch: ${{github.ref}}"
 
   docker-build:
     runs-on: ubuntu-latest
