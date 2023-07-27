@@ -9,6 +9,10 @@ jobs:
   info:
     runs-on: ubuntu-latest
     steps:
+      - name: "system"
+        run: |+
+          echo "Date and time:  $(date +\"%T %d/%m/%y\")"
+
       - name: "github"
         run: |+
           echo "Who launched: ${{github.actor}}"
