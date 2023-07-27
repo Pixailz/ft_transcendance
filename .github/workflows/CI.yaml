@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "github"
-        # https://stackoverflow.com/a/66809682
-        run: >+
+        run: |+
           echo "Who launched: ${{github.actor}}"
-          echo "On branch: ${{github.ref}}"
+          echo "On branch:    ${{github.ref_name}}"
+          echo "Commit sha:   ${{github.sha::6}}"
 
   docker-build:
     runs-on: ubuntu-latest
