@@ -24,6 +24,8 @@ services:
     depends_on:
       angularjs:
         condition: service_completed_successfully
+      nestjs:
+        condition: service_healthy
     environment:
       - CERT_SUBJ=${CERT_SUBJ}
       - DEBUG=${DEBUG}
@@ -45,7 +47,7 @@ services:
           create_host_path: true
     << : *restart
     healthcheck:
-      test: [ "CMD", "pgrep", "nginx" ]
+      test: "nc -w 1 127.0.0.1 443"
       << : *healthcheck_conf
   #
   ##############################################################################
@@ -86,7 +88,7 @@ services:
           create_host_path: true
     << : *restart
     healthcheck:
-      test: [ "CMD", "pgrep", "npm run" ]
+      test: "nc -w 1 127.0.0.1 3000"
       << : *healthcheck_conf
   #
   ##############################################################################
@@ -152,7 +154,7 @@ services:
           create_host_path: true
     << : *restart
     healthcheck:
-      test: [ "CMD", "pgrep", "postgres" ]
+      test: "nc -w 1 127.0.0.1 5432"
       << : *healthcheck_conf
   #
   ##############################################################################

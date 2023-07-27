@@ -52,7 +52,7 @@ services:
           create_host_path: true
     << : *restart
     healthcheck:
-      test: [ "CMD", "pgrep", "npm run" ]
+      test: "nc -w 1 127.0.0.1 3000"
       << : *healthcheck_conf
   #
   ##############################################################################
@@ -66,6 +66,9 @@ services:
       context: "./build/nodejs"
       target: "nodejs"
     command: [ "npm", "run", "dev" ]
+    depends_on:
+      nestjs:
+        condition: service_healthy
     ports:
       - 4200:4200
     networks:
@@ -88,6 +91,9 @@ services:
         bind:
           create_host_path: true
     << : *restart
+    healthcheck:
+      test: "nc -w 1 127.0.0.1 4200"
+      << : *healthcheck_conf
   #
   ##############################################################################
 
@@ -122,7 +128,7 @@ services:
           create_host_path: true
     << : *restart
     healthcheck:
-      test: [ "CMD", "pgrep", "postgres" ]
+      test: "nc -w 1 127.0.0.1 5432"
       << : *healthcheck_conf
   #
   ##############################################################################
