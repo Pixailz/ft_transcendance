@@ -10,6 +10,12 @@ FROM		base			AS packed
 
 COPY		--chown=root:root entrypoint /run
 
-STOPSIGNAL	SIGINT
+# https://www.postgresql.org/docs/current/server-shutdown.html
+## Smart Shutdown
+STOPSIGNAL	SIGTERM
+## Fast Shutdown
+# STOPSIGNAL	SIGINT
+## Immediate Shutdown
+# STOPSIGNAL	SIGQUIT
 
 ENTRYPOINT	[ "/run/entrypoint" ]
