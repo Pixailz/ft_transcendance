@@ -6,19 +6,16 @@ on:
   push:
 
 jobs:
-  info:
-    runs-on: ubuntu-latest
-    steps:
-      - name: "github"
-        run: |+
-          echo "Who launched: ${{github.actor}}"
-          echo "On branch:    ${{github.ref_name}}"
-          echo "Commit sha:   ${{github.sha}}"
-
   docker-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: "Info"
+        run: |+
+          echo "Who launched: ${{github.actor}}"
+          echo "On branch:    ${{github.ref_name}}"
+          echo "Commit sha:   ${{github.sha}}"
 
       - name: Setup .env
         run: |+
