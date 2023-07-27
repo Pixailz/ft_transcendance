@@ -12,13 +12,13 @@ jobs:
   info:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
       - name: "Who push"
         run: echo "${{github.actor}}"
 
   docker-build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
       - run: cp .env{.template,}
       - run: docker compose build --no-cache
