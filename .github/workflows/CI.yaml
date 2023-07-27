@@ -13,7 +13,7 @@ jobs:
         run: |+
           echo "Who launched: ${{github.actor}}"
           echo "On branch:    ${{github.ref_name}}"
-          echo "Commit sha:   ${{github.sha::6}}"
+          echo "Commit sha:   ${{github.sha}}"
 
   docker-build:
     runs-on: ubuntu-latest
