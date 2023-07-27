@@ -19,11 +19,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
-      - run: cp .env{.template,}
-      - run: docker compose build --no-cache
-      - run: sed -i "s|DEBUG=|DEBUG=1|g" .env
-      - run: docker compose build --no-cache
+
+      - name: Setup .env
+        run: |+
+          printf "pix\n1234\n1234\n1234\n1234" | ./setup
+          cp .env{.template,}
+
+      - name: Build prod
+        run: docker compose build --no-cache
+
+      - name: Switching to debug
+        run: sed -i "s|DEBUG=|DEBUG=1|g" .env
+
+      - name: Build debug
+        run: docker compose build --no-cache
 
   # docker-run:
   #   needs: docker-build
