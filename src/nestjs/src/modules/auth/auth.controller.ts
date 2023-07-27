@@ -1,4 +1,5 @@
-import { Controller, Get, Request, Query } from "@nestjs/common";
+import { Controller, Get, Request, Query, UnauthorizedException } from "@nestjs/common";
+
 import { AuthService } from "./auth.service";
 import { Public } from "src/public.decorator";
 
@@ -10,6 +11,15 @@ export class AuthController {
 	@Get("ft_callback")
 	async login(@Query("code") code: string) {
 		return this.authService.ftSignIn(code);
+	}
+
+	@Public()
+	@Get("ft_verify")
+	async canActivate(@Query("access_token") access_token: string) {
+		if (!await this.authService.verifyToken(access_token))
+			throw new UnauthorizedException();
+
+		return {status: "oke"};
 	}
 
 	@Get("profile")
