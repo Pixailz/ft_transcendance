@@ -6,6 +6,12 @@
 [![npm](https://img.shields.io/npm/v/npm.svg)](https://npm.im/npm)
 [![postgresql](https://img.shields.io/badge/postgresql-15.3-blue)](https://www.postgresql.org/support/versioning/)
 
+# TODO
+|Feature|Branch|Feature Description|
+|:------|:-----|:------------------|
+|User Management|nestjs-users|Get a working user management (profile info, nickname, ...)
+|Gracefull shutdown nodejs\|angular|main|set up a signal that on receive will close all connection before closing, more [here](https://hackernoon.com/graceful-shutdown-in-nodejs-2f8f59d1c357)|
+
 # How To Commit
 ## Commits
 When creating a new commit, try to break it into as many pieces you can. For example, if you modified both front-end and back-end files for your new feature, add files one by one instead of doing `git add .` and choose a concise but factual commit message. This makes it easier to revert a bad commit and keep good ones if something goes wrong. Repeat for all modified files until you added them all.
@@ -90,8 +96,3 @@ ft_transcendence/
 | DELETE  | /user_info/:id           | Delete an userInfo   |
 
 > method marked with `*` is not implemented yet
-
-# TODO
-|Feature|Branch|Feature Description|
-|:------|:-----|:------------------|
-|User Management|nestjs-users|Get a working user management (profile info, nickname, ...)
