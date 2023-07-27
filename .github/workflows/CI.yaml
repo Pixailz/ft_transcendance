@@ -27,7 +27,7 @@ jobs:
 
   docker-prod-run:
     timeout-minutes: 10
-    needs: docker-build-prod
+    needs: docker-prod-build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -50,7 +50,7 @@ jobs:
 
   docker-run-dev:
     timeout-minutes: 10
-    needs: docker-build-dev
+    needs: docker-dev-build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
