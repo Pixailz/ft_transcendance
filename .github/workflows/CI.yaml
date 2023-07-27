@@ -47,5 +47,8 @@ jobs:
       - name: Switching to debug
         run: sed -i "s|DEBUG=|DEBUG=1|g" .env
 
+      - name: DEBUG
+        run: cat .env
+
       - name: Executing debug
         run: docker compose up -d --wait
