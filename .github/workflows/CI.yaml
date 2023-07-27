@@ -24,7 +24,7 @@ jobs:
         run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
       - name: Build prod
         timeout-minutes: 5
-        run: docker compose build --no-cache
+        run: docker compose build
 
   docker-prod-run:
     needs: docker-prod-build
@@ -43,11 +43,9 @@ jobs:
       - uses: actions/checkout@v3
       - name: Setup .env
         run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
-      - name: Switching to debug
-        run: sed -i "s|DEBUG=|DEBUG=1|g" .env
       - name: Build debug
         timeout-minutes: 5
-        run: docker compose build --no-cache
+        run: docker compose -f docker-compose-dev.yaml build
 
   docker-dev-run:
     needs: docker-dev-build
@@ -56,8 +54,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: Setup .env
         run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
-      - name: Switching to debug
-        run: sed -i "s|DEBUG=|DEBUG=1|g" .env
       - name: Executing debug
         timeout-minutes: 5
-        run: docker compose up --build -d --wait
+        run: docker compose -f docker-compose-dev.yaml up --build -d --wait
