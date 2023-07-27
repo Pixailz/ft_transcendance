@@ -15,40 +15,48 @@ jobs:
           echo "On branch:    ${{github.ref_name}}"
           echo "Commit sha:   ${{github.sha}}"
 
-  docker-build:
+  docker-build-prod:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
       - name: Setup .env
         run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
-
+      - name: Switching to prod
+        run: sed -i "s|DEBUG=|DEBUG=1|g" .env
       - name: Build prod
         run: docker compose build --no-cache
 
-      - name: Switching to debug
-        run: sed -i "s|DEBUG=|DEBUG=1|g" .env
-
-      - name: Build debug
-        run: docker compose build --no-cache
-
-  docker-run:
+  docker-run-prod:
     needs: docker-build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
       - name: Setup .env
         run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
-
-      - name: Executing prod
-        run: docker compose up -d --wait
-
-      - name: Killing prod
-        run: docker compose down
-
       - name: Switching to debug
         run: sed -i "s|DEBUG=|DEBUG=1|g" .env
-
       - name: Executing debug
-        run: docker compose up -d --wait
+        run: docker compose up --build -d --wait
+
+  docker-build-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .env
+        run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
+      - name: Switching to debug
+        run: sed -i "s|DEBUG=|DEBUG=1|g" .env
+      - name: Build debug
+        run: docker compose build --no-cache
+
+  docker-run-dev:
+    needs: docker-build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .env
+        run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
+      - name: Switching to debug
+        run: sed -i "s|DEBUG=|DEBUG=1|g" .env
+      - name: Executing debug
+        run: docker compose up --build -d --wait
