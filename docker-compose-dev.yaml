@@ -15,42 +15,6 @@ x-restart: &restart
 
 services:
   ##############################################################################
-  # Nginx (reverse proxy)
-  nginx:
-    container_name: nginx
-    build:
-      context: "./build/nginx"
-      target: packed
-    depends_on:
-      angularjs:
-        condition: service_completed_successfully
-    environment:
-      - CERT_SUBJ=${CERT_SUBJ}
-      - DEBUG=${DEBUG}
-    ports:
-      - 443:443
-    networks:
-      transendence:
-        ipv4_address: "13.37.42.10"
-    volumes:
-      - type: bind
-        source: ./volume/log/nginx
-        target: /var/log/nginx
-        bind:
-          create_host_path: true
-      - type: bind
-        source: ./volume/angularjs
-        target: /app
-        bind:
-          create_host_path: true
-    << : *restart
-    healthcheck:
-      test: [ "CMD", "pgrep", "nginx" ]
-      << : *healthcheck_conf
-  #
-  ##############################################################################
-
-  ##############################################################################
   # NestJS
   nestjs:
     container_name: nestjs
@@ -61,7 +25,9 @@ services:
     depends_on:
       postgresql:
         condition: service_healthy
-    command: [ "npm", "run", "prod" ]
+    command: [ "npm", "run", "dev" ]
+    ports:
+      - 3000:3000
     networks:
       transendence:
         ipv4_address: "13.37.42.11"
@@ -99,7 +65,9 @@ services:
     build:
       context: "./build/nodejs"
       target: "nodejs"
-    command: [ "npm", "run", "prod" ]
+    command: [ "npm", "run", "dev" ]
+    ports:
+      - 4200:4200
     networks:
       transendence:
         ipv4_address: "13.37.42.12"
@@ -136,6 +104,8 @@ services:
       - DB_NAME=${DB_NAME}
       - PGDATA=/usr/local/pgsql/data
       - DEBUG=${DEBUG}
+    ports:
+      - 5432:5432
     networks:
       transendence:
         ipv4_address: "13.37.42.13"
