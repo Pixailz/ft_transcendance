@@ -2,9 +2,6 @@ name: Docker compose check
 
 run-name: Docker compose CI
 
-env:
-  ACTOR: ${{ github.actor }}
-
 on:
   push:
 
