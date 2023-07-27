@@ -44,6 +44,9 @@ jobs:
       - name: Executing prod
         run: docker compose up -d --wait
 
+      - name: Killing prod
+        run: docker compose down
+
       - name: Switching to debug
         run: sed -i "s|DEBUG=|DEBUG=1|g" .env
 
