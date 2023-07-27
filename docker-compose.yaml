@@ -61,7 +61,7 @@ services:
     depends_on:
       postgresql:
         condition: service_healthy
-    command: [ "${CMD_NPM}" ]
+    command: [ "npm", "run", "prod" ]
     networks:
       transendence:
         ipv4_address: "13.37.42.11"
@@ -99,12 +99,7 @@ services:
     build:
       context: "./build/nodejs"
       target: "nodejs"
-        #depends_on:
-        #nestjs:
-        #condition: service_healthy
-    command: [ "${CMD_NPM}" ]
-    ports:
-      - 127.0.0.1:4200:4200
+    command: [ "npm", "run", "prod" ]
     networks:
       transendence:
         ipv4_address: "13.37.42.12"
