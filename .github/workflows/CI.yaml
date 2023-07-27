@@ -22,13 +22,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Setup .env
+        run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
+
       - name: Cleaning up previous run
         run: |+
           rm -rf ./volume
           docker compose down
           docker system prune -af
-      - name: Setup .env
-        run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
+
       - name: Build prod
         timeout-minutes: 5
         run: docker compose build
@@ -38,13 +41,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Setup .env
+        run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
+
       - name: Cleaning up previous run
         run: |+
           rm -rf ./volume
           docker compose down
           docker system prune -af
-      - name: Setup .env
-        run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
+
       - name: Executing prod
         timeout-minutes: 5
         run: docker compose up --build -d --wait
@@ -53,13 +59,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Setup .env
+        run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
+
       - name: Cleaning up previous run
         run: |+
           rm -rf ./volume
           docker compose down
           docker system prune -af
-      - name: Setup .env
-        run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
+
       - name: Build debug
         timeout-minutes: 5
         run: docker compose -f docker-compose-dev.yaml build
@@ -69,13 +78,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Setup .env
+        run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
+
       - name: Cleaning up previous run
         run: |+
           rm -rf ./volume
           docker compose down
           docker system prune -af
-      - name: Setup .env
-        run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
+
       - name: Executing debug
         timeout-minutes: 5
         run: docker compose -f docker-compose-dev.yaml up --build -d --wait
