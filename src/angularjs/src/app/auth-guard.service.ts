@@ -6,9 +6,11 @@ export const authGuardService = async () => {
 		console.log("[authGuardService] no token");
 		return false;
 	}
-
-	const res = await fetch('/api/auth/ft_verify?access_token=' + jwt_token,{
+	const res = await fetch('/api/auth/profile', {
 		method: 'GET',
+		headers:  {
+			'Authorization': 'Bearer ' + jwt_token
+		},
 		mode: 'cors'
 	});
 	if (res.status !== 200)
