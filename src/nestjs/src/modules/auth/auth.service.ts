@@ -33,21 +33,6 @@ export class AuthService {
 		};
 	}
 
-	async verifyToken(access_token: string): Promise<boolean> {
-		if (!access_token) {
-			return false;
-		}
-
-		try {
-			await this.jwtService.verifyAsync(access_token);
-		}
-		catch(error)
-		{
-			return false;
-		}
-		return true;
-	}
-
 	async validateUser(payload: any): Promise<any> {
 		return await this.userService.returnOne(payload.sub);
 	}
