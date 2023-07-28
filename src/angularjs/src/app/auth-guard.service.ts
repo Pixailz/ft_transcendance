@@ -1,11 +1,9 @@
-
-
 export const authGuardService = async () => {
 	const jwt_token = localStorage.getItem("access_token");
 
 	if (!jwt_token)
 	{
-		console.log("no token");
+		console.log("[authGuardService] no token");
 		return false;
 	}
 
@@ -15,7 +13,7 @@ export const authGuardService = async () => {
 	});
 	if (res.status !== 200)
 	{
-		console.log("bad token");
+		console.log("[authGuardService] bad token");
 		return false;
 	}
 	return true;
