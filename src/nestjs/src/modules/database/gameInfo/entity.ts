@@ -16,6 +16,8 @@ export class GameInfoEntity {
 
 	@PrimaryColumn()
 	public userA: number;
+
+	@PrimaryColumn()
 	public userB: number;
 
 	@ManyToOne(type => UserEntity, user => user.gameUserA)
@@ -29,9 +31,9 @@ export class GameInfoEntity {
 	@Column({ type: "varchar", length: 120, default: false })
 	public type: string;
 
-	@Column({ type: "integer"})
+	@Column({ type: "integer", default: 0})
 	public scoreA: number;
 
-	@Column({ type: "integer"})
+	@Column({ type: "integer", default: 0})
 	public scoreB: number;
 }
