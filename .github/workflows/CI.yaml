@@ -1,0 +1,93 @@
+name: CI
+
+run-name: Docker compose CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened]
+
+jobs:
+  info:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "github"
+        run: |+
+          echo "Who launched: ${{github.actor}}"
+          echo "On branch:    ${{github.ref_name}}"
+          echo "Commit sha:   ${{github.sha}}"
+      - name: "docker | compose"
+        run: |+
+          docker version
+          docker compose version
+
+  docker-prod-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .env
+        run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
+
+      - name: Cleaning up previous run
+        run: |+
+          rm -rf ./volume
+          docker compose down
+
+      - name: Build prod
+        timeout-minutes: 5
+        run: docker compose build
+
+  docker-prod-run:
+    needs: docker-prod-build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .env
+        run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
+
+      - name: Cleaning up previous run
+        run: |+
+          rm -rf ./volume
+          docker compose down
+
+      - name: Executing prod
+        timeout-minutes: 5
+        run: docker compose up --build -d --wait
+
+  docker-dev-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .env
+        run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
+
+      - name: Cleaning up previous run
+        run: |+
+          rm -rf ./volume
+          docker compose down
+
+      - name: Build debug
+        timeout-minutes: 5
+        run: docker compose -f docker-compose-dev.yaml build
+
+  docker-dev-run:
+    needs: docker-dev-build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .env
+        run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
+
+      - name: Cleaning up previous run
+        run: |+
+          rm -rf ./volume
+          docker compose down
+
+      - name: Executing debug
+        timeout-minutes: 5
+        run: docker compose -f docker-compose-dev.yaml up --build -d --wait

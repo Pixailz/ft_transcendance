@@ -7,20 +7,42 @@ import { PongComponent } from './pages/pong/pong.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
 import { LoginComponent } from './pages/login/login.component';
+import { authGuardService } from './auth-guard.service';
 
 const routes: Routes = [
-  { path: 'home', component: HomeDashboardComponent },
-  { path: 'play', component: PongComponent },
-  { path: 'profile', component: UserProfileComponent },
-  { path: 'login', component: LoginComponent },
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: '**', component: PageNotFoundComponent }
+	{
+		path: 'home',
+		component: HomeDashboardComponent,
+	},
+	{
+		path: 'play',
+		component: PongComponent,
+		canActivate: [authGuardService],
+	},
+	{
+		path: 'profile',
+		component: UserProfileComponent,
+		canActivate: [authGuardService],
+	},
+	{
+		path: 'login',
+		component: LoginComponent,
+	},
+	{
+		path: '',
+		redirectTo: '/home',
+		pathMatch: 'full'
+	},
+	{
+		path: '**',
+		component: PageNotFoundComponent,
+	},
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forRoot(routes)
-  ],
-  exports: [RouterModule]
+	imports: [
+		RouterModule.forRoot(routes)
+	],
+	exports: [RouterModule]
 })
 export class AppRoutingModule { }
