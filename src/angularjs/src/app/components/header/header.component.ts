@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { authGuardService } from 'src/app/auth-guard.service';
 
 @Component({
   selector: 'app-header',
@@ -10,7 +9,10 @@ export class HeaderComponent {
 	userLoggedIn = false;
 
 	async ngOnInit() {
-		this.userLoggedIn = await authGuardService();
+		if (localStorage.getItem("access_token"))
+			this.userLoggedIn = true;
+		else
+			this.userLoggedIn = false;
 	}
 
 	SignOut()
