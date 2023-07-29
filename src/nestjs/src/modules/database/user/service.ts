@@ -6,6 +6,7 @@ import { UserEntity } from "./entity";
 
 import { UserPost, UserInfoPost } from "./dto";
 import { Api42Service } from "src/modules/api42/api42.service";
+import { UserChatRoomEntity } from "../userChatRoom/entity";
 
 @Injectable()
 export class UserService {
@@ -16,9 +17,7 @@ export class UserService {
 
 	async create(userPost: UserPost) {
 		const user = new UserEntity();
-		
 		user.ftLogin = userPost.ftLogin;
-
 		await this.userRepo.save(user);
 		return user.id;
 	}
@@ -39,7 +38,8 @@ export class UserService {
 	}
 
 	async returnOne(userId?: number, ft_login?: string) {
-		if (userId) return await this.userRepo.findOneBy({ id: userId });
+		if (userId) 
+			return await this.userRepo.findOneBy({ id: userId });
 		if (ft_login)
 			return await this.userRepo.findOneBy({ ftLogin: ft_login });
 		return null;
@@ -56,6 +56,7 @@ export class UserService {
 		user.nickname = userPost.nickname;
 		user.email = userPost.email;
 		user.picture  = userPost.picture;
+		// user.twoAuthFactor = userPost.twoAuthFactor;
 		// if picture not set, set a default value
 		return await this.userRepo.save(user);
 	}
