@@ -22,6 +22,7 @@ import { UserProfileComponent } from './pages/user-profile/user-profile.componen
 import { AvatarComponent } from './components/avatar/avatar.component';
 import { LoginComponent } from './pages/login/login.component';
 import { HttpClientModule } from '@angular/common/http';
+import { authGuardService } from './auth-guard.service';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,7 @@ import { HttpClientModule } from '@angular/common/http';
     AppRoutingModule,
 	HttpClientModule,
   ],
-  providers: [],
+  providers: [authGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
