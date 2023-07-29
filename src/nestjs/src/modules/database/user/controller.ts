@@ -11,14 +11,14 @@ import {
 import { Response } from "express";
 
 import { UserService } from "./service";
-import { UserPost } from "./dto";
+import { UserPost, UserInfoPost } from "./dto";
 
 @Controller("user")
 export class UserController {
 	constructor(private readonly userService: UserService) {}
 
 	@Post()
-	create(@Body() post: UserPost) {
+	async create(@Body() post: UserPost) {
 		return this.userService.create(post);
 	}
 
@@ -39,6 +39,15 @@ export class UserController {
 		@Res() res: Response,
 	) {
 		res.send(await this.userService.update(userId, userPost));
+	}
+
+	@Put("update/:id")
+	async updateAll(
+		@Param("id") userId: number,
+		@Body() infoPost: UserInfoPost,
+		@Res() res: Response,
+	) {
+		res.send(await this.userService.updateAll(userId, infoPost));
 	}
 
 	@Delete(":id")

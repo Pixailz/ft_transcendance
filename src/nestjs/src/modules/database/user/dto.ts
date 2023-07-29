@@ -1,6 +1,17 @@
-import { IsInt, IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsOptional, IsEmail, IsString} from "class-validator";
 
 export class UserPost {
-	@IsNotEmpty()
+	@IsString()
 	ftLogin?: string;
+}
+
+export class UserInfoPost {
+	@IsString()
+	nickname?: string;
+
+	@IsEmail()
+	email?: string;
+	
+	@IsOptional()
+	picture?: string;
 }

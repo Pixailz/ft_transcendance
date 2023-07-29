@@ -7,6 +7,7 @@ import {
 } from "typeorm";
 
 import { UserChatRoomEntity } from "../userChatRoom/entity"
+import { GameInfoEntity } from "../gameInfo/entity";
 
 @Entity()
 export class UserEntity {
@@ -36,4 +37,10 @@ export class UserEntity {
 	
 	@OneToMany(type => UserChatRoomEntity, roomInfo => roomInfo.user)
 	roomInfo: UserChatRoomEntity[];
+
+	@OneToMany(type => GameInfoEntity, gameInfo => gameInfo.firstUser)
+	gameUserA: GameInfoEntity[];
+	
+	@OneToMany(type => GameInfoEntity, gameInfo => gameInfo.secondUser)
+	gameUserB: GameInfoEntity[];
 }
