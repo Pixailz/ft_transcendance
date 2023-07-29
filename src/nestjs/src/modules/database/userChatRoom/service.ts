@@ -19,16 +19,13 @@ export class UserChatRoomService {
                 private readonly userRepo: Repository<UserEntity>,
         ) {}
 
-        async create(post: UserChatRoomPost, userId: number, roomId: number) {
-
+        async create(post: UserChatRoomPost, UserId: number, RoomId: number) {
                 const userChat = new UserChatRoomEntity();
-                // const user = await this.userRepo.findOneBy({ id: userId });
-                // const newRoom = await this.ChatRoomRepo.findOneBy({ id: roomId });
-
-                userChat.userId = userId;
-                userChat.roomId = roomId;
+                userChat.userId = UserId;
+                userChat.roomId = RoomId;
                 userChat.isOwner = post.isOwner;
                 userChat.isAdmin = post.isAdmin;
+                await this.userChatRoomRepo.save(userChat);
                 return await this.userChatRoomRepo.save(userChat);
           }
 

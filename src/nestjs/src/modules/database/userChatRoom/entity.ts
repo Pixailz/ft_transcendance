@@ -14,6 +14,8 @@ import { ChatRoomEntity } from "../chatRoom/entity";
 export class UserChatRoomEntity {
 	@PrimaryColumn()
 	public userId: number;
+	
+	@PrimaryColumn()
 	public roomId: number;
 
 	@ManyToOne(type => UserEntity, user => user.roomInfo)
