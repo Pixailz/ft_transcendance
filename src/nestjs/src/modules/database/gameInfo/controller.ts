@@ -25,24 +25,22 @@ export class GameInfoController {
                 res.send(await this.gameInfoService.returnAll());
         }
 
-        // @Get(":userA/:userB")
-        // async getOne(
-        //         @Param("userA") userAA: number,
-        //         @Param("userB") userBB: number,
-        //         @Res() res: Response,
-        //         ) {
-        //         res.send(await this.gameInfoService.returnOne(userAA, userBB));
-        // }
+        @Get(":id")
+        async getOne(
+                @Param("id") gameId: number,
+                @Res() res: Response,
+                ) {
+                res.send(await this.gameInfoService.returnOne(gameId));
+        }
 
-        // @Put(":userA/:userB")
-        // async update(
-        //         @Param("userA") userAA: number,
-        //         @Param("userB") userBB: number,
-        //         @Body() userPost: GameInfoPost,
-        //         @Res() res: Response,
-        // ) {
-        //         res.send(await this.gameInfoService.update(userAA, userBB, userPost));
-        // }
+        @Put(":id")
+        async update(
+                @Param("id") gameId: number,
+                @Body() userPost: GameInfoPost,
+                @Res() res: Response,
+        ) {
+                res.send(await this.gameInfoService.update(gameId, userPost));
+        }
 
         // @Delete(":userA/:userB")
         // async delete(
