@@ -40,30 +40,25 @@ export class UserService {
 	async returnOne(userId?: number, ft_login?: string) {
 		if (userId) 
 			return await this.userRepo.findOneBy({ id: userId });
-		if (ft_login)
-			return await this.userRepo.findOneBy({ ftLogin: ft_login });
 		return null;
 	}
 
-	async update(userId: number, userPost: UserPost) {
-		console.log(userId);
-		console.log(userPost);
+	async update(userId: number, userPost: UserInfoPost) {
 		return await this.userRepo.update(userId, userPost);
 	}
-
-	async updateAll(userId: number, userPost: UserInfoPost) {
-		const user = await this.userRepo.findOneBy({ id: userId });
-		user.nickname = userPost.nickname;
-		user.email = userPost.email;
-		user.picture  = userPost.picture;
-		// user.twoAuthFactor = userPost.twoAuthFactor;
-		// if picture not set, set a default value
-		return await this.userRepo.save(user);
-	}
-
-
+	
 	async delete(userId: number) {
 		console.log(userId);
-		return await this.userRepo.delete(userId);
+		return await this.userRepo.delete({id : userId});
 	}
+	
+		// async updateAll(userId: number, userPost: UserInfoPost) {
+		// 	const user = await this.userRepo.findOneBy({ id: userId });
+		// 	user.nickname = userPost.nickname;
+		// 	user.email = userPost.email;
+		// 	user.picture  = userPost.picture;
+		// 	user.twoAuthFactor = userPost.twoAuthFactor;
+		// 	if picture not set, set a default value
+		// 	return await this.userRepo.save(user);
+		// }
 }

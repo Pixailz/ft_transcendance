@@ -12,7 +12,7 @@ export class UserInfoPost {
 	@IsString()
 	nickname?: string;
 
-	@IsNotEmpty()
+	@IsOptional()
 	@IsEmail()
 	email?: string;
 	

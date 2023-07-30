@@ -35,23 +35,18 @@ export class UserController {
 	@Put(":id")
 	async update(
 		@Param("id") userId: number,
-		@Body() userPost: UserPost,
+		@Body() userPost: UserInfoPost,
 		@Res() res: Response,
 	) {
 		res.send(await this.userService.update(userId, userPost));
 	}
-
-	@Put("update/:id")
-	async updateAll(
-		@Param("id") userId: number,
-		@Body() infoPost: UserInfoPost,
-		@Res() res: Response,
-	) {
-		res.send(await this.userService.updateAll(userId, infoPost));
-	}
-
+	
 	@Delete(":id")
 	async delete(@Param("id") userId: number, @Res() res: Response) {
-		res.send(await this.userService.delete(userId));
+		const user = await this.userService.delete(userId);
+		if (user)
+			res.send(await this.userService.delete(userId));
+		else
+			console.log('in delete user nb : ', userId, ' not found')
 	}
 }
