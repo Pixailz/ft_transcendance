@@ -12,9 +12,11 @@ export class MessageService {
 		private readonly messageRepo: Repository<MessageEntity>,
 	) {}
 
-	async create(messagePost: MessagePost) {
+	async create(messagePost: MessagePost, UserId: number, RoomId: number) {
 		const message = new MessageEntity();
 
+		message.roomId = RoomId;
+		message.userId = UserId;
 		message.content = messagePost.content;
 
 		await this.messageRepo.save(message);
@@ -25,21 +27,20 @@ export class MessageService {
 		return await this.messageRepo.find();
 	}
 
-	// async returnOne(MessageId?: number, ft_login?: string) {
-	// 	if (MessageId) return await this.messageRepo.findOneBy({ id: MessageId });
-	// 	if (ft_login)
-	// 		return await this.messageRepo.findOneBy({ ftLogin: ft_login });
-	// 	return null;
-	// }
+	async returnOne(MessageId?: number) {
+		if (MessageId) 
+			return await this.messageRepo.findOneBy({ id: MessageId });
+		return null;
+	}
 
-	// async update(MessageId: number, MessagePost: MessagePost) {
-	// 	console.log(MessageId);
-	// 	console.log(MessagePost);
-	// 	return await this.messageRepo.update(MessageId, MessagePost);
-	// }
+	async update(MessageId: number, MessagePost: MessagePost) {
+		console.log(MessageId);
+		console.log(MessagePost);
+		return await this.messageRepo.update(MessageId, MessagePost);
+	}
 
-	// async delete(MessageId: number) {
-	// 	console.log(MessageId);
-	// 	return await this.messageRepo.delete(MessageId);
-	// }
+	async delete(MessageId: number) {
+		console.log(MessageId);
+		return await this.messageRepo.delete(MessageId);
+	}
 }
