@@ -24,7 +24,7 @@ export class UserChatRoomService {
                 userChat.userId = UserId;
                 userChat.roomId = RoomId;
                 userChat.isOwner = post.isOwner;
-                userChat.isAdmin = post.isAdmin;
+                // userChat.isAdmin = post.isAdmin;
                 await this.userChatRoomRepo.save(userChat);
                 return await this.userChatRoomRepo.save(userChat);
           }

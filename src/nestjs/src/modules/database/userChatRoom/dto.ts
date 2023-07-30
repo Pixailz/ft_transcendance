@@ -1,8 +1,10 @@
-import { IsBooleanString, IsNotEmpty } from "class-validator";
+import { IsBooleanString, IsNotEmpty, IsOptional } from "class-validator";
 
 export class UserChatRoomPost {
+        @IsNotEmpty()
         @IsBooleanString()
-         isOwner?: boolean;
-        // @IsBoolean()
-         isAdmin?: boolean;
+        isOwner?: boolean;
+        @IsOptional()
+        @IsBooleanString()
+        isAdmin?: boolean;
 }

@@ -18,11 +18,11 @@ export class UserChatRoomEntity {
 	@PrimaryColumn()
 	public roomId: number;
 
-	@ManyToOne(type => UserEntity, user => user.roomInfo)
+	@ManyToOne(type => UserEntity, user => user.roomInfo, { onDelete: 'CASCADE' })
 	@JoinColumn({ name: "userId" })
 	user: UserEntity;
 
-	@ManyToOne(type => ChatRoomEntity, room => room.roomInfo)
+	@ManyToOne(type => ChatRoomEntity, room => room.roomInfo, { onDelete: 'CASCADE' })
 	@JoinColumn({ name: "roomId" })
 	room: ChatRoomEntity;
 
