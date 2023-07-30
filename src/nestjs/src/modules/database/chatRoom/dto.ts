@@ -1,10 +1,12 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsOptional } from "class-validator";
 
 export class ChatRoomPost {
         @IsNotEmpty()
         name?: string;
-        // @IsNotEmpty()
+
+        @IsOptional()
         type?: string;
-        // @IsNotEmpty()
+
+        @IsOptional()
         password?: string;
 }
