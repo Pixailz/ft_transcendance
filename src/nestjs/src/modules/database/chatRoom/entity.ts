@@ -7,6 +7,7 @@ import {
 } from "typeorm";
 
 import { UserChatRoomEntity } from "../userChatRoom/entity";
+import { MessageEntity  } from "../message/entity";
 
 @Entity()
 export class ChatRoomEntity {
@@ -25,4 +26,6 @@ export class ChatRoomEntity {
 	@OneToMany(type => UserChatRoomEntity, roomInfo => roomInfo.room)
 	roomInfo: UserChatRoomEntity[];
 
+	@OneToMany(type => MessageEntity, message => message.room)
+	message: MessageEntity[];
 }

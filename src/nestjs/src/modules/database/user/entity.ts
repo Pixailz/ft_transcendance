@@ -8,6 +8,7 @@ import {
 
 import { UserChatRoomEntity } from "../userChatRoom/entity"
 import { GameInfoEntity } from "../gameInfo/entity";
+import { MessageEntity } from "../message/entity";
 
 @Entity()
 export class UserEntity {
@@ -43,4 +44,7 @@ export class UserEntity {
 	
 	@OneToMany(type => GameInfoEntity, gameInfo => gameInfo.secondUser)
 	gameUserB: GameInfoEntity[];
+
+	@OneToMany(type => MessageEntity, message => message.user)
+	message: MessageEntity[];
 }

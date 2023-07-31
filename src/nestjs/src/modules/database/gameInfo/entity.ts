@@ -14,17 +14,17 @@ export class GameInfoEntity {
 	@PrimaryGeneratedColumn()
 	public id: number;
 
-	@Column()
+	@Column({type: "integer", nullable: true})
 	public userA: number;
 
-	@Column()
+	@Column({type: "integer", nullable: true})
 	public userB: number;
 
-	@ManyToOne(type => UserEntity, user => user.gameUserA, { onDelete: 'CASCADE' })
+	@ManyToOne(type => UserEntity, user => user.gameUserA, { onDelete: 'SET NULL', nullable: true })
 	@JoinColumn({ name: "userA" })
 	firstUser: UserEntity;
 
-	@ManyToOne(type => UserEntity, user => user.gameUserB, { onDelete: 'CASCADE' })
+	@ManyToOne(type => UserEntity, user => user.gameUserB, { onDelete: 'SET NULL', nullable: true })
 	@JoinColumn({ name: "userB" })
 	secondUser: UserEntity;
 
