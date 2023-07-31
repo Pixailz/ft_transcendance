@@ -1,0 +1,12 @@
+req=$(cat <<- EOREQ
+	PUT /gameInfo/1 HTTP/1.1
+	Authorization: Bearer ${TOKEN}
+EOREQ
+)
+
+body=$(cat <<- EOBODY
+{
+	"type": "new type 1"
+}
+EOBODY
+)
