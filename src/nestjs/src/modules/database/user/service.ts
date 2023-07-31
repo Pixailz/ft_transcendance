@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -38,27 +38,23 @@ export class UserService {
 	}
 
 	async returnOne(userId?: number, ft_login?: string) {
-		if (userId) 
-			return await this.userRepo.findOneBy({ id: userId });
-		return null;
+		const user = await this.userRepo.findOneBy({ id: userId });
+		if (user) 
+			return (user);
+		throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 	}
 
 	async update(userId: number, userPost: UserInfoPost) {
-		return await this.userRepo.update(userId, userPost);
+		const user = await this.userRepo.findOneBy({ id: userId });
+		if (user) 
+			return await this.userRepo.update(userId, userPost);
+		throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 	}
 	
 	async delete(userId: number) {
-		console.log(userId);
-		return await this.userRepo.delete({id : userId});
+		const user = await this.userRepo.findOneBy({ id: userId });
+		if (user) 
+			return await this.userRepo.delete({id : userId});
+		throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 	}
-	
-		// async updateAll(userId: number, userPost: UserInfoPost) {
-		// 	const user = await this.userRepo.findOneBy({ id: userId });
-		// 	user.nickname = userPost.nickname;
-		// 	user.email = userPost.email;
-		// 	user.picture  = userPost.picture;
-		// 	user.twoAuthFactor = userPost.twoAuthFactor;
-		// 	if picture not set, set a default value
-		// 	return await this.userRepo.save(user);
-		// }
 }

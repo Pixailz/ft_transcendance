@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -13,9 +13,7 @@ export class ChatRoomService {
         ) {}
 
         async create(post: ChatRoomPost) {
-
                 const user = new ChatRoomEntity();
-
                 user.name = post.name;
                 user.type = post.type;
                 user.password = post.password;
@@ -27,18 +25,23 @@ export class ChatRoomService {
         }
 
         async returnOne(chatId: number) {
-                console.log(chatId);
-                return await this.chatRoomRepo.findOneBy({ id: chatId });
+                const tmp = await this.chatRoomRepo.findOneBy({id: chatId});
+                if (tmp)
+                        return await this.chatRoomRepo.findOneBy({ id: chatId });
+                throw new HttpException('ChatRoom not found', HttpStatus.NOT_FOUND);
         }
 
         async update(chatId: number, post: ChatRoomPost) {
-                console.log(chatId);
-                console.log(post);
-                return await this.chatRoomRepo.update(chatId, post);
+                const tmp = await this.chatRoomRepo.findOneBy({id: chatId});
+                if (tmp)
+                        return await this.chatRoomRepo.update(chatId, post);
+                throw new HttpException('ChatRoom not found', HttpStatus.NOT_FOUND);
         }
 
         async delete(chatId: number) {
-                console.log(chatId);
-                return await this.chatRoomRepo.delete(chatId);
+                const tmp = await this.chatRoomRepo.findOneBy({id: chatId});
+                if (tmp)
+                        return await this.chatRoomRepo.delete(chatId);
+                throw new HttpException('ChatRoom not found', HttpStatus.NOT_FOUND);
         }
 }

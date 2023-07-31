@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -19,12 +19,16 @@ export class GameInfoService {
         async create(post: GameInfoPost, userA: number, userB: number) {
 
                 const gameInfo = new GameInfoEntity();
-                // const user = await this.userRepo.findOneBy({ id: userId });
-                // const newRoom = await this.ChatRoomRepo.findOneBy({ id: roomId });
-                gameInfo.type = post.type;
-                gameInfo.userA = userA;
-                gameInfo.userB = userB;
-                return await this.gameInfoRepo.save(gameInfo);
+                const user1 = await this.userRepo.findOneBy({id: userA}); 
+                const user2 = await this.userRepo.findOneBy({id: userB}); 
+                if (user1 && user2)
+                {
+                        gameInfo.userA = userA;
+                        gameInfo.userB = userB;
+                        gameInfo.type = post.type;
+                        return await this.gameInfoRepo.save(gameInfo);
+                }
+                throw new HttpException('User not found', HttpStatus.NOT_FOUND);
           }
 
         async returnAll() {
@@ -32,17 +36,23 @@ export class GameInfoService {
         }
 
         async returnOne(gameId: number) {
-                return await this.gameInfoRepo.findOneBy({ id: gameId });
+                const tmp = await this.gameInfoRepo.findOneBy({id: gameId});
+                if (tmp)
+                        return await this.gameInfoRepo.findOneBy({ id: gameId });
+                throw new HttpException('User not found', HttpStatus.NOT_FOUND);
         }
 
         async update(gameId: number, post: GameInfoPost) {
-                return await this.gameInfoRepo.update(gameId, post);
+                const tmp = await this.gameInfoRepo.findOneBy({id: gameId});
+                if (tmp)
+                        return await this.gameInfoRepo.update(gameId, post);
+                throw new HttpException('User not found', HttpStatus.NOT_FOUND);
         }
 
-        // async delete(user: number, room: number) {
-        //         console.log(user);
-        //         console.log(room);
-        //         const tmp = await this.gameInfoRepo.findOneBy({ userId: user, roomId: room });
-        //         return await this.gameInfoRepo.delete(tmp);
-        // }
+        async delete(gameId: number) {
+                const tmp = await this.gameInfoRepo.findOneBy({ id: gameId});
+                if (tmp)
+                        return await this.gameInfoRepo.delete(tmp);
+                throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
 }
