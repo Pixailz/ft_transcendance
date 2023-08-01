@@ -1,0 +1,22 @@
+name: CD
+
+run-name: Deployment of ft_transcendence
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+
+jobs:
+   deploy-success:
+     runs-on: ubuntu-latest
+     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+     steps:
+       - run: ✅ CI pass starting deployment
+
+   deploy-fail:
+     runs-on: ubuntu-latest
+     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+     steps:
+       - name: ❌ CI don't pass aborting deployment
