@@ -20,3 +20,4 @@ jobs:
      if: ${{ github.event.workflow_run.conclusion == 'failure' }}
      steps:
        - name: ❌ CI don't pass aborting deployment
+         run: echo
