@@ -41,20 +41,23 @@ export class UserService {
 		const user = await this.userRepo.findOneBy({ id: userId });
 		if (user) 
 			return (user);
-		throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+		else
+			throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 	}
 
 	async update(userId: number, userPost: UserInfoPost) {
 		const user = await this.userRepo.findOneBy({ id: userId });
 		if (user) 
 			return await this.userRepo.update(userId, userPost);
-		throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+		else
+			throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 	}
 	
 	async delete(userId: number) {
 		const user = await this.userRepo.findOneBy({ id: userId });
 		if (user) 
 			return await this.userRepo.delete({id : userId});
-		throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+		else
+			throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 	}
 }

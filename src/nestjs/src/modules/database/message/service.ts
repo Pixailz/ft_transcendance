@@ -43,20 +43,23 @@ export class MessageService {
 		const message = await this.messageRepo.findOneBy({id: MessageId});
 		if (message) 
 			return await this.messageRepo.findOneBy({ id: MessageId });
-		throw new HttpException('Message not found', HttpStatus.NOT_FOUND);
+		else
+			throw new HttpException('Message not found', HttpStatus.NOT_FOUND);
 	}
 
 	async update(MessageId: number, MessagePost: MessagePost) {
 		const message = await this.messageRepo.findOneBy({id: MessageId});
 		if (message) 
 			return await this.messageRepo.update(MessageId, MessagePost);
-		throw new HttpException('Message not found', HttpStatus.NOT_FOUND);
+		else
+			throw new HttpException('Message not found', HttpStatus.NOT_FOUND);
 	}
 
 	async delete(MessageId: number) {
 		const message = await this.messageRepo.findOneBy({id: MessageId});
 		if (message) 
 			return await this.messageRepo.delete(MessageId);
-		throw new HttpException('Message not found', HttpStatus.NOT_FOUND);
+		else
+			throw new HttpException('Message not found', HttpStatus.NOT_FOUND);
 	}
 }

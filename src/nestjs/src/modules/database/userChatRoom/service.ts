@@ -44,20 +44,23 @@ export class UserChatRoomService {
                 const tmp = await this.userChatRoomRepo.findOneBy({ userId: user, roomId: room });
                 if (tmp)
                         return tmp;
-                throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+                else
+                        throw new HttpException('Not found', HttpStatus.NOT_FOUND);
         }
 
         async update(user: number, room: number, post: UserChatRoomPost) {
                 const tmp = await this.userChatRoomRepo.findOneBy({ userId: user, roomId: room });
                 if (tmp)
                         return await this.userChatRoomRepo.update(tmp, post);
-                throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+                else
+                        throw new HttpException('Not found', HttpStatus.NOT_FOUND);
         }
 
         async delete(user: number, room: number) {
                 const tmp = await this.userChatRoomRepo.findOneBy({ userId: user, roomId: room });
                 if (tmp)
                         return await this.userChatRoomRepo.delete(tmp);
-                throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+                else
+                        throw new HttpException('Not found', HttpStatus.NOT_FOUND);
         }
 }
