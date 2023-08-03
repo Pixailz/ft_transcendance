@@ -10,18 +10,18 @@ export class userController {
 	@Get("me")
 	async get_info_me(@Request() req) {
 		const user_info = await this.UserService.get_user_info(req);
+
 		if (!user_info)
 			return null;
-		return req.user;
+
+		return user_info;
 	}
 
 	@Put("me")
 	async update_info_me(@Request() req, @Body() userPost: UserInfoPost,) {
-		let user_info = await this.UserService.get_user_info(req);
+		const user_id = await this.UserService.get_user_id(req);
 
-		await this.DbUserService.update(user_info.id, userPost);
-
-		user_info = await this.UserService.get_user_info(req);
+		await this.DbUserService.update(user_id, userPost);
 
 		return {status: "oke"};
 	}
