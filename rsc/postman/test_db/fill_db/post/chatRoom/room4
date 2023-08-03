@@ -1,0 +1,12 @@
+req=$(cat <<- EOREQ
+	POST /chatRoom HTTP/1.1
+	Authorization: Bearer ${TOKEN}
+EOREQ
+)
+
+body=$(cat <<- EOBODY
+{
+	"name": "room4"
+}
+EOBODY
+)

@@ -24,26 +24,28 @@ full_req="${req}"
 # if no body in the req file, like a GET request
 if [ "${body}" != "" ]; then
 	full_req+=$'\n'
-	# add Content-Type header
-	full_req+="Content-Type: $(<<<${body} file -b --mime-type -)"
-	full_req+=$'\n'
 	# add Content-Length header
 	full_req+="Content-Length: $(<<<${body} perl -p -e 's/\n/\r\n/' | wc -c)"
+	full_req+=$'\n'
+	# add Content-Type header
+	full_req+="Content-Type: $(<<<${body} file -b --mime-type -)"
 	full_req+=$'\n'$'\n'
 	# add the body
 	full_req+="${body}"
 fi
 
-full_req+=$'\n'
+full_req+=$'\n'$'\n'
 
 # debug print the full request
 printf "<>\n"
-printf "%s\n" "${full_req}" | cat -e
+printf "%s" "${full_req}"
 printf "><\n"
 
 # send the full request, and remove all '\r' from response
 # response="$(<<<${full_req} nc -C -q1 localhost 3000 | tr -d '\r')"
-response="$(printf "%s\n\n" "${full_req}" | nc -C localhost 3000 | tr -d '\r')"
+response="$(<<<"${full_req}" perl -p -e 's/\n/\r\n/' | nc -v -q1 localhost 3000 | tr -d '\r')"
+
+printf "%s\n" "${response}"
 
 # remove header from response
 response_f="$(<<<${response} tr '\n' '#' | sed 's/.*##//' | tr '#' '\n')"
@@ -55,6 +57,4 @@ printf "Response type: %s\n" "${response_type}"
 if [ "${response_type}" == "application/json" ]; then
 	# prettifier json output
 	<<<${response_f} jq --tab -C
-else
-	printf "%s\n" "${response}"
 fi

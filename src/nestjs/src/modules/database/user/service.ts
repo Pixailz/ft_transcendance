@@ -1,34 +1,24 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import { UserEntity } from "./entity";
-import { UserInfoEntity } from "../userInfo/entity";
 
-import { UserPost } from "./dto";
+import { UserPost, UserInfoPost } from "./dto";
 import { Api42Service } from "src/modules/api42/api42.service";
+import { UserChatRoomEntity } from "../userChatRoom/entity";
 
 @Injectable()
 export class UserService {
 	constructor(
 		@InjectRepository(UserEntity)
 		private readonly userRepo: Repository<UserEntity>,
-		@InjectRepository(UserInfoEntity)
-		private readonly userInfoRepo: Repository<UserInfoEntity>,
 	) {}
 
 	async create(userPost: UserPost) {
 		const user = new UserEntity();
-
-		user.ft_login = userPost.ft_login;
-
+		user.ftLogin = userPost.ftLogin;
 		await this.userRepo.save(user);
-
-		const userInfo = new UserInfoEntity();
-		userInfo.name = userPost.ft_login;
-		userInfo.user_id = user;
-
-		await this.userInfoRepo.save(userInfo);
 		return user.id;
 	}
 
@@ -36,7 +26,7 @@ export class UserService {
 		const api42Service = new Api42Service();
 		const user42 = await api42Service.getUserFromCode(code);
 
-		const user = await this.userRepo.findOneBy({ ft_login: user42.login });
+		const user = await this.userRepo.findOneBy({ ftLogin: user42.login });
 		if (!user) {
 			return null;
 		}
@@ -48,20 +38,26 @@ export class UserService {
 	}
 
 	async returnOne(userId?: number, ft_login?: string) {
-		if (userId) return await this.userRepo.findOneBy({ id: userId });
-		if (ft_login)
-			return await this.userRepo.findOneBy({ ft_login: ft_login });
-		return null;
+		const user = await this.userRepo.findOneBy({ id: userId });
+		if (user) 
+			return (user);
+		else
+			throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 	}
 
-	async update(userId: number, userPost: UserPost) {
-		console.log(userId);
-		console.log(userPost);
-		return await this.userRepo.update(userId, userPost);
+	async update(userId: number, userPost: UserInfoPost) {
+		const user = await this.userRepo.findOneBy({ id: userId });
+		if (user) 
+			return await this.userRepo.update(userId, userPost);
+		else
+			throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 	}
-
+	
 	async delete(userId: number) {
-		console.log(userId);
-		return await this.userRepo.delete(userId);
+		const user = await this.userRepo.findOneBy({ id: userId });
+		if (user) 
+			return await this.userRepo.delete({id : userId});
+		else
+			throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 	}
 }

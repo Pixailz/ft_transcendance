@@ -1,0 +1,27 @@
+#!/bin/bash
+
+TOK=$(cat .tok)
+
+function do4time()
+{
+	local path="${1}"
+
+	for i in {1..4}
+	do
+		TOKEN=$TOK .././postman ${path}$i
+	done
+}
+
+# test post/create function
+do4time "fill_db/post/user/user"
+do4time "fill_db/post/chatRoom/room"
+do4time "fill_db/post/userChatRoom/user1inroom"
+do4time "fill_db/post/gameInfo/gameInfo"
+do4time "fill_db/post/message/user1ToRoom"
+
+# test put/update function
+do4time "fill_db/put/user/user"
+do4time "fill_db/put/chatRoom/room"
+do4time "fill_db/put/userChatRoom/userChatRoom"
+do4time "fill_db/put/message/message"
+do4time "fill_db/put/gameInfo/gameInfo"
