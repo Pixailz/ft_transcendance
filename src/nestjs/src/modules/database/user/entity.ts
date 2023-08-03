@@ -6,7 +6,7 @@ import {
 	OneToMany,
 } from "typeorm";
 
-import { UserChatRoomEntity } from "../userChatRoom/entity"
+import { UserChatRoomEntity } from "../userChatRoom/entity";
 import { GameInfoEntity } from "../gameInfo/entity";
 import { MessageEntity } from "../message/entity";
 
@@ -20,13 +20,13 @@ export class UserEntity {
 
 	@Column({ type: "varchar", length: 120, default: "" })
 	public nickname: string;
-	
+
 	@Column({ type: "varchar", length: 120, default: "" })
 	public picture: string;
-	
+
 	@Column({ type: "varchar", length: 120, default: "" })
 	public email: string;
-	
+
 	@Column({ type: "varchar", length: 120, default: "" })
 	public status: string;
 
@@ -35,16 +35,16 @@ export class UserEntity {
 
 	@CreateDateColumn({ type: "timestamp" })
 	public createdAt!: Date;
-	
-	@OneToMany(type => UserChatRoomEntity, roomInfo => roomInfo.user)
+
+	@OneToMany((type) => UserChatRoomEntity, (roomInfo) => roomInfo.user)
 	roomInfo: UserChatRoomEntity[];
 
-	@OneToMany(type => GameInfoEntity, gameInfo => gameInfo.firstUser)
+	@OneToMany((type) => GameInfoEntity, (gameInfo) => gameInfo.firstUser)
 	gameUserA: GameInfoEntity[];
-	
-	@OneToMany(type => GameInfoEntity, gameInfo => gameInfo.secondUser)
+
+	@OneToMany((type) => GameInfoEntity, (gameInfo) => gameInfo.secondUser)
 	gameUserB: GameInfoEntity[];
 
-	@OneToMany(type => MessageEntity, message => message.user)
+	@OneToMany((type) => MessageEntity, (message) => message.user)
 	message: MessageEntity[];
 }

@@ -43,7 +43,7 @@ printf "><\n"
 
 # send the full request, and remove all '\r' from response
 # response="$(<<<${full_req} nc -C -q1 localhost 3000 | tr -d '\r')"
-response="$(<<<"${full_req}" perl -p -e 's/\n/\r\n/' | nc -v -q1 localhost 3000 | tr -d '\r')"
+response="$(<<<"${full_req}" perl -p -e 's/\n/\r\n/' | nc -v localhost 3000 | tr -d '\r')"
 
 printf "%s\n" "${response}"
 

@@ -11,7 +11,7 @@ export class authGuardService implements CanActivate {
 		if (!jwt_token)
 		{
 			console.log("[authGuardService] no token");
-      this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
+			this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
 			return false;
 		}
 		const res = await fetch('/api/auth/profile', {
@@ -24,7 +24,7 @@ export class authGuardService implements CanActivate {
 		if (res.status !== 200)
 		{
 			console.log("[authGuardService] bad token");
-      this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
+			this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
 			return false;
 		}
 		return true;

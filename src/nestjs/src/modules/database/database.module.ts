@@ -3,8 +3,8 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule } from "@nestjs/config";
 
 import { UserEntity } from "./user/entity";
-import { UserService } from "./user/service";
-import { UserController } from "./user/controller";
+import { dbUserService } from "./user/service";
+import { dbUserController } from "./user/controller";
 
 import { ChatRoomEntity } from "./chatRoom/entity";
 import { ChatRoomService } from "./chatRoom/service";
@@ -22,7 +22,8 @@ import { GameInfoEntity } from "./gameInfo/entity";
 import { GameInfoService } from "./gameInfo/service";
 import { GameInfoController } from "./gameInfo/controller";
 
-@Module({imports: [
+@Module({
+	imports: [
 		ConfigModule.forRoot({ isGlobal: true }),
 		TypeOrmModule.forRoot({
 			type: "postgres",
@@ -31,13 +32,43 @@ import { GameInfoController } from "./gameInfo/controller";
 			username: process.env.DB_USER.toString(),
 			password: process.env.DB_PASS.toString(),
 			database: process.env.DB_NAME.toString(),
-			entities: [UserEntity, ChatRoomEntity, UserChatRoomEntity, MessageEntity, GameInfoEntity],
+			entities: [
+				UserEntity,
+				ChatRoomEntity,
+				UserChatRoomEntity,
+				MessageEntity,
+				GameInfoEntity,
+			],
 			synchronize: true,
 		}),
-		TypeOrmModule.forFeature([UserEntity, ChatRoomEntity, UserChatRoomEntity, MessageEntity, GameInfoEntity]),
+		TypeOrmModule.forFeature([
+			UserEntity,
+			ChatRoomEntity,
+			UserChatRoomEntity,
+			MessageEntity,
+			GameInfoEntity,
+		]),
 	],
-	controllers: [UserController, ChatRoomController, UserChatRoomController, MessageController, GameInfoController],
-	providers: [UserService, ChatRoomService, UserChatRoomService, MessageService, GameInfoService],
-	exports: [UserService, ChatRoomService, UserChatRoomService, MessageService, GameInfoService],
+	controllers: [
+		dbUserController,
+		ChatRoomController,
+		UserChatRoomController,
+		MessageController,
+		GameInfoController,
+	],
+	providers: [
+		dbUserService,
+		ChatRoomService,
+		UserChatRoomService,
+		MessageService,
+		GameInfoService,
+	],
+	exports: [
+		dbUserService,
+		ChatRoomService,
+		UserChatRoomService,
+		MessageService,
+		GameInfoService,
+	],
 })
 export class DbModule {}

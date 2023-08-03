@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from "@angular/router";
+import { userService } from '../../services/user.service';
 
 
 @Component({
@@ -8,21 +8,15 @@ import { Router } from "@angular/router";
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
-	constructor(private router: Router) {}
-
+	constructor(
+		private UserService: userService,
+	) {}
 	userLoggedIn = false;
 
-	async ngOnInit() {
-		if (localStorage.getItem("access_token"))
-			this.userLoggedIn = true;
-		else
-			this.userLoggedIn = false;
-	}
+	async ngOnInit()
+	{ this.userLoggedIn = this.UserService.isLoggedIn(); }
 
 	SignOut()
-	{
-		localStorage.removeItem("access_token");
-		this.userLoggedIn = false;
-		this.router.navigate(["/login"]);
-	}
+	{ this.UserService.SignOut(); }
+
 }

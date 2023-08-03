@@ -1,10 +1,8 @@
 <mat-card>
 	<form>
-		<app-avatar />
 		<mat-form-field>
 			<mat-label>Nickname</mat-label>
 			<input [(ngModel)]="nickname" name="nickname" required
-			value="{{nickname}}"
 			matInput>
 		</mat-form-field>
 
@@ -12,14 +10,8 @@
 
 			<mat-label>mail</mat-label>
 			<input [(ngModel)]="email" name="email"
-			value="{{email}}"
 			matInput>
 		</mat-form-field>
-
-		<mat-slide-toggle>
-			2FA
-		</mat-slide-toggle>
-
 		<button mat-raised-button color="primary" (click)="onSubmit()">Save</button>
 	</form>
 </mat-card>

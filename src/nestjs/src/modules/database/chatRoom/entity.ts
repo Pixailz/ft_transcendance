@@ -7,7 +7,7 @@ import {
 } from "typeorm";
 
 import { UserChatRoomEntity } from "../userChatRoom/entity";
-import { MessageEntity  } from "../message/entity";
+import { MessageEntity } from "../message/entity";
 
 @Entity()
 export class ChatRoomEntity {
@@ -23,9 +23,9 @@ export class ChatRoomEntity {
 	@Column({ type: "varchar", length: 120, default: "" })
 	public password!: string;
 
-	@OneToMany(type => UserChatRoomEntity, roomInfo => roomInfo.room)
+	@OneToMany((type) => UserChatRoomEntity, (roomInfo) => roomInfo.room)
 	roomInfo: UserChatRoomEntity[];
 
-	@OneToMany(type => MessageEntity, message => message.room)
+	@OneToMany((type) => MessageEntity, (message) => message.room)
 	message: MessageEntity[];
 }
