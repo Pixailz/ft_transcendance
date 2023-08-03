@@ -41,7 +41,7 @@ export class GameInfoService {
                 if (tmp)
                         return await this.gameInfoRepo.findOneBy({ id: gameId });
                 else
-                        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+                        throw new HttpException('GameInfo not found', HttpStatus.NOT_FOUND);
         }
 
         async update(gameId: number, post: GameInfoPost) {
@@ -49,7 +49,7 @@ export class GameInfoService {
                 if (tmp)
                         return await this.gameInfoRepo.update(gameId, post);
                 else
-                        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+                        throw new HttpException('GameInfo not found', HttpStatus.NOT_FOUND);
         }
 
         async delete(gameId: number) {
@@ -57,6 +57,6 @@ export class GameInfoService {
                 if (tmp)
                         return await this.gameInfoRepo.delete(tmp);
                 else
-                        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+                        throw new HttpException('GameInfo not found', HttpStatus.NOT_FOUND);
         }
 }

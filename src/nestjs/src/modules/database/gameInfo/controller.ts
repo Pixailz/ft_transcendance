@@ -42,12 +42,11 @@ export class GameInfoController {
                 res.send(await this.gameInfoService.update(gameId, userPost));
         }
 
-        // @Delete(":userA/:userB")
-        // async delete(
-        //         @Param("userA") userAA: number,
-        //         @Param("userB") userBB: number,
-        //         @Res() res: Response,
-        // ) {
-        //         res.send(await this.gameInfoService.delete(userAA, userBB));
-        // }
+        @Delete(":id")
+        async delete(
+                @Param("id") userId: number,
+                @Res() res: Response,
+        ) {
+                res.send(await this.gameInfoService.delete(userId));
+        }
 }
