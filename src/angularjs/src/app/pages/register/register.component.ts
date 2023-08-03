@@ -17,19 +17,26 @@ export class RegisterComponent {
 		if (this.nickname)
 		{
 			const jwt_token = localStorage.getItem("access_token");
+			let body;
+			if (this.mail)
+				body = JSON.stringify({'nickname' : this.nickname, 'email' : this.mail});
+			else
+				body = JSON.stringify({'nickname' : this.nickname});
 			let res:any = await fetch('/api/user/me', {
 				method: 'PUT',
 				headers:  {
 					'Authorization': 'Bearer ' + jwt_token,
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({
-					'nickname' : this.nickname,
-					'email' : this.mail
-				}),
+				body: body,
 				mode: 'cors'
-			});
-			window.location.href = '/home';
+			}).catch(
+				(err) => {
+				}
+			)
+			.then( () => {
+				window.location.href = '/home';
+			})			
 		}
 	}
 }
