@@ -23,6 +23,7 @@ import { AvatarComponent } from './components/avatar/avatar.component';
 import { LoginComponent } from './pages/login/login.component';
 import { HttpClientModule } from '@angular/common/http';
 import { authGuardService } from './auth-guard.service';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { authGuardService } from './auth-guard.service';
 	MatInputModule,
     AppRoutingModule,
 	HttpClientModule,
+	FormsModule
   ],
   providers: [authGuardService],
   bootstrap: [AppComponent]

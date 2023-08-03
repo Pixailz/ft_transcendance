@@ -1,14 +1,25 @@
 <mat-card>
-	<form action="" method="post">
+	<form>
 		<app-avatar />
 		<mat-form-field>
 			<mat-label>Nickname</mat-label>
-			<input
-
+			<input [(ngModel)]="nickname" name="nickname" required
+			value="{{nickname}}"
 			matInput>
 		</mat-form-field>
+
+		<mat-form-field>
+
+			<mat-label>mail</mat-label>
+			<input [(ngModel)]="mail" name="mail"
+			value="{{mail}}"
+			matInput>
+		</mat-form-field>
+
 		<mat-slide-toggle>
 			2FA
 		</mat-slide-toggle>
+
+		<button mat-raised-button color="primary" (click)="onSubmit()">Save</button>
 	</form>
 </mat-card>
