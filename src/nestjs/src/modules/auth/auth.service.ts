@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import { UserService } from "../database/user/service";
+import { dbUserService } from "../database/user/service";
 import { Api42Service } from "../api42/api42.service";
 import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class AuthService {
 	constructor(
-		private userService: UserService,
+		private userService: dbUserService,
 		private api42Service: Api42Service,
 		private jwtService: JwtService,
 	) {}
@@ -28,8 +28,12 @@ export class AuthService {
 			user = await this.userService.returnOne(user_id);
 		}
 		const payload = { sub: user.id };
+		let status;
+
+		if (!user.nickname) status = "register"; else status = "oke"
 		return {
 			access_token: await this.jwtService.signAsync(payload),
+			status: status
 		};
 	}
 

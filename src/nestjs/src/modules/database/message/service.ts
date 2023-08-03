@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { Injectable, ForbiddenException } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -20,16 +20,12 @@ export class MessageService {
 
 	async create(messagePost: MessagePost, UserId: number, RoomId: number) {
 		const message = new MessageEntity();
-		const room = await this.chatRoomRepo.findOneBy({id: RoomId});
-		const user = await this.userRepo.findOneBy({id: UserId});
-		if (room)
-			message.roomId = RoomId;
-		else
-			throw new HttpException('ChatRoom not found', HttpStatus.NOT_FOUND);
-		if (user)
-			message.userId = UserId;
-		else
-			throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+		const room = await this.chatRoomRepo.findOneBy({ id: RoomId });
+		const user = await this.userRepo.findOneBy({ id: UserId });
+		if (room) message.roomId = RoomId;
+		else throw new ForbiddenException("ChatRoom not found");
+		if (user) message.userId = UserId;
+		else throw new ForbiddenException("User not found");
 		message.content = messagePost.content;
 		await this.messageRepo.save(message);
 		return message.id;
@@ -40,26 +36,21 @@ export class MessageService {
 	}
 
 	async returnOne(MessageId?: number) {
-		const message = await this.messageRepo.findOneBy({id: MessageId});
-		if (message) 
-			return await this.messageRepo.findOneBy({ id: MessageId });
-		else
-			throw new HttpException('Message not found', HttpStatus.NOT_FOUND);
+		const message = await this.messageRepo.findOneBy({ id: MessageId });
+		if (message) return await this.messageRepo.findOneBy({ id: MessageId });
+		else throw new ForbiddenException("Message not found");
 	}
 
 	async update(MessageId: number, MessagePost: MessagePost) {
-		const message = await this.messageRepo.findOneBy({id: MessageId});
-		if (message) 
+		const message = await this.messageRepo.findOneBy({ id: MessageId });
+		if (message)
 			return await this.messageRepo.update(MessageId, MessagePost);
-		else
-			throw new HttpException('Message not found', HttpStatus.NOT_FOUND);
+		else throw new ForbiddenException("Message not found");
 	}
 
 	async delete(MessageId: number) {
-		const message = await this.messageRepo.findOneBy({id: MessageId});
-		if (message) 
-			return await this.messageRepo.delete(MessageId);
-		else
-			throw new HttpException('Message not found', HttpStatus.NOT_FOUND);
+		const message = await this.messageRepo.findOneBy({ id: MessageId });
+		if (message) return await this.messageRepo.delete(MessageId);
+		else throw new ForbiddenException("Message not found");
 	}
 }

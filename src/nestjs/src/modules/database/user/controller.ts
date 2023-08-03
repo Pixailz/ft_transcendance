@@ -10,12 +10,12 @@ import {
 } from "@nestjs/common";
 import { Response } from "express";
 
-import { UserService } from "./service";
+import { dbUserService } from "./service";
 import { UserPost, UserInfoPost } from "./dto";
 
-@Controller("user")
-export class UserController {
-	constructor(private readonly userService: UserService) {}
+@Controller("db/user")
+export class dbUserController {
+	constructor(private readonly userService: dbUserService) {}
 
 	@Post()
 	async create(@Body() post: UserPost) {
@@ -40,13 +40,11 @@ export class UserController {
 	) {
 		res.send(await this.userService.update(userId, userPost));
 	}
-	
+
 	@Delete(":id")
 	async delete(@Param("id") userId: number, @Res() res: Response) {
 		const user = await this.userService.delete(userId);
-		if (user)
-			res.send(await this.userService.delete(userId));
-		else
-			console.log('in delete user nb : ', userId, ' not found')
+		if (user) res.send(await this.userService.delete(userId));
+		else console.log("in delete user nb : ", userId, " not found");
 	}
 }

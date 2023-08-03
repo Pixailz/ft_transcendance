@@ -1,0 +1,13 @@
+req=$(cat <<- EOREQ
+	PUT /user/me HTTP/1.1
+	Authorization: Bearer ${TOKEN}
+EOREQ
+)
+
+body=$(cat <<- EOBODY
+{
+	"nickname": "Pix",
+	"email": "pix@overflow.com"
+}
+EOBODY
+)

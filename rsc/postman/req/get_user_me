@@ -1,0 +1,5 @@
+req=$(cat <<- EOREQ
+	GET /user/me HTTP/1.1
+	Authorization: Bearer ${TOKEN}
+EOREQ
+)

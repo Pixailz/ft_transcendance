@@ -13,17 +13,16 @@ import { Response } from "express";
 import { MessageService } from "./service";
 import { MessagePost } from "./dto";
 
-@Controller("message")
+@Controller("db/message")
 export class MessageController {
 	constructor(private readonly messageService: MessageService) {}
 
 	@Post(":user_id/:chat_id")
-	create(  
-    		@Param("user_id") userId: number,
-            @Param("chat_id") chatId: number,
-            @Body() post: MessagePost
-	)
-	{
+	create(
+		@Param("user_id") userId: number,
+		@Param("chat_id") chatId: number,
+		@Body() post: MessagePost,
+	) {
 		return this.messageService.create(post, userId, chatId);
 	}
 

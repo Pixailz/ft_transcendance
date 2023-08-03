@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsOptional, IsEmail, IsString, IsBooleanString} from "class-validator";
+import {
+	IsNotEmpty,
+	IsOptional,
+	IsEmail,
+	IsString,
+	IsBooleanString,
+} from "class-validator";
 import { isBooleanObject } from "util/types";
 
 export class UserPost {
@@ -15,7 +21,7 @@ export class UserInfoPost {
 	@IsOptional()
 	@IsEmail()
 	email?: string;
-	
+
 	@IsOptional()
 	picture?: string;
 

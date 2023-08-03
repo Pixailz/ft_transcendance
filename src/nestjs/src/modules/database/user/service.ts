@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -6,10 +6,9 @@ import { UserEntity } from "./entity";
 
 import { UserPost, UserInfoPost } from "./dto";
 import { Api42Service } from "src/modules/api42/api42.service";
-import { UserChatRoomEntity } from "../userChatRoom/entity";
 
 @Injectable()
-export class UserService {
+export class dbUserService {
 	constructor(
 		@InjectRepository(UserEntity)
 		private readonly userRepo: Repository<UserEntity>,
@@ -26,10 +25,7 @@ export class UserService {
 		const api42Service = new Api42Service();
 		const user42 = await api42Service.getUserFromCode(code);
 
-		const user = await this.userRepo.findOneBy({ ftLogin: user42.login });
-		if (!user) {
-			return null;
-		}
+		const user = await this.get_user(null, user42.login);
 		return user;
 	}
 
@@ -38,26 +34,30 @@ export class UserService {
 	}
 
 	async returnOne(userId?: number, ft_login?: string) {
-		const user = await this.userRepo.findOneBy({ id: userId });
-		if (user) 
-			return (user);
-		else
-			throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+		return this.get_user(userId, ft_login);
 	}
 
 	async update(userId: number, userPost: UserInfoPost) {
-		const user = await this.userRepo.findOneBy({ id: userId });
-		if (user) 
-			return await this.userRepo.update(userId, userPost);
-		else
-			throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+		const user = await this.get_user(userId, null);
+		if (user) return await this.userRepo.update(userId, userPost);
+		else throw new ForbiddenException("User not found");
 	}
-	
+
 	async delete(userId: number) {
-		const user = await this.userRepo.findOneBy({ id: userId });
-		if (user) 
-			return await this.userRepo.delete({id : userId});
-		else
-			throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+		const user = await this.get_user(userId, null);
+		if (user) return await this.userRepo.delete({ id: userId });
+		else throw new ForbiddenException("User not found");
+	}
+
+	async get_user(userId: number | null, ft_login: string | null): Promise<UserEntity> | null  {
+		if (userId) {
+			const user = await this.userRepo.findOneBy({ id: userId });
+			if (user) return user;
+		}
+		if (ft_login) {
+			const user = await this.userRepo.findOneBy({ ftLogin: ft_login });
+			if (user) return user;
+		}
+		return null;
 	}
 }
