@@ -1,0 +1,17 @@
+<mat-card>
+	<form>
+		<mat-form-field>
+			<mat-label>Nickname</mat-label>
+			<input [(ngModel)]="nickname" name="nickname" required
+			matInput>
+		</mat-form-field>
+
+		<mat-form-field>
+
+			<mat-label>mail</mat-label>
+			<input [(ngModel)]="mail" name="mail"
+			matInput>
+		</mat-form-field>
+		<button mat-raised-button color="primary" (click)="onSubmit()">Save</button>
+	</form>
+</mat-card>

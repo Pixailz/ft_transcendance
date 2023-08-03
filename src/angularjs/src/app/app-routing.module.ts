@@ -8,6 +8,7 @@ import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.com
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
 import { LoginComponent } from './pages/login/login.component';
 import { authGuardService } from './auth-guard.service';
+import { RegisterComponent } from './pages/register/register.component';
 
 const routes: Routes = [
 	{
@@ -29,9 +30,9 @@ const routes: Routes = [
 		component: LoginComponent,
 	},
 	{
-		path: '',
-		redirectTo: '/home',
-		pathMatch: 'full'
+		path: 'register',
+		component: RegisterComponent,
+		canActivate: [authGuardService],
 	},
 	{
 		path: '**',

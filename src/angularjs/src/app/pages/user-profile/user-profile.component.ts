@@ -18,8 +18,7 @@ export class UserProfileComponent implements OnInit {
 		const jwt_token = localStorage.getItem("access_token");
 		try {
 			this.http.get('/api/user/me', {
-				headers:  {'Authorization': 'Bearer ' + jwt_token,
-			}}).subscribe((data) => {
+				headers:  {'Authorization': 'Bearer ' + jwt_token}}).subscribe((data) => {
 				let response:any = data;
 				this.nickname = response.nickname;
 				this.mail = response.email;
