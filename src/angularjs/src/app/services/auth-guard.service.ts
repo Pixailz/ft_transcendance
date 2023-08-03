@@ -24,7 +24,7 @@ export class authGuardService implements CanActivate {
 		if (res.status !== 200)
 		{
 			console.log("[authGuardService] bad token");
-      this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
+			this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
 			return false;
 		}
 		return true;

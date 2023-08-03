@@ -15,6 +15,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+
 import { AppRoutingModule } from './app-routing.module';
 import { PongComponent } from './pages/pong/pong.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
@@ -22,7 +23,7 @@ import { UserProfileComponent } from './pages/user-profile/user-profile.componen
 import { AvatarComponent } from './components/avatar/avatar.component';
 import { LoginComponent } from './pages/login/login.component';
 import { HttpClientModule } from '@angular/common/http';
-import { authGuardService } from './auth-guard.service';
+import { authGuardService } from './services/auth-guard.service';
 import { FormsModule } from '@angular/forms';
 import { RegisterComponent } from './pages/register/register.component';
 

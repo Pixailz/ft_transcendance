@@ -6,8 +6,7 @@ EOREQ
 
 body=$(cat <<- EOBODY
 {
-	"nickname": "Pix",
-	"email": "pix@overflow.com"
+	"nickname": "Pix"
 }
 EOBODY
 )

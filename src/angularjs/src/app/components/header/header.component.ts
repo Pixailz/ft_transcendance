@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Router } from "@angular/router";
 import { userService } from '../../services/user.service';
 
 
@@ -10,7 +9,6 @@ import { userService } from '../../services/user.service';
 })
 export class HeaderComponent {
 	constructor(
-		private router: Router,
 		private UserService: userService,
 	) {}
 	userLoggedIn = false;

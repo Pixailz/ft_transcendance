@@ -10,10 +10,6 @@ export class userController {
 	@Get("me")
 	async get_info_me(@Request() req) {
 		const user_info = await this.UserService.get_user_info(req);
-
-		if (!user_info)
-			return null;
-
 		return user_info;
 	}
 
