@@ -8,6 +8,15 @@ on:
   pull_request:
     types: [opened]
 
+env:
+  SETUP_STR: |+
+    pix
+    1234
+    1234
+    1234
+    https://localhost/login
+    http://localhost:4200/login
+
 jobs:
   info:
     runs-on: ubuntu-latest
@@ -28,7 +37,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Setup .env
-        run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
+        run: printf "${SETUP_STR}\n" | ./setup
 
       - name: Cleaning up previous run
         run: |+
@@ -46,7 +55,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Setup .env
-        run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
+        run: printf "${SETUP_STR}\n" | ./setup
 
       - name: Cleaning up previous run
         run: |+
@@ -63,7 +72,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Setup .env
-        run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
+        run: printf "${SETUP_STR}\n" | ./setup
 
       - name: Cleaning up previous run
         run: |+
@@ -81,7 +90,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Setup .env
-        run: printf "pix\n1234\n1234\n1234\n1234" | ./setup
+        run: printf "${SETUP_STR}\n" | ./setup
 
       - name: Cleaning up previous run
         run: |+
