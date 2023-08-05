@@ -1,20 +1,29 @@
-#!/bin/bash
+#!/bin/bash -eu
 
 # CONFIG
+## ENV
 ENV_FILE="./.env"
 VAR_TO_EDIT=(
 	"ADMIN_USER"
 	"ADMIN_PASS"
 	"API42_USERID"
 	"API42_SECRET"
-	"API42_REDIRECTURL"
+	"API42_REDIRECTURL_DEV"
+	"API42_REDIRECTURL_PROD"
 )
 JWT_LEN="64"
 
+## ANGULAR ENV
+ANGULAR_ENV_DIR="src/angularjs/src/app/environments"
+ANGULAR_PROD_ENV="${ANGULAR_ENV_DIR}/environment.ts"
+ANGULAR_DEV_ENV="${ANGULAR_ENV_DIR}/environment.dev.ts"
+
+# FUNCTIONS
+## ENV FUNCTION
 function	install::env::replace_var()
 {
-	local	var_name="${1}"
-	local	var_value="${2}"
+	local	var_name="${1?}"
+	local	var_value="${2?}"
 
 	sed -i "s|${var_name}=\"\"|${var_name}=\"${var_value}\"|g" "${ENV_FILE}"
 }
@@ -33,4 +42,54 @@ function	install::env()
 	install::env::replace_var "JWT_SECRET" "${JWT_PASS}"
 }
 
+## ANGULAR FUNCTION
+function	url::encode()
+{
+	local	url="${1?}"
+	local	url_len="${#url}"
+
+	url_encoded="$(
+		for ((i = 0; i < url_len; i++)); do
+			local	c="${url:${i}:1}"
+			case "${c}" in
+				[a-zA-Z0-9.~_-]) printf "%c" "${c}" ;;
+				*) printf "%%%02X" "'${c}" ;;
+			esac
+		done
+	)"
+}
+
+function	angular::env::replace_var()
+{
+	local	var_value="${1?}"
+	local	file_path="${2?}"
+	local	var="	after_auth_uri: "
+
+	perl -pi -e "s|^${var}\".*?\"$|${var}\"${var_value}\"|" "${file_path}"
+}
+
+function	angular::get_after_auth()
+{
+	local	var_name="${1?}"
+	local	user_id
+	local	redirect
+
+	source "${ENV_FILE}"; \
+		user_id="${API42_USERID}" \
+		redirect="${!var_name}"
+	url::encode "${redirect}"
+	redirect="${url_encoded}"
+	AFTER_AUTH="https://api.intra.42.fr/oauth/authorize?client_id=${user_id}"
+	AFTER_AUTH+="&redirect_uri=${redirect}&response_type=code"
+}
+
+function	angular::set_after_auth()
+{
+	angular::get_after_auth "API42_REDIRECTURL_PROD"
+	angular::env::replace_var "${AFTER_AUTH}" "${ANGULAR_PROD_ENV}"
+	angular::get_after_auth "API42_REDIRECTURL_DEV"
+	angular::env::replace_var "${AFTER_AUTH}" "${ANGULAR_DEV_ENV}"
+}
+
 install::env
+angular::set_after_auth
