@@ -17,12 +17,13 @@ export class UserProfileComponent implements OnInit {
 
 	async ngOnInit() {
 		await this.UserService.getUserInfo()
-			.then((user) => {
-				this.nickname = user.nickname;
-				this.email = user.email;
+			.then((userInfo) => {
+				this.nickname = userInfo.nickname;
+				this.email = userInfo.email;
 			})
 			.catch((err) => {
-				return {status: "pas oke"}
+				this.nickname = "";
+				this.email = "";
 			})
 	}
 
