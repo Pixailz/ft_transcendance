@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "prod": "ng build",
-    "dev": "ng serve --host 0.0.0.0",
+    "prod": "ng build --configuration=production",
+    "dev": "ng serve --host 0.0.0.0 --configuration=development",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"

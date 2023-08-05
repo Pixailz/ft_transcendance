@@ -1,4 +1,4 @@
-# never, ever push .env file. never
+# never, ever push .env file. never.
 .env
 
 # downloaded thing
