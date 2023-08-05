@@ -91,5 +91,49 @@ function	angular::set_after_auth()
 	angular::env::replace_var "${AFTER_AUTH}" "${ANGULAR_DEV_ENV}"
 }
 
-install::env
-angular::set_after_auth
+## DOCKER RE
+function	docker::re::prod()
+{
+	docker compose down
+	sudo rm -rf ./volume
+	docker compose up --build
+}
+
+function	docker::re::dev()
+{
+	docker compose -f ./docker-compose-dev.yaml down
+	sudo rm -rf ./volume
+	docker compose -f ./docker-compose-dev.yaml up --build
+}
+
+# PARSING
+function	usage()
+{
+	printf "${0}: [re prod|dev]\n"
+	printf "\tif no arg provided setup .env file\n"
+	printf "\tif re option is provided, relaunch in either dev or prod mode\n"
+	exit 1
+}
+
+if [ "${#@}" -eq "0" ]; then
+	install::env
+	angular::set_after_auth
+else
+	while [ "${1}" ]; do
+		case "${1}" in
+			"re")
+				shift
+				[ -z "${1}" ] && usage
+				angular::set_after_auth
+				case "${1}" in
+					"prod") docker::re::prod;;
+					"dev") docker::re::dev;;
+				esac
+			;;
+			*) usage;;
+		esac
+		shift
+	done
+fi
+
+exit $?
