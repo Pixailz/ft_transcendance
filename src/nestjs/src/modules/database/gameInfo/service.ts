@@ -3,12 +3,12 @@ import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import { GameInfoEntity } from "./entity";
-import { GameInfoPost } from "./dto";
+import { DBGameInfoPost } from "./dto";
 
 import { UserEntity } from "../user/entity";
 
 @Injectable()
-export class GameInfoService {
+export class DBGameInfoService {
 	constructor(
 		@InjectRepository(GameInfoEntity)
 		private readonly gameInfoRepo: Repository<GameInfoEntity>,
@@ -16,7 +16,7 @@ export class GameInfoService {
 		private readonly userRepo: Repository<UserEntity>,
 	) {}
 
-	async create(post: GameInfoPost, userA: number, userB: number) {
+	async create(post: DBGameInfoPost, userA: number, userB: number) {
 		const gameInfo = new GameInfoEntity();
 		const user1 = await this.userRepo.findOneBy({ id: userA });
 		const user2 = await this.userRepo.findOneBy({ id: userB });
@@ -38,7 +38,7 @@ export class GameInfoService {
 		else throw new ForbiddenException("GameInfo not found");
 	}
 
-	async update(gameId: number, post: GameInfoPost) {
+	async update(gameId: number, post: DBGameInfoPost) {
 		const tmp = await this.gameInfoRepo.findOneBy({ id: gameId });
 		if (tmp) return await this.gameInfoRepo.update(gameId, post);
 		else throw new ForbiddenException("GameInfo not found");

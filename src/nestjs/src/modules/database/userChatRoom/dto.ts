@@ -1,6 +1,6 @@
 import { IsBooleanString, IsNotEmpty, IsOptional } from "class-validator";
 
-export class UserChatRoomPost {
+export class DBUserChatRoomPost {
 	@IsNotEmpty()
 	@IsBooleanString()
 	isOwner?: boolean;

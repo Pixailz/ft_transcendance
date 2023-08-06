@@ -1,6 +1,6 @@
 import { IsString, IsNotEmpty } from "class-validator";
 
-export class GameInfoPost {
+export class DBGameInfoPost {
 	@IsNotEmpty()
 	@IsString()
 	type?: string;

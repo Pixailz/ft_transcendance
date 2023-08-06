@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import { dbUserService } from "../database/user/service";
-import { Api42Service } from "../api42/api42.service";
+import { DBUserService } from "../database/user/service";
+import { Api42Service } from "../api42/service";
 import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class AuthService {
 	constructor(
-		private userService: dbUserService,
+		private dbUserService: DBUserService,
 		private api42Service: Api42Service,
 		private jwtService: JwtService,
 	) {}
@@ -18,27 +18,38 @@ export class AuthService {
 
 		const token = await this.api42Service.getTokenFromCode(code);
 		const login = await this.api42Service.getLoginFromToken(token);
-		let user = await this.userService.returnOne(null, login);
+		let user = await this.dbUserService.returnOne(null, login);
 
 		if (!user) {
 			const user42 = await this.api42Service.getUserFromToken(token);
-			const user_id = await this.userService.create({
+			const user_id = await this.dbUserService.create({
 				ftLogin: user42.login,
 			});
-			user = await this.userService.returnOne(user_id);
+			user = await this.dbUserService.returnOne(user_id);
 		}
 		const payload = { sub: user.id };
 		let status;
 
-		if (!user.nickname) status = "register"; else status = "oke"
+		if (!user.nickname) status = "register";
+		else status = "oke";
 		return {
 			access_token: await this.jwtService.signAsync(payload),
-			status: status
+			status: status,
 		};
 	}
 
+	validateToken(token?: string) {
+		if (!token) return false;
+		try {
+			this.jwtService.verify(token);
+			return true;
+		} catch {
+			return false;
+		}
+	}
+
 	async validateUser(payload: any): Promise<any> {
-		return await this.userService.returnOne(payload.sub);
+		return await this.dbUserService.returnOne(payload.sub);
 	}
 
 	async login(user: any) {

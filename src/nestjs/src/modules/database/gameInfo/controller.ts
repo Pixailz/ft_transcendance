@@ -10,43 +10,43 @@ import {
 } from "@nestjs/common";
 import { Response } from "express";
 
-import { GameInfoService } from "./service";
-import { GameInfoPost } from "./dto";
+import { DBGameInfoService } from "./service";
+import { DBGameInfoPost } from "./dto";
 
 @Controller("db/game_info")
-export class GameInfoController {
-	constructor(private readonly gameInfoService: GameInfoService) {}
+export class DBGameInfoController {
+	constructor(private readonly dbGameInfoService: DBGameInfoService) {}
 
 	@Post(":userA/:userB")
 	create(
 		@Param("userA") userAA: number,
 		@Param("userB") userBB: number,
-		@Body() post: GameInfoPost,
+		@Body() post: DBGameInfoPost,
 	) {
-		return this.gameInfoService.create(post, userAA, userBB);
+		return this.dbGameInfoService.create(post, userAA, userBB);
 	}
 
 	@Get()
 	async getAll(@Res() res: Response) {
-		res.send(await this.gameInfoService.returnAll());
+		res.send(await this.dbGameInfoService.returnAll());
 	}
 
 	@Get(":id")
 	async getOne(@Param("id") gameId: number, @Res() res: Response) {
-		res.send(await this.gameInfoService.returnOne(gameId));
+		res.send(await this.dbGameInfoService.returnOne(gameId));
 	}
 
 	@Put(":id")
 	async update(
 		@Param("id") gameId: number,
-		@Body() userPost: GameInfoPost,
+		@Body() userPost: DBGameInfoPost,
 		@Res() res: Response,
 	) {
-		res.send(await this.gameInfoService.update(gameId, userPost));
+		res.send(await this.dbGameInfoService.update(gameId, userPost));
 	}
 
 	@Delete(":id")
 	async delete(@Param("id") userId: number, @Res() res: Response) {
-		res.send(await this.gameInfoService.delete(userId));
+		res.send(await this.dbGameInfoService.delete(userId));
 	}
 }

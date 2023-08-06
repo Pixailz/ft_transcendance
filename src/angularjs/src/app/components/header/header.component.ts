@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { userService } from '../../services/user.service';
-
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-header',
@@ -9,14 +8,14 @@ import { userService } from '../../services/user.service';
 })
 export class HeaderComponent {
 	constructor(
-		private UserService: userService,
+		private userService: UserService,
 	) {}
 	userLoggedIn = false;
 
 	async ngOnInit()
-	{ this.userLoggedIn = this.UserService.isLoggedIn(); }
+	{ this.userLoggedIn = this.userService.isLoggedIn(); }
 
 	SignOut()
-	{ this.UserService.SignOut(); }
+	{ this.userService.SignOut(); }
 
 }

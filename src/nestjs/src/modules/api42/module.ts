@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { Api42Service } from "./api42.service";
+import { Api42Service } from "./service";
 
 @Module({
 	providers: [Api42Service],

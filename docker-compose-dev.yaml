@@ -28,6 +28,7 @@ services:
     command: [ "npm", "run", "dev" ]
     ports:
       - 3000:3000
+      - 3001:3001
     networks:
       transendence:
         ipv4_address: "13.37.42.11"

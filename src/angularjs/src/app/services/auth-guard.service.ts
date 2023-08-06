@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 
 @Injectable()
-export class authGuardService implements CanActivate {
+export class AuthGuardService implements CanActivate {
 	constructor(private router: Router) {}
 
 	async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
@@ -10,7 +10,7 @@ export class authGuardService implements CanActivate {
 
 		if (!jwt_token)
 		{
-			console.log("[authGuardService] no token");
+			console.log("[AuthGuardService] no token");
 			this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
 			return false;
 		}
@@ -23,7 +23,7 @@ export class authGuardService implements CanActivate {
 		});
 		if (res.status !== 200)
 		{
-			console.log("[authGuardService] bad token");
+			console.log("[AuthGuardService] bad token");
 			this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
 			return false;
 		}

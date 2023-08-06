@@ -4,17 +4,17 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { UserEntity } from "./entity";
 
-import { UserPost, UserInfoPost } from "./dto";
-import { Api42Service } from "src/modules/api42/api42.service";
+import { DBUserPost, DBUserInfoPost } from "./dto";
+import { Api42Service } from "src/modules/api42/service";
 
 @Injectable()
-export class dbUserService {
+export class DBUserService {
 	constructor(
 		@InjectRepository(UserEntity)
 		private readonly userRepo: Repository<UserEntity>,
 	) {}
 
-	async create(userPost: UserPost) {
+	async create(userPost: DBUserPost) {
 		const user = new UserEntity();
 		user.ftLogin = userPost.ftLogin;
 		await this.userRepo.save(user);
@@ -37,7 +37,7 @@ export class dbUserService {
 		return this.get_user(userId, ft_login);
 	}
 
-	async update(userId: number, userPost: UserInfoPost) {
+	async update(userId: number, userPost: DBUserInfoPost) {
 		const user = await this.get_user(userId, null);
 		if (user) return await this.userRepo.update(userId, userPost);
 		else throw new ForbiddenException("User not found");
@@ -49,7 +49,10 @@ export class dbUserService {
 		else throw new ForbiddenException("User not found");
 	}
 
-	async get_user(userId: number | null, ft_login: string | null): Promise<UserEntity> | null  {
+	async get_user(
+		userId: number | null,
+		ft_login: string | null,
+	): Promise<UserEntity> | null {
 		if (userId) {
 			const user = await this.userRepo.findOneBy({ id: userId });
 			if (user) return user;
