@@ -1,5 +1,6 @@
 # never, ever push .env file. never.
 .env
+rsc/postman/test_db/.tok
 
 # downloaded thing
 *.tar.gz

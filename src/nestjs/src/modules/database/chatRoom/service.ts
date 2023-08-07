@@ -13,11 +13,12 @@ export class DBChatRoomService {
 	) {}
 
 	async create(post: DBChatRoomPost) {
-		const user = new ChatRoomEntity();
-		user.name = post.name;
-		user.type = post.type;
-		user.password = post.password;
-		return await this.chatRoomRepo.save(user);
+		const room = new ChatRoomEntity();
+		room.name = post.name;
+		room.type = post.type;
+		room.password = post.password;
+		await this.chatRoomRepo.save(room);
+		return (room.id)
 	}
 
 	async returnAll() {

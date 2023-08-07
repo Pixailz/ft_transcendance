@@ -1,5 +1,5 @@
 req=$(cat <<- EOREQ
-	PUT /chatRoom/4 HTTP/1.1
+	PUT /db/chat_room/4 HTTP/1.1
 	Authorization: Bearer ${TOKEN}
 EOREQ
 )

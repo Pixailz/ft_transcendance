@@ -1,4 +1,4 @@
-req="PUT /user/${ID} HTTP/1.1"
+req="PUT /db/user/${ID} HTTP/1.1"
 
 body=$(cat << EOBODY
 {

@@ -1,5 +1,5 @@
 req=$(cat <<- EOREQ
-	PUT /user/4 HTTP/1.1
+	PUT /db/user/4 HTTP/1.1
 	Authorization: Bearer ${TOKEN}
 EOREQ
 )

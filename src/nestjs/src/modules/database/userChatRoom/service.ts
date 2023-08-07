@@ -36,6 +36,10 @@ export class DBUserChatRoomService {
 		return await this.userChatRoomRepo.find();
 	}
 
+	async getAllChatFromUser(userId:number) {
+		return await this.userChatRoomRepo.findBy({"userId": userId});
+	}
+
 	async returnOne(user: number, room: number) {
 		const tmp = await this.userChatRoomRepo.findOneBy({
 			userId: user,

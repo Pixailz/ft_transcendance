@@ -1,1 +1,1 @@
-req="DELETE /user_info/${ID} HTTP/1.1"
+req="DELETE /db/user_info/${ID} HTTP/1.1"

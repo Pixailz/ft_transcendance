@@ -1,5 +1,5 @@
 req=$(cat <<- EOREQ
-	POST /chatRoom HTTP/1.1
+	POST /db/chat_room HTTP/1.1
 	Authorization: Bearer ${TOKEN}
 EOREQ
 )
