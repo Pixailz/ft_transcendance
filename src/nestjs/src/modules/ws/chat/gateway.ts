@@ -9,8 +9,10 @@ import {
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import { AuthService } from "src/modules/auth/service";
+import { UserEntity } from "src/modules/database/user/entity";
 import { DBUserService } from "src/modules/database/user/service";
 import { DBUserChatRoomService } from "src/modules/database/userChatRoom/service";
+import { isNumberObject } from "util/types";
 
 @WebSocketGateway(3001, {
 	path: "/ws/chat",
@@ -26,10 +28,6 @@ export class WSChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@WebSocketServer()
 	server: Server;
-
-	nickname: string;
-
-	room_ids: number[];
 
 	async handleConnection(socket: Socket) {
 		if (
@@ -48,14 +46,6 @@ export class WSChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const user_info = await this.dbUserService.returnOne(user_id);
 		if (!user_info)
 			return new UnauthorizedException("[WS] user not found");
-		if (!user_info.nickname)
-			this.nickname = "<unknown>";
-		else
-			this.nickname = user_info.nickname;
-		
-		this.room_ids = await this.getAllRoomId(user_id);
-		console.log(this.room_ids);
-		console.log("nickname ", this.nickname);
 		console.log("[WS:handleConnection] Connected");
 	}
 
@@ -76,8 +66,21 @@ export class WSChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage("sendMessage")
-	handleMessage(socket: Socket, message: string) {
-		console.log("[WS:sendMessage] ", message);
-		this.server.emit("newMessage", message);
+	handleMessage(socket: Socket, data: any) {
+		console.log("[WS:sendMessage] ", data);
+		if (typeof data[0] == "number" && data[0] < 1)
+			return ;
+		this.server.emit("newMessage", `[${data[0]}]: {${data[1]}} `);
 	}
+
+	@SubscribeMessage("getRoomIds")
+	getRoomIds(socket: Socket, from: number) {
+		socket.emit("sendRoomIds", this.getAllRoomId(from));
+	}
+
+	// @SubscribeMessage("sendMessage")
+	// handleMessage(socket: Socket, message: string) {
+	// 	console.log("[WS:sendMessage] ", message);
+	// 	this.server.emit("newMessage", message);
+	// }
 }

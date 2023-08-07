@@ -8,8 +8,12 @@ import { Observable } from 'rxjs';
 export class WSChatService {
 	constructor (private socket: Socket) {}
 
-	sendMessage(message: string): void {
-		this.socket.emit("sendMessage", message);
+	// sendMessage(user_id: number, message: string): void {
+	// 	this.socket.emit("sendMessage", user_id, message);
+	// }
+
+	sendMessage(user_login: string, message: string): void {
+		this.socket.emit("sendMessage", user_login, message);
 	}
 
 	getNewMessage(): Observable<string> {

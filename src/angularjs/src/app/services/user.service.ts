@@ -38,4 +38,9 @@ export class UserService {
 			body = JSON.stringify({"nickname" : nickname});
 		return (await this.reqService.back("PUT", "/api/user/me", body));
 	}
+
+	async	getRoomIds(): Promise<any>
+	{
+		return (await this.reqService.back("GET", "/api/db/user_chat_room/me"));
+	}
 }

@@ -7,6 +7,7 @@ import {
 	Delete,
 	Res,
 	Param,
+	Req,
 } from "@nestjs/common";
 import { Response } from "express";
 
@@ -29,6 +30,15 @@ export class DBUserChatRoomController {
 	@Get()
 	async getAll(@Res() res: Response) {
 		res.send(await this.dbChatRoomService.returnAll());
+	}
+
+	@Get("/me")
+	async getAllFromUser(
+		@Res() res: Response,
+		@Req() req,
+	) {
+		console.log("[userChatroom] ", req.user);
+		res.send(await this.dbChatRoomService.getAllChatFromUser(req.user.user_id));
 	}
 
 	@Get(":user_id/:chat_id")
