@@ -28,6 +28,8 @@ import { RegisterComponent } from './pages/register/register.component';
 import { WSChatComponent } from './pages/chat/chat.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { environment } from './environments/environment';
+import { AnonymousLayoutComponent } from './layout/anonymous-layout.component';
+import { AuthenticatedLayoutComponent } from './layout/authenticated-layout.component';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -51,7 +53,9 @@ const config: SocketIoConfig = {
 		AvatarComponent,
 		LoginComponent,
 		RegisterComponent,
-		WSChatComponent
+		WSChatComponent,
+		AnonymousLayoutComponent,
+		AuthenticatedLayoutComponent
 	],
 	imports: [
 		BrowserModule,
