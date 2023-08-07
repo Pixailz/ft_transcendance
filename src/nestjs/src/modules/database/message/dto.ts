@@ -1,6 +1,6 @@
-import { IsInt, IsNotEmpty } from "class-validator";
+import { IsNotEmpty } from "class-validator";
 
-export class MessagePost {
+export class DBMessagePost {
 	@IsNotEmpty()
 	content?: string;
 }

@@ -10,43 +10,43 @@ import {
 } from "@nestjs/common";
 import { Response } from "express";
 
-import { MessageService } from "./service";
-import { MessagePost } from "./dto";
+import { DBMessageService } from "./service";
+import { DBMessagePost } from "./dto";
 
 @Controller("db/message")
-export class MessageController {
-	constructor(private readonly messageService: MessageService) {}
+export class DBMessageController {
+	constructor(private readonly dbMessageService: DBMessageService) {}
 
 	@Post(":user_id/:chat_id")
 	create(
 		@Param("user_id") userId: number,
 		@Param("chat_id") chatId: number,
-		@Body() post: MessagePost,
+		@Body() post: DBMessagePost,
 	) {
-		return this.messageService.create(post, userId, chatId);
+		return this.dbMessageService.create(post, userId, chatId);
 	}
 
 	@Get()
 	async getAll(@Res() res: Response) {
-		res.send(await this.messageService.returnAll());
+		res.send(await this.dbMessageService.returnAll());
 	}
 
 	@Get(":id")
 	async getOne(@Param("id") MessageId: number, @Res() res: Response) {
-		res.send(await this.messageService.returnOne(MessageId));
+		res.send(await this.dbMessageService.returnOne(MessageId));
 	}
 
 	@Put(":id")
 	async update(
 		@Param("id") MessageId: number,
-		@Body() MessagePost: MessagePost,
+		@Body() MessagePost: DBMessagePost,
 		@Res() res: Response,
 	) {
-		res.send(await this.messageService.update(MessageId, MessagePost));
+		res.send(await this.dbMessageService.update(MessageId, MessagePost));
 	}
 
 	@Delete(":id")
 	async delete(@Param("id") MessageId: number, @Res() res: Response) {
-		res.send(await this.messageService.delete(MessageId));
+		res.send(await this.dbMessageService.delete(MessageId));
 	}
 }

@@ -3,13 +3,13 @@ import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import { UserChatRoomEntity } from "./entity";
-import { UserChatRoomPost } from "./dto";
-
 import { UserEntity } from "../user/entity";
 import { ChatRoomEntity } from "../chatRoom/entity";
 
+import { DBUserChatRoomPost } from "./dto";
+
 @Injectable()
-export class UserChatRoomService {
+export class DBUserChatRoomService {
 	constructor(
 		@InjectRepository(UserChatRoomEntity)
 		private readonly userChatRoomRepo: Repository<UserChatRoomEntity>,
@@ -19,13 +19,13 @@ export class UserChatRoomService {
 		private readonly userRepo: Repository<UserEntity>,
 	) {}
 
-	async create(post: UserChatRoomPost, UserId: number, RoomId: number) {
+	async create(post: DBUserChatRoomPost, userId: number, roomId: number) {
 		const userChat = new UserChatRoomEntity();
-		let user = await this.userRepo.findOneBy({ id: UserId });
-		if (user) userChat.userId = UserId;
+		let user = await this.userRepo.findOneBy({ id: userId });
+		if (user) userChat.userId = userId;
 		else throw new ForbiddenException("User not found");
-		let room = await this.ChatRoomRepo.findOneBy({ id: RoomId });
-		if (room) userChat.roomId = RoomId;
+		let room = await this.ChatRoomRepo.findOneBy({ id: roomId });
+		if (room) userChat.roomId = roomId;
 		else throw new ForbiddenException("ChatRoom not found");
 		userChat.isOwner = post.isOwner;
 		userChat.isAdmin = post.isAdmin;
@@ -45,7 +45,7 @@ export class UserChatRoomService {
 		else throw new ForbiddenException("userChatRoom not found");
 	}
 
-	async update(user: number, room: number, post: UserChatRoomPost) {
+	async update(user: number, room: number, post: DBUserChatRoomPost) {
 		const tmp = await this.userChatRoomRepo.findOneBy({
 			userId: user,
 			roomId: room,

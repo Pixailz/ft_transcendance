@@ -65,7 +65,7 @@ function	angular::env::replace_var()
 	local	file_path="${2?}"
 	local	var="	after_auth_uri: "
 
-	perl -pi -e "s|^${var}\".*?\"$|${var}\"${var_value}\"|" "${file_path}"
+	perl -pi -e "s|^${var}\".*?\"|${var}\"${var_value}\"|" "${file_path}"
 }
 
 function	angular::get_after_auth()

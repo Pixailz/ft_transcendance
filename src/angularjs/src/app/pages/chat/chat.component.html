@@ -1,0 +1,11 @@
+<mat-card style="align-items: center">
+	<form>
+		<mat-form-field>
+			<input [(ngModel)]="message" name="message" required
+			value="{{message}}" matInput>
+		</mat-form-field>
+		<button mat-raised-button color="primary" (click)="onSubmit()">Send</button>
+	</form>
+</mat-card>
+
+<mat-card *ngFor="let message of messages;">{{message}}</mat-card>

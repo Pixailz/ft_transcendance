@@ -3,11 +3,11 @@ import { Injectable } from '@angular/core';
 @Injectable({
 	providedIn: 'root',
 })
-export class reqService {
+export class ReqService {
 	private headers: any = null;
 	private body: any = null;
 
-	async Back(method: string, route: string, body?: any): Promise<any>
+	async back(method: string, route: string, body?: any): Promise<any>
 	{
 		const bearer_token = "Bearer " + localStorage.getItem("access_token");
 		switch (method) {
@@ -32,15 +32,15 @@ export class reqService {
 
 	private async doReq(method: string, route: string): Promise<any>
 	{
-		const req = await fetch(route, {
+		const res = await fetch(route, {
 			"method": method,
 			"headers": this.headers,
 			"body": this.body,
 			"mode": "cors"
 		});
-		if (req.status !== 200)
-			return Promise.reject({status: method + " request to the back failed"});
-		return (Promise.resolve(req.json()));
+		if (res.status !== 200)
+			return Promise.reject({status: method + " request to " + route + " failed"});
+		return (Promise.resolve(res.json()));
 	}
 
 }

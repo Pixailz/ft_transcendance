@@ -3,16 +3,16 @@ import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import { ChatRoomEntity } from "./entity";
-import { ChatRoomPost } from "./dto";
+import { DBChatRoomPost } from "./dto";
 
 @Injectable()
-export class ChatRoomService {
+export class DBChatRoomService {
 	constructor(
 		@InjectRepository(ChatRoomEntity)
 		private readonly chatRoomRepo: Repository<ChatRoomEntity>,
 	) {}
 
-	async create(post: ChatRoomPost) {
+	async create(post: DBChatRoomPost) {
 		const user = new ChatRoomEntity();
 		user.name = post.name;
 		user.type = post.type;
@@ -30,7 +30,7 @@ export class ChatRoomService {
 		else throw new ForbiddenException("ChatRoom not found");
 	}
 
-	async update(chatId: number, post: ChatRoomPost) {
+	async update(chatId: number, post: DBChatRoomPost) {
 		const tmp = await this.chatRoomRepo.findOneBy({ id: chatId });
 		if (tmp) return await this.chatRoomRepo.update(chatId, post);
 		else throw new ForbiddenException("ChatRoom not found");

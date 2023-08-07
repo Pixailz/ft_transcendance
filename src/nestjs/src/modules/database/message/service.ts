@@ -2,13 +2,13 @@ import { Injectable, ForbiddenException } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
+import { DBMessagePost } from "./dto";
 import { MessageEntity } from "./entity";
-import { MessagePost } from "./dto";
 import { ChatRoomEntity } from "../chatRoom/entity";
 import { UserEntity } from "../user/entity";
 
 @Injectable()
-export class MessageService {
+export class DBMessageService {
 	constructor(
 		@InjectRepository(MessageEntity)
 		private readonly messageRepo: Repository<MessageEntity>,
@@ -18,13 +18,13 @@ export class MessageService {
 		private readonly userRepo: Repository<UserEntity>,
 	) {}
 
-	async create(messagePost: MessagePost, UserId: number, RoomId: number) {
+	async create(messagePost: DBMessagePost, userId: number, roomId: number) {
 		const message = new MessageEntity();
-		const room = await this.chatRoomRepo.findOneBy({ id: RoomId });
-		const user = await this.userRepo.findOneBy({ id: UserId });
-		if (room) message.roomId = RoomId;
+		const room = await this.chatRoomRepo.findOneBy({ id: roomId });
+		const user = await this.userRepo.findOneBy({ id: userId });
+		if (room) message.roomId = roomId;
 		else throw new ForbiddenException("ChatRoom not found");
-		if (user) message.userId = UserId;
+		if (user) message.userId = userId;
 		else throw new ForbiddenException("User not found");
 		message.content = messagePost.content;
 		await this.messageRepo.save(message);
@@ -35,22 +35,22 @@ export class MessageService {
 		return await this.messageRepo.find();
 	}
 
-	async returnOne(MessageId?: number) {
-		const message = await this.messageRepo.findOneBy({ id: MessageId });
-		if (message) return await this.messageRepo.findOneBy({ id: MessageId });
+	async returnOne(messageId?: number) {
+		const message = await this.messageRepo.findOneBy({ id: messageId });
+		if (message) return await this.messageRepo.findOneBy({ id: messageId });
 		else throw new ForbiddenException("Message not found");
 	}
 
-	async update(MessageId: number, MessagePost: MessagePost) {
-		const message = await this.messageRepo.findOneBy({ id: MessageId });
+	async update(messageId: number, dbMessagePost: DBMessagePost) {
+		const message = await this.messageRepo.findOneBy({ id: messageId });
 		if (message)
-			return await this.messageRepo.update(MessageId, MessagePost);
+			return await this.messageRepo.update(messageId, dbMessagePost);
 		else throw new ForbiddenException("Message not found");
 	}
 
-	async delete(MessageId: number) {
-		const message = await this.messageRepo.findOneBy({ id: MessageId });
-		if (message) return await this.messageRepo.delete(MessageId);
+	async delete(messageId: number) {
+		const message = await this.messageRepo.findOneBy({ id: messageId });
+		if (message) return await this.messageRepo.delete(messageId);
 		else throw new ForbiddenException("Message not found");
 	}
 }

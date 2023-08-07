@@ -3,24 +3,22 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule } from "@nestjs/config";
 
 import { UserEntity } from "./user/entity";
-import { dbUserService } from "./user/service";
-import { dbUserController } from "./user/controller";
-
 import { ChatRoomEntity } from "./chatRoom/entity";
-import { ChatRoomService } from "./chatRoom/service";
-import { ChatRoomController } from "./chatRoom/controller";
-
 import { UserChatRoomEntity } from "./userChatRoom/entity";
-import { UserChatRoomService } from "./userChatRoom/service";
-import { UserChatRoomController } from "./userChatRoom/controller";
-
 import { MessageEntity } from "./message/entity";
-import { MessageService } from "./message/service";
-import { MessageController } from "./message/controller";
-
 import { GameInfoEntity } from "./gameInfo/entity";
-import { GameInfoService } from "./gameInfo/service";
-import { GameInfoController } from "./gameInfo/controller";
+
+import { DBUserService } from "./user/service";
+import { DBChatRoomService } from "./chatRoom/service";
+import { DBUserChatRoomService } from "./userChatRoom/service";
+import { DBMessageService } from "./message/service";
+import { DBGameInfoService } from "./gameInfo/service";
+
+import { DBUserController } from "./user/controller";
+import { DBChatRoomController } from "./chatRoom/controller";
+import { DBUserChatRoomController } from "./userChatRoom/controller";
+import { DBMessageController } from "./message/controller";
+import { DBGameInfoController } from "./gameInfo/controller";
 
 @Module({
 	imports: [
@@ -50,25 +48,25 @@ import { GameInfoController } from "./gameInfo/controller";
 		]),
 	],
 	controllers: [
-		dbUserController,
-		ChatRoomController,
-		UserChatRoomController,
-		MessageController,
-		GameInfoController,
+		DBUserController,
+		DBChatRoomController,
+		DBUserChatRoomController,
+		DBMessageController,
+		DBGameInfoController,
 	],
 	providers: [
-		dbUserService,
-		ChatRoomService,
-		UserChatRoomService,
-		MessageService,
-		GameInfoService,
+		DBUserService,
+		DBChatRoomService,
+		DBUserChatRoomService,
+		DBMessageService,
+		DBGameInfoService,
 	],
 	exports: [
-		dbUserService,
-		ChatRoomService,
-		UserChatRoomService,
-		MessageService,
-		GameInfoService,
+		DBUserService,
+		DBChatRoomService,
+		DBUserChatRoomService,
+		DBMessageService,
+		DBGameInfoService,
 	],
 })
-export class DbModule {}
+export class DBModule {}

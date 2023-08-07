@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
-import { reqService } from "./back-req.service";
+import { ReqService } from "./back-req.service";
 
 @Injectable({
 	providedIn: "root",
 })
-export class userService {
-	constructor(private ReqService: reqService) {  }
+export class UserService {
+	constructor(private reqService: ReqService) {  }
 	private userLoggedIn = false;
 
 	isLoggedIn()
@@ -25,7 +25,7 @@ export class userService {
 
 	async getUserInfo(): Promise<any>
 	{
-		return (await this.ReqService.Back("GET", "/api/user/me"));
+		return (await this.reqService.back("GET", "/api/user/me"));
 	}
 
 	async updateInfo(nickname: string, email?: string)
@@ -36,6 +36,6 @@ export class userService {
 			body = JSON.stringify({"nickname" : nickname, "email" : email});
 		else
 			body = JSON.stringify({"nickname" : nickname});
-		return (await this.ReqService.Back("PUT", "/api/user/me", body));
+		return (await this.reqService.back("PUT", "/api/user/me", body));
 	}
 }

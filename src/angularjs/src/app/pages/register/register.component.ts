@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { userService } from 'src/app/services/user.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-register',
@@ -10,11 +10,11 @@ export class RegisterComponent {
 	nickname:string = '';
 	email:string = '';
 
-	constructor(private UserService: userService) {
+	constructor(private userService: UserService) {
 	}
 
 	async onSubmit() {
-		await this.UserService.updateInfo(this.nickname, this.email);
+		await this.userService.updateInfo(this.nickname, this.email);
 		window.location.href = '/home';
 	}
 }

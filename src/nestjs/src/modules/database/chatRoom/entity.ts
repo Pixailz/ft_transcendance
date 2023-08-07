@@ -1,10 +1,4 @@
-import {
-	Entity,
-	Column,
-	OneToMany,
-	CreateDateColumn,
-	PrimaryGeneratedColumn,
-} from "typeorm";
+import { Entity, Column, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 import { UserChatRoomEntity } from "../userChatRoom/entity";
 import { MessageEntity } from "../message/entity";

@@ -1,19 +1,12 @@
-import {
-	IsNotEmpty,
-	IsOptional,
-	IsEmail,
-	IsString,
-	IsBooleanString,
-} from "class-validator";
-import { isBooleanObject } from "util/types";
+import { IsNotEmpty, IsOptional, IsEmail, IsString } from "class-validator";
 
-export class UserPost {
+export class DBUserPost {
 	@IsNotEmpty()
 	@IsString()
 	ftLogin?: string;
 }
 
-export class UserInfoPost {
+export class DBUserInfoPost {
 	@IsNotEmpty()
 	@IsString()
 	nickname?: string;

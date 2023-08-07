@@ -11,13 +11,17 @@
 			routerLink="/play"
 			routerLinkActive="mat-primary">Play</button>
 		<button mat-flat-button
-			*ngIf="!userLoggedIn"
-			routerLink="/login"
-			routerLinkActive="mat-primary">Login</button>
+			*ngIf="userLoggedIn"
+			routerLink="/chat"
+			routerLinkActive="mat-primary">Chat</button>
 		<button mat-flat-button
 			*ngIf="userLoggedIn"
 			routerLink="/profile"
 			routerLinkActive="mat-primary">Profile</button>
+		<button mat-flat-button
+			*ngIf="!userLoggedIn"
+			routerLink="/login"
+			routerLinkActive="mat-primary">Login</button>
 		<button
 			mat-flat-button
 			color="warn"
