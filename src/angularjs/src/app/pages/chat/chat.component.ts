@@ -8,6 +8,11 @@ import { WSChatService } from 'src/app/services/ws-chat';
 	styleUrls: ['./chat.component.scss']
 })
 export class WSChatComponent implements OnInit {
+	chatrooms = [{title: 'Chatroom 1'}, {title: 'Chatroom 2'}]
+	crtChatroomId = 0;
+
+
+	messages: string[] = [];
 	message: string = "";
 	user_id: number = -1;
 	nickname: string = "";
@@ -58,5 +63,10 @@ export class WSChatComponent implements OnInit {
 		console.log("src_id  ", this.user_id);
 		// this.wsChatService.sendMessage(this.user_id, this.message);
 		this.wsChatService.sendMessage(this.nickname, this.message);
+	}
+
+
+	onSelectChatroom(i:number) {
+		this.crtChatroomId = i;
 	}
 }

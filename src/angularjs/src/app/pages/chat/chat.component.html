@@ -1,20 +1,15 @@
-<mat-card style="align-items: center">
-	<mat-form-field>
-		<mat-label>ToSend</mat-label>
-		<mat-select placeholder="options" [(value)]="selection">
-			<mat-option *ngFor="let friend_id of friend_ids" value={{friend_id}}>
-				{{friend_id}}
-			</mat-option>
-		</mat-select>
-	</mat-form-field>
-	<form>
-		<mat-form-field>
-			<input [(ngModel)]="message" name="message" required
-			value="{{message}}" matInput>
-		</mat-form-field>
-	</form>
-	<button mat-raised-button color="primary" (click)="sendMessage()">Send</button>
-</mat-card>
+<div class="container">
 
-<mat-card *ngFor="let room_id of room_ids;">{{room_id}}</mat-card>
+	<ul>
+		<li *ngFor="let chatroom of chatrooms; let i = index"><button (click)="onSelectChatroom(i)">{{chatroom.title}}</button></li>
+		<li class="add-btn"><button><mat-icon fontIcon="add"></mat-icon></button></li>
+	</ul>
+	<div class="chat-container">
+		<h2>{{chatrooms[crtChatroomId].title}}</h2>
 
+		<div class="txt-bar">
+			<input type="text" placeholder="Enter a message...">
+			<button><mat-icon fontIcon="send"></mat-icon></button>
+		</div>
+	</div>
+</div>

@@ -29,6 +29,10 @@ import { RegisterComponent } from './pages/register/register.component';
 import { WSChatComponent } from './pages/chat/chat.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { environment } from './environments/environment';
+import { AnonymousLayoutComponent } from './layout/anonymous-layout.component';
+import { AuthenticatedLayoutComponent } from './layout/authenticated-layout.component';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -52,7 +56,9 @@ const config: SocketIoConfig = {
 		AvatarComponent,
 		LoginComponent,
 		RegisterComponent,
-		WSChatComponent
+		WSChatComponent,
+		AnonymousLayoutComponent,
+		AuthenticatedLayoutComponent
 	],
 	imports: [
 		BrowserModule,
@@ -70,6 +76,7 @@ const config: SocketIoConfig = {
 		AppRoutingModule,
 		HttpClientModule,
 		FormsModule,
+		MatProgressBarModule,
 		SocketIoModule.forRoot(config)
 	],
 	providers: [AuthGuardService],
