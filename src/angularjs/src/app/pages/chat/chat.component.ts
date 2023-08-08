@@ -7,6 +7,10 @@ import { WSChatService } from 'src/app/services/ws-chat';
 	styleUrls: ['./chat.component.scss']
 })
 export class WSChatComponent implements OnInit {
+	chatrooms = [{title: 'Chatroom 1'}, {title: 'Chatroom 2'}]
+	crtChatroomId = 0;
+
+
 	messages: string[] = [];
 	message: string = "";
 
@@ -23,5 +27,10 @@ export class WSChatComponent implements OnInit {
 	onSubmit() {
 		if (!this.message) return ;
 		this.wsChatService.sendMessage(this.message);
+	}
+
+
+	onSelectChatroom(i:number) {
+		this.crtChatroomId = i;
 	}
 }

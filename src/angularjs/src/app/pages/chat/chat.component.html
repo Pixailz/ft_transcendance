@@ -1,11 +1,15 @@
-<mat-card style="align-items: center">
-	<form>
-		<mat-form-field>
-			<input [(ngModel)]="message" name="message" required
-			value="{{message}}" matInput>
-		</mat-form-field>
-		<button mat-raised-button color="primary" (click)="onSubmit()">Send</button>
-	</form>
-</mat-card>
+<div class="container">
 
-<mat-card *ngFor="let message of messages;">{{message}}</mat-card>
+	<ul>
+		<li *ngFor="let chatroom of chatrooms; let i = index"><button (click)="onSelectChatroom(i)">{{chatroom.title}}</button></li>
+		<li class="add-btn"><button><mat-icon fontIcon="add"></mat-icon></button></li>
+	</ul>
+	<div class="chat-container">
+		<h2>{{chatrooms[crtChatroomId].title}}</h2>
+
+		<div class="txt-bar">
+			<input type="text" placeholder="Enter a message...">
+			<button><mat-icon fontIcon="send"></mat-icon></button>
+		</div>
+	</div>
+</div>

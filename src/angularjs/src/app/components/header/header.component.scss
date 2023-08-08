@@ -7,9 +7,14 @@ header {
 
 	h1 {
 		font-family: 'Maven Pro', sans-serif;
-		font-size: 2.4em;
-		color: #81b1be;
+		font-size: 2.0em;
+		color: black;
+		background-color:  white;
+		box-shadow: 5px 5px black;
+		border: 3px solid black;
+		padding: 7px 20px;
 		margin: 0;
+		animation: colorfull 1s infinite;
 	}
 
 	ul {
@@ -52,5 +57,24 @@ header {
 				}
 			}
 		}
+	}
+}
+
+
+@keyframes colorfull {
+	0%, 100% {
+		background-color: red;
+	}
+	20% {
+		background-color: orange;
+	}
+	40% {
+		background-color: yellow;
+	}
+	60% {
+		background-color: green;
+	}
+	80% {
+		background-color: blue;
 	}
 }
