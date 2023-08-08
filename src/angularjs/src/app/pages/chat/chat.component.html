@@ -1,15 +1,28 @@
 <div class="container">
-
 	<ul>
-		<li *ngFor="let friend_id of friend_ids"><button (click)="onSelectChatroom(friend_id)">{{friend_id}}</button></li>
-		<li class="add-btn"><button><mat-icon fontIcon="add"></mat-icon></button></li>
+		<li *ngIf="friends">
+			<button *ngFor="let friend of friends;" (click)="onSelectFriend(friend)">{{friend.ftLogin}}</button>
+		</li>
+		<li class="add-btn">
+			<button>
+				<mat-icon fontIcon="add">
+
+				</mat-icon>
+			</button>
+		</li>
+		<li *ngIf="rooms">
+			<button *ngFor="let room of rooms as ChatRoomI;" (click)="onSelectChatroom(room)">{{room.id}}</button>
+		</li>
 	</ul>
 	<div class="chat-container">
-		<h2>{{dest_id}}</h2>
-
+		<h2 *ngIf="dest">{{dest.ftLogin}}</h2>
 		<div class="txt-bar">
 			<input type="text" placeholder="Enter a message...">
-			<button><mat-icon fontIcon="send"></mat-icon></button>
+			<button>
+				<mat-icon fontIcon="send">
+
+				</mat-icon>
+			</button>
 		</div>
 	</div>
 </div>

@@ -35,11 +35,7 @@ export class UserService {
 	async getAllUserId(): Promise<UserEntity[]>
 	{
 		const user_infos = await this.dbUserService.returnAll();
-		const all_user_id = [];
-		for(const val of user_infos) {
-			all_user_id.push(val.id);
-		}
-		return Promise.resolve(all_user_id);
+		return Promise.resolve(user_infos);
 	}
 
 	async getInfoByLogin(user_login: string): Promise<UserEntity>

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Observable } from 'rxjs';
+import { UserI } from './interface';
 
 @Injectable({
 	providedIn: 'root',
@@ -34,7 +35,7 @@ export class WSChatService {
 		return this.socket.fromEvent<number[]>("newRoomIds");
 	}
 
-	getFriendIds(): Observable<number[]> {
-		return this.socket.fromEvent<number[]>("newFriendIds");
+	getFriendIds(): Observable<UserI[]> {
+		return this.socket.fromEvent<UserI[]>("newFriendIds");
 	}
 }
