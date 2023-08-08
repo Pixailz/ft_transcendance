@@ -5,8 +5,8 @@ version: "3.9"
 
 x-healthcheck_conf: &healthcheck_conf
       interval: 5s
-      timeout: 2s
-      retries: 36
+      timeout: 5s
+      retries: 30
 
 x-restart: &restart
     restart: on-failure
