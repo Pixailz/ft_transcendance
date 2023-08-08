@@ -1,11 +1,11 @@
 <div class="container">
 
 	<ul>
-		<li *ngFor="let chatroom of chatrooms; let i = index"><button (click)="onSelectChatroom(i)">{{chatroom.title}}</button></li>
+		<li *ngFor="let friend_id of friend_ids"><button (click)="onSelectChatroom(friend_id)">{{friend_id}}</button></li>
 		<li class="add-btn"><button><mat-icon fontIcon="add"></mat-icon></button></li>
 	</ul>
 	<div class="chat-container">
-		<h2>{{chatrooms[crtChatroomId].title}}</h2>
+		<h2>{{dest_id}}</h2>
 
 		<div class="txt-bar">
 			<input type="text" placeholder="Enter a message...">

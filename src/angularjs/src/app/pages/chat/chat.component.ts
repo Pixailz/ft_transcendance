@@ -8,17 +8,12 @@ import { WSChatService } from 'src/app/services/ws-chat';
 	styleUrls: ['./chat.component.scss']
 })
 export class WSChatComponent implements OnInit {
-	chatrooms = [{title: 'Chatroom 1'}, {title: 'Chatroom 2'}]
-	crtChatroomId = 0;
-
-
 	messages: string[] = [];
 	message: string = "";
 	user_id: number = -1;
 	nickname: string = "";
 	room_ids: number[] = [];
 	dest_id: number = -1;
-	selection: string = "";
 	friend_ids: number[] = [];
 
 	constructor(private wsChatService: WSChatService, private userService: UserService) {}
@@ -54,19 +49,17 @@ export class WSChatComponent implements OnInit {
 		console.log("friendIDS ", this.friend_ids);
 	}
 
-	sendMessage() {
+	sendMessage(message: string) {
 		if (!this.message) return ;
 		if (!this.dest_id) return ;
-		const dest_id: number = Number(this.selection);
 		console.log("message ", this.message);
-		console.log("dest_id ", dest_id);
+		console.log("dest_id ", this.dest_id);
 		console.log("src_id  ", this.user_id);
 		// this.wsChatService.sendMessage(this.user_id, this.message);
-		this.wsChatService.sendMessage(this.nickname, this.message);
+		// this.wsChatService.sendMessage(this.nickname, this.message);
 	}
 
-
-	onSelectChatroom(i:number) {
-		this.crtChatroomId = i;
+	onSelectChatroom(dest_id: number) {
+		this.dest_id = dest_id;
 	}
 }
