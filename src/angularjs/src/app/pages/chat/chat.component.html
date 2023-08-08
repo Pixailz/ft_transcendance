@@ -1,11 +1,20 @@
 <mat-card style="align-items: center">
+	<mat-form-field>
+		<mat-label>ToSend</mat-label>
+		<mat-select placeholder="options" [(value)]="selection">
+			<mat-option *ngFor="let friend_id of friend_ids" value={{friend_id}}>
+				{{friend_id}}
+			</mat-option>
+		</mat-select>
+	</mat-form-field>
 	<form>
 		<mat-form-field>
 			<input [(ngModel)]="message" name="message" required
 			value="{{message}}" matInput>
 		</mat-form-field>
-		<button mat-raised-button color="primary" (click)="onSubmit()">Send</button>
 	</form>
+	<button mat-raised-button color="primary" (click)="sendMessage()">Send</button>
 </mat-card>
 
-<mat-card *ngFor="let message of messages;">{{message}}</mat-card>
+<mat-card *ngFor="let room_id of room_ids;">{{room_id}}</mat-card>
+

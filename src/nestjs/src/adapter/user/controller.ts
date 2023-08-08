@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Put, Request } from "@nestjs/common";
-import { DBUserInfoPost } from "../database/user/dto";
-import { DBUserService } from "../database/user/service";
+import { DBUserInfoPost } from "../../modules/database/user/dto";
+import { DBUserService } from "../../modules/database/user/service";
 
 @Controller("user")
 export class UserController {

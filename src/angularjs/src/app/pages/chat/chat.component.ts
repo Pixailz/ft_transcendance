@@ -8,11 +8,13 @@ import { WSChatService } from 'src/app/services/ws-chat';
 	styleUrls: ['./chat.component.scss']
 })
 export class WSChatComponent implements OnInit {
-	messages: string[] = [];
 	message: string = "";
 	user_id: number = -1;
 	nickname: string = "";
 	room_ids: number[] = [];
+	dest_id: number = -1;
+	selection: string = "";
+	friend_ids: number[] = [];
 
 	constructor(private wsChatService: WSChatService, private userService: UserService) {}
 
@@ -24,29 +26,36 @@ export class WSChatComponent implements OnInit {
 			})
 			.catch((err) => {
 				this.user_id = -1;
+				this.nickname = "<undifined>";
 			});
 		if (this.user_id === -1)
 		{
 			console.log("[WSChatComponent] getUserInfo failed");
 			return ;
 		}
-		await this.userService.getRoomIds()
-			.then((roomIds: number[]) => {
-				this.room_ids = roomIds;
-			})
-			.catch((err) => {
-				this.room_ids = [];
-			});
-		console.log("roomIDS ", this.room_ids);
-		return this.wsChatService.getNewMessage()
-			.subscribe((message: string) => {
-					this.messages.push(message)
-				}
-			)
+		this.wsChatService.sendRoomIds(this.user_id);
+		this.wsChatService.getRoomIds()
+			.subscribe((room_ids: number[]) => {
+				this.room_ids = room_ids;
+			}
+		)
+		this.wsChatService.sendFriendIds(this.user_id);
+		this.wsChatService.getFriendIds()
+			.subscribe((friend_ids: number[]) => {
+				this.friend_ids = friend_ids;
+			}
+		)
+		console.log("roomIDS   ", this.room_ids);
+		console.log("friendIDS ", this.friend_ids);
 	}
 
-	onSubmit() {
+	sendMessage() {
 		if (!this.message) return ;
+		if (!this.dest_id) return ;
+		const dest_id: number = Number(this.selection);
+		console.log("message ", this.message);
+		console.log("dest_id ", dest_id);
+		console.log("src_id  ", this.user_id);
 		// this.wsChatService.sendMessage(this.user_id, this.message);
 		this.wsChatService.sendMessage(this.nickname, this.message);
 	}

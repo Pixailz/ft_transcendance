@@ -16,7 +16,25 @@ export class WSChatService {
 		this.socket.emit("sendMessage", user_login, message);
 	}
 
+	sendRoomIds(user_id: number)
+	{
+		this.socket.emit("sendRoomIds", user_id);
+	}
+
+	sendFriendIds(user_id: number)
+	{
+		this.socket.emit("sendFriendIds", user_id);
+	}
+
 	getNewMessage(): Observable<string> {
-		return this.socket.fromEvent<string>("newMessage")
+		return this.socket.fromEvent<string>("newMessage");
+	}
+
+	getRoomIds(): Observable<number[]> {
+		return this.socket.fromEvent<number[]>("newRoomIds");
+	}
+
+	getFriendIds(): Observable<number[]> {
+		return this.socket.fromEvent<number[]>("newFriendIds");
 	}
 }

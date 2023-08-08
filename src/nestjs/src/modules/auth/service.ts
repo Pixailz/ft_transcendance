@@ -38,16 +38,6 @@ export class AuthService {
 		};
 	}
 
-	validateToken(token?: string) {
-		if (!token) return false;
-		try {
-			this.jwtService.verify(token);
-			return true;
-		} catch {
-			return false;
-		}
-	}
-
 	async validateUser(payload: any): Promise<any> {
 		return await this.dbUserService.returnOne(payload.sub);
 	}
