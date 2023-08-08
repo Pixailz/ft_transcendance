@@ -1,32 +1,41 @@
 <header>
-	<mat-toolbar>
-		<span>Transcendance</span>
-		<span class="spacer"></span>
-		<button
-			mat-flat-button routerLink="/home"
-			routerLinkActive="mat-primary">Home</button>
-		<button
-			mat-flat-button
-			*ngIf="userLoggedIn"
-			routerLink="/play"
-			routerLinkActive="mat-primary">Play</button>
-		<button mat-flat-button
-			*ngIf="userLoggedIn"
-			routerLink="/chat"
-			routerLinkActive="mat-primary">Chat</button>
-		<button mat-flat-button
-			*ngIf="userLoggedIn"
-			routerLink="/profile"
-			routerLinkActive="mat-primary">Profile</button>
-		<button mat-flat-button
-			*ngIf="!userLoggedIn"
-			routerLink="/login"
-			routerLinkActive="mat-primary">Login</button>
-		<button
-			mat-flat-button
-			color="warn"
-			*ngIf="userLoggedIn"
-			routerLinkActive="mat-red"
-			(click)="SignOut()">Logout</button>
-	</mat-toolbar>
+	<h1>Transcendance</h1>
+	
+	<ul>
+		<li routerLink="/home"
+		routerLinkActive="active">
+			<button>
+				<mat-icon fontIcon="home"></mat-icon>
+			</button>
+		</li>
+		<li *ngIf="userLoggedIn"
+		routerLink="/play"
+		routerLinkActive="active">
+			<button>
+				<mat-icon fontIcon="games"></mat-icon>
+			</button>
+		</li>
+		<li *ngIf="userLoggedIn"
+		routerLink="/chat"
+		routerLinkActive="active">
+			<button>
+				<mat-icon fontIcon="message"></mat-icon>
+			</button>
+		</li>
+		<li *ngIf="userLoggedIn"
+		routerLink="/profile"
+		routerLinkActive="active">
+			<button>
+				<mat-icon fontIcon="account_circle"></mat-icon>
+			</button>
+		</li>
+		<li
+		*ngIf="userLoggedIn"
+		(click)="SignOut()"
+		class="logout">
+			<button>
+				<mat-icon fontIcon="power_settings_new"></mat-icon>
+			</button>
+		</li>
+	</ul>
 </header>
