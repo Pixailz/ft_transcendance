@@ -1,5 +1,5 @@
 req=$(cat <<- EOREQ
-	POST /gameInfo/2/4 HTTP/1.1
+	POST /db/game_info/2/4 HTTP/1.1
 	Authorization: Bearer ${TOKEN}
 EOREQ
 )

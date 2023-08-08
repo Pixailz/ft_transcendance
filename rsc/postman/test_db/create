@@ -13,15 +13,15 @@ function do4time()
 }
 
 # test post/create function
-#do4time "fill_db/post/user/user"
-#do4time "fill_db/post/chatRoom/room"
+do4time "fill_db/post/user/user"
+do4time "fill_db/post/chatRoom/room"
 do4time "fill_db/post/userChatRoom/user1inroom"
-# do4time "fill_db/post/gameInfo/gameInfo"
-# do4time "fill_db/post/message/db/user1ToRoom"
+do4time "fill_db/post/gameInfo/gameInfo"
+do4time "fill_db/post/message/user1ToRoom"
 
 # test put/update function
-# do4time "fill_db/put/db/user/db/user"
-# do4time "fill_db/put/db/chat_room/room"
-# do4time "fill_db/put/db/user_chat_room/db/db/user_chat_room"
-# do4time "fill_db/put/message/message"
-# do4time "fill_db/put/gameInfo/gameInfo"
+do4time "fill_db/put/user/user"
+do4time "fill_db/put/chatRoom/room"
+do4time "fill_db/put/userChatRoom/userChatRoom"
+do4time "fill_db/put/message/message"
+do4time "fill_db/put/gameInfo/gameInfo"
