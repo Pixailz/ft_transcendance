@@ -10,6 +10,7 @@ import { Server, Socket } from "socket.io";
 import { ChatRoomService } from "src/adapter/chatRoom/service";
 import { UserService } from "src/adapter/user/service";
 import { WSService } from "../ws.service";
+import { Status } from "src/modules/database/user/entity";
 
 @WebSocketGateway(3001, {
 	path: "/ws/chat",
@@ -23,7 +24,10 @@ export class WSChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	) {}
 
 	@WebSocketServer()
-	server: Server;
+	server = new Server({
+		pingInterval: 100,
+		pingTimeout: 5000,
+	});
 
 	async handleConnection(socket: Socket) {
 		const user_id = this.userService.decodeToken(
@@ -50,15 +54,14 @@ export class WSChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		console.log(
 			`[WS:handleConnection] User ${user_info.ftLogin} connected (${socket.id})`,
 		);
+		this.updateStatus(user_id, Status.CONNECTED);
 	}
 
 	handleDisconnect(socket: Socket) {
-		console.log(
-			`[WS:handleDisconnect] Disconnected ${
-				this.wsService.getUser(socket.id).ftLogin
-			}`,
-		);
+		const user_info = this.wsService.getUser(socket.id);
+		console.log(`[WS:handleDisconnect] Disconnected ${user_info.ftLogin}`);
 		this.wsService.removeSocket(socket.id);
+		this.updateStatus(user_info.id, Status.DISCONNECTED);
 		socket.disconnect();
 	}
 
@@ -77,6 +80,15 @@ export class WSChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		socket.emit(
 			"getNewFriend",
 			await this.userService.getAllFriend(user.id),
+		);
+	}
+
+	@SubscribeMessage("sendNewStatusFriend")
+	async handleSendNewStatusFriend(socket: Socket) {
+		const user = this.wsService.getUser(socket.id);
+		socket.emit(
+			"getNewStatusFriend",
+			await this.userService.getAllStatusFriend(user.id),
 		);
 	}
 
@@ -116,5 +128,19 @@ export class WSChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const user = this.wsService.getUser(socket.id);
 		let all_message = await this.chatRoomService.getAllMessageRoom(data);
 		socket.emit("getNewMessage", all_message);
+	}
+
+	async updateStatus(user_id: number, status: number) {
+		await this.userService.setStatus(user_id, status);
+		const friends = await this.userService.getAllFriend(user_id);
+		for (let i = 0; i < friends.length; i++) {
+			let friends_socket_id = this.wsService.getSocketId(friends[i].id);
+			this.server
+				.to(friends_socket_id)
+				.emit(
+					"getNewStatusFriend",
+					await this.userService.getAllStatusFriend(friends[i].id),
+				);
+		}
 	}
 }

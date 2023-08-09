@@ -4,7 +4,9 @@
 			<button id="refresh" (click)="onGetInfo()">GET INFO</button>
 		</li>
 		<li *ngIf="friends">
-			<button *ngFor="let friend of friends;" (click)="onSelectFriend(friend)">{{getDest(friend)}}</button>
+			<div *ngFor="let friend of friends;">
+				<button (click)="onSelectFriend(friend)">{{getUserInfo(friend)}}</button>
+			</div>
 		</li>
 		<li *ngIf="dest_user.id !== -1" class="add-btn">
 			<button (click)="createRoom()">

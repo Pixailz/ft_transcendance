@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Observable } from 'rxjs';
-import { MessageI, UserChatRoomI, UserI } from './interface';
+import { MessageI, UserChatRoomI, UserI } from './chat.interface';
 
 @Injectable({
 	providedIn: 'root',
@@ -17,6 +17,11 @@ export class WSChatService {
 	listenNewFriend(): Observable<UserI[]>
 	{
 		return this.socket.fromEvent<UserI[]>("getNewFriend");
+	}
+
+	listenNewStatusFriend(): Observable<any>
+	{
+		return this.socket.fromEvent<any>("getNewStatusFriend");
 	}
 
 	listenNewMessage(): Observable<MessageI[]>
@@ -52,5 +57,10 @@ export class WSChatService {
 	emitFriend()
 	{
 		this.socket.emit("sendNewFriend");
+	}
+
+	emitStatusFriend()
+	{
+		this.socket.emit("sendNewStatusFriend");
 	}
 }

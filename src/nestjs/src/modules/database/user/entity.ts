@@ -10,6 +10,12 @@ import { UserChatRoomEntity } from "../userChatRoom/entity";
 import { GameInfoEntity } from "../gameInfo/entity";
 import { MessageEntity } from "../message/entity";
 
+export enum Status {
+	DISCONNECTED,
+	CONNECTED,
+	AWAY,
+}
+
 @Entity()
 export class UserEntity {
 	@PrimaryGeneratedColumn()
@@ -27,8 +33,8 @@ export class UserEntity {
 	@Column({ type: "varchar", length: 120, default: "" })
 	public email: string;
 
-	@Column({ type: "varchar", length: 120, default: "" })
-	public status: string;
+	@Column({ type: "integer", default: Status.DISCONNECTED })
+	public status: number;
 
 	@Column({ type: "boolean", default: false })
 	public twoAuthFactor: boolean;

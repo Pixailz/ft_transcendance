@@ -5,20 +5,22 @@ export interface UserI {
 	picture?			: string;
 	email?				: string;
 	status?				: string;
+	lastSeen			: Date;
 }
 
 export const DefUserI: UserI = {
-	id					: -1
+	id					: -1,
+	lastSeen			: new Date(Date.now())
 }
 
 export interface MessageI {
-	id: number;
-	roomId?: number;
-	userId?: number;
-	user: UserI;
-	room?: ChatRoomI;
-	content?: string;
-	updateAt?: Date;
+	id					: number;
+	roomId?				: number;
+	userId?				: number;
+	user				: UserI;
+	room?				: ChatRoomI;
+	content?			: string;
+	updateAt?			: Date;
 }
 
 export const DefMessageI: MessageI = {

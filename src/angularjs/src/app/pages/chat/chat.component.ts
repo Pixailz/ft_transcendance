@@ -1,7 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ChatRoomI, DefChatRoomI, DefUserChatRoomI, DefUserI, UserChatRoomI, UserI, MessageI } from 'src/app/services/interface';
-import { UserService } from 'src/app/services/user.service';
+import { DefUserChatRoomI, DefUserI, UserChatRoomI, UserI, MessageI } from 'src/app/services/chat.interface';
 import { WSChatService } from 'src/app/services/ws-chat';
+
+export enum Status {
+	DISCONNECTED,
+	CONNECTED,
+	AWAY,
+}
 
 @Component({
 	selector: 'app-chat',
@@ -14,9 +19,10 @@ export class WSChatComponent implements OnInit {
 	dest_user: UserI = DefUserI;
 	dest_room: UserChatRoomI = DefUserChatRoomI;
 	friends: UserI[] = [];
+	friends_status = {};
 	rooms: UserChatRoomI[] = [];
 
-	constructor(private wsChatService: WSChatService, private userService: UserService) {}
+	constructor(private wsChatService: WSChatService) {}
 
 	async ngOnInit() {
 		this.wsChatService.emitRoom();
@@ -29,6 +35,12 @@ export class WSChatComponent implements OnInit {
 		this.wsChatService.listenNewFriend()
 			.subscribe((friends: UserI[]) => {
 				this.friends = friends;
+			}
+		)
+		this.wsChatService.emitStatusFriend();
+		this.wsChatService.listenNewStatusFriend()
+			.subscribe((friends_status: any) => {
+				this.friends_status = friends_status;
 			}
 		)
 		this.wsChatService.listenNewMessage()
@@ -64,9 +76,38 @@ export class WSChatComponent implements OnInit {
 		console.log("    room          ", room);
 	}
 
-	getDest(dest: UserI)
+	getUserInfo(dest: UserI)
 	{
-		let tmp = dest.ftLogin;
+		var tmp;
+		var string = JSON.stringify(this.friends_status);
+		var objectValue = JSON.parse(string);
+
+		switch (objectValue[dest.id]) {
+			// case Status.CONNECTED: {
+			// 	const last_seen = new Date(dest.lastSeen);
+			// 	const now = new Date(Date.now());
+			// 	console.log("last ", last_seen);
+			// 	console.log("now  ", now);
+			// 	if (last_seen.getTime() < now.getTime() - 5000)
+			// 		tmp = "🟠 ";
+			// 	else
+			// 		tmp = "🟢 ";
+			// 	break ;
+			// }
+			case Status.AWAY: {
+				tmp = "🟠 ";
+				break ;
+			}
+			case Status.CONNECTED: {
+				tmp = "🟢 ";
+				break ;
+			}
+			case Status.DISCONNECTED: {
+				tmp = "⚫ "
+				break ;
+			}
+		}
+		tmp += dest.ftLogin + " ";
 		if (dest.nickname)
 			tmp += ` (${dest.nickname})`
 		return (tmp);
@@ -75,9 +116,10 @@ export class WSChatComponent implements OnInit {
 	onGetInfo()
 	{
 		console.clear();
-		console.log("rooms     ", this.rooms);
-		console.log("friends   ", this.friends);
-		console.log("dest_room ", this.dest_room);
-		console.log("messages  ", this.messages);
+		console.log("rooms          ", this.rooms);
+		console.log("friends        ", this.friends);
+		console.log("friends_status ", this.friends_status);
+		console.log("dest_room      ", this.dest_room);
+		console.log("messages       ", this.messages);
 	}
 }
