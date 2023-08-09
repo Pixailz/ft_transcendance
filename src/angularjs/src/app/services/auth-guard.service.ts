@@ -9,12 +9,12 @@ export class AuthGuardService implements CanActivate {
 	async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
 		const jwt_token = localStorage.getItem("access_token");
 		let returnUrl = route.queryParams['returnUrl'];
+
 		if (!returnUrl)
 			returnUrl = state.url;
-
 		if (!jwt_token)
 		{
-			console.log("[AuthGuardService] no token");
+			console.log("[angular:AuthGuardService] no token");
 			this.router.navigate(['/login'], { queryParams: { returnUrl: returnUrl }});
 			return false;
 		}
@@ -27,21 +27,27 @@ export class AuthGuardService implements CanActivate {
 		});
 		if (res.status !== 200)
 		{
-			console.log("[AuthGuardService] bad token");
+			console.log("[angular:AuthGuardService] bad token");
 			this.router.navigate(['/login'], { queryParams: { returnUrl: returnUrl }});
 			return false;
 		}
 		if (state.url != "/register")
 		{
-			this.userService.getUserInfo()
+			await this.userService.getUserInfo()
 				.then((data) => {
 					if (!data.nickname)
 					{
-						console.log("[authGuardService] user not found, need to register");
+						console.log("[angular:AuthGuardService] user don't have a nickname, need to register");
 						this.router.navigate(['/register'], { queryParams: { returnUrl: returnUrl }});
 						return false;
 					}
+					console.log(`[angular:AuthGuardService] user ${data.nickname} logged in`);
 					return true;
+				})
+				.catch((err) => {
+					console.log("[angular:AuthGuardService] user not found, need to relogin");
+					this.router.navigate(['/login'], { queryParams: { returnUrl: returnUrl }});
+					return false;
 				})
 		}
 		return true;

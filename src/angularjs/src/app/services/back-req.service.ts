@@ -40,7 +40,11 @@ export class ReqService {
 		});
 		if (res.status !== 200)
 			return Promise.reject({status: method + " request to " + route + " failed"});
-		return (Promise.resolve(res.json()));
+		const data_json = res.json()
+			.catch((err) => {
+				return (Promise.reject({status: "no data returned"}));
+			})
+		return (data_json);
 	}
 
 }
