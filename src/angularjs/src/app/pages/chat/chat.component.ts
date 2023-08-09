@@ -9,6 +9,8 @@ import { WSChatService } from 'src/app/services/ws-chat';
 	styleUrls: ['./chat.component.scss']
 })
 export class WSChatComponent implements OnInit {
+	isCreatingRoom: boolean = false;
+
 	messages: MessageI[] = [];
 	message: string = "";
 	dest_user: UserI = DefUserI;
@@ -38,6 +40,14 @@ export class WSChatComponent implements OnInit {
 		)
 	}
 
+	onCreatingRoom() {
+		this.isCreatingRoom = true;
+	}
+
+	onClosePopup() {
+		this.isCreatingRoom = false;
+	}
+
 	createRoom() {
 		if (this.dest_user.id === -1) return ;
 		this.wsChatService.emitCreateRoom(this.dest_user.id)
@@ -55,6 +65,8 @@ export class WSChatComponent implements OnInit {
 		this.dest_user = friend;
 		console.log("onSelectFriend: ");
 		console.log("    dest ", this.dest_user);
+		this.createRoom();
+		this.onClosePopup();
 	}
 
 	onSelectChatroom(room: UserChatRoomI) {

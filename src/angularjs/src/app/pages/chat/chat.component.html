@@ -1,32 +1,37 @@
 <div class="container">
-	<ul>
-		<li>
-			<button id="refresh" (click)="onGetInfo()">GET INFO</button>
-		</li>
-		<li *ngIf="friends">
-			<button *ngFor="let friend of friends;" (click)="onSelectFriend(friend)">{{getDest(friend)}}</button>
-		</li>
-		<li *ngIf="dest_user.id !== -1" class="add-btn">
-			<button (click)="createRoom()">
-				<mat-icon fontIcon="add">
+	<div class="side-bar">
+		<div *ngIf="isCreatingRoom" class="popup">	
+			<ul class="friend-list">
+				<li *ngFor="let friend of friends;">
+					<button (click)="onSelectFriend(friend)">{{getDest(friend)}}</button>
+				</li>
+				<button class="close" (click)="onClosePopup()">
+					<mat-icon fontIcon="close"></mat-icon>
+				</button>
+			</ul>
+		</div>
+		<ul class="room-list">
+			<li *ngFor="let room of rooms;">
+				<button (click)="onSelectChatroom(room)">{{room.room.name}} ({{room.roomId}})</button>
+			</li>
+		</ul>
+		<button class="add flat-btn" (click)="onCreatingRoom()">
+			<mat-icon fontIcon="add"></mat-icon>
+		</button>
+	</div>
 
-				</mat-icon>
-			</button>
-		</li>
-		<li *ngIf="rooms">
-			<button *ngFor="let room of rooms;" (click)="onSelectChatroom(room)">{{room.room.name}} ({{room.roomId}})</button>
-		</li>
-	</ul>
+
+
 	<div *ngIf="dest_room.roomId !== -1" class="chat-container">
 		<h2>{{dest_room.room.name}} ({{dest_room.roomId}})</h2>
 		<div *ngFor="let message of messages;">[{{message.user.ftLogin}}]: {{message.content}}</div>
 		<div class="txt-bar">
 			<input [(ngModel)]="message" type="text" placeholder="Enter a message...">
 			<button (click)="sendMessage()">
-				<mat-icon fontIcon="send">
-
-				</mat-icon>
+				<mat-icon fontIcon="send"></mat-icon>
 			</button>
 		</div>
 	</div>
 </div>
+
+<button class="refresh flat-btn" (click)="onGetInfo()"><mat-icon fontIcon="refresh"></mat-icon></button>

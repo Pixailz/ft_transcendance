@@ -1,9 +1,16 @@
-#refresh {
-	background-color: #EF626C;
+.refresh {
+	position: fixed;
+	bottom: 20px;
+	left: 20px;
+	background-color: #ffb1b1;
+	cursor: pointer;
+
+	&:hover {
+		background-color: #ff9999;
+	}
 };
 
 .container {
-
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	grid-template-rows: 1fr;
@@ -11,62 +18,102 @@
 	height: 80vh;
 	padding: 20px;
 
-	ul {
-		list-style: none;
+	.side-bar {
+		position: relative;
 		grid-area: 1 / 1 / 6 / 2;
-		padding: 0;
-		margin: 0;
 
-		li {
-			button {
-				border: 0;
+		.popup {
+			padding: 10px;
+			margin: 0;
+			position: fixed;
+			left: 50vw;
+			top: 50vh;
+			transform: translate(-50%, -50%);
+			background-color: white;
+			max-width: 700px;
+			width: 90vw;
+			max-height: 600px;
+			height: 90vh;
+			z-index: 90;
+			border: 3px solid black;
+			
+			ul.friend-list {
+				list-style: none;
+				overflow-y: scroll;
+			
+				li {
+					height: 40px;
+					width: auto;
+					position: relative;
+					margin-bottom: 10px;
+				
+					button {
+						height: 100%;
+						width: 100%;
+						border: 0;
+						text-align: left;
+						padding: 0 20px;
+						background-color: white;
+						font-family: 'Maven Pro', sans-serif;
+						font-size: 1.2em;
+						border: 3px solid black;
+						cursor: pointer;
+						
+						&:hover {
+							background-color: rgb(237, 235, 235);
+						}
+					}
+				}
+				
+			}
+		
+			button.close {
+				position: absolute;
+				top: 0;
+				right: 0;
+				background-color: #ffb1b1;
+				border: 3px solid black;
+				width: 40px;
+				transform: translate(50%, -50%);
+				height: 40px;
+				cursor: pointer;
+
+				&:hover {
+					background-color: #ff9999;
+				}
+			}
+		}
+
+		ul.room-list {
+			li {
 				width: 100%;
-				height: 50px;
-				border: 3px solid;
-				background-color: white;
-				text-align: left;
-				padding: 0 20px;
-				font-family: 'Maven Pro', sans-serif;
-				font-size: 1.2em;
-				cursor: pointer;
+				margin-bottom: 10px;
 
-				&:hover {
-					background-color: rgb(226, 226, 226);
-				}
-			}
-
-			&:not(:nth-child(1)){
-				margin: 10px 0;
-			}
-		}
-
-		li.add-btn {
-			display: flex;
-			justify-content: center;
-
-			button {
-				padding: 0;
-				width: 50px;
-				color: black;
-				border: 0;
-				border-radius: 0px;
-				cursor: pointer;
-				background-color: #a7dca3;
-				border: 3px solid;
-				height: 50px;
-				aspect-ratio: 1;
-				box-shadow: 3px 3px;
-				text-align: center;
-
-				&:hover {
-					transform: translate(3px, 3px);
-					background-color: #87b884;
-					box-shadow: 0 0;
+				button {
+					width: 100%;
+					height: 100%;
+					background-color: white;
+					border: 3px solid black;
+					text-align: left;
+					font-family: 'Maven Pro', sans-serif;
+					font-size: 1.2em;
+					padding: 10px 20px;
+					z-index: 0;
 				}
 			}
 		}
 
+		button.add {
+			background-color: #a7dca3;
+			right: 0;
+			position: absolute;
+	
+			&:hover {
+				background-color: #87b884;
+			}
+		}
 	}
+
 
 	.chat-container {
 		background-color: white;
@@ -108,6 +155,8 @@
 				height: 50px;
 				background-color: #a7dca3;
 				border: 0;
+				cursor: pointer;
+
 				&:hover {
 					background-color: #87b884;
 				}
