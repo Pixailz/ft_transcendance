@@ -48,6 +48,15 @@ export class WSChatComponent implements OnInit {
 		this.isCreatingRoom = false;
 	}
 
+	isSameUser(i: number) {
+		let j = this.messages.length - 2 - i;
+		i = this.messages.length - 1 - i
+		if (i >= 0 && i < this.messages.length && j >= 0 && j < this.messages.length)
+			if (this.messages[j].user.id == this.messages[i].user.id)
+				return (true);
+		return (false);
+	}
+
 	createRoom() {
 		if (this.dest_user.id === -1) return ;
 		this.wsChatService.emitCreateRoom(this.dest_user.id)

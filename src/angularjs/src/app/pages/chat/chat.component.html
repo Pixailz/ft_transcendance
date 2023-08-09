@@ -22,7 +22,13 @@
 
 	<div *ngIf="dest_room.roomId !== -1" class="chat-container">
 		<h2>{{dest_room.room.name}} ({{dest_room.roomId}})</h2>
-		<div *ngFor="let message of messages;">[{{message.user.ftLogin}}]: {{message.content}}</div>
+
+		<ol class="msg-list">
+			<li *ngFor="let _ of messages; let i=index;">
+				<span class="login" *ngIf="!isSameUser(i)">{{messages[messages.length - 1 - i].user.ftLogin}}</span>
+				<span class="content">{{messages[messages.length - 1 - i].content}}</span>
+			</li>
+		</ol>
 		<div class="txt-bar">
 			<input [(ngModel)]="message" type="text" placeholder="Enter a message..." (keypress)="onPress($event)">
 			<button (click)="sendMessage()">
