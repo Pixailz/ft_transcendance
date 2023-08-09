@@ -6,15 +6,10 @@ button {
 	color: black;
 	box-shadow: 3px 3px black;
 	cursor: pointer;
-
-	&.true,
-	&:hover {
-		transform: translate(3px, 3px);
-		box-shadow: 0 0;
-		filter: brightness(80%);
-	}
 }
 
-header ul li.active app-flat-button button{
-	background-color: red !important;
+button.true, button:hover {
+	transform: translate(3px, 3px);
+	box-shadow: 0 0;
+	filter: brightness(80%);
 }
