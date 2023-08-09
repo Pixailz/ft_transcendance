@@ -107,7 +107,6 @@
     grid-area: 1 / 2 / 6 / 4;
     border: 3px solid;
     position: relative;
-	overflow-y: scroll;
 }
 
 .container .chat-container h2 {
@@ -116,6 +115,50 @@
     text-align: center;
     border-bottom: 3px solid;
     padding: 10px 0;
+	position: sticky;
+	height: 40px;
+	margin: 0;
+	background-color: white;
+}
+
+.container .chat-container ol.msg-list {
+	list-style: none;
+	overflow-y: scroll;
+	margin: 0;
+	padding: 10px;
+	height: calc(100% - 50px - 3px - 50px - 13px - 20px);
+	display: flex;
+	flex-direction: column-reverse;
+}
+
+.container .chat-container ol.msg-list li {
+	margin: 10px;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.container .chat-container ol.msg-list li span.login {
+	padding: 0;
+	margin: 0;
+	width: fit-content;
+	padding: 3px 10px;
+	font-size: 1em;
+	font-family: 'Maven Pro', sans-serif;
+	border: 3px solid black;
+	background-color: white;
+	color: black;
+	margin-bottom: 2px;
+}
+
+.container .chat-container ol.msg-list li span.content {
+	padding: 6px 15px;
+	width: fit-content;
+	font-size: 1.4em;
+	font-family: 'Maven Pro', sans-serif;
+	border: 3px solid black;
+	background-color: white;
+	color: black;
 }
 
 .container .chat-container .txt-bar {
@@ -143,6 +186,9 @@
 .container .chat-container .txt-bar button {
     width: 50px;
     height: 50px;
+	margin: 0;
+	padding: 0;
+	aspect-ratio: 1;
     background-color: #a7dca3;
     border: 0;
     cursor: pointer;
