@@ -32,6 +32,7 @@ import { environment } from './environments/environment';
 import { AnonymousLayoutComponent } from './layout/anonymous-layout.component';
 import { AuthenticatedLayoutComponent } from './layout/authenticated-layout.component';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { FlatButtonComponent } from './components/flat-button/flat-button.component';
 
 
 const config: SocketIoConfig = {
@@ -58,7 +59,8 @@ const config: SocketIoConfig = {
 		RegisterComponent,
 		WSChatComponent,
 		AnonymousLayoutComponent,
-		AuthenticatedLayoutComponent
+		AuthenticatedLayoutComponent,
+  FlatButtonComponent
 	],
 	imports: [
 		BrowserModule,

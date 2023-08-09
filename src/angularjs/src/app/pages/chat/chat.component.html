@@ -15,9 +15,7 @@
 				<button (click)="onSelectChatroom(room)">{{room.room.name}} ({{room.roomId}})</button>
 			</li>
 		</ul>
-		<button class="add flat-btn" (click)="onCreatingRoom()">
-			<mat-icon fontIcon="add"></mat-icon>
-		</button>
+		<app-flat-button bgColor="#a7dca3" fontIcon="add" (click)="onCreatingRoom()"></app-flat-button>
 	</div>
 
 
@@ -33,5 +31,4 @@
 		</div>
 	</div>
 </div>
-
-<button class="refresh flat-btn" (click)="onGetInfo()"><mat-icon fontIcon="refresh"></mat-icon></button>
+<app-flat-button class="refresh" bgColor="#ffb1b1" fontIcon="refresh" (click)="onGetInfo()"></app-flat-button>

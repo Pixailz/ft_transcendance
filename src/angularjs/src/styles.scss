@@ -18,24 +18,6 @@ app-root {
 	flex-direction: column;
 }
 
-.flat-btn {
-	border: 3px solid black;
-	background-color: white;
-	color: black;
-	width: 50px;
-	height: 50px;
-	box-shadow: 5px 5px;
-	cursor: pointer;
-	text-align: center;
-	padding: 0;
-
-	&:hover {
-		box-shadow: 0 0;
-		transform: translate(5px, 5px);
-	}
-}
-
-
 ul {
 	padding: 0;
 	margin: 0;

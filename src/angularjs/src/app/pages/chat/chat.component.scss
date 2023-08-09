@@ -2,12 +2,6 @@
     position: fixed;
     bottom: 20px;
     left: 20px;
-    background-color: #ffb1b1;
-    cursor: pointer;
-}
-
-.refresh:hover {
-    background-color: #ff9999;
 }
 
 .container {
@@ -102,14 +96,10 @@
     z-index: 0;
 }
 
-.container .side-bar button.add {
-    background-color: #a7dca3;
-    right: 0;
+.container .side-bar app-flat-button {
     position: absolute;
-}
-
-.container .side-bar button.add:hover {
-    background-color: #87b884;
+	left: 50%;
+	transform: translate(-50%);
 }
 
 .container .chat-container {
