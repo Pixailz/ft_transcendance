@@ -1,6 +1,5 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { ConfigModule } from "@nestjs/config";
 
 import { UserEntity } from "./user/entity";
 import { ChatRoomEntity } from "./chatRoom/entity";
@@ -22,7 +21,6 @@ import { DBGameInfoController } from "./gameInfo/controller";
 
 @Module({
 	imports: [
-		ConfigModule.forRoot({ isGlobal: true }),
 		TypeOrmModule.forRoot({
 			type: "postgres",
 			host: "postgresql",

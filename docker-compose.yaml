@@ -75,6 +75,7 @@ services:
       - API42_SECRET=${API42_SECRET}
       - API42_REDIRECTURL=${API42_REDIRECTURL_PROD}
       - JWT_SECRET=${JWT_SECRET}
+      - PRODUCTION=1
     volumes:
       - type: bind
         source: ./volume/nodejs

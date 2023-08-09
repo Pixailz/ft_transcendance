@@ -38,6 +38,23 @@ export class AuthService {
 		};
 	}
 
+	async ftSignInTest(): Promise<any> {
+		let user = await this.dbUserService.returnOne(null, "norminet");
+
+		if (!user) {
+			const user_id = await this.dbUserService.create({
+				ftLogin: "norminet",
+			});
+			await this.dbUserService.update(user_id, {nickname: "norm's"});
+			user = await this.dbUserService.returnOne(user_id);
+		}
+		console.log("test user created");
+		return {
+			access_token: await this.jwtService.signAsync({ sub: user.id }),
+			status: "oke",
+		};
+	}
+
 	async validateUser(payload: any): Promise<any> {
 		return await this.dbUserService.returnOne(payload.sub);
 	}
