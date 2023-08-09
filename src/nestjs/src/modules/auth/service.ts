@@ -45,7 +45,7 @@ export class AuthService {
 			const user_id = await this.dbUserService.create({
 				ftLogin: "norminet",
 			});
-			await this.dbUserService.update(user_id, {nickname: "norm's"});
+			await this.dbUserService.update(user_id, { nickname: "leSangCho" });
 			user = await this.dbUserService.returnOne(user_id);
 		}
 		console.log("test user created");

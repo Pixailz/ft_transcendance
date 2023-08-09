@@ -10,9 +10,8 @@ export class AuthController {
 	@Get("ft_callback")
 	async login(@Query("code") code: string) {
 		if (!Number(process.env.PRODUCTION) && code === "test")
-			return this.authService.ftSignInTest()
-		else
-			return this.authService.ftSignIn(code);
+			return this.authService.ftSignInTest();
+		else return this.authService.ftSignIn(code);
 	}
 
 	@Get("profile")
