@@ -36,6 +36,9 @@ export class UserEntity {
 	@CreateDateColumn({ type: "timestamp" })
 	public createdAt!: Date;
 
+	@CreateDateColumn({ type: "timestamp" })
+	public lastSeen!: Date;
+
 	@OneToMany((type) => UserChatRoomEntity, (roomInfo) => roomInfo.user)
 	roomInfo: UserChatRoomEntity[];
 
