@@ -7,14 +7,17 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
-	nickname:string = '';
-	email:string = '';
+	user: any;
 
 	constructor(private userService: UserService) {
 	}
 
+	async ngOnInit() {
+		this.user = await this.userService.getUserInfo();
+	}
+
 	async onSubmit() {
-		await this.userService.updateInfo(this.nickname, this.email);
+		await this.userService.updateInfo(this.user);
 		window.location.href = '/home';
 	}
 }
