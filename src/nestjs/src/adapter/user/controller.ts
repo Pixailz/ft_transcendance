@@ -4,13 +4,11 @@ import { DBUserService } from "../../modules/database/user/service";
 
 @Controller("user")
 export class UserController {
-	constructor(
-		private dbUserService: DBUserService,
-	) {}
+	constructor(private dbUserService: DBUserService) {}
 
 	@Get("me")
 	async get_info_me(@Request() req) {
-		return (await this.dbUserService.returnOne(req.user.user_id));
+		return await this.dbUserService.returnOne(req.user.user_id);
 	}
 
 	@Put("me")

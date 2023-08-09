@@ -1,4 +1,9 @@
+#refresh {
+	background-color: #EF626C;
+};
+
 .container {
+
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	grid-template-rows: 1fr;
@@ -29,7 +34,7 @@
 					background-color: rgb(226, 226, 226);
 				}
 			}
-			
+
 			&:not(:nth-child(1)){
 				margin: 10px 0;
 			}
@@ -60,7 +65,7 @@
 				}
 			}
 		}
-		
+
 	}
 
 	.chat-container {
@@ -68,7 +73,7 @@
 		grid-area: 1 / 2 / 6 / 4;
 		border: 3px solid;
 		position: relative;
-	
+
 		h2 {
 			font-family: 'Maven Pro', sans-serif;
 			font-size: 1.8em;
@@ -103,6 +108,9 @@
 				height: 50px;
 				background-color: #a7dca3;
 				border: 0;
+				&:hover {
+					background-color: #87b884;
+				}
 			}
 		}
 	}

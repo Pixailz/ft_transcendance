@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ChatRoomI, UserI } from 'src/app/services/interface';
+import { ChatRoomI, DefChatRoomI, DefUserChatRoomI, DefUserI, UserChatRoomI, UserI, MessageI } from 'src/app/services/interface';
 import { UserService } from 'src/app/services/user.service';
 import { WSChatService } from 'src/app/services/ws-chat';
 
@@ -9,63 +9,75 @@ import { WSChatService } from 'src/app/services/ws-chat';
 	styleUrls: ['./chat.component.scss']
 })
 export class WSChatComponent implements OnInit {
-	messages: string[] = [];
+	messages: MessageI[] = [];
 	message: string = "";
-	room_ids: number[] = [];
-	user: UserI | undefined = undefined;
-	dest: UserI | undefined = undefined;
-	selected_room: ChatRoomI | undefined = undefined;
-	rooms: ChatRoomI[] = [];
+	dest_user: UserI = DefUserI;
+	dest_room: UserChatRoomI = DefUserChatRoomI;
 	friends: UserI[] = [];
+	rooms: UserChatRoomI[] = [];
 
 	constructor(private wsChatService: WSChatService, private userService: UserService) {}
 
 	async ngOnInit() {
-		await this.userService.getUserInfo()
-			.then((user) => {
-				this.user = user;
-			})
-			.catch((err) => {
-				this.user = {id: -1};
-			});
-		if (!this.user)
-		{
-			console.log("[WSChatComponent] getUserInfo failed");
-			return ;
-		}
-		this.wsChatService.sendRoomIds(this.user.id);
-		this.wsChatService.getRoomIds()
-			.subscribe((room_ids: number[]) => {
-				this.room_ids = room_ids;
+		this.wsChatService.emitRoom();
+		this.wsChatService.listenNewRoom()
+			.subscribe((rooms: UserChatRoomI[]) => {
+				this.rooms = rooms;
 			}
 		)
-		this.wsChatService.sendFriendIds(this.user.id);
-		this.wsChatService.getFriendIds()
+		this.wsChatService.emitFriend();
+		this.wsChatService.listenNewFriend()
 			.subscribe((friends: UserI[]) => {
 				this.friends = friends;
 			}
 		)
+		this.wsChatService.listenNewMessage()
+			.subscribe((messages: MessageI[]) => {
+				this.messages = messages;
+			}
+		)
 	}
 
-	sendMessage(message: string) {
-		if (!this.message) return ;
-		if (!this.dest) return ;
+	createRoom() {
+		if (this.dest_user.id === -1) return ;
+		this.wsChatService.emitCreateRoom(this.dest_user.id)
+	}
+
+	sendMessage() {
 		console.log("message ", this.message);
-		console.log("dest_id ", this.dest);
-		console.log("src_id  ", this.user);
-		// this.wsChatService.sendMessage(this.user_id, this.message);
-		// this.wsChatService.sendMessage(this.nickname, this.message);
+		console.log("dest_id ", this.dest_room);
+		if (!this.message) return ;
+		if (this.dest_room.roomId === -1) return ;
+		this.wsChatService.emitMessage(this.dest_room.roomId, this.message);
 	}
 
 	onSelectFriend(friend: UserI) {
-		this.dest = friend;
-		console.log("roomIDS   ", this.rooms);
-		console.log("friendIDS ", this.dest);
+		this.dest_user = friend;
+		console.log("onSelectFriend: ");
+		console.log("    dest ", this.dest_user);
 	}
 
-	onSelectChatroom(room: ChatRoomI) {
-		this.selected_room = room;
-		console.log("roomIDS   ", this.room_ids);
-		console.log("friendIDS ", this.friends);
+	onSelectChatroom(room: UserChatRoomI) {
+		this.dest_room = room;
+		this.wsChatService.emitUpdateMessage(room.roomId);
+		console.log("onSelectChatroom: ");
+		console.log("    room          ", room);
+	}
+
+	getDest(dest: UserI)
+	{
+		let tmp = dest.ftLogin;
+		if (dest.nickname)
+			tmp += ` (${dest.nickname})`
+		return (tmp);
+	}
+
+	onGetInfo()
+	{
+		console.clear();
+		console.log("rooms     ", this.rooms);
+		console.log("friends   ", this.friends);
+		console.log("dest_room ", this.dest_room);
+		console.log("messages  ", this.messages);
 	}
 }

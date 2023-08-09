@@ -16,7 +16,7 @@ import { ChatRoomModule } from "./adapter/chatRoom/module";
 		AuthModule,
 		WSChatModule,
 		UserModule,
-		ChatRoomModule
+		ChatRoomModule,
 	],
 	controllers: [],
 	// controller

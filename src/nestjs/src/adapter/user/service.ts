@@ -5,11 +5,10 @@ import { UserEntity } from "../../modules/database/user/entity";
 
 @Injectable()
 export class UserService {
-	constructor (
+	constructor(
 		private jwtService: JwtService,
 		private dbUserService: DBUserService,
-	) { }
-
+	) {}
 
 	validateToken(jwt_token: string): boolean {
 		if (!jwt_token) return false;
@@ -22,24 +21,19 @@ export class UserService {
 	}
 
 	decodeToken(jwt_token: string): number {
-		if (!this.validateToken(jwt_token))
-			return -1;
+		if (!this.validateToken(jwt_token)) return -1;
 		return this.jwtService.decode(jwt_token).sub;
 	}
 
-	async getInfoById(user_id: number): Promise<UserEntity>
-	{
-		return (await this.dbUserService.returnOne(user_id));
+	async getInfoById(user_id: number): Promise<UserEntity> {
+		return await this.dbUserService.returnOne(user_id);
 	}
 
-	async getAllUserId(): Promise<UserEntity[]>
-	{
-		const user_infos = await this.dbUserService.returnAll();
-		return Promise.resolve(user_infos);
+	async getAllFriend(user_id: number): Promise<UserEntity[]> {
+		return await this.dbUserService.returnAll();
 	}
 
-	async getInfoByLogin(user_login: string): Promise<UserEntity>
-	{
-		return (await this.dbUserService.returnOne(null, user_login));
+	async getInfoByLogin(user_login: string): Promise<UserEntity> {
+		return await this.dbUserService.returnOne(null, user_login);
 	}
 }

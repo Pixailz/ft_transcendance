@@ -18,7 +18,7 @@ export class DBChatRoomService {
 		room.type = post.type;
 		room.password = post.password;
 		await this.chatRoomRepo.save(room);
-		return (room.id)
+		return room.id;
 	}
 
 	async returnAll() {
@@ -27,7 +27,7 @@ export class DBChatRoomService {
 
 	async returnOne(chatId: number) {
 		const tmp = await this.chatRoomRepo.findOneBy({ id: chatId });
-		if (tmp) return await this.chatRoomRepo.findOneBy({ id: chatId });
+		if (tmp) return tmp;
 		else throw new ForbiddenException("ChatRoom not found");
 	}
 

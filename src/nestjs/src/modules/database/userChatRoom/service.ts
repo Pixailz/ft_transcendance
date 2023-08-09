@@ -36,10 +36,6 @@ export class DBUserChatRoomService {
 		return await this.userChatRoomRepo.find();
 	}
 
-	async getAllChatFromUser(userId:number) {
-		return await this.userChatRoomRepo.findBy({"userId": userId});
-	}
-
 	async returnOne(user: number, room: number) {
 		const tmp = await this.userChatRoomRepo.findOneBy({
 			userId: user,
@@ -65,5 +61,82 @@ export class DBUserChatRoomService {
 		});
 		if (tmp) return await this.userChatRoomRepo.delete(tmp);
 		else throw new ForbiddenException("userChatRoom not found");
+	}
+
+	async getAllRoomFromUser(userId: number): Promise<UserChatRoomEntity[]> {
+		return await this.userChatRoomRepo.find({
+			relations: {
+				user: true,
+				room: {
+					message: {
+						user: true,
+					},
+				},
+			},
+			where: {
+				user: {
+					id: userId,
+				},
+			},
+			order: {
+				room: {
+					message: {
+						updateAt: "ASC",
+					},
+				},
+			},
+		});
+	}
+
+	async getAllMessageFromRoom(
+		room_id: number,
+	): Promise<UserChatRoomEntity[]> {
+		return await this.userChatRoomRepo.find({
+			relations: {
+				user: true,
+				room: {
+					message: {
+						user: true,
+					},
+				},
+			},
+			where: {
+				roomId: room_id,
+			},
+			order: {
+				room: {
+					message: {
+						updateAt: "ASC",
+					},
+				},
+			},
+		});
+	}
+
+	async returnAllUserFromRoom(room_id: number): Promise<number[]> {
+		var user_ids = [];
+
+		const query = await this.userChatRoomRepo.find({
+			relations: {
+				user: true,
+				room: {
+					message: {
+						user: true,
+					},
+				},
+			},
+			where: {
+				roomId: room_id,
+			},
+			order: {
+				room: {
+					message: {
+						updateAt: "ASC",
+					},
+				},
+			},
+		});
+		for (var i = 0; i < query.length; i++) user_ids.push(query[i].user.id);
+		return user_ids;
 	}
 }
