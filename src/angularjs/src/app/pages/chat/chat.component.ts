@@ -59,6 +59,7 @@ export class WSChatComponent implements OnInit {
 		if (!this.message) return ;
 		if (this.dest_room.roomId === -1) return ;
 		this.wsChatService.emitMessage(this.dest_room.roomId, this.message);
+		this.message = "";
 	}
 
 	onSelectFriend(friend: UserI) {
@@ -91,5 +92,11 @@ export class WSChatComponent implements OnInit {
 		console.log("friends   ", this.friends);
 		console.log("dest_room ", this.dest_room);
 		console.log("messages  ", this.messages);
+	}
+
+	onPress(event: any)
+	{
+		if (event.key === "Enter")
+			this.sendMessage();
 	}
 }

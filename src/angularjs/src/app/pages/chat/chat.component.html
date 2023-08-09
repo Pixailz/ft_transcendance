@@ -26,7 +26,7 @@
 		<h2>{{dest_room.room.name}} ({{dest_room.roomId}})</h2>
 		<div *ngFor="let message of messages;">[{{message.user.ftLogin}}]: {{message.content}}</div>
 		<div class="txt-bar">
-			<input [(ngModel)]="message" type="text" placeholder="Enter a message...">
+			<input [(ngModel)]="message" type="text" placeholder="Enter a message..." (keypress)="onPress($event)">
 			<button (click)="sendMessage()">
 				<mat-icon fontIcon="send"></mat-icon>
 			</button>
