@@ -1,25 +1,48 @@
 <mat-card>
-	<form>
-		<app-avatar />
-		<mat-form-field>
-			<mat-label>Nickname</mat-label>
-			<input [(ngModel)]="nickname" name="nickname" required
-			value="{{nickname}}"
-			matInput>
-		</mat-form-field>
-
-		<mat-form-field>
-
-			<mat-label>mail</mat-label>
-			<input [(ngModel)]="email" name="email"
-			value="{{email}}"
-			matInput>
-		</mat-form-field>
-
-		<mat-slide-toggle>
-			2FA
-		</mat-slide-toggle>
-
-		<button mat-raised-button color="primary" (click)="onSubmit()">Save</button>
-	</form>
+  <form [formGroup]="userForm">
+    <mat-card-header>
+      <mat-card-title>Profile</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <app-avatar></app-avatar>
+      <mat-form-field>
+        <input
+		  type="text"
+          matInput
+		  formControlName="login"
+          [disabled]="true"
+          [(ngModel)]="user.ftLogin"
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <input
+		  type="text"
+          matInput
+          formControlName="nickname"
+          placeholder="Nickname"
+          [(ngModel)]="user.nickname"
+		  [required]="true"
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <input
+		  type="text"
+          matInput
+          formControlName="email"
+          placeholder="Email"
+          [(ngModel)]="user.email"
+        />
+      </mat-form-field>
+    </mat-card-content>
+	<mat-card-actions>
+	  <button
+		mat-raised-button
+		color="primary"
+		(click)="onSubmit()"
+		[disabled]="!userForm.valid"
+	  >
+		Save
+	  </button>
+	</mat-card-actions>
+  </form>
 </mat-card>

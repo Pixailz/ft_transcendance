@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
@@ -75,6 +75,7 @@ const config: SocketIoConfig = {
 		MatFormFieldModule,
 		MatInputModule,
 		MatSelectModule,
+		ReactiveFormsModule,
 		AppRoutingModule,
 		HttpClientModule,
 		FormsModule,

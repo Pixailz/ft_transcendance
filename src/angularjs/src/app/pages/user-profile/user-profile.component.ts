@@ -1,31 +1,56 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from 'src/app/services/user.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { UserService } from '../../services/user.service';
 
 @Component({
-	selector: 'app-user-profile',
-	templateUrl: './user-profile.component.html',
-	styleUrls: ['./user-profile.component.scss']
+    selector: 'app-user-profile',
+    templateUrl: './user-profile.component.html',
+    styleUrls: ['./user-profile.component.scss']
 })
 export class UserProfileComponent implements OnInit {
-	nickname:string = '';
-	email:string = '';
+    constructor(private userService: UserService,
+                private formBuilder: FormBuilder) {}
 
-	constructor(private userService: UserService) {
-	}
+    user: any = {
+        ftLogin: "",
+        nickname: "",
+        picture: "",
+        email: "",
+        twoAuthFactor: false
+    };
 
-	async ngOnInit() {
-		await this.userService.getUserInfo()
-			.then((user) => {
-				this.nickname = user.nickname;
-				this.email = user.email;
-			})
-			.catch((err) => {
-				this.nickname = "";
-				this.email = "";
-			})
-	}
+    userForm!: FormGroup;
 
-	async onSubmit() {
-		await this.userService.updateInfo(this.nickname, this.email);
-	}
+    async ngOnInit() {
+        this.user = await this.userService.getUserInfo();
+        this.userForm = this.formBuilder.group({
+            login: this.user.ftLogin,
+            nickname: this.user.nickname,
+            picture: this.user.picture,
+            email: this.user.email,
+            twofa: this.user.twoAuthFactor
+        });
+        this.userForm.get('login')?.disable();
+    }
+
+    async onSubmit() {
+        this.userForm.patchValue({
+            login: this.user.ftLogin
+        });
+
+        Object.keys(this.userForm.value).forEach(key => {
+            if (this.userForm.value[key] === "") {
+                delete this.userForm.value[key];
+            }
+        });
+
+        this.userService.updateInfo(JSON.stringify(this.userForm.value))
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
 }
+
