@@ -28,15 +28,9 @@ export class UserService {
 		return (await this.reqService.back("GET", "/api/user/me"));
 	}
 
-	async updateInfo(nickname: string, email?: string)
+	async updateInfo(user: any): Promise<any>
 	{
-		let body;
-
-		if (email)
-			body = JSON.stringify({"nickname" : nickname, "email" : email});
-		else
-			body = JSON.stringify({"nickname" : nickname});
-		return (await this.reqService.back("PUT", "/api/user/me", body));
+		return (await this.reqService.back("PUT", "/api/user/me", user));
 	}
 
 	async	getRoomIds(): Promise<any>

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
@@ -32,6 +32,7 @@ import { environment } from './environments/environment';
 import { AnonymousLayoutComponent } from './layout/anonymous-layout.component';
 import { AuthenticatedLayoutComponent } from './layout/authenticated-layout.component';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { FlatButtonComponent } from './components/flat-button/flat-button.component';
 
 
 const config: SocketIoConfig = {
@@ -58,7 +59,8 @@ const config: SocketIoConfig = {
 		RegisterComponent,
 		WSChatComponent,
 		AnonymousLayoutComponent,
-		AuthenticatedLayoutComponent
+		AuthenticatedLayoutComponent,
+  FlatButtonComponent
 	],
 	imports: [
 		BrowserModule,
@@ -73,6 +75,7 @@ const config: SocketIoConfig = {
 		MatFormFieldModule,
 		MatInputModule,
 		MatSelectModule,
+		ReactiveFormsModule,
 		AppRoutingModule,
 		HttpClientModule,
 		FormsModule,

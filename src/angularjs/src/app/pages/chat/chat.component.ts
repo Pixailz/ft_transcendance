@@ -14,6 +14,8 @@ export enum Status {
 	styleUrls: ['./chat.component.scss']
 })
 export class WSChatComponent implements OnInit {
+	isCreatingRoom: boolean = false;
+
 	messages: MessageI[] = [];
 	message: string = "";
 	dest_user: UserI = DefUserI;
@@ -50,6 +52,23 @@ export class WSChatComponent implements OnInit {
 		)
 	}
 
+	onCreatingRoom() {
+		this.isCreatingRoom = true;
+	}
+
+	onClosePopup() {
+		this.isCreatingRoom = false;
+	}
+
+	isSameUser(i: number) {
+		let j = this.messages.length - 2 - i;
+		i = this.messages.length - 1 - i
+		if (i >= 0 && i < this.messages.length && j >= 0 && j < this.messages.length)
+			if (this.messages[j].user.id == this.messages[i].user.id)
+				return (true);
+		return (false);
+	}
+
 	createRoom() {
 		if (this.dest_user.id === -1) return ;
 		this.wsChatService.emitCreateRoom(this.dest_user.id)
@@ -61,12 +80,15 @@ export class WSChatComponent implements OnInit {
 		if (!this.message) return ;
 		if (this.dest_room.roomId === -1) return ;
 		this.wsChatService.emitMessage(this.dest_room.roomId, this.message);
+		this.message = "";
 	}
 
 	onSelectFriend(friend: UserI) {
 		this.dest_user = friend;
 		console.log("onSelectFriend: ");
 		console.log("    dest ", this.dest_user);
+		this.createRoom();
+		this.onClosePopup();
 	}
 
 	onSelectChatroom(room: UserChatRoomI) {
@@ -121,5 +143,11 @@ export class WSChatComponent implements OnInit {
 		console.log("friends_status ", this.friends_status);
 		console.log("dest_room      ", this.dest_room);
 		console.log("messages       ", this.messages);
+	}
+
+	onPress(event: any)
+	{
+		if (event.key === "Enter")
+			this.sendMessage();
 	}
 }

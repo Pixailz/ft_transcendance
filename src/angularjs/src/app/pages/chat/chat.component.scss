@@ -1,117 +1,199 @@
-#refresh {
-	background-color: #EF626C;
-};
+.refresh {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+}
 
 .container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+    grid-gap: 20px;
+    height: 80vh;
+    padding: 20px;
+}
 
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	grid-template-rows: 1fr;
-	grid-gap: 20px;
-	height: 80vh;
-	padding: 20px;
+.container .side-bar {
+    position: relative;
+    grid-area: 1 / 1 / 6 / 2;
+}
 
-	ul {
-		list-style: none;
-		grid-area: 1 / 1 / 6 / 2;
-		padding: 0;
-		margin: 0;
+.container .side-bar .popup {
+    padding: 10px;
+    margin: 0;
+    position: fixed;
+    left: 50vw;
+    top: 50vh;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    max-width: 700px;
+    width: 90vw;
+    max-height: 600px;
+    height: 90vh;
+    z-index: 90;
+    border: 3px solid black;
+}
 
-		li {
-			button {
-				border: 0;
-				width: 100%;
-				height: 50px;
-				border: 3px solid;
-				background-color: white;
-				text-align: left;
-				padding: 0 20px;
-				font-family: 'Maven Pro', sans-serif;
-				font-size: 1.2em;
-				cursor: pointer;
+.container .side-bar .popup ul.friend-list {
+    list-style: none;
+    overflow-y: scroll;
+}
 
-				&:hover {
-					background-color: rgb(226, 226, 226);
-				}
-			}
+.container .side-bar .popup ul.friend-list li {
+    height: 40px;
+    width: auto;
+    position: relative;
+    margin-bottom: 10px;
+}
 
-			&:not(:nth-child(1)){
-				margin: 10px 0;
-			}
-		}
+.container .side-bar .popup ul.friend-list li button {
+    height: 100%;
+    width: 100%;
+    border: 0;
+    text-align: left;
+    padding: 0 20px;
+    background-color: white;
+    font-family: 'Maven Pro', sans-serif;
+    font-size: 1.2em;
+    border: 3px solid black;
+    cursor: pointer;
+}
 
-		li.add-btn {
-			display: flex;
-			justify-content: center;
+.container .side-bar .popup ul.friend-list li button:hover {
+    background-color: rgb(237, 235, 235);
+}
 
-			button {
-				padding: 0;
-				width: 50px;
-				color: black;
-				border: 0;
-				border-radius: 0px;
-				cursor: pointer;
-				background-color: #a7dca3;
-				border: 3px solid;
-				height: 50px;
-				aspect-ratio: 1;
-				box-shadow: 3px 3px;
-				text-align: center;
+.container .side-bar .popup button.close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #ffb1b1;
+    border: 3px solid black;
+    width: 40px;
+    transform: translate(50%, -50%);
+    height: 40px;
+    cursor: pointer;
+}
 
-				&:hover {
-					transform: translate(3px, 3px);
-					background-color: #87b884;
-					box-shadow: 0 0;
-				}
-			}
-		}
+.container .side-bar .popup button.close:hover {
+    background-color: #ff9999;
+}
 
-	}
+.container .side-bar ul.room-list li {
+    width: 100%;
+    margin-bottom: 10px;
+}
 
-	.chat-container {
-		background-color: white;
-		grid-area: 1 / 2 / 6 / 4;
-		border: 3px solid;
-		position: relative;
+.container .side-bar ul.room-list li button {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    border: 3px solid black;
+    text-align: left;
+    font-family: 'Maven Pro', sans-serif;
+    font-size: 1.2em;
+    padding: 10px 20px;
+    z-index: 0;
+}
 
-		h2 {
-			font-family: 'Maven Pro', sans-serif;
-			font-size: 1.8em;
-			text-align: center;
-			border-bottom: 3px solid;
-			padding: 10px 0;
-		}
+.container .side-bar app-flat-button {
+    position: absolute;
+	left: 50%;
+	transform: translate(-50%);
+}
 
-		.txt-bar {
-			bottom: 0;
-			position: absolute;
-			width: 100%;
-			height: 50px;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			border-top: 3px solid;
+.container .chat-container {
+    background-color: white;
+    grid-area: 1 / 2 / 6 / 4;
+    border: 3px solid;
+    position: relative;
+}
 
-			input {
-				border: 0;
-				background-color: transparent;
-				height: 100%;
-				outline: none;
-				width: 100%;
-				border-right: 3px solid;
-				font-size: 1.3em;
-				padding: 0 15px;
-			}
+.container .chat-container h2 {
+    font-family: 'Maven Pro', sans-serif;
+    font-size: 1.8em;
+    text-align: center;
+    border-bottom: 3px solid;
+    padding: 10px 0;
+	position: sticky;
+	height: 40px;
+	margin: 0;
+	background-color: white;
+}
 
-			button {
-				width: 50px;
-				height: 50px;
-				background-color: #a7dca3;
-				border: 0;
-				&:hover {
-					background-color: #87b884;
-				}
-			}
-		}
-	}
+.container .chat-container ol.msg-list {
+	list-style: none;
+	overflow-y: scroll;
+	margin: 0;
+	padding: 10px;
+	height: calc(100% - 50px - 3px - 50px - 13px - 20px);
+	display: flex;
+	flex-direction: column-reverse;
+}
+
+.container .chat-container ol.msg-list li {
+	margin: 10px;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.container .chat-container ol.msg-list li span.login {
+	padding: 0;
+	margin: 0;
+	width: fit-content;
+	padding: 3px 10px;
+	font-size: 1em;
+	font-family: 'Maven Pro', sans-serif;
+	border: 3px solid black;
+	background-color: white;
+	color: black;
+	margin-bottom: 2px;
+}
+
+.container .chat-container ol.msg-list li span.content {
+	padding: 6px 15px;
+	width: fit-content;
+	font-size: 1.4em;
+	font-family: 'Maven Pro', sans-serif;
+	border: 3px solid black;
+	background-color: white;
+	color: black;
+}
+
+.container .chat-container .txt-bar {
+    bottom: 0;
+    position: sticky;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 3px solid;
+}
+
+.container .chat-container .txt-bar input {
+    border: 0;
+    background-color: white;
+    height: 100%;
+    outline: none;
+    width: 100%;
+    border-right: 3px solid;
+    font-size: 1.3em;
+    padding: 0 15px;
+}
+
+.container .chat-container .txt-bar button {
+    width: 50px;
+    height: 50px;
+	margin: 0;
+	padding: 0;
+	aspect-ratio: 1;
+    background-color: #a7dca3;
+    border: 0;
+    cursor: pointer;
+}
+
+.container .chat-container .txt-bar button:hover {
+    background-color: #87b884;
 }

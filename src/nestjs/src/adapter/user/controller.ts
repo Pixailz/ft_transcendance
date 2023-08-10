@@ -14,6 +14,6 @@ export class UserController {
 	@Put("me")
 	async update_info_me(@Request() req, @Body() userPost: DBUserInfoPost) {
 		await this.dbUserService.update(req.user.user_id, userPost);
-		return { status: "oke" };
+		return await this.dbUserService.returnOne(req.user.user_id);
 	}
 }
