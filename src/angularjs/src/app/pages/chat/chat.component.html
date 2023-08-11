@@ -3,7 +3,7 @@
 		<div *ngIf="isCreatingRoom" class="popup">
 			<ul class="friend-list">
 				<li *ngFor="let friend of friends;">
-					<button (click)="onSelectFriend(friend)">{{getDest(friend)}}</button>
+					<button (click)="onSelectFriend(friend)">{{getUserInfo(friend)}}</button>
 				</li>
 				<button class="close" (click)="onClosePopup()">
 					<mat-icon fontIcon="close"></mat-icon>
