@@ -6,16 +6,14 @@ import { Status } from "src/modules/database/user/entity";
 import { ChatRoomService } from "src/adapter/chatRoom/service";
 
 @Injectable()
-export class WSChatService
-{
-	constructor (
+export class WSChatService {
+	constructor(
 		private userService: UserService,
 		private wsService: WSService,
 		private chatRoomService: ChatRoomService,
-	) { }
+	) {}
 
-	async connection(server, socket: Socket)
-	{
+	async connection(server, socket: Socket) {
 		const user_id = this.userService.decodeToken(
 			socket.handshake.headers.authorization,
 		);
@@ -43,8 +41,7 @@ export class WSChatService
 		this.wsService.setStatus(server, user_id, Status.CONNECTED);
 	}
 
-	disconnect (server, socket: Socket)
-	{
+	disconnect(server, socket: Socket) {
 		const user_info = this.wsService.getUser(socket.id);
 		console.log(`[WS:handleDisconnect] Disconnected ${user_info.ftLogin}`);
 		this.wsService.removeSocket(socket.id);
@@ -52,8 +49,7 @@ export class WSChatService
 		socket.disconnect();
 	}
 
-	async sendNewRoom(socket: Socket)
-	{
+	async sendNewRoom(socket: Socket) {
 		const user = this.wsService.getUser(socket.id);
 		socket.emit(
 			"getNewRoom",
@@ -61,8 +57,7 @@ export class WSChatService
 		);
 	}
 
-	async sendNewFriend(socket: Socket)
-	{
+	async sendNewFriend(socket: Socket) {
 		const user = this.wsService.getUser(socket.id);
 		socket.emit(
 			"getNewFriend",
@@ -70,8 +65,7 @@ export class WSChatService
 		);
 	}
 
-	async sendNewStatusFriend(socket: Socket)
-	{
+	async sendNewStatusFriend(socket: Socket) {
 		const user = this.wsService.getUser(socket.id);
 		socket.emit(
 			"getNewStatusFriend",
@@ -79,8 +73,7 @@ export class WSChatService
 		);
 	}
 
-	async createNewRoom(server, socket: Socket, dst_id: number)
-	{
+	async createNewRoom(server, socket: Socket, dst_id: number) {
 		const user = this.wsService.getUser(socket.id);
 		const dst_socket_id = this.wsService.getSocketId(dst_id);
 
@@ -94,13 +87,14 @@ export class WSChatService
 			.emit("getNewRoom", await this.chatRoomService.getAllRoom(dst_id));
 	}
 
-	async sendMessage(server, socket: Socket, dst_id: number, message: string)
-	{
+	async sendMessage(server, socket: Socket, dst_id: number, message: string) {
 		const user = this.wsService.getUser(socket.id);
 
 		await this.chatRoomService.sendMessage(dst_id, user.id, message);
 		const all_user = await this.chatRoomService.getAllUserFromRoom(dst_id);
-		const all_message = await this.chatRoomService.getAllMessageRoom(dst_id);
+		const all_message = await this.chatRoomService.getAllMessageRoom(
+			dst_id,
+		);
 
 		for (var i = 0; i < all_user.length; i++) {
 			let socket_id = this.wsService.getSocketId(all_user[i]);
@@ -108,8 +102,7 @@ export class WSChatService
 		}
 	}
 
-	async newMessage(socket: Socket, room_id: number)
-	{
+	async newMessage(socket: Socket, room_id: number) {
 		const user = this.wsService.getUser(socket.id);
 		let all_message = await this.chatRoomService.getAllMessageRoom(room_id);
 		socket.emit("getNewMessage", all_message);

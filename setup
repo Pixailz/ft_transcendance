@@ -15,7 +15,7 @@ JWT_LEN="64"
 
 ## ANGULAR ENV
 ANGULAR_ENV_DIR="src/angularjs/src/app/environments"
-ANGULAR_PROD_ENV="${ANGULAR_ENV_DIR}/environment.ts"
+ANGULAR_PROD_ENV="${ANGULAR_ENV_DIR}/environment.common.ts"
 ANGULAR_DEV_ENV="${ANGULAR_ENV_DIR}/environment.dev.ts"
 
 # FUNCTIONS

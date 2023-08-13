@@ -10,6 +10,12 @@ import { WSChatService } from "./chat-service";
 
 @Module({
 	imports: [AuthModule, DBModule],
-	providers: [WSChatGateway, WSService, UserService, ChatRoomService, WSChatService],
+	providers: [
+		WSChatGateway,
+		WSService,
+		UserService,
+		ChatRoomService,
+		WSChatService,
+	],
 })
 export class WSChatModule {}

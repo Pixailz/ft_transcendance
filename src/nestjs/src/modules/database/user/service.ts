@@ -34,7 +34,7 @@ export class DBUserService {
 	}
 
 	async returnOne(userId?: number, ft_login?: string) {
-		return this.get_user(userId, ft_login);
+		return await this.get_user(userId, ft_login);
 	}
 
 	async update(userId: number, userPost: DBUserInfoPost) {

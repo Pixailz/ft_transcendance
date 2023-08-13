@@ -1,5 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { DefUserChatRoomI, DefUserI, UserChatRoomI, UserI, MessageI } from 'src/app/services/chat.interface';
+import {
+	DefUserChatRoomI,
+	DefUserI,
+	UserChatRoomI,
+	UserI,
+	MessageI
+} from 'src/app/interfaces/chat.interface';
 import { WSChatService } from 'src/app/services/ws-chat';
 
 export enum Status {
@@ -75,8 +81,6 @@ export class WSChatComponent implements OnInit {
 	}
 
 	sendMessage() {
-		console.log("message ", this.message);
-		console.log("dest_id ", this.dest_room);
 		if (!this.message) return ;
 		if (this.dest_room.roomId === -1) return ;
 		this.wsChatService.emitMessage(this.dest_room.roomId, this.message);
@@ -85,8 +89,6 @@ export class WSChatComponent implements OnInit {
 
 	onSelectFriend(friend: UserI) {
 		this.dest_user = friend;
-		console.log("onSelectFriend: ");
-		console.log("    dest ", this.dest_user);
 		this.createRoom();
 		this.onClosePopup();
 	}
@@ -94,8 +96,6 @@ export class WSChatComponent implements OnInit {
 	onSelectChatroom(room: UserChatRoomI) {
 		this.dest_room = room;
 		this.wsChatService.emitUpdateMessage(room.roomId);
-		console.log("onSelectChatroom: ");
-		console.log("    room          ", room);
 	}
 
 	getUserInfo(dest: UserI)

@@ -5,7 +5,6 @@ version: "3.9"
 
 x-healthcheck_conf: &healthcheck_conf
       interval: 5s
-      timeout: 5s
       retries: 30
 
 x-restart: &restart
@@ -27,8 +26,8 @@ services:
       nestjs:
         condition: service_healthy
     environment:
-      - CERT_SUBJ=${CERT_SUBJ}
-      - DEBUG=${DEBUG}
+      - CERT_SUBJ=${CERT_SUBJ?}
+      - DOCKER_DEBUG=${DOCKER_DEBUG?}
     ports:
       - 443:443
     networks:
@@ -47,7 +46,7 @@ services:
           create_host_path: true
     << : *restart
     healthcheck:
-      test: "nc -w 1 127.0.0.1 443"
+      test: "nc -w ${DOCKER_TIMEOUT?} 127.0.0.1 443"
       << : *healthcheck_conf
   #
   ##############################################################################
@@ -68,13 +67,13 @@ services:
       transendence:
         ipv4_address: "13.37.42.11"
     environment:
-      - DB_USER=${ADMIN_USER}
-      - DB_PASS=${ADMIN_PASS}
-      - DB_NAME=${DB_NAME}
-      - API42_USERID=${API42_USERID}
-      - API42_SECRET=${API42_SECRET}
-      - API42_REDIRECTURL=${API42_REDIRECTURL_PROD}
-      - JWT_SECRET=${JWT_SECRET}
+      - DB_USER=${ADMIN_USER?}
+      - DB_PASS=${ADMIN_PASS?}
+      - DB_NAME=${DB_NAME?}
+      - API42_USERID=${API42_USERID?}
+      - API42_SECRET=${API42_SECRET?}
+      - API42_REDIRECTURL=${API42_REDIRECTURL_PROD?}
+      - JWT_SECRET=${JWT_SECRET?}
       - PRODUCTION=1
     volumes:
       - type: bind
@@ -89,7 +88,7 @@ services:
           create_host_path: true
     << : *restart
     healthcheck:
-      test: "nc -w 1 127.0.0.1 3000"
+      test: "nc -w ${DOCKER_TIMEOUT?} 127.0.0.1 3000"
       << : *healthcheck_conf
   #
   ##############################################################################
@@ -134,11 +133,11 @@ services:
       context: "./build/postgresql"
       target: "packed"
     environment:
-      - ADMIN_USER=${ADMIN_USER}
-      - ADMIN_PASS=${ADMIN_PASS}
-      - DB_NAME=${DB_NAME}
+      - ADMIN_USER=${ADMIN_USER?}
+      - ADMIN_PASS=${ADMIN_PASS?}
+      - DB_NAME=${DB_NAME?}
       - PGDATA=/usr/local/pgsql/data
-      - DEBUG=${DEBUG}
+      - DOCKER_DEBUG=${DOCKER_DEBUG?}
     networks:
       transendence:
         ipv4_address: "13.37.42.13"
@@ -155,7 +154,7 @@ services:
           create_host_path: true
     << : *restart
     healthcheck:
-      test: "nc -w 1 127.0.0.1 5432"
+      test: "nc -w ${DOCKER_TIMEOUT?} 127.0.0.1 5432"
       << : *healthcheck_conf
   #
   ##############################################################################

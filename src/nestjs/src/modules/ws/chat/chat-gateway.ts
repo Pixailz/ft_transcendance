@@ -13,9 +13,7 @@ import { WSChatService } from "./chat-service";
 	cors: { origin: "*" },
 })
 export class WSChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
-	constructor(
-		private wsChatService: WSChatService,
-	) {}
+	constructor(private wsChatService: WSChatService) {}
 
 	@WebSocketServer()
 	server = new Server();
@@ -57,5 +55,4 @@ export class WSChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	async handleNewMessage(socket: Socket, data: any) {
 		this.wsChatService.newMessage(socket, data);
 	}
-
 }
