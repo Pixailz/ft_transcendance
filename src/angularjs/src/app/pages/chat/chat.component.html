@@ -24,9 +24,10 @@
 		<h2>{{dest_room.room.name}} ({{dest_room.roomId}})</h2>
 
 		<ol class="msg-list">
-			<li *ngFor="let _ of messages; let i=index;">
+			<li *ngFor="let _ of messages; let i=index;" [ngClass]="{'me': messages[messages.length - 1 - i].user.id === user.id, 'same': isSameUser(i)}">
 				<span class="login" *ngIf="!isSameUser(i)">{{messages[messages.length - 1 - i].user.ftLogin}}</span>
 				<span class="content">{{messages[messages.length - 1 - i].content}}</span>
+				<span class="date">{{messages[messages.length - 1 - i].updateAt | date: 'hh:mm'}}</span>
 			</li>
 		</ol>
 		<div class="txt-bar">

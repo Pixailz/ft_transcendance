@@ -6,6 +6,7 @@ import {
 	UserI,
 	MessageI
 } from 'src/app/interfaces/chat.interface';
+import { UserService } from '../../services/user.service';
 import { WSChatService } from 'src/app/services/ws-chat';
 
 export enum Status {
@@ -21,6 +22,7 @@ export enum Status {
 })
 export class WSChatComponent implements OnInit {
 	isCreatingRoom: boolean = false;
+	user: UserI = DefUserI;
 
 	messages: MessageI[] = [];
 	message: string = "";
@@ -30,9 +32,11 @@ export class WSChatComponent implements OnInit {
 	friends_status = {};
 	rooms: UserChatRoomI[] = [];
 
-	constructor(private wsChatService: WSChatService) {}
+	constructor(private wsChatService: WSChatService,
+				private userService: UserService) {}
 
 	async ngOnInit() {
+		this.user = await this.userService.getUserInfo();
 		this.wsChatService.emitRoom();
 		this.wsChatService.listenNewRoom()
 			.subscribe((rooms: UserChatRoomI[]) => {
