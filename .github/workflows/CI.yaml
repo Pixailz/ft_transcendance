@@ -1,6 +1,6 @@
 name: CI
 
-run-name: Docker compose CI
+run-name: CI
 
 on:
   push:
@@ -99,3 +99,28 @@ jobs:
       - name: Executing debug
         timeout-minutes: 5
         run: docker compose -f docker-compose-dev.yaml up --build -d --wait
+
+
+  nest-database-jest:
+    needs:
+      - docker-dev-run
+      - docker-prod-run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .env
+        run: printf "${SETUP_STR}\n" | ./setup
+
+      - name: Cleaning up previous run
+        run: |+
+          rm -rf ./volume
+          docker compose down
+
+      - name: Compose UP
+        timeout-minutes: 5
+        run: docker compose -f docker-compose-dev.yaml up --build -d --wait
+
+      - name: Running Jest
+        timeout-minutes: 5
+        run: docker compose -f docker-compose-dev.yaml exec -it nestjs npm run test
