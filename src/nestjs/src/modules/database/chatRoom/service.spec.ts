@@ -46,12 +46,11 @@ import { DBModule } from '../database.module';
 
 			let roomId = await service.create(roomPost);      
 			let room = await service.returnOne(roomId);  
-			console.log('in create first room : room id ', room.id, 'room login = ', room.name);
+			// console.log('in create first room : room id ', room.id, 'room login = ', room.name);
 			expect(roomId).toEqual(room.id);
 
 			let roomId2 = await service.create(roomPost2);
 			let room2 = await service.returnOne(roomId2);  
-			console.log('in create second room : room id ', room2.id, 'room login = ', room2.name);
 			expect(roomId2).toEqual(room2.id);
 		});
 	  });
@@ -74,10 +73,8 @@ import { DBModule } from '../database.module';
 	describe('delete', () => {
 		it('should delete a room', async () => {
 			const room = await repo.findOneBy({name: unit_room + '_name_BIS'}); 
-			console.log('room in delete = ', room);
 			const id = room.id;
 			await service.delete(id);
-			// expect(await service.returnOne(id)).toThrowError(new ForbiddenException("ChatRoom not found"));
 			await expect(service.returnOne(id)).rejects.toThrowError(
 				new ForbiddenException("ChatRoom not found"),
 				);

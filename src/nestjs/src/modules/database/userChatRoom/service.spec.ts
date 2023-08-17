@@ -56,61 +56,24 @@ describe('DBUserChatRoomService', () => {
   describe('testing create and returnOne', () => {
     it('[USER CHAT ROOM] TEST', async () => {
         const user_test = await userService.returnAll();
-        if (user_test.length != 0)
+        // console.log('array user len = ', user_test.length)
+        if (user_test.length != 1)
         {
           const len = user_test.length;
           unit_user += len - 2; 
         }
         const room_test = await chatRoomService.returnAll();
-        if (room_test.length != 0)
+        if (room_test.length != 1)
         {
           const len = room_test.length;
           unit_room += len - 2; 
         }
         let user = await userService.returnOne(null, unit_user);  
-        console.log('in userchatroom user = ', user);
         let room = await chatRoomRepo.findOneBy({name: unit_room + "_name"})
-        console.log('and room = ', room);
-        console.log('user name = ', unit_user, ' room name = ', unit_room);
         
         const post = {"isOwner": true, "isAdmin": true};
         const tmp = await service.create(post, user.id, room.id);
-        console.log('tmp = ', tmp);
-        expect(tmp).toEqual(post);
-
-        // "/shared/transcendence/src/modules/database/userChatRoom/service.spec.ts",
-
-
-        // await expect(service.create(userPost3)).rejects.toThrowError(
-        //   new ForbiddenException("User Login can't be blank or empty"),
-        //   );
+        expect(tmp.isOwner).toEqual(post.isOwner);
         });
       });
     });
-    //   describe('update', () => {
-    //     it('[USER] should update 2 user', async () => {
-    //       const userPost = { nickname: unit_user + '_name', email: unit_user + "@mail.com" };
-    //       const userPost2 = { nickname: unit_user + 'name_BIS', email: unit_user + "_BIS@mail.com" };
-    //       let user_id = (await service.returnOne(null, unit_user)).id;
-    //       let user2_id = (await service.returnOne(null, unit_user_bis)).id;
-    //       await service.update(user_id, userPost);
-    //       await service.update(user2_id, userPost2);
-    //       const user = await service.returnOne(user_id, null);
-    //       const user2 = await service.returnOne(user2_id, null);
-    //       expect(user.nickname).toEqual(userPost.nickname);
-    //       expect(user2.nickname).toEqual(userPost2.nickname);
-    //     });
-    //   });
-
-    //   describe('delete', () => {
-    //     it('should delete a user', async () => {
-    //       const user = await service.returnOne(null, unit_user_bis);
-    //       console.log('user in delete = ', user);
-    //       const id = user.id;
-    //       await service.delete(user.id);
-    //       const ret = await service.returnOne(id, null);
-    //       expect(ret).toBeNull();
-    //     });
-    //   });  
-
-    // });

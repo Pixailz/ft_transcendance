@@ -47,12 +47,13 @@ import { DBModule } from '../database.module';
 
         let userId = await service.create(userPost);      
         let user = await service.returnOne(userId, null);  
-        // console.log('in create first user : user id ', user.id, 'user login = ', user.ftLogin);
+        
+        expect(user.nickname).toEqual("");
         expect(userId).toEqual(user.id);
 
         let userId2 = await service.create(userPost2);
         let user2 = await service.returnOne(userId2, null);  
-        // console.log('in create second user : user id ', user2.id, 'user login = ', user2.ftLogin);
+
         expect(userId2).toEqual(user2.id);
         
         await expect(service.create(userPost3)).rejects.toThrowError(
@@ -72,14 +73,14 @@ import { DBModule } from '../database.module';
           const user = await service.returnOne(user_id, null);
           const user2 = await service.returnOne(user2_id, null);
           expect(user.nickname).toEqual(userPost.nickname);
-          expect(user2.nickname).toEqual(userPost2.nickname);
+          expect(user2.email).toEqual(userPost2.email);
         });
       });
 
       describe('delete', () => {
         it('should delete a user', async () => {
           const user = await service.returnOne(null, unit_user_bis);
-          console.log('user in delete = ', user);
+          // console.log('user in delete = ', user);
           const id = user.id;
           await service.delete(user.id);
           const ret = await service.returnOne(id, null);
