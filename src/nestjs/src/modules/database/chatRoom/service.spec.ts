@@ -9,7 +9,7 @@ import { DBModule } from '../database.module';
  describe('DBChatRoomService', () => {
   let service: DBChatRoomService;
   let repo: Repository<ChatRoomEntity>;
-  let unit_room: string = "UNIT_room";
+  let unit_room: string = "UNIT_ROOM";
   let unit_room_bis = unit_room + "_BIS";
 
   beforeEach(async () => {
