@@ -70,7 +70,6 @@
       "ts"
     ],
     "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
@@ -78,6 +77,11 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "testMatch": [
+      "/shared/transcendence/src/modules/database/user/service.spec.ts",
+      "/shared/transcendence/src/modules/database/chatRoom/service.spec.ts",
+      "/shared/transcendence/src/modules/database/userChatRoom/service.spec.ts"
+    ]
   }
 }
