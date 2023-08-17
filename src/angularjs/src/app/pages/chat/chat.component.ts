@@ -72,9 +72,18 @@ export class WSChatComponent implements OnInit {
 
 	isSameUser(i: number) {
 		let j = this.messages.length - 2 - i;
-		i = this.messages.length - 1 - i
+		i = this.messages.length - 1 - i;
 		if (i >= 0 && i < this.messages.length && j >= 0 && j < this.messages.length)
 			if (this.messages[j].user.id == this.messages[i].user.id)
+				return (true);
+		return (false);
+	}
+
+	isFollowingDay(i: number) {
+		let j = this.messages.length - 2 - i;
+		i = this.messages.length - 1 - i;
+		if (i >= 0 && i < this.messages.length && j >= 0 && j < this.messages.length)
+			if (this.messages[j].updateAt?.toString().split('T')[0] === this.messages[i].updateAt?.toString().split('T')[0])
 				return (true);
 		return (false);
 	}
