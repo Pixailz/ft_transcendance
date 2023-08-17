@@ -1,0 +1,15 @@
+button {
+	width: 50px;
+	aspect-ratio: 1;
+	background-color: white;
+	border: 3px solid black;
+	color: black;
+	box-shadow: 3px 3px black;
+	cursor: pointer;
+}
+
+button.true, button:hover {
+	transform: translate(3px, 3px);
+	box-shadow: 0 0;
+	filter: brightness(80%);
+}

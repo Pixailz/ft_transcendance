@@ -1,9 +1,61 @@
-.spacer {
-	flex: 1 1 auto;
-}
-
 header {
 	display: flex;
 	align-items: center;
-	padding-bottom: 20px;
+	justify-content: space-between;
+	padding: 20px 50px;
+}
+
+header h1 {
+	font-family: 'Maven Pro', sans-serif;
+	font-size: 2.0em;
+	color: black;
+	background-color: white;
+	box-shadow: 3px 3px black;
+	border: 3px solid black;
+	padding: 7px 20px;
+	margin: 0;
+	animation: colorfull 1s infinite;
+	cursor: pointer;
+}
+
+header h1:hover {
+	transform: translate(3px, 3px);
+	box-shadow: 0 0;
+}
+
+header ul {
+	display: flex;
+	list-style: none;
+}
+
+header ul li {
+	margin-left: 10px;
+}
+
+header ul li.logout {
+	margin-left: 20px;
+}
+
+@keyframes colorfull {
+
+	0%,
+	100% {
+		background-color: #ff9999;
+	}
+
+	20% {
+		background-color: rgb(255, 206, 114);
+	}
+
+	40% {
+		background-color: rgb(255, 255, 145);
+	}
+
+	60% {
+		background-color: rgb(152, 255, 152)
+	}
+
+	80% {
+		background-color: #a3d0dc;
+	}
 }

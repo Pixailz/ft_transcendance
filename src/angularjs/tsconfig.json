@@ -4,7 +4,6 @@
   "compilerOptions": {
     "paths": {
       "auth": [
-        "dist/auth",
         "dist/auth"
       ]
     },

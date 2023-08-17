@@ -1,4 +1,5 @@
-export const environment = {
-	socket_url: "https://localhost",
-	after_auth_uri: ""
-};
+import { commonEnvironment } from "./environment.common";
+
+const env: Partial<typeof commonEnvironment> = {};
+
+export const environment = Object.assign(commonEnvironment, env);

@@ -38,14 +38,21 @@ export class AuthService {
 		};
 	}
 
-	validateToken(token?: string) {
-		if (!token) return false;
-		try {
-			this.jwtService.verify(token);
-			return true;
-		} catch {
-			return false;
+	async ftSignInTest(): Promise<any> {
+		let user = await this.dbUserService.returnOne(null, "norminet");
+
+		if (!user) {
+			const user_id = await this.dbUserService.create({
+				ftLogin: "norminet",
+			});
+			await this.dbUserService.update(user_id, { nickname: "leSangCho" });
+			user = await this.dbUserService.returnOne(user_id);
 		}
+		console.log("test user created");
+		return {
+			access_token: await this.jwtService.signAsync({ sub: user.id }),
+			status: "oke",
+		};
 	}
 
 	async validateUser(payload: any): Promise<any> {

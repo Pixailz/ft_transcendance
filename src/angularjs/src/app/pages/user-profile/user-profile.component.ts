@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from 'src/app/services/user.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { UserService } from '../../services/user.service';
+import { DefUserI, UserI } from 'src/app/interfaces/chat.interface';
 
 @Component({
 	selector: 'app-user-profile',
@@ -7,25 +9,44 @@ import { UserService } from 'src/app/services/user.service';
 	styleUrls: ['./user-profile.component.scss']
 })
 export class UserProfileComponent implements OnInit {
-	nickname:string = '';
-	email:string = '';
+	constructor(private userService: UserService,
+				private formBuilder: FormBuilder) {}
 
-	constructor(private userService: UserService) {
-	}
+	user: UserI = DefUserI;
+	userForm!: FormGroup;
 
 	async ngOnInit() {
-		await this.userService.getUserInfo()
-			.then((user) => {
-				this.nickname = user.nickname;
-				this.email = user.email;
-			})
-			.catch((err) => {
-				this.nickname = "";
-				this.email = "";
-			})
+		this.user = await this.userService.getUserInfo();
+		this.userForm = this.formBuilder.group({
+			login: this.user.ftLogin,
+			nickname: this.user.nickname,
+			picture: this.user.picture,
+			email: this.user.email,
+			twofa: this.user.twoAuthFactor
+		});
+		this.userForm.get('login')?.disable();
 	}
 
 	async onSubmit() {
-		await this.userService.updateInfo(this.nickname, this.email);
+		this.userForm.patchValue({
+			login: this.user.ftLogin
+		});
+
+		Object.keys(this.userForm.value).forEach(key => {
+			if (this.userForm.value[key] === "") {
+				delete this.userForm.value[key];
+			}
+		});
+		await this.userService.updateInfo(
+			this.userForm.value.nickname,
+			this.userForm.value.email
+		)
+			.then((res) => {
+				console.log(res);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	}
 }
+

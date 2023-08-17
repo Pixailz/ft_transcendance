@@ -4,9 +4,8 @@ version: "3.9"
 # DEFAULT CONF https://stackoverflow.com/a/65522511
 
 x-healthcheck_conf: &healthcheck_conf
-      interval: 1s
-      timeout: 1s
-      retries: 50
+      interval: 5s
+      retries: 30
 
 x-restart: &restart
     restart: on-failure
@@ -33,13 +32,14 @@ services:
       transendence:
         ipv4_address: "13.37.42.11"
     environment:
-      - DB_USER=${ADMIN_USER}
-      - DB_PASS=${ADMIN_PASS}
-      - DB_NAME=${DB_NAME}
-      - API42_USERID=${API42_USERID}
-      - API42_SECRET=${API42_SECRET}
-      - API42_REDIRECTURL=${API42_REDIRECTURL_DEV}
-      - JWT_SECRET=${JWT_SECRET}
+      - DB_USER=${ADMIN_USER?}
+      - DB_PASS=${ADMIN_PASS?}
+      - DB_NAME=${DB_NAME?}
+      - API42_USERID=${API42_USERID?}
+      - API42_SECRET=${API42_SECRET?}
+      - API42_REDIRECTURL=${API42_REDIRECTURL_DEV?}
+      - JWT_SECRET=${JWT_SECRET?}
+      - PRODUCTION=0
     volumes:
       - type: bind
         source: ./volume/nodejs
@@ -53,7 +53,7 @@ services:
           create_host_path: true
     << : *restart
     healthcheck:
-      test: "nc -w 1 127.0.0.1 3000"
+      test: "nc -w ${DOCKER_TIMEOUT?} 127.0.0.1 3000"
       << : *healthcheck_conf
   #
   ##############################################################################
@@ -93,7 +93,7 @@ services:
           create_host_path: true
     << : *restart
     healthcheck:
-      test: "nc -w 1 127.0.0.1 4200"
+      test: "nc -w ${DOCKER_TIMEOUT?} 127.0.0.1 4200"
       << : *healthcheck_conf
   #
   ##############################################################################
@@ -106,11 +106,11 @@ services:
       context: "./build/postgresql"
       target: "packed"
     environment:
-      - ADMIN_USER=${ADMIN_USER}
-      - ADMIN_PASS=${ADMIN_PASS}
-      - DB_NAME=${DB_NAME}
+      - ADMIN_USER=${ADMIN_USER?}
+      - ADMIN_PASS=${ADMIN_PASS?}
+      - DB_NAME=${DB_NAME?}
       - PGDATA=/usr/local/pgsql/data
-      - DEBUG=${DEBUG}
+      - DOCKER_DEBUG=${DOCKER_DEBUG?}
     ports:
       - 5432:5432
     networks:
@@ -129,7 +129,7 @@ services:
           create_host_path: true
     << : *restart
     healthcheck:
-      test: "nc -w 1 127.0.0.1 5432"
+      test: "nc -w ${DOCKER_TIMEOUT?} 127.0.0.1 5432"
       << : *healthcheck_conf
   #
   ##############################################################################

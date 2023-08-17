@@ -1,16 +1,33 @@
 import { Injectable } from "@angular/core";
-import { ReqService } from "./back-req.service";
+import { BackService } from "./back.service";
+import { UserI, DefUserI } from "../interfaces/chat.interface";
 
 @Injectable({
 	providedIn: "root",
 })
 export class UserService {
-	constructor(private reqService: ReqService) {  }
-	private userLoggedIn = false;
+	constructor(
+		private backService: BackService,
+	) {}
+	private user: UserI = DefUserI;
+
+	getToken()
+	{
+		return (localStorage.getItem("access_token"));
+	}
+
+	async checkToken(jwt_token: string): Promise<boolean>
+	{
+		await this.backService.req("GET", "/auth/profile")
+			.catch((err: any) => {
+				return false;
+			})
+		return true;
+	}
 
 	isLoggedIn()
 	{
-		if (localStorage.getItem("access_token"))
+		if (this.getToken())
 			return (true);
 		else
 			return (false);
@@ -19,13 +36,13 @@ export class UserService {
 	SignOut()
 	{
 		localStorage.removeItem("access_token");
-		this.userLoggedIn = false;
+		// this.userLoggedIn = false;
 		window.location.href = "/home";
 	}
 
-	async getUserInfo(): Promise<any>
+	async getUserInfo(): Promise<UserI>
 	{
-		return (await this.reqService.back("GET", "/api/user/me"));
+		return (await this.backService.req("GET", "/user/me"));
 	}
 
 	async updateInfo(nickname: string, email?: string)
@@ -36,6 +53,6 @@ export class UserService {
 			body = JSON.stringify({"nickname" : nickname, "email" : email});
 		else
 			body = JSON.stringify({"nickname" : nickname});
-		return (await this.reqService.back("PUT", "/api/user/me", body));
+		return (await this.backService.req("PUT", "/user/me", body));
 	}
 }

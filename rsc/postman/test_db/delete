@@ -2,5 +2,5 @@
 
 TOK=$(cat .tok)
 
-TOKEN=$TOK .././postman fill_db/delete/user/user1
-TOKEN=$TOK .././postman fill_db/delete/chatRoom/chatRoom1
+TOKEN=$TOK .././postman fill_db/delete/db/user/db/user1
+TOKEN=$TOK .././postman fill_db/delete/db/chat_room/db/chat_room1

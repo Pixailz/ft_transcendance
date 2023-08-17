@@ -9,35 +9,51 @@ import { LoginComponent } from './pages/login/login.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { RegisterComponent } from './pages/register/register.component';
 import { WSChatComponent } from './pages/chat/chat.component';
+import { AnonymousLayoutComponent } from './layout/anonymous-layout.component';
+import { AuthenticatedLayoutComponent } from './layout/authenticated-layout.component';
 
 const routes: Routes = [
 	{
-		path: 'home',
-		component: HomeDashboardComponent,
+		path: '',
+		component: AuthenticatedLayoutComponent,
+		canActivate: [ AuthGuardService ],
+		children: [
+			{
+				path: '',
+				component: HomeDashboardComponent,
+			},
+			{
+				path: 'home',
+				component: HomeDashboardComponent,
+			},
+			{
+				path: 'play',
+				component: PongComponent,
+			},
+			{
+				path: 'profile',
+				component: UserProfileComponent,
+			},
+			{
+				path: 'chat',
+				component: WSChatComponent,
+			}
+		]
 	},
 	{
-		path: 'play',
-		component: PongComponent,
-		canActivate: [AuthGuardService],
-	},
-	{
-		path: 'profile',
-		component: UserProfileComponent,
-		canActivate: [AuthGuardService],
-	},
-	{
-		path: 'chat',
-		component: WSChatComponent,
-		canActivate: [AuthGuardService],
-	},
-	{
-		path: 'login',
-		component: LoginComponent,
-	},
-	{
-		path: 'register',
-		component: RegisterComponent,
-		canActivate: [AuthGuardService],
+		path: '',
+		component: AnonymousLayoutComponent,
+		children: [
+			{
+				path: 'login',
+				component: LoginComponent
+			},
+			{
+				path: 'register',
+				component: RegisterComponent,
+				canActivate: [AuthGuardService]
+			}
+		]
 	},
 	{
 		path: '**',

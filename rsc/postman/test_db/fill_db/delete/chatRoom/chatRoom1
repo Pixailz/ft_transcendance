@@ -1,5 +1,5 @@
 req=$(cat <<- EOREQ
-	DELETE /chatRoom/1 HTTP/1.1
+	DELETE /db/chat_room/1 HTTP/1.1
 	Authorization: Bearer ${TOKEN}
 EOREQ
 )

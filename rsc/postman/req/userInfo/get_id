@@ -1,1 +1,1 @@
-req="GET /user_info/${ID} HTTP/1.1"
+req="GET /db/user_info/${ID} HTTP/1.1"

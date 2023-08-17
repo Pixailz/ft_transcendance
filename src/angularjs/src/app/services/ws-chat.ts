@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Observable } from 'rxjs';
+import {
+	MessageI,
+	UserChatRoomI,
+	UserI
+} from 'src/app/interfaces/chat.interface';
 
 @Injectable({
 	providedIn: 'root',
@@ -8,11 +13,58 @@ import { Observable } from 'rxjs';
 export class WSChatService {
 	constructor (private socket: Socket) {}
 
-	sendMessage(message: string): void {
-		this.socket.emit("sendMessage", message);
+	listenNewRoom(): Observable<UserChatRoomI[]>
+	{
+		return this.socket.fromEvent<UserChatRoomI[]>("getNewRoom");
 	}
 
-	getNewMessage(): Observable<string> {
-		return this.socket.fromEvent<string>("newMessage")
+	listenNewFriend(): Observable<UserI[]>
+	{
+		return this.socket.fromEvent<UserI[]>("getNewFriend");
+	}
+
+	listenNewStatusFriend(): Observable<any>
+	{
+		return this.socket.fromEvent<any>("getNewStatusFriend");
+	}
+
+	listenNewMessage(): Observable<MessageI[]>
+	{
+		return this.socket.fromEvent<MessageI[]>("getNewMessage");
+	}
+
+	emitNewMessage(room_id: number, message: string)
+	{
+		this.socket.emit("sendNewMessage", room_id, message);
+	}
+
+	emitUpdateMessage(room_id: number)
+	{
+		this.socket.emit("sendUpdateMessage", room_id);
+	}
+
+	emitMessage(room_id: number, message: string)
+	{
+		this.socket.emit("sendNewMessage", room_id, message);
+	}
+
+	emitRoom()
+	{
+		this.socket.emit("sendNewRoom");
+	}
+
+	emitCreateRoom(room_id: number)
+	{
+		this.socket.emit("sendCreateRoom", room_id);
+	}
+
+	emitFriend()
+	{
+		this.socket.emit("sendNewFriend");
+	}
+
+	emitStatusFriend()
+	{
+		this.socket.emit("sendNewStatusFriend");
 	}
 }

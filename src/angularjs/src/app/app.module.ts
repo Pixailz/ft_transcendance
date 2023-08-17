@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
@@ -12,6 +12,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 
 import { AppComponent } from './app.component';
@@ -28,6 +29,11 @@ import { RegisterComponent } from './pages/register/register.component';
 import { WSChatComponent } from './pages/chat/chat.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { environment } from './environments/environment';
+import { AnonymousLayoutComponent } from './layout/anonymous-layout.component';
+import { AuthenticatedLayoutComponent } from './layout/authenticated-layout.component';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { FlatButtonComponent } from './components/flat-button/flat-button.component';
+
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -51,7 +57,10 @@ const config: SocketIoConfig = {
 		AvatarComponent,
 		LoginComponent,
 		RegisterComponent,
-		WSChatComponent
+		WSChatComponent,
+		AnonymousLayoutComponent,
+		AuthenticatedLayoutComponent,
+  FlatButtonComponent
 	],
 	imports: [
 		BrowserModule,
@@ -65,9 +74,12 @@ const config: SocketIoConfig = {
 		MatSlideToggleModule,
 		MatFormFieldModule,
 		MatInputModule,
+		MatSelectModule,
+		ReactiveFormsModule,
 		AppRoutingModule,
 		HttpClientModule,
 		FormsModule,
+		MatProgressBarModule,
 		SocketIoModule.forRoot(config)
 	],
 	providers: [AuthGuardService],

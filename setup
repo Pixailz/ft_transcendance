@@ -15,7 +15,7 @@ JWT_LEN="64"
 
 ## ANGULAR ENV
 ANGULAR_ENV_DIR="src/angularjs/src/app/environments"
-ANGULAR_PROD_ENV="${ANGULAR_ENV_DIR}/environment.ts"
+ANGULAR_PROD_ENV="${ANGULAR_ENV_DIR}/environment.common.ts"
 ANGULAR_DEV_ENV="${ANGULAR_ENV_DIR}/environment.dev.ts"
 
 # FUNCTIONS
@@ -91,19 +91,34 @@ function	angular::set_after_auth()
 	angular::env::replace_var "${AFTER_AUTH}" "${ANGULAR_DEV_ENV}"
 }
 
-## DOCKER RE
-function	docker::re::prod()
+## DOCKER
+function	docker::clean()
 {
-	docker compose down
+	local	known_file=(
+		"docker-compose.yaml"
+		"docker-compose-dev.yaml"
+	)
+
+	for file in ${known_file[@]}; do
+		docker compose -f "./${file}" down --rmi all
+	done
+	sudo rm -rf ./src/angularjs/node_modules
+	sudo rm -rf ./src/nestjs/node_modules
 	sudo rm -rf ./volume
-	docker compose up --build
 }
 
-function	docker::re::dev()
+function	docker::re()
 {
-	docker compose -f ./docker-compose-dev.yaml down
-	sudo rm -rf ./volume
-	docker compose -f ./docker-compose-dev.yaml up --build
+	local	mode="${1?}"
+	local	file
+
+	docker::clean
+	case "${mode}" in
+		"dev") file="docker-compose-dev.yaml";;
+		"prod") file="docker-compose.yaml";;
+		*) return ;
+	esac
+	docker compose -f "${file}" up --build
 }
 
 # PARSING
@@ -115,8 +130,9 @@ function	usage()
 	exit 1
 }
 
-if [ "${#@}" -eq "0" ]; then
-	install::env
+
+if [ ${#@} -eq 0 ]; then
+	[ ! -f "./.env" ] && install::env
 	angular::set_after_auth
 else
 	while [ "${1}" ]; do
@@ -125,10 +141,7 @@ else
 				shift
 				[ -z "${1}" ] && usage
 				angular::set_after_auth
-				case "${1}" in
-					"prod") docker::re::prod;;
-					"dev") docker::re::dev;;
-				esac
+				docker::re "${1}"
 			;;
 			*) usage;;
 		esac

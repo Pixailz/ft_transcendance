@@ -18,6 +18,12 @@ export class DBUserInfoPost {
 	@IsOptional()
 	picture?: string;
 
+	@IsOptional()
+	status?: number;
+
+	@IsOptional()
+	lastSeen?: Date;
+
 	// @IsOptional()
 	// @IsBooleanString()
 	// twoAuthFactor?: boolean
