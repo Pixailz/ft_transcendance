@@ -130,20 +130,23 @@ function	usage()
 	exit 1
 }
 
-[ ! -f "./.env" ] && install::env
-angular::set_after_auth
 
-while [ "${1}" ]; do
-	case "${1}" in
-		"re")
-			shift
-			[ -z "${1}" ] && usage
-			angular::set_after_auth
-			docker::re "${1}"
-		;;
-		*) usage;;
-	esac
-	shift
-done
+if [ ${#@} -eq 0 ]; then
+	[ ! -f "./.env" ] && install::env
+	angular::set_after_auth
+else
+	while [ "${1}" ]; do
+		case "${1}" in
+			"re")
+				shift
+				[ -z "${1}" ] && usage
+				angular::set_after_auth
+				docker::re "${1}"
+			;;
+			*) usage;;
+		esac
+		shift
+	done
+fi
 
 exit $?
