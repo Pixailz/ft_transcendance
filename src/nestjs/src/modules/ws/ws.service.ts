@@ -9,9 +9,7 @@ export interface SocketI {
 
 @Injectable()
 export class WSService {
-	constructor (
-		private userService: UserService,
-	) {}
+	constructor(private userService: UserService) {}
 
 	socket_list: SocketI[] = [];
 
@@ -48,7 +46,9 @@ export class WSService {
 		const friends = await this.userService.getAllFriend(user_id);
 		for (let i = 0; i < friends.length; i++) {
 			let friends_socket_id = this.getSocketId(friends[i].id);
-			server.to(friends_socket_id).emit(
+			server
+				.to(friends_socket_id)
+				.emit(
 					"getNewStatusFriend",
 					await this.userService.getAllStatusFriend(friends[i].id),
 				);

@@ -125,40 +125,67 @@
 	list-style: none;
 	overflow-y: scroll;
 	margin: 0;
-	padding: 10px;
-	height: calc(100% - 50px - 3px - 50px - 13px - 20px);
+	padding: 0 15px;
+	height: calc(100% - 50px - 3px - 50px - 13px);
 	display: flex;
 	flex-direction: column-reverse;
 }
 
-.container .chat-container ol.msg-list li {
-	margin: 10px;
-	padding: 0;
+.container .chat-container ol.msg-list li .title-line {
 	display: flex;
 	flex-direction: column;
+	padding: 0 6px;
 }
 
-.container .chat-container ol.msg-list li span.login {
-	padding: 0;
-	margin: 0;
-	width: fit-content;
-	padding: 3px 10px;
+.container .chat-container ol.msg-list li .title-line span.date {
+	text-align: center;
 	font-size: 1em;
 	font-family: 'Maven Pro', sans-serif;
-	border: 3px solid black;
-	background-color: white;
-	color: black;
-	margin-bottom: 2px;
+	color: gray;
+}
+
+.container .chat-container ol.msg-list li:not(.same) .msg-line {
+	margin-top: 10px;
+}
+
+.container .chat-container ol.msg-list li .title-line span.login {
+	font-size: 1.2em;
+	font-family: 'Maven Pro', sans-serif;
+	color: gray;
 }
 
 .container .chat-container ol.msg-list li span.content {
-	padding: 6px 15px;
 	width: fit-content;
 	font-size: 1.4em;
 	font-family: 'Maven Pro', sans-serif;
-	border: 3px solid black;
-	background-color: white;
 	color: black;
+}
+
+.container .chat-container ol.msg-list li .msg-line span.time {
+	font-size: .7em;
+	font-family: 'Maven Pro', sans-serif;
+	color: gray;
+	height: fit-content;
+	display: none;
+}
+
+.container .chat-container ol.msg-list li.me {
+	text-align: right;
+}
+
+.container .chat-container ol.msg-list li .msg-line {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 6px 10px;
+}
+
+.container .chat-container ol.msg-list li .msg-line:hover span.time {
+	display: block;
+}
+
+.container .chat-container ol.msg-list li.me .msg-line {
+	flex-direction: row-reverse;
 }
 
 .container .chat-container .txt-bar {

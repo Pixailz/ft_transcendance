@@ -2,10 +2,10 @@
 
 SERVICE_NAME="Nginx"
 
-if [ "${DEBUG}" != "" ]; then
+if [ "${DOCKER_DEBUG}" != "" ]; then
 	printf "debuging \x1b[38:5:39m${SERVICE_NAME}\x1b[00m \n\n"
 	printf "CERT_SUBJ %s\n" "${CERT_SUBJ}"
-	printf "DEBUG     %s\n\n" "${DEBUG}"
+	printf "DOCKER_DEBUG     %s\n\n" "${DOCKER_DEBUG}"
 fi
 
 function	nginx_create_ssl()

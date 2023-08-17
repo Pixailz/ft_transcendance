@@ -1,5 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { DefUserChatRoomI, DefUserI, UserChatRoomI, UserI, MessageI } from 'src/app/services/chat.interface';
+import {
+	DefUserChatRoomI,
+	DefUserI,
+	UserChatRoomI,
+	UserI,
+	MessageI
+} from 'src/app/interfaces/chat.interface';
+import { UserService } from '../../services/user.service';
 import { WSChatService } from 'src/app/services/ws-chat';
 
 export enum Status {
@@ -15,6 +22,7 @@ export enum Status {
 })
 export class WSChatComponent implements OnInit {
 	isCreatingRoom: boolean = false;
+	user: UserI = DefUserI;
 
 	messages: MessageI[] = [];
 	message: string = "";
@@ -24,9 +32,11 @@ export class WSChatComponent implements OnInit {
 	friends_status = {};
 	rooms: UserChatRoomI[] = [];
 
-	constructor(private wsChatService: WSChatService) {}
+	constructor(private wsChatService: WSChatService,
+				private userService: UserService) {}
 
 	async ngOnInit() {
+		this.user = await this.userService.getUserInfo();
 		this.wsChatService.emitRoom();
 		this.wsChatService.listenNewRoom()
 			.subscribe((rooms: UserChatRoomI[]) => {
@@ -62,9 +72,18 @@ export class WSChatComponent implements OnInit {
 
 	isSameUser(i: number) {
 		let j = this.messages.length - 2 - i;
-		i = this.messages.length - 1 - i
+		i = this.messages.length - 1 - i;
 		if (i >= 0 && i < this.messages.length && j >= 0 && j < this.messages.length)
 			if (this.messages[j].user.id == this.messages[i].user.id)
+				return (true);
+		return (false);
+	}
+
+	isFollowingDay(i: number) {
+		let j = this.messages.length - 2 - i;
+		i = this.messages.length - 1 - i;
+		if (i >= 0 && i < this.messages.length && j >= 0 && j < this.messages.length)
+			if (this.messages[j].updateAt?.toString().split('T')[0] === this.messages[i].updateAt?.toString().split('T')[0])
 				return (true);
 		return (false);
 	}
@@ -75,8 +94,6 @@ export class WSChatComponent implements OnInit {
 	}
 
 	sendMessage() {
-		console.log("message ", this.message);
-		console.log("dest_id ", this.dest_room);
 		if (!this.message) return ;
 		if (this.dest_room.roomId === -1) return ;
 		this.wsChatService.emitMessage(this.dest_room.roomId, this.message);
@@ -85,8 +102,6 @@ export class WSChatComponent implements OnInit {
 
 	onSelectFriend(friend: UserI) {
 		this.dest_user = friend;
-		console.log("onSelectFriend: ");
-		console.log("    dest ", this.dest_user);
 		this.createRoom();
 		this.onClosePopup();
 	}
@@ -94,8 +109,6 @@ export class WSChatComponent implements OnInit {
 	onSelectChatroom(room: UserChatRoomI) {
 		this.dest_room = room;
 		this.wsChatService.emitUpdateMessage(room.roomId);
-		console.log("onSelectChatroom: ");
-		console.log("    room          ", room);
 	}
 
 	getUserInfo(dest: UserI)

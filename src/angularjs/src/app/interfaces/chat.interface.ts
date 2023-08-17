@@ -1,16 +1,18 @@
 export interface UserI {
 	id					: number;
 	ftLogin?			: string;
-	nickname?			: string;
+	nickname			: string;
 	picture?			: string;
 	email?				: string;
 	status?				: string;
+	twoAuthFactor?		: boolean;
 	lastSeen			: Date;
 }
 
 export const DefUserI: UserI = {
 	id					: -1,
-	lastSeen			: new Date(Date.now())
+	nickname			: "",
+	lastSeen			: new Date(Date.now()),
 }
 
 export interface MessageI {

@@ -13,7 +13,7 @@ export class HeaderComponent {
 	userLoggedIn = false;
 
 	async ngOnInit()
-	{ this.userLoggedIn = this.userService.isLoggedIn(); }
+	{ this.userLoggedIn = await this.userService.isLoggedIn(); }
 
 	SignOut()
 	{ this.userService.SignOut(); }

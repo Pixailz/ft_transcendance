@@ -1,15 +1,20 @@
 import { Injectable } from '@angular/core';
+import { environment } from '../environments/environment';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class ReqService {
+export class BackService {
+
 	private headers: any = null;
 	private body: any = null;
 
-	async back(method: string, route: string, body?: any): Promise<any>
+	async req(method: string, route: string, body?: any): Promise<any>
 	{
-		const bearer_token = "Bearer " + localStorage.getItem("access_token");
+		const jwt_token = localStorage.getItem("access_token");
+		if (!jwt_token)
+			return null;
+		const bearer_token = "Bearer " + jwt_token;
 		switch (method) {
 			case "GET":
 				this.headers = {
@@ -27,7 +32,7 @@ export class ReqService {
 			default:
 				return (Promise.reject("method not implemented yeet"));
 		}
-		return (await this.doReq(method, route));
+		return (await this.doReq(method, environment.api_prefix + route));
 	}
 
 	private async doReq(method: string, route: string): Promise<any>
@@ -38,11 +43,14 @@ export class ReqService {
 			"body": this.body,
 			"mode": "cors"
 		});
+		const log_header = `[${res.status}:${route}] ${method}`;
 		if (res.status !== 200)
-			return Promise.reject({status: method + " request to " + route + " failed"});
-		const data_json = res.json()
+			return Promise.reject({
+				status: `${log_header} request failed`
+			});
+		const data_json = await res.json()
 			.catch((err) => {
-				return (Promise.reject({status: "no data returned"}));
+				return (Promise.reject({status: `${log_header} no data returned`}));
 			})
 		return (data_json);
 	}
