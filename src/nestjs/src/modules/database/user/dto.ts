@@ -28,3 +28,14 @@ export class DBUserInfoPost {
 	// @IsBooleanString()
 	// twoAuthFactor?: boolean
 }
+
+export class DBUser {
+	id: number;
+	ftLogin: string;
+	nickname?: string;
+	email?: string;
+	picture?: string;
+	status?: number;
+	lastSeen?: Date;
+	// twoAuthFactor?: boolean
+}
