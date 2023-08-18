@@ -12,6 +12,7 @@ volume
 src/**/dist
 src/**/node_modules
 src/**/.angular/cache
-
+src/nestjs/coverage
+cl
 # vscode folder
 .vscode

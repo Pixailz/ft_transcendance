@@ -5,7 +5,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { UserEntity } from "./entity";
 
 import { DBUserPost, DBUserInfoPost } from "./dto";
-import { Api42Service } from "src/modules/api42/service";
+import { Api42Service } from "../../api42/service";
 
 @Injectable()
 export class DBUserService {
@@ -16,6 +16,9 @@ export class DBUserService {
 
 	async create(userPost: DBUserPost) {
 		const user = new UserEntity();
+		const nb = userPost.ftLogin.trim().length;
+		if (nb === 0)
+			throw new ForbiddenException("User Login can't be blank or empty");
 		user.ftLogin = userPost.ftLogin;
 		await this.userRepo.save(user);
 		return user.id;

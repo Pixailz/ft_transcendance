@@ -1,6 +1,9 @@
 <header>
 	<h1 routerLink="/home">Transcendance</h1>
-	<ul>
+	<button ngClass="{{isExpand}}" (click)="isExpand = !isExpand" *ngIf="isSmallDevice()" class="expand-btn">
+		<mat-icon fontIcon="expand_more"></mat-icon>
+	</button>
+	<ul (window:resize)="onResize()" [ngClass]="{'small-device': isSmallDevice(), 'expand': isExpand}" *ngIf="isExpand || !isSmallDevice()" [@enterAnimation]="isSmallDevice()">
 		<li routerLink="/home"
 		routerLinkActive #rla="routerLinkActive">
 			<app-flat-button [isActive]="rla.isActive" color="white" bgColor="#a3d0dc" fontIcon="home"></app-flat-button>
