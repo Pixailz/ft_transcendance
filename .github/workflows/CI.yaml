@@ -30,7 +30,7 @@ jobs:
           docker version
           docker compose version
 
-  docker-prod-build:
+  prod-docker-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -47,8 +47,8 @@ jobs:
         timeout-minutes: 5
         run: docker compose build
 
-  docker-prod-run:
-    needs: docker-prod-build
+  prod-docker-run:
+    needs: prod-docker-build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -65,7 +65,7 @@ jobs:
         timeout-minutes: 5
         run: docker compose up --build -d --wait
 
-  docker-dev-build:
+  dev-docker-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -82,8 +82,8 @@ jobs:
         timeout-minutes: 5
         run: docker compose -f docker-compose-dev.yaml build
 
-  docker-dev-run:
-    needs: docker-dev-build
+  dev-docker-run:
+    needs: dev-docker-build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -100,11 +100,32 @@ jobs:
         timeout-minutes: 5
         run: docker compose -f docker-compose-dev.yaml up --build -d --wait
 
-
-  nest-database-jest:
+  prod-nestjs-jest-database:
     needs:
-      - docker-dev-run
-      - docker-prod-run
+      - prod-docker-run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .env
+        run: printf "${SETUP_STR}\n" | ./setup
+
+      - name: Cleaning up previous run
+        run: |+
+          rm -rf ./volume
+          docker compose down
+
+      - name: Compose UP
+        timeout-minutes: 5
+        run: docker compose up --build -d --wait
+
+      - name: Running Jest
+        timeout-minutes: 5
+        run: docker compose exec -it nestjs npm run test
+
+  dev-nestjs-jest-database:
+    needs:
+      - dev-docker-run
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
