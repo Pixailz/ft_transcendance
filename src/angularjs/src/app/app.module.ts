@@ -31,14 +31,14 @@ import { AuthGuardService } from './services/auth-guard.service';
 import { environment } from './environments/environment';
 import { AnonymousLayoutComponent } from './layout/anonymous-layout.component';
 import { AuthenticatedLayoutComponent } from './layout/authenticated-layout.component';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FlatButtonComponent } from './components/flat-button/flat-button.component';
 
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
 	options: {
-		path: "/ws/chat",
+		path: "/ws",
 		extraHeaders: {
 			Authorization: localStorage.getItem("access_token") as string
 		}
@@ -60,7 +60,7 @@ const config: SocketIoConfig = {
 		WSChatComponent,
 		AnonymousLayoutComponent,
 		AuthenticatedLayoutComponent,
-  FlatButtonComponent
+		FlatButtonComponent
 	],
 	imports: [
 		BrowserModule,

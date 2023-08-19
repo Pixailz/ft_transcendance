@@ -14,7 +14,7 @@ export class DBUserChatRoomService {
 		@InjectRepository(UserChatRoomEntity)
 		private readonly userChatRoomRepo: Repository<UserChatRoomEntity>,
 		@InjectRepository(ChatRoomEntity)
-		private readonly ChatRoomRepo: Repository<ChatRoomEntity>,
+		private readonly chatRoomRepo: Repository<ChatRoomEntity>,
 		@InjectRepository(UserEntity)
 		private readonly userRepo: Repository<UserEntity>,
 	) {}
@@ -24,7 +24,7 @@ export class DBUserChatRoomService {
 		let user = await this.userRepo.findOneBy({ id: userId });
 		if (user) userChat.userId = userId;
 		else throw new ForbiddenException("User not found");
-		let room = await this.ChatRoomRepo.findOneBy({ id: roomId });
+		let room = await this.chatRoomRepo.findOneBy({ id: roomId });
 		if (room) userChat.roomId = roomId;
 		else throw new ForbiddenException("ChatRoom not found");
 		userChat.isOwner = post.isOwner;
@@ -63,32 +63,30 @@ export class DBUserChatRoomService {
 		else throw new ForbiddenException("userChatRoom not found");
 	}
 
-	async getAllRoomFromUser(userId: number): Promise<UserChatRoomEntity[]> {
-		return await this.userChatRoomRepo.find({
+	async getAllPrivateRoom(userId: number): Promise<ChatRoomEntity[]> {
+		return await this.chatRoomRepo.find({
 			relations: {
-				user: true,
-				room: {
-					message: {
-						user: true,
-					},
+				roomInfo: {
+					user: true,
 				},
+				message: true,
 			},
 			where: {
-				user: {
-					id: userId,
+				roomInfo: {
+					user: {
+						id: userId,
+					},
 				},
 			},
 			order: {
-				room: {
-					message: {
-						updateAt: "ASC",
-					},
+				message: {
+					updateAt: "ASC",
 				},
 			},
 		});
 	}
 
-	async getAllMessageFromRoom(
+	async getAllPrivateUserRoom(
 		room_id: number,
 	): Promise<UserChatRoomEntity[]> {
 		return await this.userChatRoomRepo.find({
@@ -116,26 +114,7 @@ export class DBUserChatRoomService {
 	async returnAllUserFromRoom(room_id: number): Promise<number[]> {
 		var user_ids = [];
 
-		const query = await this.userChatRoomRepo.find({
-			relations: {
-				user: true,
-				room: {
-					message: {
-						user: true,
-					},
-				},
-			},
-			where: {
-				roomId: room_id,
-			},
-			order: {
-				room: {
-					message: {
-						updateAt: "ASC",
-					},
-				},
-			},
-		});
+		const query = await this.getAllPrivateUserRoom(room_id);
 		for (var i = 0; i < query.length; i++) user_ids.push(query[i].user.id);
 		return user_ids;
 	}
