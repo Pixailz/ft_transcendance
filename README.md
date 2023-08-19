@@ -24,5 +24,4 @@
 # TODO
 |Feature|Branch|Feature Description|
 |:------|:-----|:------------------|
-|User Management|nestjs-users|Get a working user management (profile info, nickname, ...)
 |Gracefull shutdown nodejs\|angular|main|set up a signal that on receive will close all connection before closing, more [here](https://hackernoon.com/graceful-shutdown-in-nodejs-2f8f59d1c357)|

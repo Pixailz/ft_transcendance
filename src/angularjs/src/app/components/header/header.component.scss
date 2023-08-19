@@ -59,3 +59,62 @@ header ul li.logout {
 		background-color: #a3d0dc;
 	}
 }
+
+button.expand-btn {
+	width: 50px;
+	height: 50px;
+	aspect-ratio: 1;
+	background-color: white;
+	border: 3px solid black;
+	color: black;
+	box-shadow: 3px 3px black;
+	cursor: pointer;
+	position: fixed;
+	right: 50px;
+	z-index: 50;
+	transition: transform 300ms linear;
+}
+
+button.expand-btn.true, button.expand-btn:hover {
+	transform: translate(3px, 3px);
+	box-shadow: 0 0;
+	filter: brightness(80%);
+}
+
+button.expand-btn.true {
+	transform: translate(3px, 3px) translateX(-90px);
+}
+
+button.expand-btn mat-icon {
+	transition: transform 300ms;
+	transform: rotate(90deg);
+}
+
+button.expand-btn.true mat-icon {
+	transform: rotate(270deg);
+}
+
+header ul.small-device {
+	display: flex;
+	flex-direction: column;
+	position: fixed;
+	top: 0;
+	right: 0;
+	padding-top: 20px;
+	padding-right: 20px;
+	padding-left: 20px;
+	z-index: 50;
+	height: 100vh;
+	background-color: white;
+	border-left: 3px solid black;
+}
+
+header ul.small-device li {
+	padding-bottom: 20px;
+	margin: 0;
+}
+
+header ul.small-device li.logout {
+	margin-bottom: 20px;
+	margin-top: auto;
+}
