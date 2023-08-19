@@ -2,8 +2,8 @@
 	<div class="side-bar">
 		<div *ngIf="isCreatingRoom" class="popup">
 			<ul class="friend-list">
-				<li *ngFor="let friend of friends;">
-					<button (click)="onSelectFriend(friend)">{{getUserInfo(friend)}}</button>
+				<li *ngFor="let friend of chatService.getFriends();">
+					<button (click)="onCreateFriend(friend)">{{getFriendInfo(friend)}}</button>
 				</li>
 				<button class="close" (click)="onClosePopup()">
 					<mat-icon fontIcon="close"></mat-icon>
@@ -11,27 +11,26 @@
 			</ul>
 		</div>
 		<ul class="room-list">
-			<li *ngFor="let room of rooms;">
-				<button (click)="onSelectChatroom(room)">{{room.room.name}} ({{room.roomId}})</button>
+			<li *ngFor="let friend of chatService.getPrivateRoom();">
+				<button (click)="onSelectFriend(friend)">{{getFriendInfo(friend)}}</button>
 			</li>
 		</ul>
 		<app-flat-button bgColor="#a7dca3" fontIcon="add" (click)="onCreatingRoom()"></app-flat-button>
 	</div>
 
-
-
-	<div *ngIf="dest_room.roomId !== -1" class="chat-container">
-		<h2>{{dest_room.room.name}} ({{dest_room.roomId}})</h2>
+	<div *ngIf="chatService.isGoodSelectedFriendRoom()" class="chat-container">
+		<h2>{{getFriendInfo(chatService.getSelectedFriend())}}</h2>
 
 		<ol class="msg-list">
-			<li *ngFor="let _ of messages; let i=index;" [ngClass]="{'me': messages[messages.length - 1 - i].user.id === user.id, 'same': isSameUser(i)}">
+			<li *ngFor="let _ of chatService.getSelectedFriendRoom().message; let i=index;" [ngClass]="{'me': chatService.getCurrentMessage(i).userId === chatService.getCurrentUser().id, 'same': isSameUser(i)}">
 				<div class="title-line">
-					<span class="date" *ngIf="!isFollowingDay(i)">{{messages[messages.length - 1 - i].updateAt | date: 'MM/dd/YYYY'}}</span>
-					<span class="login" *ngIf="!isSameUser(i)">{{messages[messages.length - 1 - i].user.ftLogin}}</span>
+					<span class="date" *ngIf="!isFollowingDay(i)">{{chatService.getCurrentMessage(i).updateAt | date: 'MM/dd/YYYY'}}</span>
+					<span class="login" *ngIf="!isSameUser(i)">{{chatService.getCurrentMessageUser(i)}}</span>
+					<span class="login" ></span>
 				</div>
 				<div class="msg-line">
-					<span class="content">{{messages[messages.length - 1 - i].content}}</span>
-					<span class="time">{{messages[messages.length - 1 - i].updateAt | date: 'hh:mm'}}</span>
+					<span class="content">{{chatService.getCurrentMessage(i).content}}</span>
+					<span class="time">{{chatService.getCurrentMessage(i).updateAt | date: 'hh:mm'}}</span>
 				</div>
 			</li>
 		</ol>

@@ -4,7 +4,6 @@ import { DBChatRoomService } from "../../modules/database/chatRoom/service";
 import { UserChatRoomEntity } from "src/modules/database/userChatRoom/entity";
 import { DBMessageService } from "src/modules/database/message/service";
 import { MessageEntity } from "src/modules/database/message/entity";
-import { DBMessagePost } from "src/modules/database/message/dto";
 import { ChatRoomEntity } from "src/modules/database/chatRoom/entity";
 
 @Injectable()
@@ -15,24 +14,40 @@ export class ChatRoomService {
 		private dbMessageService: DBMessageService,
 	) {}
 
-	async getAllRoomId(user_id: number): Promise<number[]> {
-		let room_ids = [];
-
-		const user_chat_rooms =
-			await this.dbUserChatRoomService.getAllRoomFromUser(user_id);
-		for (const val of user_chat_rooms) {
-			room_ids.push(val.roomId);
-		}
-		return room_ids;
+	async getAllPrivateRoom(user_id: number): Promise<ChatRoomEntity[]> {
+		return await this.dbUserChatRoomService.getAllPrivateRoom(user_id);
 	}
 
-	async getAllRoom(user_id: number): Promise<UserChatRoomEntity[]> {
-		return await this.dbUserChatRoomService.getAllRoomFromUser(user_id);
+	async getPrivateRoomFromRoomId(room_id: number): Promise<ChatRoomEntity> {
+		return await this.dbChatRoomService.getAllPrivateRoom(room_id);
+	}
+
+	async getPrivateRoomWithUser(
+		user_id: number,
+		dst_id: number,
+	): Promise<ChatRoomEntity> {
+		const all_chat_room =
+			await this.dbUserChatRoomService.getAllPrivateRoom(user_id);
+
+		for (var i = 0; i < all_chat_room.length; i++) {
+			const friends_id = await this.getAllUserFromRoom(
+				all_chat_room[i].id,
+			);
+			if (friends_id.length === 0) continue;
+			while (friends_id.indexOf(user_id) !== -1)
+				friends_id.splice(friends_id.indexOf(user_id), 1);
+			if (friends_id.length) {
+				return Promise.resolve(all_chat_room[i]);
+			}
+		}
+		return Promise.reject({
+			status: `no chat room between ${user_id} and ${dst_id}`,
+		});
 	}
 
 	async createPrivateRoom(source: number, dest: number) {
 		const room_id = await this.dbChatRoomService.create({
-			name: "private",
+			type: "private",
 		});
 		await this.dbUserChatRoomService.create(
 			{ isOwner: true, isAdmin: true },
@@ -56,11 +71,12 @@ export class ChatRoomService {
 	}
 
 	async getAllMessageRoom(room_id: number): Promise<MessageEntity[]> {
-		const room = await this.dbUserChatRoomService.getAllMessageFromRoom(
+		const room = await this.dbUserChatRoomService.getAllPrivateUserRoom(
 			room_id,
 		);
-		return await room[0].room.message;
+		return room[0].room.message;
 	}
+
 	async getAllUserFromRoom(room_id: number): Promise<number[]> {
 		return await this.dbUserChatRoomService.returnAllUserFromRoom(room_id);
 	}

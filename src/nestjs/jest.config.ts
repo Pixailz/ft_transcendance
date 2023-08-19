@@ -4,15 +4,7 @@
  */
 
 export default {
-
-  // runFirstly: [
-  //   "src/modules/database/user/01service.spec.ts",
-  //   "src/modules/database/ChatRoom/00service.spec.ts"
-      
-  //     // '/shared/transcendence/src/modules/database/chatRoom/00service.spec.ts',
-  //     // '/shared/transcendence/src/modules/database/user/01service.spec.ts'
-  // ],
-  testSequencer: "/shared/transcendence/src/modules/custom-sequencer.js",
+  testSequencer: "/shared/transcendence/test/custom-sequencer.js",
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 

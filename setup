@@ -95,6 +95,7 @@ function	angular::set_after_auth()
 function	docker::kill()
 {
 	for file in ${KNOWN_FILE[@]}; do
+		docker compose -f "./${file}" kill -s SIGINT
 		docker compose -f "./${file}" down --rmi all
 	done
 }

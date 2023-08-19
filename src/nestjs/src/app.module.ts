@@ -5,7 +5,7 @@ import { APP_GUARD } from "@nestjs/core";
 import { DBModule } from "./modules/database/database.module";
 import { AuthModule } from "./modules/auth/module";
 import { JwtAuthGuard } from "./modules/auth/jwt-auth.guard";
-import { WSChatModule } from "./modules/ws/chat/chat-module";
+import { WSChatModule } from "./websocket/chat/chat.module";
 import { UserModule } from "./adapter/user/module";
 import { ChatRoomModule } from "./adapter/chatRoom/module";
 

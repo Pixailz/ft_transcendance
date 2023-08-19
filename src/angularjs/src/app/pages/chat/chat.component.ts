@@ -1,19 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import {
-	DefUserChatRoomI,
-	DefUserI,
-	UserChatRoomI,
 	UserI,
-	MessageI
+	Status,
+	ChatRoomI,
+	FriendI,
 } from 'src/app/interfaces/chat.interface';
-import { UserService } from '../../services/user.service';
-import { WSChatService } from 'src/app/services/ws-chat';
-
-export enum Status {
-	DISCONNECTED,
-	CONNECTED,
-	AWAY,
-}
+import { WSChatGateway } from 'src/app/services/ws-chat.gateway';
+import { ChatService } from 'src/app/services/chat.service';
 
 @Component({
 	selector: 'app-chat',
@@ -22,44 +15,84 @@ export enum Status {
 })
 export class WSChatComponent implements OnInit {
 	isCreatingRoom: boolean = false;
-	user: UserI = DefUserI;
-
-	messages: MessageI[] = [];
 	message: string = "";
-	dest_user: UserI = DefUserI;
-	dest_room: UserChatRoomI = DefUserChatRoomI;
-	friends: UserI[] = [];
-	friends_status = {};
-	rooms: UserChatRoomI[] = [];
 
-	constructor(private wsChatService: WSChatService,
-				private userService: UserService) {}
+	constructor(
+		private wsChatGateway: WSChatGateway,
+		public chatService: ChatService,
+	) {}
 
 	async ngOnInit() {
-		this.user = await this.userService.getUserInfo();
-		this.wsChatService.emitRoom();
-		this.wsChatService.listenNewRoom()
-			.subscribe((rooms: UserChatRoomI[]) => {
-				this.rooms = rooms;
-			}
-		)
-		this.wsChatService.emitFriend();
-		this.wsChatService.listenNewFriend()
+		await this.chatService.updateUserInfo();
+		this.wsChatGateway.getAllFriend();
+		this.wsChatGateway.listenAllFriend()
 			.subscribe((friends: UserI[]) => {
-				this.friends = friends;
+				console.log("event AllFriend received ");
+				this.chatService.updateAllFriend(friends);
 			}
 		)
-		this.wsChatService.emitStatusFriend();
-		this.wsChatService.listenNewStatusFriend()
+
+		this.wsChatGateway.getAllPrivateRoom();
+		this.wsChatGateway.listenAllPrivateRoom()
+			.subscribe((data: ChatRoomI[]) => {
+				console.log("event AllPrivateRoom received")
+				this.chatService.updateAllPrivateRoom(data);
+			}
+		)
+
+		this.wsChatGateway.getAllPrivateMessage();
+		this.wsChatGateway.listenAllPrivateMessage()
+			.subscribe((data: any) => {
+				console.log("event AllPrivateMessage received")
+				this.chatService.updateAllPrivateMessage(data);
+			}
+		)
+
+		this.wsChatGateway.listenNewPrivateRoom()
+			.subscribe((data: ChatRoomI) => {
+				console.log("event NewPrivateRoom received")
+				this.chatService.updateNewPrivateRoom(data);
+			}
+		)
+
+		this.wsChatGateway.listenNewPrivateMessage()
+			.subscribe((data: any) => {
+				console.log("event NewPrivateMessage received")
+				this.chatService.updateNewPrivateMessage(data);
+			}
+		)
+
+		this.wsChatGateway.listenNewStatusFriend()
 			.subscribe((friends_status: any) => {
-				this.friends_status = friends_status;
+				console.log("event NewStatusFriend received")
+				this.chatService.updateNewFriendStatus(friends_status);
 			}
 		)
-		this.wsChatService.listenNewMessage()
-			.subscribe((messages: MessageI[]) => {
-				this.messages = messages;
-			}
-		)
+	}
+
+	onCreateFriend(friend: FriendI) {
+		this.chatService.updateSelectedFriend(friend);
+
+		const	selected_friend = this.chatService.getSelectedFriend();
+		if (selected_friend.user_info.id === -1)
+			return ;
+		if (this.chatService.isGoodFriendRoom(selected_friend.room))
+		{
+			console.log( `[chat] private chat room with ${selected_friend
+				.user_info.ftLogin} already created`)
+			return ;
+		}
+		this.wsChatGateway.createPrivateRoom(selected_friend.user_info.id);
+		this.onClosePopup();
+	}
+
+	onSelectFriend(friend: FriendI) {
+		this.chatService.updateSelectedFriend(friend);
+
+		const	selected_room = this.chatService.getSelectedFriendRoom();
+
+		if (!selected_room)
+			return ;
 	}
 
 	onCreatingRoom() {
@@ -70,54 +103,23 @@ export class WSChatComponent implements OnInit {
 		this.isCreatingRoom = false;
 	}
 
-	isSameUser(i: number) {
-		let j = this.messages.length - 2 - i;
-		i = this.messages.length - 1 - i;
-		if (i >= 0 && i < this.messages.length && j >= 0 && j < this.messages.length)
-			if (this.messages[j].user.id == this.messages[i].user.id)
-				return (true);
-		return (false);
-	}
-
-	isFollowingDay(i: number) {
-		let j = this.messages.length - 2 - i;
-		i = this.messages.length - 1 - i;
-		if (i >= 0 && i < this.messages.length && j >= 0 && j < this.messages.length)
-			if (this.messages[j].updateAt?.toString().split('T')[0] === this.messages[i].updateAt?.toString().split('T')[0])
-				return (true);
-		return (false);
-	}
-
-	createRoom() {
-		if (this.dest_user.id === -1) return ;
-		this.wsChatService.emitCreateRoom(this.dest_user.id)
-	}
-
-	sendMessage() {
-		if (!this.message) return ;
-		if (this.dest_room.roomId === -1) return ;
-		this.wsChatService.emitMessage(this.dest_room.roomId, this.message);
-		this.message = "";
-	}
-
-	onSelectFriend(friend: UserI) {
-		this.dest_user = friend;
-		this.createRoom();
-		this.onClosePopup();
-	}
-
-	onSelectChatroom(room: UserChatRoomI) {
-		this.dest_room = room;
-		this.wsChatService.emitUpdateMessage(room.roomId);
-	}
-
-	getUserInfo(dest: UserI)
+	onGetInfo()
 	{
-		var tmp;
-		var string = JSON.stringify(this.friends_status);
-		var objectValue = JSON.parse(string);
+		this.chatService.getInfo()
+	}
 
-		switch (objectValue[dest.id]) {
+	onPress(event: any)
+	{
+		if (event.key === "Enter")
+			this.sendMessage();
+	}
+
+	getFriendInfo(friend: FriendI | undefined)
+	{
+		if (!friend)
+			return "";
+		var	tmp;
+		switch (friend.user_info.status) {
 			// case Status.CONNECTED: {
 			// 	const last_seen = new Date(dest.lastSeen);
 			// 	const now = new Date(Date.now());
@@ -142,25 +144,50 @@ export class WSChatComponent implements OnInit {
 				break ;
 			}
 		}
-		tmp += dest.ftLogin + " ";
-		if (dest.nickname)
-			tmp += ` (${dest.nickname})`
+		tmp += friend.user_info.ftLogin + " ";
+		if (friend.user_info.nickname)
+			tmp += ` (${friend.user_info.nickname})`
 		return (tmp);
 	}
 
-	onGetInfo()
-	{
-		console.clear();
-		console.log("rooms          ", this.rooms);
-		console.log("friends        ", this.friends);
-		console.log("friends_status ", this.friends_status);
-		console.log("dest_room      ", this.dest_room);
-		console.log("messages       ", this.messages);
+	sendMessage() {
+		const selected_room = this.chatService.getSelectedFriendRoom();
+
+		if (selected_room.id === -1)
+			return ;
+		this.wsChatGateway.sendPrivateMessage(selected_room.id, this.message);
+		this.message = "";
 	}
 
-	onPress(event: any)
-	{
-		if (event.key === "Enter")
-			this.sendMessage();
+	isSameUser(i: number): boolean {
+		const selected_room = this.chatService.getSelectedFriendRoom();
+		if (selected_room.id === -1)
+			return (false);
+
+		const message_len = selected_room.message.length;
+
+		if (!selected_room.message[message_len - i - 2] ||
+			selected_room.message[message_len - i - 2].id === -1 ||
+			selected_room.message[message_len - i - 2].id === -1)
+			return (false);
+		if (selected_room.message[message_len - i - 2].userId !== selected_room.message[message_len - i - 1].userId)
+			return (false);
+		return (true);
+	}
+
+	isFollowingDay(i: number): boolean {
+		const selected_room = this.chatService.getSelectedFriendRoom();
+		if (selected_room.id === -1)
+			return (false);
+
+		const message_len = selected_room.message.length;
+
+		if (!selected_room.message[message_len - i - 2] ||
+			selected_room.message[message_len - i - 2].id === -1 ||
+			selected_room.message[message_len - i - 2].id === -1)
+			return (false);
+		if (selected_room.message[message_len - i - 2].updateAt?.toString().split('T')[0] !== selected_room.message[message_len - i - 1].updateAt?.toString().split('T')[0])
+			return (false);
+		return (true);
 	}
 }
