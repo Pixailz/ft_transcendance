@@ -18,7 +18,7 @@ export class UserService {
 				: "");
 	}
 
-	async checkToken(jwt_token: string): Promise<boolean>
+	async checkToken(): Promise<boolean>
 	{
 		const user = await this.backService.req("GET", "/auth/profile")
 			.catch((err: any) => {
@@ -26,11 +26,6 @@ export class UserService {
 				return (false);
 			})
 		return user?.user_id;
-	}
-
-	async isLoggedIn(): Promise<boolean>
-	{
-		return await this.checkToken(this.getToken());
 	}
 
 	SignOut()
