@@ -12,14 +12,21 @@ class CustomSequencer extends Sequencer {
         let sorted_array = [
             "/shared/transcendence/src/modules/database/user/service.spec.ts",
             "/shared/transcendence/src/modules/database/chatRoom/service.spec.ts",
-            "/shared/transcendence/src/modules/database/userChatRoom/service.spec.ts"
+            "/shared/transcendence/src/modules/database/userChatRoom/service.spec.ts",
+            "/shared/transcendence/src/modules/database/message/service.spec.ts",
+            "/shared/transcendence/src/modules/database/friend/service.spec.ts",
+            "/shared/transcendence/src/modules/database/muted/service.spec.ts"
         ]
+
         for (let i = 0; i < sorted_array.length; i++)
         {
+            // console.log('first boucle, i = ',i);
             for (let j = 0; j < sorted_array.length; j++)
             {
                 if (tests[j].path == sorted_array[i])
+                {
                     sorted_tests_array.push(tests[j])
+                }
             }
         }
         return sorted_tests_array;
