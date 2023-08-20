@@ -18,13 +18,13 @@ export class UserProfileComponent implements OnInit {
 	async ngOnInit() {
 		this.user = await this.userService.getUserInfo();
 		this.userForm = this.formBuilder.group({
-			login: this.user.ftLogin,
+			login: { value: this.user.ftLogin, disabled: true },
 			nickname: this.user.nickname,
 			picture: this.user.picture,
 			email: this.user.email,
 			twofa: this.user.twoAuthFactor
-		});
-		this.userForm.get('login')?.disable();
+		},
+		{ updateOn: "change" });
 	}
 
 	async onSubmit() {
