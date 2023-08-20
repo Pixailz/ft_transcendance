@@ -72,7 +72,7 @@ import { DBModule } from '../database.module';
 
 	describe('delete', () => {
 		it('should delete a room', async () => {
-			const room = await repo.findOneBy({name: unit_room + '_name_BIS'}); 
+			const room = await repo.findOneBy({name: unit_room + '_name'}); 
 			const id = room.id;
 			await service.delete(id);
 			await expect(service.returnOne(id)).rejects.toThrowError(
