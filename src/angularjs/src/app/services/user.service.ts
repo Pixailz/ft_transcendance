@@ -11,38 +11,41 @@ export class UserService {
 	) {}
 	private user: UserI = DefUserI;
 
-	getToken()
+	getToken(): string
 	{
-		return (localStorage.getItem("access_token"));
+		return (localStorage.getItem("access_token")
+				? localStorage.getItem("access_token")!
+				: "");
 	}
 
 	async checkToken(jwt_token: string): Promise<boolean>
 	{
-		await this.backService.req("GET", "/auth/profile")
+		const user = await this.backService.req("GET", "/auth/profile")
 			.catch((err: any) => {
-				return false;
+				console.log("[angular:UserService] checkToken req err: ", err);
+				return (false);
 			})
-		return true;
+		return user?.user_id;
 	}
 
-	isLoggedIn()
+	async isLoggedIn(): Promise<boolean>
 	{
-		if (this.getToken())
-			return (true);
-		else
-			return (false);
+		return await this.checkToken(this.getToken());
 	}
 
 	SignOut()
 	{
 		localStorage.removeItem("access_token");
-		// this.userLoggedIn = false;
 		window.location.href = "/home";
 	}
 
 	async getUserInfo(): Promise<UserI>
 	{
-		return (await this.backService.req("GET", "/user/me"));
+		let user = await this.backService.req("GET", "/user/me");
+		user?.id
+		? user = user as UserI
+		: user = DefUserI;
+		return (user);
 	}
 
 	async updateInfo(nickname: string, email?: string)

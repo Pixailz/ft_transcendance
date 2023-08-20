@@ -41,7 +41,7 @@ export class AuthGuardService implements CanActivate {
 			console.log("[angular:AuthGuardService] no token");
 			return false;
 		}
-		if (! await this.userService.checkToken(jwt_token))
+		if (!await this.userService.checkToken(jwt_token))
 		{
 			this.router.navigate(['/login'], { queryParams: { returnUrl: returnUrl }});
 			console.log("[angular:AuthGuardService] bad token");
