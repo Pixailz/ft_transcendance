@@ -56,7 +56,7 @@ import { exec } from 'child_process';
 			// console.log('in create first room : room id ', room.id, 'room login = ', room.name);
 			expect(tmp.friendId).toEqual(friendRequest_id);
 			expect(tmp.meId).toEqual(me.id);
-			// await userService.delete(friendRequest_id);
+			await userService.delete(friendRequest_id);
 		});
 	  });
 	   
