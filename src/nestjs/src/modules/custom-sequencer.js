@@ -15,6 +15,7 @@ class CustomSequencer extends Sequencer {
             "/shared/transcendence/src/modules/database/userChatRoom/service.spec.ts",
             "/shared/transcendence/src/modules/database/message/service.spec.ts",
             "/shared/transcendence/src/modules/database/friend/service.spec.ts",
+            "/shared/transcendence/src/modules/database/friendRequest/service.spec.ts",
             "/shared/transcendence/src/modules/database/muted/service.spec.ts"
         ]
 
