@@ -7,6 +7,7 @@ import { UserChatRoomEntity } from "./userChatRoom/entity";
 import { MessageEntity } from "./message/entity";
 import { GameInfoEntity } from "./gameInfo/entity";
 import { FriendEntity } from "./friend/entity";
+import { FriendRequestEntity } from "./friendRequest/entity";
 import { MutedEntity } from "./muted/entity";
 
 import { DBUserService } from "./user/service";
@@ -15,6 +16,7 @@ import { DBUserChatRoomService } from "./userChatRoom/service";
 import { DBMessageService } from "./message/service";
 import { DBGameInfoService } from "./gameInfo/service";
 import { DBFriendService } from "./friend/service";
+import { DBFriendRequestService } from "./friendRequest/service";
 import { DBMutedService } from "./muted/service";
 
 import { DBUserController } from "./user/controller";
@@ -23,6 +25,7 @@ import { DBUserChatRoomController } from "./userChatRoom/controller";
 import { DBMessageController } from "./message/controller";
 import { DBGameInfoController } from "./gameInfo/controller";
 import { DBFriendController } from "./friend/controller";
+import { DBFriendRequestController } from "./friendRequest/controller";
 import { DBMutedController } from "./muted/controller";
 
 
@@ -42,6 +45,7 @@ import { DBMutedController } from "./muted/controller";
 				MessageEntity,
 				GameInfoEntity,
 				FriendEntity,
+				FriendRequestEntity,
 				MutedEntity,
 			],
 			synchronize: true,
@@ -53,6 +57,7 @@ import { DBMutedController } from "./muted/controller";
 			MessageEntity,
 			GameInfoEntity,
 			FriendEntity,
+			FriendRequestEntity,
 			MutedEntity,
 		]),
 	],
@@ -63,6 +68,7 @@ import { DBMutedController } from "./muted/controller";
 		DBMessageController,
 		DBGameInfoController,
 		DBFriendController,
+		DBFriendRequestController,
 		DBMutedController,
 	],
 	providers: [
@@ -72,6 +78,7 @@ import { DBMutedController } from "./muted/controller";
 		DBMessageService,
 		DBGameInfoService,
 		DBFriendService,
+		DBFriendRequestService,
 		DBMutedService,
 	],
 	exports: [
@@ -81,6 +88,7 @@ import { DBMutedController } from "./muted/controller";
 		DBMessageService,
 		DBGameInfoService,
 		DBFriendService,
+		DBFriendRequestService,
 		DBMutedService,
 	],
 })
