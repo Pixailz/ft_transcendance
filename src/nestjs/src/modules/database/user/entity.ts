@@ -60,16 +60,16 @@ export class UserEntity {
 	message: MessageEntity[];
 	
 	//friend
-	@OneToMany((type) => FriendEntity, (message) => message.me)
+	@OneToMany((type) => FriendEntity, (friendMe) => friendMe.me)
 	me: FriendEntity[];
 
-	@OneToMany((type) => FriendEntity, (message) => message.friend)
+	@OneToMany((type) => FriendEntity, (friend) => friend.friend)
 	friend: FriendEntity[];
 
 	// muted
-	@OneToMany((type) => MutedEntity, (message) => message.me)
+	@OneToMany((type) => MutedEntity, (mutedMe) => mutedMe.me)
 	meMuted: MutedEntity[];
 
-	@OneToMany((type) => MutedEntity, (message) => message.muted)
+	@OneToMany((type) => MutedEntity, (muted) => muted.muted)
 	muted: MutedEntity[];
 }
