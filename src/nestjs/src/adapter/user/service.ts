@@ -54,7 +54,7 @@ export class UserService {
 			lastSeen: date,
 		})
 			.catch((err) => {
-				console.log(err.message);
+				console.log("[userService:setStatus]", err.message);
 			});
 	}
 }
