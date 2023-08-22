@@ -1,7 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient, HttpXhrBackend } from '@angular/common/http';
 
 import { environment } from 'src/app/environments/environment';
 import { BackService } from 'src/app/services/back.service';
@@ -18,8 +18,7 @@ export class LoginComponent  implements OnInit {
 
 	constructor(private route: ActivatedRoute, 
 				private router: Router,
-				private http: HttpClient,
-				private back: BackService) {}
+				private http: HttpClient) {}
 
 	async ngOnInit() {
 		this.code = this.route.snapshot.queryParamMap.get('code');
@@ -49,22 +48,20 @@ export class LoginComponent  implements OnInit {
 			message.style.display = 'block';
 			message.innerHTML = 'Please wait...';
 		}
-		await this.back.req('GET', '/auth/ft_callback?code=' + this.code)
-		.catch((error) => {
-			if (message)
-			{
-				message.innerHTML = 'Error: ' + error.statusText;
-				message.style.color = 'red';
-			}
-		})
-		.then((data) => {
-			this.response = data;
-			if (!this.response || this.response.access_token === undefined)
-				throw new Error('No access token');
-			localStorage.setItem('access_token', this.response.access_token);
-			if (this.response.status == "register")
-				this.state.redirect = '/register';
-		});
+		
+		this.response = await this.http.get(environment.api_prefix + '/auth/ft_callback?code=' + this.code)
+			.toPromise()
+			.catch((err) => {
+				console.log(err);
+				if (message)
+					message.innerHTML = 'Error: ' + err.error;
+				return null;
+			});
+		if (!this.response || this.response.access_token === undefined)
+			console.log('Error: ' + this.response);
+		localStorage.setItem('access_token', this.response.access_token);
+		if (this.response.status == "register")
+			this.state.redirect = '/register';
 	}
 
 	SignIn()
