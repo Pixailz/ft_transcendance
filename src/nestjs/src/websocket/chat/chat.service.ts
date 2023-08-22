@@ -28,17 +28,17 @@ export class WSChatService {
 		if (!user_info) {
 			this.disconnect(server, socket);
 			return new UnauthorizedException(
-				`[WS] user, ${user_id}, not found`,
+				`[WS:connection] user, ${user_id}, not found`,
 			);
 		}
 		this.wsSocket.addNewSocketId(user_info.id, socket.id);
-		console.log(`[WS] User ${user_info.ftLogin} connected (${socket.id})`);
+		console.log(`[WS:connection] User ${user_info.ftLogin} connected (${socket.id})`);
 		await this.setStatus(server, user_id, Status.CONNECTED);
 	}
 
 	async disconnect(server: Server, socket: Socket) {
 		const user_id = this.wsSocket.getUserId(socket.id);
-		console.log(`[WS] Disconnected ${socket.id}`);
+		console.log(`[WS:disconnect] Disconnected ${socket.id}`);
 		await this.setStatus(server, user_id, Status.DISCONNECTED);
 		this.wsSocket.removeSocket(socket.id);
 		socket.disconnect();
