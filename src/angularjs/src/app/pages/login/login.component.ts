@@ -61,7 +61,7 @@ export class LoginComponent  implements OnInit {
 			console.log('Error: ' + this.response);
 		localStorage.setItem('access_token', this.response.access_token);
 		if (this.response.status == "register")
-			this.state.redirect = '/register';
+			this.router.navigate(['/register']);
 	}
 
 	SignIn()
