@@ -56,35 +56,6 @@ describe("DBUserChatRoomService", () => {
 	it("should be defined", () => {
 		expect(service).toBeDefined();
 	});
-
-	describe("testing create and returnOne", () => {
-		it("[USER CHAT ROOM] TEST", async () => {
-			const user_test = await userService.returnAll();
-			// console.log('array user len = ', user_test.length)
-			if (user_test.length != 1) {
-				const len = user_test.length;
-				unit_user += len - 2;
-			}
-			const room_test = await chatRoomService.returnAll();
-			if (room_test.length != 1) {
-				const len = room_test.length;
-				unit_room += len - 2;
-			}
-			let user = await userService.returnOne(null, unit_user);
-			let room = await chatRoomRepo.findOneBy({
-				name: unit_room + "_name",
-			});
-
-			const post = { isOwner: true, isAdmin: true };
-			const tmp = await service.create(post, user.id, room.id);
-			expect(tmp.isOwner).toEqual(post.isOwner);
-		});
-	});
-});
-  
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
   
   describe('testing create and returnOne', () => {
     it('[USER CHAT ROOM] TEST', async () => {

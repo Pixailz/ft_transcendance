@@ -82,7 +82,6 @@ describe('DBmessageService', () => {
         len = room_test.length;
         unit_room += len - 2; 
       }
-      console.log('unit user = ', unit_user);
       const userId = (await userService.returnOne(null, unit_user)).id; 
       const roomId = (await chatRoomRepo.findOneBy({name: unit_room + '_name_BIS'})).id;
       const post = {content: "Hi test create"};
