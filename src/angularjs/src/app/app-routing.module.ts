@@ -11,6 +11,7 @@ import { RegisterComponent } from './pages/register/register.component';
 import { WSChatComponent } from './pages/chat/chat.component';
 import { AnonymousLayoutComponent } from './layout/anonymous-layout.component';
 import { AuthenticatedLayoutComponent } from './layout/authenticated-layout.component';
+import { TwofaformComponent } from './components/twofaform/twofaform.component';
 
 const routes: Routes = [
 	{
@@ -47,6 +48,10 @@ const routes: Routes = [
 			{
 				path: 'login',
 				component: LoginComponent
+			},
+			{
+				path: '2fa',
+				component: TwofaformComponent
 			},
 			{
 				path: 'register',
