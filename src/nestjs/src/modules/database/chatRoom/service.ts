@@ -42,4 +42,27 @@ export class DBChatRoomService {
 		if (tmp) return await this.chatRoomRepo.delete(chatId);
 		else throw new ForbiddenException("ChatRoom not found");
 	}
+
+	async getAllPrivateRoom(chatId: number): Promise<ChatRoomEntity> {
+		return await this.chatRoomRepo.findOne({
+			relations: {
+				message: {
+					user: true,
+				},
+				roomInfo: {
+					user: true,
+				},
+			},
+			where: {
+				roomInfo: {
+					roomId: chatId,
+				},
+			},
+			order: {
+				message: {
+					updateAt: "ASC",
+				},
+			},
+		});
+	}
 }

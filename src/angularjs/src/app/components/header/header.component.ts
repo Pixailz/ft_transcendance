@@ -35,7 +35,7 @@ export class HeaderComponent {
 	) {}
 
 	async ngOnInit()
-	{ this.userLoggedIn = await this.userService.isLoggedIn(); }
+	{ this.userLoggedIn = await this.userService.checkToken(); }
 
 	SignOut()
 	{ this.userService.SignOut(); }
