@@ -1,4 +1,4 @@
-import { Controller, Get, Request, Query } from "@nestjs/common";
+import { Controller, Get, Request, Query, Post, Body } from "@nestjs/common";
 import { AuthService } from "./service";
 import { Public } from "src/public.decorator";
 
@@ -12,6 +12,12 @@ export class AuthController {
 		if (!Number(process.env.PRODUCTION) && code === "test")
 			return this.authService.ftSignInTest();
 		else return this.authService.ftSignIn(code);
+	}
+
+	@Public()
+	@Post("2fa")
+	async twoFa(@Body() body: any) {
+		return this.authService.twoFa(body.nonce, body.code);
 	}
 
 	@Get("profile")

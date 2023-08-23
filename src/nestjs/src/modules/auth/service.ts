@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { DBUserService } from "../database/user/service";
 import { Api42Service } from "../api42/service";
 import { JwtService } from "@nestjs/jwt";
@@ -30,8 +30,16 @@ export class AuthService {
 		const payload = { sub: user.id };
 		let status;
 
+		if (user.twoAuthFactor) {
+			return {
+				status: "2fa",
+				nonce: await this.dbUserService.getNonce(user.id),
+			};
+		}
+
 		if (!user.nickname) status = "register";
 		else status = "oke";
+
 		return {
 			access_token: await this.jwtService.signAsync(payload),
 			status: status,
@@ -59,6 +67,21 @@ export class AuthService {
 		console.log("test user created");
 		return {
 			access_token: await this.jwtService.signAsync({ sub: user.id }),
+			status: "oke",
+		};
+	}
+
+	async twoFa(nonce: string, code: string): Promise<any> {
+		const user = await this.dbUserService.returnOneByNonce(nonce);
+		if (!user) throw new ForbiddenException("User not found");
+		
+		//
+		// do twofa code verification here
+		//
+		
+		const payload = { sub: user.id };
+		return {
+			access_token: await this.jwtService.signAsync(payload),
 			status: "oke",
 		};
 	}
