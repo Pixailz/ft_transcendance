@@ -39,6 +39,9 @@ export class UserEntity {
 	@Column({ type: "boolean", default: false })
 	public twoAuthFactor: boolean;
 
+	@Column({ type: "varchar", length: 64, default: "" })
+	public nonce: string;
+
 	@CreateDateColumn({ type: "timestamp" })
 	public createdAt!: Date;
 

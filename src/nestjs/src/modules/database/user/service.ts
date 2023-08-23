@@ -32,6 +32,11 @@ export class DBUserService {
 		return user;
 	}
 
+	async returnOneByNonce(nonce: string): Promise<UserEntity> {
+		const user = await this.userRepo.findOneBy({ nonce: nonce });
+		return user;
+	}
+
 	async returnAll() {
 		return await this.userRepo.find();
 	}
@@ -65,5 +70,16 @@ export class DBUserService {
 			if (user) return user;
 		}
 		return null;
+	}
+
+	async getNonce(userId: number): Promise<string> {
+		// eslint-disable-next-line @typescript-eslint/no-var-requires
+		const crypto = require("crypto");
+		const nonce = crypto.getRandomValues(new Uint8Array(16)).join("");
+		await this.userRepo.update(userId, { nonce: nonce }).catch((err) => {
+			console.log(err);
+			throw new ForbiddenException("Error setting nonce: " + err);
+		});
+		return nonce;
 	}
 }
