@@ -28,7 +28,7 @@ export class TwofaformComponent implements OnInit {
     .then((res: any) => {
       if (res.status === 'oke') {
         localStorage.setItem('access_token', res.access_token);
-        redirect ? this.router.navigate(['/']) : this.router.navigate([redirect]);
+        redirect === null ? this.router.navigate(['/']) : this.router.navigate([redirect]);
       }
     })
   }
