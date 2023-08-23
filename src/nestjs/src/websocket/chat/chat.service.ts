@@ -103,6 +103,9 @@ export class WSChatService {
 		chat_room = await this.chatRoomService.getPrivateRoomFromRoomId(
 			room_id,
 		);
+		for (var i = 0; i < chat_room.roomInfo.length; i++)
+			if (chat_room.roomInfo[i].user.id === dst_id)
+				chat_room.roomInfo.splice(i, 1);
 		if (!dst_socket_id)
 			return ;
 		for (var i = 0; i < dst_socket_id.length; i++)
