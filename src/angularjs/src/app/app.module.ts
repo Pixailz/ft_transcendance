@@ -33,6 +33,7 @@ import { AnonymousLayoutComponent } from './layout/anonymous-layout.component';
 import { AuthenticatedLayoutComponent } from './layout/authenticated-layout.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FlatButtonComponent } from './components/flat-button/flat-button.component';
+import { TwofaformComponent } from './components/twofaform/twofaform.component';
 
 
 const config: SocketIoConfig = {
@@ -60,7 +61,8 @@ const config: SocketIoConfig = {
 		WSChatComponent,
 		AnonymousLayoutComponent,
 		AuthenticatedLayoutComponent,
-		FlatButtonComponent
+		FlatButtonComponent,
+		TwofaformComponent
 	],
 	imports: [
 		BrowserModule,

@@ -4,13 +4,13 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { environment } from 'src/app/environments/environment';
-import { BackService } from 'src/app/services/back.service';
 
 @Component({
 	selector: 'app-login',
 	templateUrl: './login.component.html',
-	styleUrls: ['./login.component.scss']
+	styleUrls: ['./login.component.scss'],
 })
+
 export class LoginComponent  implements OnInit {
 	code: string | null = null;
 	response: any = null;
@@ -40,6 +40,11 @@ export class LoginComponent  implements OnInit {
 		  await this.getToken();
 		}
 
+		if (this.route.snapshot.queryParamMap.get('twofa') == 'true') {
+			this.twofa = true;
+			this.login = false;
+		}
+
 	  }
 
 	async getToken()
@@ -66,8 +71,9 @@ export class LoginComponent  implements OnInit {
 				&& this.response.status === undefined))
 			console.log('Error: ' + this.response);
 		if (this.response.status && this.response.status == "2fa"){
-			this.router.navigate(['/2fa'], {
+			this.router.navigate(['/login'], {
 				queryParams: { 
+					twofa: true,
 					returnUrl: this.state?.redirect!, 
 					nonce: this.response.nonce
 				}

@@ -50,10 +50,6 @@ const routes: Routes = [
 				component: LoginComponent
 			},
 			{
-				path: '2fa',
-				component: TwofaformComponent
-			},
-			{
 				path: 'register',
 				component: RegisterComponent,
 				canActivate: [AuthGuardService]
