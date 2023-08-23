@@ -1,0 +1,14 @@
+/* center main div */
+#container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+#notice {
+    font-weight: bold;
+    text-align: center;
+    padding-right: 3rem;
+}

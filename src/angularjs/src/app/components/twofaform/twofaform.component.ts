@@ -20,6 +20,7 @@ export class TwofaformComponent implements OnInit {
     const nonce = this.route.snapshot.queryParamMap.get('nonce');
     const redirect = this.route.snapshot.queryParamMap.get('returnUrl');
     const code = document.getElementById('code') as HTMLInputElement;
+    const notice = document.getElementById('notice') as HTMLHeadingElement;
 
     const response = await this.back.req(
       'POST', 
@@ -30,6 +31,12 @@ export class TwofaformComponent implements OnInit {
         localStorage.setItem('access_token', res.access_token);
         redirect === null ? this.router.navigate(['/']) : this.router.navigate([redirect]);
       }
+    })
+    .catch((err: any) => {
+      console.log(err);
+      notice.innerText = err.status;
+      notice.style.display = 'block';
+      notice.style.color = 'red';
     })
   }
 
