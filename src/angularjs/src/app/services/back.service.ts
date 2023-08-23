@@ -47,7 +47,8 @@ export class BackService {
 		const log_header = `[${res.status}:${route}] ${method}`;
 		if (res.status > 400)
 			return Promise.reject({
-				status: `${log_header} request failed`
+				status: res.status,
+				message: `${log_header} request failed`
 			});
 		const data_json = await res.json()
 			.catch((err) => {
