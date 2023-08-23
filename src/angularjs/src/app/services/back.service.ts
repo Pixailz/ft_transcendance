@@ -22,6 +22,7 @@ export class BackService {
 				}
 				this.body = null;
 				break;
+			case "POST":
 			case "PUT":
 				this.headers = {
 					"Authorization": bearer_token,
@@ -44,7 +45,7 @@ export class BackService {
 			"mode": "cors"
 		});
 		const log_header = `[${res.status}:${route}] ${method}`;
-		if (res.status !== 200)
+		if (res.status > 400)
 			return Promise.reject({
 				status: `${log_header} request failed`
 			});
