@@ -75,9 +75,9 @@ export class AuthService {
 		const user = await this.dbUserService.returnOneByNonce(nonce);
 		if (!user) throw new ForbiddenException("User not found");
 		
-		//
-		// do twofa code verification here
-		//
+		if (user.twoAuthFactor) {
+			// sam working on this part of the code
+		}
 		
 		const payload = { sub: user.id };
 		return {
