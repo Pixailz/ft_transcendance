@@ -52,6 +52,9 @@ export class UserService {
 		await this.dbUserService.update(user_id, {
 			status: status,
 			lastSeen: date,
-		});
+		})
+			.catch((err) => {
+				console.log("[userService:setStatus]", err.message);
+			});
 	}
 }

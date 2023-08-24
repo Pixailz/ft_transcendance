@@ -36,9 +36,9 @@ export class WSChatComponent implements OnInit {
 
 		this.wsChatGateway.getAllPrivateRoom();
 		this.wsChatGateway.listenAllPrivateRoom()
-			.subscribe((data: ChatRoomI[]) => {
+			.subscribe((rooms: ChatRoomI[]) => {
 				console.log("event AllPrivateRoom received")
-				this.chatService.updateAllPrivateRoom(data);
+				this.chatService.updateAllPrivateRoom(rooms);
 			}
 		)
 
@@ -51,9 +51,9 @@ export class WSChatComponent implements OnInit {
 		)
 
 		this.wsChatGateway.listenNewPrivateRoom()
-			.subscribe((data: ChatRoomI) => {
+			.subscribe((room: ChatRoomI) => {
 				console.log("event NewPrivateRoom received")
-				this.chatService.updateNewPrivateRoom(data);
+				this.chatService.updateNewPrivateRoom(room);
 			}
 		)
 
@@ -65,9 +65,9 @@ export class WSChatComponent implements OnInit {
 		)
 
 		this.wsChatGateway.listenNewStatusFriend()
-			.subscribe((friends_status: any) => {
+			.subscribe((data: any) => {
 				console.log("event NewStatusFriend received")
-				this.chatService.updateNewFriendStatus(friends_status);
+				this.chatService.updateNewFriendStatus(data);
 			}
 		)
 	}
