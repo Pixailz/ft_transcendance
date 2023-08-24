@@ -1,147 +1,47 @@
 name: CI
 
-run-name: CI
+run-name: Main Caller for the CI
 
 on:
   push:
     branches: [main]
   pull_request:
 
-env:
-  SETUP_STR: |+
-    pix
-    1234
-    1234
-    1234
-    https://localhost/login
-    http://localhost:4200/login
-
 jobs:
   info:
     runs-on: ubuntu-latest
     steps:
-      - name: "github"
+      - name: 💬 github
         run: |+
-          echo "Who launched: ${{github.actor}}"
-          echo "On branch:    ${{github.ref_name}}"
-          echo "Commit sha:   ${{github.sha}}"
-      - name: "docker | compose"
+          echo "Who launched: ${{ github.actor }}"
+          echo "On branch:    ${{ github.ref_name }}"
+          echo "Commit sha:   ${{ github.sha }}"
+          echo "Vars"
+          echo "SETUP_STR ${{ vars.SETUP_STR }}"
+
+      - name: 💬 docker | compose
         run: |+
           docker version
           docker compose version
 
-  prod-docker-build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
+  do-docker-prod:
+    uses: ./.github/workflows/CI-docker.yaml
+    with:
+      mode: prod
 
-      - name: Setup .env
-        run: printf "${SETUP_STR}\n" | ./setup
+  do-docker-dev:
+    uses: ./.github/workflows/CI-docker.yaml
+    with:
+      mode: dev
 
-      - name: Cleaning up previous run
-        run: |+
-          rm -rf ./volume
-          docker compose down
+  do-nest-prod:
+    needs: do-docker-prod
+    uses: ./.github/workflows/CI-nest.yaml
+    with:
+      mode: prod
 
-      - name: Build prod
-        timeout-minutes: 5
-        run: docker compose build
-
-  prod-docker-run:
-    needs: prod-docker-build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup .env
-        run: printf "${SETUP_STR}\n" | ./setup
-
-      - name: Cleaning up previous run
-        run: |+
-          rm -rf ./volume
-          docker compose down
-
-      - name: Executing prod
-        timeout-minutes: 5
-        run: docker compose up --build -d --wait
-
-  dev-docker-build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup .env
-        run: printf "${SETUP_STR}\n" | ./setup
-
-      - name: Cleaning up previous run
-        run: |+
-          rm -rf ./volume
-          docker compose down
-
-      - name: Build debug
-        timeout-minutes: 5
-        run: docker compose -f docker-compose-dev.yaml build
-
-  dev-docker-run:
-    needs: dev-docker-build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup .env
-        run: printf "${SETUP_STR}\n" | ./setup
-
-      - name: Cleaning up previous run
-        run: |+
-          rm -rf ./volume
-          docker compose down
-
-      - name: Executing debug
-        timeout-minutes: 5
-        run: docker compose -f docker-compose-dev.yaml up --build -d --wait
-
-  prod-nestjs-jest-database:
-    needs:
-      - prod-docker-run
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup .env
-        run: printf "${SETUP_STR}\n" | ./setup
-
-      - name: Cleaning up previous run
-        run: |+
-          rm -rf ./volume
-          docker compose down
-
-      - name: Compose UP
-        timeout-minutes: 5
-        run: docker compose up --build -d --wait
-
-      - name: Running Jest
-        timeout-minutes: 5
-        run: docker compose exec -it nestjs npm run test
-
-  dev-nestjs-jest-database:
-    needs:
-      - dev-docker-run
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup .env
-        run: printf "${SETUP_STR}\n" | ./setup
-
-      - name: Cleaning up previous run
-        run: |+
-          rm -rf ./volume
-          docker compose down
-
-      - name: Compose UP
-        timeout-minutes: 5
-        run: docker compose -f docker-compose-dev.yaml up --build -d --wait
-
-      - name: Running Jest
-        timeout-minutes: 5
-        run: docker compose -f docker-compose-dev.yaml exec -it nestjs npm run test
+  do-nest-dev:
+    needs: do-docker-dev
+    uses: ./.github/workflows/CI-nest.yaml
+    with:
+      mode: dev
