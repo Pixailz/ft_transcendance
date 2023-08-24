@@ -17,6 +17,7 @@ const routes: Routes = [
 		path: '',
 		component: AuthenticatedLayoutComponent,
 		canActivate: [ AuthGuardService ],
+		runGuardsAndResolvers: 'always',
 		children: [
 			{
 				path: '',

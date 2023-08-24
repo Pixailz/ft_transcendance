@@ -21,7 +21,6 @@ export class AuthGuardService implements CanActivate {
 		if (!user_info.nickname)
 		{
 			this.router.navigate(['/register'], { queryParams: { returnUrl: returnUrl }});
-			window.location.href = "register";
 			console.log("[angular:AuthGuardService] user don't have a nickname, need to register");
 			return false;
 		}
