@@ -1,9 +1,7 @@
 <div class="container">
 	<div *ngIf="user_info.id !== -1; else userNotFound" class="ticket">
-		<div class="picture">
-			<img src="assets/img/avatar-placeholder.jpg" alt="user picture" />
-			<h1 class="login">{{user_info.ftLogin}}</h1>
-		</div>
+		<img src="assets/img/avatar-placeholder.jpg" alt="user picture" />
+		<h1 class="login">{{user_info.ftLogin}}</h1>
 		<div class="personal_data">
 			<div class="line">
 				<span>nickname:</span>
@@ -11,11 +9,11 @@
 			</div>
 			<div class="line">
 				<span>email:</span>
-				<span>{{user_info.email}}</span>
+				<span>{{user_info.email === '' ? '/' :  user_info.email}}</span>
 			</div>
 			<div class="line">
 				<span>lastSeen:</span>
-				<span>{{user_info.lastSeen | date: 'dd/MM/YYYY hh:mm:ss'}}</span>
+				<span>{{user_info.lastSeen | date: 'dd/MM/YYYY HH:mm:ss'}}</span>
 			</div>
 		</div>
 	</div>
