@@ -42,12 +42,6 @@ export class DBFriendService {
 		else throw new ForbiddenException("Friend relation not found");
 	}
 
-	// async update(me_id: number, friend_id: number, post: DBFriendPost) {
-	// 	const tmp = await this.friendRepo.findOneBy({ meId: me_id, friendId: friend_id });
-	// 	if (tmp) return await this.friendRepo.update(tmp, post);
-	// 	else throw new ForbiddenException("Friend relation not found");
-	// }
-
 	async delete(me_id: number, friend_id: number) {
 		const tmp = await this.friendRepo.findOneBy({ meId: me_id, friendId: friend_id });
 		if (tmp) return await this.friendRepo.delete(tmp);

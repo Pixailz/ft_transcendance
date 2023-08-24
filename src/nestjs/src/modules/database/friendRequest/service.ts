@@ -37,12 +37,6 @@ export class DBFriendRequestService {
 		else throw new ForbiddenException("FriendRequest relation not found");
 	}
 
-	// async update(me_id: number, friendRequest_id: number, post: DBFriendRequestPost) {
-	// 	const tmp = await this.friendRequestRepo.findOneBy({ meId: me_id, friendRequestId: friendRequest_id });
-	// 	if (tmp) return await this.friendRequestRepo.update(tmp, post);
-	// 	else throw new ForbiddenException("FriendRequest relation not found");
-	// }
-
 	async delete(me_id: number, friendRequest_id: number) {
 		const tmp = await this.friendRequestRepo.findOneBy({ meId: me_id, friendId: friendRequest_id });
 		if (tmp) return await this.friendRequestRepo.delete(tmp);
