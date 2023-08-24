@@ -59,9 +59,9 @@ export class WSChatGateway {
 		this.socket.emit("getAllPrivateMessage");
 	}
 
-	createPrivateRoom(room_id: number)
+	createPrivateRoom(dst_id: number)
 	{
-		this.socket.emit("createPrivateRoom", room_id);
+		this.socket.emit("createPrivateRoom", dst_id);
 	}
 
 	sendPrivateMessage(room_id: number, message: string)

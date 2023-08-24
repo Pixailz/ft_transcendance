@@ -112,12 +112,13 @@ export class ChatService {
 	}
 
 	updateNewFriendStatus(friends_status: any) {
-		var	founded: boolean;
-
+		// TODO: readd correct check when friends is implemented with his listener
 		if (!this.chat.friends[friends_status.user_id])
-			this.chat.friends[friends_status.user_id] = DefFriendI;
+			return ;
+			// this.chat.friends[friends_status.user_id] = DefFriendI;
 		if (!this.chat.friends[friends_status.user_id].user_info)
-			this.chat.friends[friends_status.user_id].user_info = DefUserI;
+			return ;
+			// this.chat.friends[friends_status.user_id].user_info = DefUserI;
 		this.chat.friends[friends_status.user_id].user_info.status = friends_status.status;
 	}
 
