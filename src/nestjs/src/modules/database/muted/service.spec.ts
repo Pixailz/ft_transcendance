@@ -11,7 +11,6 @@ import { exec } from 'child_process';
 
  describe('DBMutedService', () => {
   let service: DBMutedService;
-  let repo: Repository<MutedEntity>;
   let unit_user: string = "UNIT_USER";
   let userService: DBUserService;
   beforeEach(async () => {
@@ -32,7 +31,6 @@ import { exec } from 'child_process';
 	}).compile();
 	userService = module.get<DBUserService>(DBUserService);
 	service = module.get<DBMutedService>(DBMutedService);
-	repo = module.get<Repository<MutedEntity>>(getRepositoryToken(MutedEntity));
   });
   
   it('should be defined', () => {
@@ -51,38 +49,43 @@ import { exec } from 'child_process';
             }
             const me = await userService.returnOne(null, unit_user);
 
-			let Muted_id = await userService.create({ftLogin: unit_user + "Muted_test"});      
-			let tmp = await service.create({mutedId: Muted_id}, me.id); 
+			let mutedId = await userService.create({ftLogin: unit_user + "Muted_test"});      
+			let tmp = await service.create({mutedId: mutedId}, me.id); 
 			// console.log('in create first room : room id ', room.id, 'room login = ', room.name);
-			expect(tmp.mutedId).toEqual(Muted_id);
+			expect(tmp.mutedId).toEqual(mutedId);
 			expect(tmp.meId).toEqual(me.id);
-			await userService.delete(Muted_id);
+			await userService.delete(mutedId);
 		});
 	  });
 	   
-	// describe('update', () => {
-	// 	it('[CHATROOM] should update 2 room', async () => {
-	// 		const roomPost = { name: unit_user + '_name', type : "random_type"};
-	// 		const roomPost2 = { name: unit_user + '_name_BIS', type : "random_type"};
-	// 		let room_id = (await repo.findOne({where: {name: unit_user}})).id
-	// 		let room2_id = (await repo.findOne({where: {name: unit_user_bis}})).id
-	// 		await service.update(room_id, roomPost);
-	// 		await service.update(room2_id, roomPost2);
-	// 		const room = await service.returnOne(room_id);
-	// 		const room2 = await service.returnOne(room2_id);
-	// 		expect(room.name).toEqual(roomPost.name);
-	// 		expect(room2.name).toEqual(roomPost2.name);
-	// 	});
-	//   });
+	describe('[Muted] delete', () => {
+		it('should delete a room', async () => {
+            const me = await userService.returnOne(null, unit_user);
+			const meId = me.id;
+			const mutedId = await userService.create({ftLogin: unit_user + "muted"});
+			await service.create({mutedId: mutedId}, meId);
+			const tmp = await service.returnOne(meId, mutedId);
+			expect(tmp.meId).toEqual(meId);
+			await service.delete(meId, mutedId);
+			await expect(service.returnOne(meId, mutedId)).rejects.toThrowError(
+				new ForbiddenException("Muted relation not found"),
+				);
+			await userService.delete(mutedId);
+		});
+	}); 
 
-	// describe('delete', () => {
-	// 	it('should delete a room', async () => {
-	// 		const room = await repo.findOneBy({name: unit_user + '_name'}); 
-	// 		const id = room.id;
-	// 		await service.delete(id);
-	// 		await expect(service.returnOne(id)).rejects.toThrowError(
-	// 			new ForbiddenException("ChatRoom not found"),
-	// 			);
-	// 	});
-	// });  
+	describe('[Muted] delete on cascade', () => {
+		it('should delete a room', async () => {
+            const me = await userService.returnOne(null, unit_user);
+			const meId = me.id;
+			const mutedId = await userService.create({ftLogin: unit_user + "cascade_muted"});
+			await service.create({mutedId: mutedId}, meId);
+			const tmp = await service.returnOne(meId, mutedId);
+			expect(tmp.meId).toEqual(meId);
+			await userService.delete(mutedId);
+			await expect(service.returnOne(meId, mutedId)).rejects.toThrowError(
+				new ForbiddenException("Muted relation not found"),
+				);
+		});
+	});  
 });

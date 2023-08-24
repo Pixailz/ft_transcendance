@@ -107,29 +107,22 @@ describe('DBmessageService', () => {
         );
     });
 });
+
+  describe('[MESSAGE] on delete set null', () => {
+    it('should delete a room', async () => {
+      const userId = await userService.create({ftLogin: "Message test cascade"});
+      const tmpRoomId = await chatRoomService.create({name: unit_user + "Cascade test"});
+      const messId = await service.create({"content": "UNIT CASCADE TEST"}, userId, tmpRoomId);
+      let message = await service.returnOne(messId);
+      expect(message.content).toEqual("UNIT CASCADE TEST");
+      expect(message.userId).toEqual(userId);
+      expect(message.roomId).toEqual(tmpRoomId);
+      await userService.delete(userId)
+      message = await service.returnOne(messId);
+      expect(message.userId).toBeNull();
+      await chatRoomService.delete(tmpRoomId);
+      message = await service.returnOne(messId);
+      expect(message.roomId).toBeNull();
+    });
 });
-
-// TODO check null on delete
-
-  // describe('[USER CHAT ROOM] on delete set null', () => {
-    // it('should delete a room', async () => {
-      // const roomId = await chatRoomService.create({name: unit_room + 'MSG_TEST'});  
-      // const userId = await userService.create({ftLogin: unit_user + 'MSG'});
-      // let post = {"content": "On delete user test"};
-      // let messId = await service.create(post, userId, roomId);
-      // await userService.delete(userId);
-      // let tmp = await service.returnOne(messId);
-      // expect(tmp.content).toEqual(post.content);
-      // expect(tmp.userId).toEqual(null);
-      // await expect(service.returnOne(userId, roomId)).rejects.toThrowError(
-      //   new ForbiddenException("userChatRoom not found"),
-      //   );
-      // userId = await userService.create({ftLogin: unit_user + 'CASCADE_TEST'});
-      // tmp = await service.create(post, userId, roomId);
-      // expect(tmp.isOwner).toEqual(true);
-      // await chatRoomService.delete(roomId);
-      // await expect(service.returnOne(userId, roomId)).rejects.toThrowError(
-      //   new ForbiddenException("userChatRoom not found"),
-      //   );
-    // });
-// });
+});
