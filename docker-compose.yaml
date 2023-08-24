@@ -29,7 +29,7 @@ services:
       - CERT_SUBJ=${CERT_SUBJ?}
       - DOCKER_DEBUG=${DOCKER_DEBUG?}
     ports:
-      - 443:443
+      - ${NGINX_PORT?}:${NGINX_PORT?}
     networks:
       transendence:
         ipv4_address: "13.37.42.10"
@@ -44,9 +44,14 @@ services:
         target: /app
         bind:
           create_host_path: true
+      - type: bind
+        source: ./volume/nginx
+        target: /etc/nginx
+        bind:
+          create_host_path: true
     << : *restart
     healthcheck:
-      test: "nc -w ${DOCKER_TIMEOUT?} 127.0.0.1 443"
+      test: "nc -w ${DOCKER_TIMEOUT?} 127.0.0.1 ${NGINX_PORT?}"
       << : *healthcheck_conf
   #
   ##############################################################################

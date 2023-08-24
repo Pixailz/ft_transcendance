@@ -1,6 +1,8 @@
 # ft_transcendence
 
-[![Docker compose check](https://github.com/Pixailz/ft_transcendence/actions/workflows/CI.yaml/badge.svg)](https://github.com/Pixailz/ft_transcendence/actions/workflows/CI.yaml)
+[![CI](https://github.com/Pixailz/ft_transcendence/actions/workflows/CI.yaml/badge.svg)](https://github.com/Pixailz/ft_transcendence/actions/workflows/CI.yaml)
+
+[![CD](https://github.com/Pixailz/ft_transcendence/actions/workflows/CD.yaml/badge.svg)](https://github.com/Pixailz/ft_transcendence/actions/workflows/CD.yaml)
 
 [![node](https://img.shields.io/badge/node-v18.17.0-blue)](https://npm.im/npm)
 [![npm](https://img.shields.io/npm/v/npm.svg)](https://npm.im/npm)

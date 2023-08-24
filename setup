@@ -11,6 +11,7 @@ VAR_TO_EDIT=(
 	"API42_SECRET"
 	"API42_REDIRECTURL_PROD"
 	"API42_REDIRECTURL_DEV"
+	"NGINX_PORT"
 )
 JWT_LEN="64"
 
@@ -165,7 +166,7 @@ function	parse::re()
 	local	do_clean
 
 	[ "${ARGS_LEN}" != "2" ] && parse::usage
-
+	do_clean="0"
 	case "${ARGS[1]}" in
 		"re")
 			do_clean="1"
