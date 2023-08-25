@@ -5,6 +5,7 @@ run-name: CD Deployment to my home
 on:
   push:
     branches: [main]
+  worfklow_dispatch:
 
 jobs:
   deploy-to-pix-home:
