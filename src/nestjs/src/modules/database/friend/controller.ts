@@ -2,13 +2,11 @@ import {
 	Body,
 	Controller,
 	Post,
-	Put,
 	Get,
 	Delete,
-	Res,
 	Param,
+	Request,
 } from "@nestjs/common";
-import { Response } from "express";
 
 import { DBFriendService } from "./service";
 import { DBFriendPost } from "./dto";
@@ -17,41 +15,32 @@ import { DBFriendPost } from "./dto";
 export class DBFriendController {
 	constructor(private readonly dbFriendService: DBFriendService) {}
 
-	@Post(":friend_id")
+	@Post()
 	create(
-		@Param("friend_id") friendId: number,
+		@Request() req,
 		@Body() post: DBFriendPost) {
-		return this.dbFriendService.create(post, friendId);
+		const userId = req.user.user_id;
+		return this.dbFriendService.create(post, userId);
 	}
 
 	@Get()
-	async getAll(@Res() res: Response) {
-		res.send(await this.dbFriendService.returnAll());
+	async getAll() {
+		return (await this.dbFriendService.returnAll());
 	}
 
-	@Get(":id/:friend_id")
+	@Get(":friend_id")
 	async getOne(
-		@Param("friend_id") friendId: number,
-		@Param("id") userId: number,
-		@Res() res: Response) {
-		res.send(await this.dbFriendService.returnOne(userId, friendId));
+		@Request() req,
+		@Param("friend_id") friendId: number) {
+		const userId = req.user.sub;
+		return (await this.dbFriendService.returnOne(userId, friendId));
 	}
 
-	// @Put(":id/:friend_id")
-	// async update(
-	// 	@Param("id") userId: number,
-	// 	@Param("friend_id") friendId: number,
-	// 	@Body() userPost: DBFriendPost,
-	// 	@Res() res: Response,
-	// ) {
-	// 	res.send(await this.dbFriendService.update(userId, friendId, userPost));
-	// }
-
-	@Delete(":id/:friend_id")
+	@Delete(":friend_id")
 	async delete(
-		@Param("id") userId: number,
-		@Param("friend_id") friendId: number,
-		@Res() res: Response) {
-		res.send(await this.dbFriendService.delete(userId, friendId));
+		@Request() req,
+		@Param("friend_id") friendId: number) {
+		const userId = req.user.sub;
+		return (await this.dbFriendService.delete(userId, friendId));
 	}
 }

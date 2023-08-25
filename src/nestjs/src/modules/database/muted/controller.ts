@@ -4,10 +4,9 @@ import {
 	Post,
 	Get,
 	Delete,
-	Res,
 	Param,
+	Request,
 } from "@nestjs/common";
-import { Response } from "express";
 
 import { DBMutedService } from "./service";
 import { DBMutedPost } from "./dto";
@@ -16,31 +15,32 @@ import { DBMutedPost } from "./dto";
 export class DBMutedController {
 	constructor(private readonly dbMutedService: DBMutedService) {}
 
-	@Post(":muted_id")
+	@Post()
 	create(
-		@Param("muted_id") MutedId: number,
+		@Request() req,
 		@Body() post: DBMutedPost) {
-		return this.dbMutedService.create(post, MutedId);
+		const mutedId = req.user.user_id;
+		return (this.dbMutedService.create(post, mutedId));
 	}
 
 	@Get()
-	async getAll(@Res() res: Response) {
-		res.send(await this.dbMutedService.returnAll());
+	async getAll() {
+		return (await this.dbMutedService.returnAll());
 	}
 
-	@Get(":id/:muted_id")
+	@Get(":muted_id")
 	async getOne(
-		@Param("muted_id") MutedId: number,
-		@Param("id") userId: number,
-		@Res() res: Response) {
-		res.send(await this.dbMutedService.returnOne(userId, MutedId));
+		@Request() req,
+		@Param("muted_id") mutedId: number) {
+		const userId = req.user.user_id;
+		return (await this.dbMutedService.returnOne(userId, mutedId));
 	}
 
-	@Delete(":id/:muted_id")
+	@Delete(":muted_id")
 	async delete(
-		@Param("id") userId: number,
-		@Param("muted_id") MutedId: number,
-		@Res() res: Response) {
-		res.send(await this.dbMutedService.delete(userId, MutedId));
+		@Request() req,
+		@Param("muted_id") mutedId: number) {
+		const userId = req.user.user_id;
+		return (await this.dbMutedService.delete(userId, mutedId));
 	}
 }
