@@ -32,7 +32,7 @@ export class DBFriendController {
 	async getOne(
 		@Request() req,
 		@Param("friend_id") friendId: number) {
-		const userId = req.user.sub;
+		const userId = req.user.user_id;
 		return (await this.dbFriendService.returnOne(userId, friendId));
 	}
 
@@ -40,7 +40,7 @@ export class DBFriendController {
 	async delete(
 		@Request() req,
 		@Param("friend_id") friendId: number) {
-		const userId = req.user.sub;
+		const userId = req.user.user_id;
 		return (await this.dbFriendService.delete(userId, friendId));
 	}
 }
