@@ -149,7 +149,10 @@ function	docker::re()
 # DEPLOYMENT HELPER
 function	transc::deploy()
 {
+	rm .env
+	install::env
 	perl -pi -e "s|^	socket_url: \".*?\"|	socket_url: \"${SOCKET_URL}\"|" ./src/angularjs/src/app/environments/environment.common.ts
+	perl -pi -e "s|^	after_auth_uri: \".*?\"|	after_auth_uri: \"${AFTER_AUTH}\"|" ./src/angularjs/src/app/environments/environment.common.ts
 }
 
 # PARSING
