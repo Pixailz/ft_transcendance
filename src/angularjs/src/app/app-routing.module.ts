@@ -11,12 +11,14 @@ import { RegisterComponent } from './pages/register/register.component';
 import { WSChatComponent } from './pages/chat/chat.component';
 import { AnonymousLayoutComponent } from './layout/anonymous-layout.component';
 import { AuthenticatedLayoutComponent } from './layout/authenticated-layout.component';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 const routes: Routes = [
 	{
 		path: '',
 		component: AuthenticatedLayoutComponent,
 		canActivate: [ AuthGuardService ],
+		runGuardsAndResolvers: 'always',
 		children: [
 			{
 				path: '',
@@ -33,6 +35,10 @@ const routes: Routes = [
 			{
 				path: 'profile',
 				component: UserProfileComponent,
+			},
+			{
+				path: 'profile/:login',
+				component: ProfileComponent
 			},
 			{
 				path: 'chat',

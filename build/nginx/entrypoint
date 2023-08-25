@@ -32,6 +32,8 @@ else
 	printf "Nginx \x1b[38:5:76mfound\x1b[00m, Skiping initialization\n"
 fi
 
+cp /run/default.conf /etc/nginx/nginx.conf
+
 if [ "${#@}" == "0" ]; then
 	printf "${SERVICE_NAME} launched on port: \x1b[38:5:208m443\x1b[00m\n"
 	/usr/sbin/nginx -g "daemon off;"
