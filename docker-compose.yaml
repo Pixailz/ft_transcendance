@@ -29,7 +29,7 @@ services:
       - CERT_SUBJ=${CERT_SUBJ?}
       - DOCKER_DEBUG=${DOCKER_DEBUG?}
     ports:
-      - ${NGINX_PORT?}:${NGINX_PORT?}
+      - 127.0.0.1:${NGINX_PORT?}:${NGINX_PORT?}
     networks:
       transendence:
         ipv4_address: "13.37.42.10"
