@@ -9,6 +9,8 @@ import {
 import { UserChatRoomEntity } from "../userChatRoom/entity";
 import { GameInfoEntity } from "../gameInfo/entity";
 import { MessageEntity } from "../message/entity";
+import { FriendEntity } from "../friend/entity";
+import {MutedEntity} from "../muted/entity"
 
 export enum Status {
 	DISCONNECTED,
@@ -56,4 +58,18 @@ export class UserEntity {
 
 	@OneToMany((type) => MessageEntity, (message) => message.user)
 	message: MessageEntity[];
+	
+	//friend
+	@OneToMany((type) => FriendEntity, (friendMe) => friendMe.me)
+	me: FriendEntity[];
+
+	@OneToMany((type) => FriendEntity, (friend) => friend.friend)
+	friend: FriendEntity[];
+
+	// muted
+	@OneToMany((type) => MutedEntity, (mutedMe) => mutedMe.me)
+	meMuted: MutedEntity[];
+
+	@OneToMany((type) => MutedEntity, (muted) => muted.muted)
+	muted: MutedEntity[];
 }

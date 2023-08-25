@@ -6,18 +6,28 @@ import { ChatRoomEntity } from "./chatRoom/entity";
 import { UserChatRoomEntity } from "./userChatRoom/entity";
 import { MessageEntity } from "./message/entity";
 import { GameInfoEntity } from "./gameInfo/entity";
+import { FriendEntity } from "./friend/entity";
+import { FriendRequestEntity } from "./friendRequest/entity";
+import { MutedEntity } from "./muted/entity";
 
 import { DBUserService } from "./user/service";
 import { DBChatRoomService } from "./chatRoom/service";
 import { DBUserChatRoomService } from "./userChatRoom/service";
 import { DBMessageService } from "./message/service";
 import { DBGameInfoService } from "./gameInfo/service";
+import { DBFriendService } from "./friend/service";
+import { DBFriendRequestService } from "./friendRequest/service";
+import { DBMutedService } from "./muted/service";
 
 import { DBUserController } from "./user/controller";
 import { DBChatRoomController } from "./chatRoom/controller";
 import { DBUserChatRoomController } from "./userChatRoom/controller";
 import { DBMessageController } from "./message/controller";
 import { DBGameInfoController } from "./gameInfo/controller";
+import { DBFriendController } from "./friend/controller";
+import { DBFriendRequestController } from "./friendRequest/controller";
+import { DBMutedController } from "./muted/controller";
+
 
 @Module({
 	imports: [
@@ -34,6 +44,9 @@ import { DBGameInfoController } from "./gameInfo/controller";
 				UserChatRoomEntity,
 				MessageEntity,
 				GameInfoEntity,
+				FriendEntity,
+				FriendRequestEntity,
+				MutedEntity,
 			],
 			synchronize: true,
 		}),
@@ -43,6 +56,9 @@ import { DBGameInfoController } from "./gameInfo/controller";
 			UserChatRoomEntity,
 			MessageEntity,
 			GameInfoEntity,
+			FriendEntity,
+			FriendRequestEntity,
+			MutedEntity,
 		]),
 	],
 	controllers: [
@@ -51,6 +67,9 @@ import { DBGameInfoController } from "./gameInfo/controller";
 		DBUserChatRoomController,
 		DBMessageController,
 		DBGameInfoController,
+		DBFriendController,
+		DBFriendRequestController,
+		DBMutedController,
 	],
 	providers: [
 		DBUserService,
@@ -58,6 +77,9 @@ import { DBGameInfoController } from "./gameInfo/controller";
 		DBUserChatRoomService,
 		DBMessageService,
 		DBGameInfoService,
+		DBFriendService,
+		DBFriendRequestService,
+		DBMutedService,
 	],
 	exports: [
 		DBUserService,
@@ -65,6 +87,9 @@ import { DBGameInfoController } from "./gameInfo/controller";
 		DBUserChatRoomService,
 		DBMessageService,
 		DBGameInfoService,
+		DBFriendService,
+		DBFriendRequestService,
+		DBMutedService,
 	],
 })
 export class DBModule {}
