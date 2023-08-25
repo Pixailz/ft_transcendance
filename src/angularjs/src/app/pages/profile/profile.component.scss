@@ -48,15 +48,17 @@
 		
 		.line {
 			justify-content: space-between;
-			width: calc(100% - 2 * 5px);
+			width: calc(100% - 2 * 10px);
 			display: flex;
 			background-color: white;
-			padding: 5px;
+			padding: 10px;
 			margin: 0;
 			
 			&:not(:first-child) {
 				border-top: 2px dotted black;
 			}
+
+			font-size: 1.2em;
 		}
 		
 	}
