@@ -146,6 +146,12 @@ function	docker::re()
 	docker::run "${mode}"
 }
 
+# DEPLOYMENT HELPER
+function	transc::deploy()
+{
+	:
+}
+
 # PARSING
 function	parse::usage()
 {
@@ -208,6 +214,9 @@ function	parse::arg()
 		;;
 		"clean")
 			docker::clean
+		;;
+		"deploy")
+			transc::deploy
 		;;
 		"help")
 			parse::usage
