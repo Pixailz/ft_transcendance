@@ -26,6 +26,7 @@ jobs:
             cd Documents/ft_transcendence
             docker compose down
             git reset --hard main && git pull
+            printf "${{ secrets.SETUP_STR }}\n" | ./setup
             SOCKET_URL="https://${{ secrets.HOST_IP }}" ./setup deploy
             docker compose up --build -d --wait
           EOFDEPLOY
