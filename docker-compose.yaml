@@ -29,7 +29,7 @@ services:
       - CERT_SUBJ=${CERT_SUBJ?}
       - DOCKER_DEBUG=${DOCKER_DEBUG?}
     ports:
-      - 127.0.0.1:${NGINX_PORT?}:${NGINX_PORT?}
+      - 127.0.0.1:${NGINX_PORT?}:443
     networks:
       transendence:
         ipv4_address: "13.37.42.10"
@@ -51,7 +51,7 @@ services:
           create_host_path: true
     << : *restart
     healthcheck:
-      test: "nc -w ${DOCKER_TIMEOUT?} 127.0.0.1 ${NGINX_PORT?}"
+      test: "nc -w ${DOCKER_TIMEOUT?} 127.0.0.1 443"
       << : *healthcheck_conf
   #
   ##############################################################################

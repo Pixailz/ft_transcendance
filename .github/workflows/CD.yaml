@@ -25,7 +25,7 @@ jobs:
             cd Documents/ft_transcendence
             docker compose down
             git reset --hard main && git pull
-            NGINX_PORT=${{ secrets.SSH_PORT }} ./setup deploy
+            SOCKET_URL="https://${{ secrets.HOST_IP }}" ./setup deploy
             docker compose up --build -d --wait
           EOFDEPLOY
 

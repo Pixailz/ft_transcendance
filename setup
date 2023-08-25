@@ -149,8 +149,6 @@ function	docker::re()
 # DEPLOYMENT HELPER
 function	transc::deploy()
 {
-	perl -pi -e "s|\t\tlisten 443|\t\tlisten ${NGINX_PORT}|" ./build/nginx/default.conf
-	perl -pi -e "s|\t\tlisten [::]:443|\t\tlisten [::]:${NGINX_PORT}|" ./build/nginx/default.conf
 	perl -pi -e "s|^	socket_url: \".*?\"|	socket_url: \"${SOCKET_URL}\"|" ./src/angularjs/src/app/environments/environment.common.ts
 }
 
@@ -219,7 +217,7 @@ function	parse::arg()
 			docker::clean
 		;;
 		"deploy")
-			: ${NGINX_PORT?} ${SOCKET_URL}
+			: ${SOCKET_URL?}
 			transc::deploy
 		;;
 		"help")
