@@ -146,6 +146,12 @@ function	docker::re()
 	docker::run "${mode}"
 }
 
+# DEPLOYMENT HELPER
+function	transc::deploy()
+{
+	perl -pi -e "s|^	socket_url: \".*?\"|	socket_url: \"${SOCKET_URL}\"|" ./src/angularjs/src/app/environments/environment.common.ts
+}
+
 # PARSING
 function	parse::usage()
 {
@@ -158,6 +164,7 @@ function	parse::usage()
 	printf "\t\trun:     run in specified mode\n"
 	printf "\t\tswitch:  remove database and relauch in specified mode\n"
 	printf "\t\tclean:   down all service in compose and remove volume\n"
+	printf "\t\tdeploy:  helper to deploy with github\n"
 	exit 1
 }
 set -u
@@ -208,6 +215,10 @@ function	parse::arg()
 		;;
 		"clean")
 			docker::clean
+		;;
+		"deploy")
+			: ${SOCKET_URL?}
+			transc::deploy
 		;;
 		"help")
 			parse::usage

@@ -5,6 +5,7 @@ run-name: CD Deployment to my home
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   deploy-to-pix-home:
@@ -14,17 +15,18 @@ jobs:
       - name: 🔧 Install SSH keys
         run: |+
           rm -f ~/.ssh && mkdir ~/.ssh
-          echo "${{ secrets.HOME_SSH_KEY }}" > ~/.ssh/id_rsa.pem
-          ssh-keyscan -p ${{ secrets.HOME_SSH_PORT }} -H ${{ secrets.HOME_IP }} > ~/.ssh/known_hosts
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa.pem
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.HOST_IP }} > ~/.ssh/known_hosts
           chmod 700 ~/.ssh/
           chmod 600 ~/.ssh/*
 
       - name: 🤖 Connect to HOME
         run: |+
-          ssh ${{ secrets.HOME_SSH_USER }}@${{ secrets.HOME_IP }} -i ~/.ssh/id_rsa.pem -p ${{ secrets.HOME_SSH_PORT }} <<-EOFDEPLOY
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.HOST_IP }} -i ~/.ssh/id_rsa.pem -p ${{ secrets.SSH_PORT }} <<-EOFDEPLOY
             cd Documents/ft_transcendence
             docker compose down
-            GIT_SSH_COMMAND="ssh -i /home/pix/.ssh/git" git pull
+            git reset --hard main && git pull
+            SOCKET_URL="https://${{ secrets.HOST_IP }}" ./setup deploy
             docker compose up --build -d --wait
           EOFDEPLOY
 
