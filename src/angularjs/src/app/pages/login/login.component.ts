@@ -40,7 +40,7 @@ export class LoginComponent  implements OnInit {
 		  await this.getToken();
 		}
 
-		if (this.route.snapshot.queryParamMap.get('twofa') == 'true') {
+		if (this.route.snapshot.queryParamMap.get('twofa') === 'true') {
 			this.twofa = true;
 			this.login = false;
 		}

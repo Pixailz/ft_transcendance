@@ -5,14 +5,14 @@ export enum Status {
 }
 
 export interface UserI {
-	id					: number;
-	ftLogin?			: string;
-	nickname			: string;
-	picture?			: string;
-	email?				: string;
-	status?				: number;
-	twoAuthFactor?		: boolean;
-	lastSeen			: Date;
+	id								: number;
+	ftLogin?						: string;
+	nickname						: string;
+	picture?						: string;
+	email?							: string;
+	status?							: number;
+	twoAuthFactor?					: boolean;
+	lastSeen						: Date;
 }
 
 export const DefUserI: UserI = {

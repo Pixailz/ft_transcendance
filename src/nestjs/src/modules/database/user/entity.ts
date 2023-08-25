@@ -36,8 +36,11 @@ export class UserEntity {
 	@Column({ type: "integer", default: Status.DISCONNECTED })
 	public status: number;
 
-	@Column({ type: "boolean", default: false })
+	@Column({ type: "boolean", default: true })
 	public twoAuthFactor: boolean;
+
+	@Column({ type: "varchar", default: "" })
+	public twoAuthFactorSecret: string;
 
 	@Column({ type: "varchar", length: 64, default: "" })
 	public nonce: string;
