@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Put, Request } from "@nestjs/common";
+import { Body, Controller, Get, Param, Put, Request } from "@nestjs/common";
 import { DBUserInfoPost } from "../../modules/database/user/dto";
 import { DBUserService } from "../../modules/database/user/service";
 import { UserEntity } from "src/modules/database/user/entity";
@@ -21,5 +21,13 @@ export class UserController {
 	): Promise<UserEntity> {
 		await this.dbUserService.update(req.user.user_id, userPost);
 		return await this.dbUserService.returnOne(req.user.user_id);
+	}
+
+	@Get("profile/:login")
+	async getUserProfile(
+		@Param("login") ft_login: string,
+	)
+	{
+		return await this.dbUserService.getUserByLogin(ft_login); 
 	}
 }

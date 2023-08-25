@@ -160,7 +160,7 @@ function	parse::usage()
 	printf "\t\tclean:   down all service in compose and remove volume\n"
 	exit 1
 }
-
+set -u
 function	parse::re()
 {
 	local	do_clean

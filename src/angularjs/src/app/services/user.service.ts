@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BackService } from "./back.service";
-import { UserI, DefUserI } from "../interfaces/chat.interface";
+import { UserI, DefUserI, Status } from "../interfaces/chat.interface";
 
 @Injectable({
 	providedIn: "root",
@@ -52,5 +52,41 @@ export class UserService {
 		else
 			body = JSON.stringify({"nickname" : nickname});
 		return (await this.backService.req("PUT", "/user/me", body));
+	}
+
+	getUserInfoFormated(user: UserI | undefined)
+	{
+		if (!user)
+			return "";
+		var	tmp;
+		switch (user.status) {
+			// case Status.CONNECTED: {
+			// 	const last_seen = new Date(dest.lastSeen);
+			// 	const now = new Date(Date.now());
+			// 	console.log("last ", last_seen);
+			// 	console.log("now  ", now);
+			// 	if (last_seen.getTime() < now.getTime() - 5000)
+			// 		tmp = "🟠 ";
+			// 	else
+			// 		tmp = "🟢 ";
+			// 	break ;
+			// }
+			case Status.AWAY: {
+				tmp = "🟠 ";
+				break ;
+			}
+			case Status.CONNECTED: {
+				tmp = "🟢 ";
+				break ;
+			}
+			case Status.DISCONNECTED: {
+				tmp = "⚫ "
+				break ;
+			}
+		}
+		tmp += user.ftLogin + " ";
+		if (user.nickname)
+			tmp += ` (${user.nickname})`
+		return (tmp);
 	}
 }

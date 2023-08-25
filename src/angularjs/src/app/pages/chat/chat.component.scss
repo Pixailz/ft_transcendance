@@ -119,6 +119,12 @@
 	height: 40px;
 	margin: 0;
 	background-color: white;
+	cursor: pointer;
+	text-decoration: none;
+
+	&:hover {
+		text-decoration: underline;
+	}
 }
 
 .container .chat-container ol.msg-list {
