@@ -60,7 +60,6 @@ export class DBChatRoomService {
 				},
 			},
 			where: {
-				type: RoomType.PRIVATE,
 				roomInfo: {
 					roomId: chatId,
 				},
