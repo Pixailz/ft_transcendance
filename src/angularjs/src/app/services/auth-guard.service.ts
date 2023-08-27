@@ -46,7 +46,7 @@ export class AuthGuardService implements CanActivate {
 			console.log("[angular:AuthGuardService] bad token");
 			return false;
 		}
-		if (state.url !== "/register")
+		if (state.url.indexOf('/register') === -1)
 			return await this.canActivateRegister(returnUrl);
 		return true;
 	}
