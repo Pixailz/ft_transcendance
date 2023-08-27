@@ -5,7 +5,7 @@ export class DBChatRoomPost {
 	name?: string;
 
 	@IsOptional()
-	type?: string;
+	type?: number;
 
 	@IsOptional()
 	password?: string;
