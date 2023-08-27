@@ -25,8 +25,7 @@ jobs:
           ssh ${{ secrets.SSH_USER }}@${{ secrets.HOST_IP }} -i ~/.ssh/id_rsa.pem -p ${{ secrets.SSH_PORT }} <<-EOFDEPLOY
             cd Documents/ft_transcendence
             docker compose down
-            git reset --hard main && git pull
-            printf "${{ secrets.SETUP_STR }}\n" | ./setup
+            git reset HEAD --hard && git pull
             SOCKET_URL="https://${{ secrets.HOST_IP }}" ./setup deploy
             docker compose up --build -d --wait
           EOFDEPLOY
