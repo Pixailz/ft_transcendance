@@ -4,7 +4,7 @@ import { DBChatRoomService } from "../../modules/database/chatRoom/service";
 import { UserChatRoomEntity } from "src/modules/database/userChatRoom/entity";
 import { DBMessageService } from "src/modules/database/message/service";
 import { MessageEntity } from "src/modules/database/message/entity";
-import { ChatRoomEntity } from "src/modules/database/chatRoom/entity";
+import { ChatRoomEntity, RoomType } from "src/modules/database/chatRoom/entity";
 
 @Injectable()
 export class ChatRoomService {
@@ -47,7 +47,7 @@ export class ChatRoomService {
 
 	async createPrivateRoom(source: number, dest: number) {
 		const room_id = await this.dbChatRoomService.create({
-			type: "private",
+			type: RoomType.PRIVATE,
 		});
 		await this.dbUserChatRoomService.create(
 			{ isOwner: true, isAdmin: true },
