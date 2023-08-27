@@ -149,7 +149,7 @@ function	docker::re()
 # DEPLOYMENT HELPER
 function	transc::deploy()
 {
-	rm .env
+	rm -f "${ENV_FILE}"
 	install::env
 	perl -pi -e "s|^	socket_url: \".*?\"|	socket_url: \"${SOCKET_URL}\"|" ./src/angularjs/src/app/environments/environment.common.ts
 	perl -pi -e "s|^	after_auth_uri: \".*?\"|	after_auth_uri: \"${AFTER_AUTH}\"|" ./src/angularjs/src/app/environments/environment.common.ts
@@ -158,10 +158,10 @@ function	transc::deploy()
 # PARSING
 function	parse::usage()
 {
-	printf "${0}: [re mode] | [switch mode] | [run mode] | [clean] \n"
+	printf "${0}: [re mode] | [switch mode] | [run mode] | [clean] | [deploy]\n"
 	printf "\t\n"
 	printf "\tmode is one of: 'dev' or 'prod'\n"
-	printf "\tif no arg provided setup .env file\n"
+	printf "\tif no arg provided, fill up .env file\n"
 	printf "\t\n"
 	printf "\t\tre:      clean and then launch in specified mode\n"
 	printf "\t\trun:     run in specified mode\n"
@@ -170,7 +170,7 @@ function	parse::usage()
 	printf "\t\tdeploy:  helper to deploy with github\n"
 	exit 1
 }
-set -u
+
 function	parse::re()
 {
 	local	do_clean
