@@ -151,6 +151,7 @@ function	transc::deploy()
 {
 	rm -f "${ENV_FILE}"
 	install::env
+	angular::get_after_auth "API42_REDIRECTURL_PROD"
 	perl -pi -e "s|^	socket_url: \".*?\"|	socket_url: \"${SOCKET_URL}\"|" ./src/angularjs/src/app/environments/environment.common.ts
 	perl -pi -e "s|^	after_auth_uri: \".*?\"|	after_auth_uri: \"${AFTER_AUTH}\"|" ./src/angularjs/src/app/environments/environment.common.ts
 }
