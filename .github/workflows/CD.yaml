@@ -1,14 +1,13 @@
 name: CD
 
-run-name: CD Deployment to my home
+run-name: Deployment
 
 on:
   push:
     branches: [main]
-  workflow_dispatch:
 
 jobs:
-  deploy-to-pix-home:
+  deploy-to-host:
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -25,9 +24,8 @@ jobs:
           ssh ${{ secrets.SSH_USER }}@${{ secrets.HOST_IP }} -i ~/.ssh/id_rsa.pem -p ${{ secrets.SSH_PORT }} <<-EOFDEPLOY
             cd Documents/ft_transcendence
             docker compose down
-            git reset --hard main && git pull
-            printf "${{ secrets.SETUP_STR }}\n" | ./setup
-            SOCKET_URL="https://${{ secrets.HOST_IP }}" ./setup deploy
+            git reset --hard HEAD && git pull
+            printf "${{ secrets.SETUP_STR }}\n" | SOCKET_URL="https://${{ secrets.HOST_IP }}" ./setup deploy
             docker compose up --build -d --wait
           EOFDEPLOY
 
