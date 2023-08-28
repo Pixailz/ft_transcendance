@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 
 import { ActivatedRoute, Router } from '@angular/router';
+import { TwofaformComponent } from 'src/app/components/twofaform/twofaform.component';
 
 import { environment } from 'src/app/environments/environment';
 
@@ -20,7 +22,8 @@ export class LoginComponent  implements OnInit {
 
 	constructor(private route: ActivatedRoute, 
 				private router: Router,
-				private http: HttpClient) {}
+				private http: HttpClient,
+				public dialog: MatDialog) {}
 
 	async ngOnInit() {
 		this.code = this.route.snapshot.queryParamMap.get('code');
@@ -39,12 +42,6 @@ export class LoginComponent  implements OnInit {
 		if (this.code !== null) {
 		  await this.getToken();
 		}
-
-		if (this.route.snapshot.queryParamMap.get('twofa') === 'true') {
-			this.twofa = true;
-			this.login = false;
-		}
-
 	  }
 
 	async getToken()
@@ -66,22 +63,38 @@ export class LoginComponent  implements OnInit {
 					message.innerHTML = 'Error: ' + err.error;
 				return null;
 			});
-		if (!this.response 
-			|| (this.response.access_token === undefined
-				&& this.response.status === undefined))
+
+		if (!this.response || (this.response.access_token === undefined
+								&& this.response.status === undefined))
 			console.log('Error: ' + this.response);
+
 		if (this.response.status && this.response.status == "2fa"){
-			this.router.navigate(['/login'], {
-				queryParams: { 
-					twofa: true,
-					returnUrl: this.state?.redirect!, 
-					nonce: this.response.nonce
+			this.dialog.open(TwofaformComponent, {
+				data: {
+					notice: "Please enter the code from your authenticator app",
+					nonce: this.response.nonce,
+					returnUrl: this.state.redirect,
+				},
+				closeOnNavigation: false,
+				disableClose: true
+			})
+			.afterClosed()
+			.subscribe((res) => {
+				if (res && res.status == "oke")
+				{
+					localStorage.setItem('access_token', res.access_token);
+					this.router.navigate([this.state.redirect]);
 				}
-			});
+			})
 		}
+
 		localStorage.setItem('access_token', this.response.access_token);
 		if (this.response.status == "register")
 			this.router.navigate(['/register']);
+		else if (this.response.status == "oke" && this.state?.redirect)
+			this.router.navigate([this.state.redirect]);
+		else
+			this.router.navigate(['/home']);
 	}
 
 	SignIn()
