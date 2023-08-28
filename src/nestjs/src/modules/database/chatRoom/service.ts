@@ -2,8 +2,8 @@ import { Injectable, ForbiddenException } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
-import { ChatRoomEntity, RoomType } from "./entity";
-import { DBChatRoomPost } from "./dto";
+import { ChatRoomEntity } from "./entity";
+import { DBChatRoomPost, DBChatRoomTypePost } from "./dto";
 
 @Injectable()
 export class DBChatRoomService {
@@ -15,7 +15,6 @@ export class DBChatRoomService {
 	async create(post: DBChatRoomPost) {
 		const room = new ChatRoomEntity();
 		room.name = post.name;
-		room.type = post.type;
 		room.password = post.password;
 		await this.chatRoomRepo.save(room);
 		return room.id;
@@ -34,6 +33,14 @@ export class DBChatRoomService {
 	}
 
 	async update(chatId: number, post: DBChatRoomPost) {
+		const tmp = await this.chatRoomRepo.findOneBy({ id: chatId });
+		if (tmp)
+			return await this.chatRoomRepo.update(chatId, post);
+		else
+			throw new ForbiddenException("ChatRoom not found");
+	}
+
+	async updateType(chatId: number, post: DBChatRoomTypePost) {
 		const tmp = await this.chatRoomRepo.findOneBy({ id: chatId });
 		if (tmp)
 			return await this.chatRoomRepo.update(chatId, post);
