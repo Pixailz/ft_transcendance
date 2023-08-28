@@ -47,8 +47,9 @@ export class ChatRoomService {
 
 	async createPrivateRoom(source: number, dest: number) {
 		const room_id = await this.dbChatRoomService.create({
-			type: RoomType.PRIVATE,
+			name: "private",
 		});
+		await this.dbChatRoomService.updateType(room_id, {type: RoomType.PRIVATE});
 		await this.dbUserChatRoomService.create(
 			{ isOwner: true, isAdmin: true },
 			source,

@@ -62,34 +62,35 @@ describe("DBChatRoomService", () => {
 
 	describe("update", () => {
 		it("[CHATROOM] should update 2 room", async () => {
-			const roomPost = { name: unit_room + "_name", type: RoomType.PRIVATE };
+			const roomPost = { name: unit_room + "_name"};
 			const roomPost2 = {
 				name: unit_room + "_name_BIS",
-				type: RoomType.PRIVATE,
 			};
 			let room_id = (await repo.findOne({ where: { name: unit_room } })).id;
 			let room2_id = (await repo.findOneBy({ name: unit_room_bis})).id;
 			await service.update(room_id, roomPost);
 			await service.update(room2_id, roomPost2);
 			const room = await service.returnOne(room_id);
-			const room2 = await service.returnOne(room2_id);
+			let room2 = await service.returnOne(room2_id);
 			expect(room.name).toEqual(roomPost.name);
 			expect(room2.name).toEqual(roomPost2.name);
-			expect(room2.type).toEqual(roomPost2.type);
+			expect(room2.type).toEqual(RoomType.PUBLIC);
+			await service.updateType(room2_id, {type: RoomType.PRIVATE});
+			room2 = await service.returnOne(room2_id);
+			expect(room2.type).toEqual(RoomType.PRIVATE);
 		});
 	});
 
 	describe("getAllPrivateRoom", () => {
 		it("[CHATROOM] should return AllPrivateRoom", async () => {
 			let userIds = [];
-			const roomId = await service.create({name: "Unit Private Room", type: RoomType.PRIVATE});
+			const roomId = await service.create({name: "Unit Private Room"});
 			for (let i: number = 0; i < 3; i++ )
 			{
 				userIds.push(await userService.create({ftLogin: "Unit Private User" + i}));
 				await userChatRoomService.create({isOwner: true}, userIds[i], roomId);
 			}
 			let roomList = await service.getAllPrivateRoom(roomId);
-			console.log('room list = ', roomList);
 			for (let i: number = 0; i < 3; i++ )
 				expect(roomList.roomInfo[i].userId).toEqual(userIds[i]);
 			for (let i: number = 0; i < 3; i++ )
