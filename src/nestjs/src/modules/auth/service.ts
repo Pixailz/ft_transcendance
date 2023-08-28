@@ -1,10 +1,7 @@
-import { ForbiddenException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { DBUserService } from "../database/user/service";
 import { Api42Service } from "../api42/service";
 import { JwtService } from "@nestjs/jwt";
-import { authenticator } from "otplib";
-import { UserEntity } from "../database/user/entity";
-import { toDataURL } from 'qrcode';
 
 @Injectable()
 export class AuthService {
@@ -30,13 +27,14 @@ export class AuthService {
 			});
 			user = await this.dbUserService.returnOne(user_id);
 		}
+		const nonce = await this.dbUserService.getNonce(user.id);
 		const payload = { sub: user.id };
 		let status;
 
 		if (user.twoAuthFactor) {
 			return {
 				status: "2fa",
-				nonce: await this.dbUserService.getNonce(user.id),
+				nonce: nonce,
 			};
 		}
 
@@ -67,42 +65,18 @@ export class AuthService {
 			await this.dbUserService.update(user_id, { nickname: "leSangCho" });
 			user = await this.dbUserService.returnOne(user_id);
 		}
+
+		const nonce = await this.dbUserService.getNonce(user.id);
+		if (user.twoAuthFactor) {
+			return {
+				status: "2fa",
+				nonce: nonce,
+			};
+		}
+
 		console.log("test user created");
 		return {
 			access_token: await this.jwtService.signAsync({ sub: user.id }),
-			status: "oke",
-		};
-	}
-
-	async generateQrCodeDataURL(otpAuthUrl: string) {
-		return toDataURL(otpAuthUrl);
-	}
-
-	async generateTwoFactorAuthenticationSecret(user: UserEntity) {
-		const secret = authenticator.generateSecret();
-	
-		const otpauthUrl = authenticator.keyuri(user.email, 'transcendence', secret);
-
-		user.twoAuthFactorSecret = secret;
-	
-		return {
-		  secret,
-		  otpauthUrl
-		}
-	}
-
-	async twoFa(nonce: string, code: string): Promise<any> {
-		const user = await this.dbUserService.returnOneByNonce(nonce);
-		if (!user) throw new ForbiddenException("User not found");
-		
-		if (user.twoAuthFactor) {
-			// sam working on this part of the code
-			console.log("A2F Enable for this user !");
-		}
-		
-		const payload = { sub: user.id };
-		return {
-			access_token: await this.jwtService.signAsync(payload),
 			status: "oke",
 		};
 	}

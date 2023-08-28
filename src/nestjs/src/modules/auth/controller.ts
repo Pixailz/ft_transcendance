@@ -14,12 +14,6 @@ export class AuthController {
 		else return this.authService.ftSignIn(code);
 	}
 
-	@Public()
-	@Post("2fa")
-	async twoFa(@Body() body: any) {
-		return this.authService.twoFa(body.nonce, body.code);
-	}
-
 	@Get("profile")
 	getProfile(@Request() req) {
 		return req.user;
