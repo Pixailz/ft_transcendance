@@ -33,4 +33,8 @@ export class DBUserInfoPost {
 	@IsOptional()
 	@IsBoolean()
 	twoAuthFactor?: boolean;
+
+	@IsOptional()
+	@IsString()
+	twoAuthFactorSecret?: string;
 }
