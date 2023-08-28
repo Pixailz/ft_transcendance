@@ -4,13 +4,19 @@
     left: 20px;
 }
 
+:host {
+	height: 100%;
+	display: block;
+}
+
 .container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: 1fr;
     grid-gap: 20px;
-    height: 80vh;
+    height: 100%;
     padding: 20px;
+	width: 100vw;
 }
 
 .container .side-bar {

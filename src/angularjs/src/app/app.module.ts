@@ -35,7 +35,6 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FlatButtonComponent } from './components/flat-button/flat-button.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 
-
 const config: SocketIoConfig = {
 	url: environment.socket_url,
 	options: {
@@ -62,7 +61,7 @@ const config: SocketIoConfig = {
 		AnonymousLayoutComponent,
 		AuthenticatedLayoutComponent,
 		FlatButtonComponent,
-  ProfileComponent
+  		ProfileComponent,
 	],
 	imports: [
 		BrowserModule,
