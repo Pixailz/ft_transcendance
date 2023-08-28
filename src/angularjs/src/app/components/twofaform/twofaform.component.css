@@ -1,14 +1,27 @@
-/* center main div */
 #container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#qrcode {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
 #notice {
-    font-weight: bold;
-    text-align: center;
-    padding-right: 3rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+form {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }

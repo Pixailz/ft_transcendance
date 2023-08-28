@@ -1,7 +1,13 @@
 <div id="container">
+  <div id="qrcode" *ngIf="qrCode">
+    <img [src]="qrCode" />
+  </div>
+  <br />
+  <h3 class="notice" id="notice">{{ notice }}</h3>
   <form (ngSubmit)="sendTwoFa()">
     <input matInput type="number" required placeholder="123456" id="code" />
     <button mat-button>Send</button>
-	<h3 class="notice" id="notice" style="display: none"></h3>
   </form>
+  <br />
+  <p id="status"></p>
 </div>
