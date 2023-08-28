@@ -53,4 +53,25 @@ export class UserService {
 			body = JSON.stringify({"nickname" : nickname});
 		return (await this.backService.req("PUT", "/user/me", body));
 	}
+
+	async setupTwoFa(): Promise<any>
+	{
+		const user = await this.getUserInfo();
+		if (user.twoAuthFactor || user.id < 0)
+			return (Promise.reject("User already setup or need to relogin."));
+
+		const qrcode = await this.backService.req("GET", "/2fa/setup/" + user.nonce);
+		if (!qrcode)
+			return (Promise.reject("No qrcode received."));
+
+		return (Promise.resolve(qrcode));
+	}
+
+	async getNonce(): Promise<string>
+	{
+		const user = await this.getUserInfo();
+		if (user.id < 0)
+			return (Promise.reject("User not logged in."));
+		return (Promise.resolve(user.nonce));
+	}
 }
