@@ -5,20 +5,22 @@ export enum Status {
 }
 
 export interface UserI {
-	id								: number;
-	ftLogin?						: string;
-	nickname						: string;
-	picture?						: string;
-	email?							: string;
-	status?							: number;
-	twoAuthFactor?					: boolean;
-	lastSeen						: Date;
+	id					: number;
+	ftLogin?			: string;
+	nickname			: string;
+	picture?			: string;
+	email?				: string;
+	nonce				: string;
+	status?				: number;
+	twoAuthFactor?		: boolean;
+	lastSeen			: Date;
 }
 
 export const DefUserI: UserI = {
 	id					: -1,
 	nickname			: "",
 	lastSeen			: new Date(Date.now()),
+	nonce				: "",
 }
 
 export interface MessageI {
