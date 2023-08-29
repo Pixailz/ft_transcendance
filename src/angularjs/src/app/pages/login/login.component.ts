@@ -80,7 +80,10 @@ export class LoginComponent  implements OnInit {
 				if (res && res.status == "oke")
 				{
 					localStorage.setItem('access_token', res.access_token);
-					this.router.navigate([this.state.redirect]);
+					if (this.state?.redirect)
+						this.router.navigate([this.state.redirect]);
+					else
+						this.router.navigate(['/home']);
 				}
 			})
 		}
