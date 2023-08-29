@@ -1,0 +1,26 @@
+:host {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+app-header {
+	flex: 0 1 auto;
+}
+
+app-footer {
+	flex: 0 0 40px
+}
+
+
+.page-container {
+	flex: 1 1 auto;
+	padding: 20px;
+	box-sizing: border-box;
+}
+
+.outlet-container {
+	width: 100%;
+	height: 100%;
+	position: relative;
+}

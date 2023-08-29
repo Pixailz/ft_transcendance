@@ -1,4 +1,9 @@
-.center-div{
-  margin: auto;
-  width: 50%;
+:host {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+}
+
+video {
+	width: 50%;
 }

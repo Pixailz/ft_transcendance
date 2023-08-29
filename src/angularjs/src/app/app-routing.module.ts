@@ -22,27 +22,33 @@ const routes: Routes = [
 		children: [
 			{
 				path: '',
-				component: HomeDashboardComponent,
+				redirectTo: '/home',
+				pathMatch: 'full'
 			},
 			{
 				path: 'home',
 				component: HomeDashboardComponent,
+				data: { animation: 'Home' }
 			},
 			{
 				path: 'play',
 				component: PongComponent,
+				data: { animation: 'Play' }
 			},
 			{
 				path: 'profile',
 				component: UserProfileComponent,
+				data: { animation: 'Profile' }
 			},
 			{
 				path: 'profile/:login',
-				component: ProfileComponent
+				component: ProfileComponent,
+				data: { animation: 'ProfileUser' }
 			},
 			{
 				path: 'chat',
 				component: WSChatComponent,
+				data: { animation: 'Chat' }
 			}
 		]
 	},
