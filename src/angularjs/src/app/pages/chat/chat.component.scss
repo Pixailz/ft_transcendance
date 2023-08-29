@@ -1,12 +1,13 @@
 .refresh {
-    position: fixed;
+    position: absolute;
     bottom: 20px;
     left: 20px;
 }
 
 :host {
 	height: 100%;
-	display: block;
+	width: 100%;
+	position: absolute;
 }
 
 .container {

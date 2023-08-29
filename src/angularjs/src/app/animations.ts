@@ -5,49 +5,36 @@ import {
 	style,
 	animate,
 	group,
-	animateChild
- } from '@angular/animations';
- 
+	animateChild,
+	stagger,
+	AnimationMetadata,
+	AnimationMetadataType
+} from '@angular/animations';
  
  export const slideInAnimation =
 	trigger('routeAnimations', [
+		transition('Profile => Home, Chat => Home, Play => Home', slideTo('left')),
+		transition('Home => Chat, Home => Play, Home => Profile', slideTo('right')),
+		transition('Profile => Home, Profile => Chat, Profile => Play', slideTo('left')),
+		transition('Home => Profile, Chat => Profile, Play => Profile', slideTo('right')),
+		transition('Play => Chat', slideTo('right')),
+		transition('Chat => Play', slideTo('left'))
+	]);
 
-		transition('* <=> *', [
-			group([
-				query(':enter', [
-					style({ position: 'fixed', transform: 'translateX(100%)'}),
-					animate('0.5s ease-in-out', style({
-						transform: 'translateX(0)'
-					}))
-				]),
-				query(':leave', [
-					style({ position: 'fixed', transform: 'translateX(0)'}),
-					animate('0.5s ease-in-out', style({
-						transform: 'translateX(-100%)'
-					}))
-				])
-			])
+function slideTo(direction: string)
+{	
+	return group([
+		query(':enter', [
+			style({ [direction]: '-110%'}),
+			animate('.5s ease-in-out', style({
+				[direction]: '0'
+			}))
 		]),
-
-
-
-
-
-    //     transition('Home <=> Play', [
-	// 		query(':enter, :leave', 
-	// 			 style({position: 'fixed'}), 
-	// 			 { optional: true }),
-	// 		group([
-	// 			 query(':enter', [
-	// 				 style({ transform: 'scale(1)' }), 
-	// 				 animate('0.5s ease-in-out', 
-	// 				 style({ transform: 'scale(0)' }))
-	// 			 ], { optional: true }),
-	// 			 query(':leave', [
-	// 				 style({ transform: 'scale(0)' }),
-	// 				 animate('0.5s ease-in-out', 
-	// 				 style({ transform: 'scale(1)' }))
-	// 				 ], { optional: true }),
-	// 		 ])
-	//    ]),
- ]);
+		query(':leave', [
+			style({ [direction]: '0' }),
+			animate('.5s ease-in-out', style({
+				[direction]: '110%'
+			}))
+		])
+	])
+}

@@ -22,7 +22,8 @@ const routes: Routes = [
 		children: [
 			{
 				path: '',
-				component: HomeDashboardComponent,
+				redirectTo: '/home',
+				pathMatch: 'full'
 			},
 			{
 				path: 'home',
