@@ -32,14 +32,18 @@ export class WSChatService {
 			);
 		}
 		this.wsSocket.addNewSocketId(user_info.id, socket.id);
-		console.log(`[WS:connection] User ${user_info.ftLogin} connected (${socket.id})`);
+		console.log(
+			`[WS:connection] User ${user_info.ftLogin} connected (${socket.id})`,
+		);
 		await this.setStatus(server, user_id, Status.CONNECTED);
 	}
 
 	async disconnect(server: Server, socket: Socket) {
 		const user_id = this.wsSocket.getUserId(socket.id);
-		console.log(`[WS:disconnect] Disconnected ${socket.id}`);
-		await this.setStatus(server, user_id, Status.DISCONNECTED);
+		console.log(`[WS] Disconnected ${socket.id}`);
+		await this.setStatus(server, user_id, Status.DISCONNECTED).catch(
+			(err) => console.log(err),
+		);
 		this.wsSocket.removeSocket(socket.id);
 		socket.disconnect();
 	}
@@ -57,15 +61,15 @@ export class WSChatService {
 		const all_user_chat_room = await this.chatRoomService.getAllPrivateRoom(
 			user_id,
 		);
-		var rooms = [];
-		var j: number = 0;
+		const rooms = [];
+		let j = 0;
 
-		for (var i = 0; i < all_user_chat_room.length; i++) {
+		for (let i = 0; i < all_user_chat_room.length; i++) {
 			const chat_room =
 				await this.chatRoomService.getPrivateRoomFromRoomId(
 					all_user_chat_room[i].id,
 				);
-			for (var j = 0; j < chat_room.roomInfo.length; j++)
+			for (j = 0; j < chat_room.roomInfo.length; j++)
 				if (chat_room.roomInfo[j].user.id !== user_id) break;
 			if (j === chat_room.roomInfo.length) {
 				chat_room.roomInfo.splice(1, 1);
@@ -73,7 +77,7 @@ export class WSChatService {
 				continue;
 			}
 
-			for (var j = 0; j < chat_room.roomInfo.length; j++)
+			for (j = 0; j < chat_room.roomInfo.length; j++)
 				if (chat_room.roomInfo[j].user.id === user_id)
 					chat_room.roomInfo.splice(j, 1);
 			rooms.push(chat_room);
@@ -94,30 +98,29 @@ export class WSChatService {
 		let chat_room = await this.chatRoomService.getPrivateRoomFromRoomId(
 			room_id,
 		);
-		for (var i = 0; i < chat_room.roomInfo.length; i++)
+		for (let i = 0; i < chat_room.roomInfo.length; i++)
 			if (chat_room.roomInfo[i].user.id === user_id && user_id !== dst_id)
 				chat_room.roomInfo.splice(i, 1);
-		for (var i = 0; i < src_socket_id.length; i++)
+		for (let i = 0; i < src_socket_id.length; i++)
 			server.to(src_socket_id[i]).emit("getNewPrivateRoom", chat_room);
 		if (user_id === dst_id) return;
 		chat_room = await this.chatRoomService.getPrivateRoomFromRoomId(
 			room_id,
 		);
-		for (var i = 0; i < chat_room.roomInfo.length; i++)
+		for (let i = 0; i < chat_room.roomInfo.length; i++)
 			if (chat_room.roomInfo[i].user.id === dst_id)
 				chat_room.roomInfo.splice(i, 1);
-		if (!dst_socket_id)
-			return ;
-		for (var i = 0; i < dst_socket_id.length; i++)
+		if (!dst_socket_id) return;
+		for (let i = 0; i < dst_socket_id.length; i++)
 			server.to(dst_socket_id[i]).emit("getNewPrivateRoom", chat_room);
 	}
 
 	async getAllPrivateMessage(socket: Socket): Promise<any> {
 		const user_id = this.wsSocket.getUserId(socket.id);
 		const chat_room = await this.chatRoomService.getAllPrivateRoom(user_id);
-		var messages: any = {};
+		const messages: any = {};
 
-		for (var i = 0; i < chat_room.length; i++)
+		for (let i = 0; i < chat_room.length; i++)
 			messages[chat_room[i].id] =
 				await this.chatRoomService.getAllMessageRoom(chat_room[i].id);
 		socket.emit("getAllPrivateMessage", messages);
@@ -127,7 +130,7 @@ export class WSChatService {
 		await this.userService.setStatus(user_id, status);
 		const friends = await this.userService.getAllFriend(user_id);
 		for (let i = 0; i < friends.length; i++) {
-			let friends_socket_id = this.wsSocket.getSocketId(friends[i].id);
+			const friends_socket_id = this.wsSocket.getSocketId(friends[i].id);
 			if (!friends_socket_id) continue;
 			for (let j = 0; j < friends_socket_id.length; j++)
 				server.to(friends_socket_id[j]).emit("getNewStatusFriend", {
@@ -151,8 +154,8 @@ export class WSChatService {
 			dst_id,
 		);
 
-		for (var i = 0; i < all_user.length; i++) {
-			let socket_ids = this.wsSocket.getSocketId(all_user[i]);
+		for (let i = 0; i < all_user.length; i++) {
+			const socket_ids = this.wsSocket.getSocketId(all_user[i]);
 			for (let i = 0; i < socket_ids.length; i++) {
 				server.to(socket_ids[i]).emit("getNewPrivateMessage", {
 					room_id: dst_id,
