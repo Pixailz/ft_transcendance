@@ -37,7 +37,6 @@ import { FlatButtonComponent } from './components/flat-button/flat-button.compon
 import { TwofaformComponent } from './components/twofaform/twofaform.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 
-
 const config: SocketIoConfig = {
 	url: environment.socket_url,
 	options: {
@@ -65,7 +64,7 @@ const config: SocketIoConfig = {
 		AuthenticatedLayoutComponent,
 		FlatButtonComponent,
 		TwofaformComponent,
-    ProfileComponent
+    ProfileComponent,
 	],
 	imports: [
 		BrowserModule,
