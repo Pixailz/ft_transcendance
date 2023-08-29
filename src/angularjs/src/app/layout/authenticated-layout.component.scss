@@ -16,3 +16,12 @@ div {
 app-footer {
 	flex: 0 0 40px
 }
+
+
+.page-container {
+	height: 100%;
+	display: block;
+	width: 100%;
+	padding: 20px;
+	box-sizing: border-box;
+}

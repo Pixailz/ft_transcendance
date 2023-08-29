@@ -1,26 +1,34 @@
 :host {
 	height: 100%;
-	display: block;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
 }
 
-.grid-container {
-	height: 100%;
+mat-grid-list {
+	flex: 1;
+	height: auto;
 }
 
 .dashboard-card {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  right: 15px;
-  bottom: 15px;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
 }
 
 .more-button {
-  position: absolute;
-  top: 5px;
-  right: 10px;
+	position: absolute;
+	top: 5px;
+	right: 10px;
 }
 
 .dashboard-card-content {
-  text-align: center;
+	text-align: center;
+	height: 100%;
+}
+
+h1 {
+	color: white;
 }
