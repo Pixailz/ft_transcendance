@@ -15,7 +15,7 @@ export class DBUserService {
 	) { }
 
 	async create(userPost: DBUserPost) {
-		const user = new UserEntity();
+		const user = new UserEntity({});
 		const nb = userPost.ftLogin.trim().length;
 		if (nb === 0)
 			throw new ForbiddenException("User Login can't be blank or empty");

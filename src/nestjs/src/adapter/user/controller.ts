@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Put, Request } from "@nestjs/common";
+import { Body, ClassSerializerInterceptor, Controller, Get, Param, Put, Request, UseInterceptors } from "@nestjs/common";
 import { DBUserInfoPost } from "../../modules/database/user/dto";
 import { DBUserService } from "../../modules/database/user/service";
 import { UserEntity } from "src/modules/database/user/entity";
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller("user")
 export class UserController {
 	constructor(private dbUserService: DBUserService) {}

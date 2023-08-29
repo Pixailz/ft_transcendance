@@ -7,12 +7,15 @@ import {
 	Delete,
 	Res,
 	Param,
+	UseInterceptors,
+	ClassSerializerInterceptor,
 } from "@nestjs/common";
 import { Response } from "express";
 
 import { DBUserService } from "./service";
 import { DBUserPost, DBUserInfoPost } from "./dto";
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller("db/user")
 export class DBUserController {
 	constructor(private readonly dbUserService: DBUserService) {}
