@@ -81,5 +81,16 @@ export class DBUserService {
 			throw new ForbiddenException("Error setting nonce: " + err);
 		});
 		return nonce;
+
+  async getUserByLogin(ft_login: string | undefined): Promise<UserEntity> {
+		if (!ft_login) {
+			Promise.reject({status: "not found"});
+		}
+		const user_info: UserEntity = await this.userRepo.findOne({
+			where : {
+				ftLogin: ft_login,
+			}
+		});
+		return Promise.resolve(user_info);
 	}
 }

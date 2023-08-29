@@ -1,8 +1,7 @@
-<div *ngIf="login">
-<button id="login" (click)="SignIn()">
+<button (click)="SignIn()" [disabled]="!isButtonClickable">
+	<div class="btn-content" *ngIf="isButtonClickable">
 		<img src="./assets/img/42-logo.png" alt="42 logo">
-		Log In
+		<span>Log In</span>
+	</div>
+	<span *ngIf="!isButtonClickable" id="message">Please wait...</span>
 </button>
-</div>
-<h3 class="notice" id="message" style="display: none;">
-</h3>

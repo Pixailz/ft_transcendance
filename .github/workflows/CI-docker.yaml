@@ -1,0 +1,65 @@
+name: CI (Docker)
+
+run-name: Docker Compose CI part
+
+on:
+  workflow_call:
+    inputs:
+      mode:
+        description: "in which mode should be run the test"
+        type: string
+
+jobs:
+
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ☁️ Retrieve repo
+        uses: actions/checkout@v3
+
+      - name: 🔧 Export compose file var (prod)
+        if: inputs.mode == 'prod'
+        run: echo "DOCKER_COMPOSE_FILE=docker-compose.yaml" >> $GITHUB_ENV
+
+      - name: 🔧 Export compose file var (dev)
+        if: inputs.mode == 'dev'
+        run: echo "DOCKER_COMPOSE_FILE=docker-compose-dev.yaml" >> $GITHUB_ENV
+
+      - name: 🔧 Setup .env
+        run: printf "${{ vars.SETUP_STR }}\n" | ./setup
+
+      - name: 🧹 Cleaning up previous run
+        run: |+
+          rm -rf ./volume
+          docker compose -f ${DOCKER_COMPOSE_FILE} down
+
+      - name: 🤖 Build ${{ inputs.mode }}
+        timeout-minutes: 5
+        run: docker compose -f ${DOCKER_COMPOSE_FILE} build
+
+  docker-run:
+    needs: docker-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: ☁️ Retrieve repo
+        uses: actions/checkout@v3
+
+      - name: 🔧 Export compose file var (prod)
+        if: inputs.mode == 'prod'
+        run: echo "DOCKER_COMPOSE_FILE=docker-compose.yaml" >> $GITHUB_ENV
+
+      - name: 🔧 Export compose file var (dev)
+        if: inputs.mode == 'dev'
+        run: echo "DOCKER_COMPOSE_FILE=docker-compose-dev.yaml" >> $GITHUB_ENV
+
+      - name: 🔧 Setup .env
+        run: printf "${{ vars.SETUP_STR }}\n" | ./setup
+
+      - name: 🧹 Cleaning up previous run
+        run: |+
+          rm -rf ./volume
+          docker compose -f ${DOCKER_COMPOSE_FILE} down
+
+      - name: 🤖 Executing docker compose up
+        timeout-minutes: 5
+        run: docker compose -f ${DOCKER_COMPOSE_FILE} up --build -d --wait

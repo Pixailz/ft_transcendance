@@ -1,6 +1,7 @@
 #!/bin/bash -eu
 
 # CONFIG
+
 ## ENV
 ENV_FILE="./.env"
 VAR_TO_EDIT=(
@@ -10,6 +11,7 @@ VAR_TO_EDIT=(
 	"API42_SECRET"
 	"API42_REDIRECTURL_PROD"
 	"API42_REDIRECTURL_DEV"
+	"NGINX_PORT"
 )
 JWT_LEN="64"
 
@@ -18,7 +20,24 @@ ANGULAR_ENV_DIR="src/angularjs/src/app/environments"
 ANGULAR_PROD_ENV="${ANGULAR_ENV_DIR}/environment.common.ts"
 ANGULAR_DEV_ENV="${ANGULAR_ENV_DIR}/environment.dev.ts"
 
+## PARSING
+ARGS=(${@})
+ARGS_LEN="${#ARGS[@]}"
+
+declare -A KNOWN_FILE
+
+KNOWN_FILE[dev]="docker-compose-dev.yaml"
+KNOWN_FILE[prod]="docker-compose.yaml"
+
+## PARSE CONFIG
+#  thanks to the null command (:) and the shell parameters expansion (?)
+#+ we can check if all variable are all been set
+: ${ENV_FILE?} ${VAR_TO_EDIT?} ${JWT_LEN?} \
+  ${ANGULAR_ENV_DIR?} ${ANGULAR_PROD_ENV?} ${ANGULAR_DEV_ENV?} \
+  ${KNOWN_FILE[dev]?} ${KNOWN_FILE[prod]?}
+
 # FUNCTIONS
+
 ## ENV FUNCTION
 function	install::env::replace_var()
 {
@@ -30,9 +49,10 @@ function	install::env::replace_var()
 
 function	install::env()
 {
-	cp "${ENV_FILE}"{.template,}
+	[ ! -f "${ENV_FILE}" ] && cp "${ENV_FILE}"{.template,}
 
 	for var_name in ${VAR_TO_EDIT[@]}; do
+		[ "$(grep ${var_name}=\"\" ${ENV_FILE})"  ] || continue
 		printf "\x1b[31m%s\x1b[00m > " "${var_name}"
 		read choice
 		install::env::replace_var "${var_name}" "${choice}"
@@ -40,6 +60,7 @@ function	install::env()
 
 	JWT_PASS="$(head -c${JWT_LEN} /dev/urandom | xxd -ps -c ${JWT_LEN})"
 	install::env::replace_var "JWT_SECRET" "${JWT_PASS}"
+	angular::set_after_auth
 }
 
 ## ANGULAR FUNCTION
@@ -107,6 +128,13 @@ function	docker::clean()
 	sudo rm -rf ./volume
 }
 
+function	docker::run()
+{
+	local	mode="${1?}"
+
+	docker compose -f "${KNOWN_FILE[${mode}]}" up --build
+}
+
 function	docker::re()
 {
 	local	mode="${1?}"
@@ -115,29 +143,39 @@ function	docker::re()
 
 	docker::kill
 	[ "${do_clean}" == "0" ] || docker::clean
-	docker compose -f "${KNOWN_FILE[${mode}]}" up --build
+	docker::run "${mode}"
+}
+
+# DEPLOYMENT HELPER
+function	transc::deploy()
+{
+	rm -f "${ENV_FILE}"
+	install::env
+	perl -pi -e "s|^	socket_url: \".*?\"|	socket_url: \"${SOCKET_URL}\"|" ./src/angularjs/src/app/environments/environment.common.ts
 }
 
 # PARSING
-function	usage()
+function	parse::usage()
 {
-	printf "${0}: [re prod|dev] | [clean] | [switch]\n"
-	printf "\tif no arg provided setup .env file\n"
+	printf "${0}: [re mode] | [switch mode] | [run mode] | [clean] | [deploy]\n"
 	printf "\t\n"
-
+	printf "\tmode is one of: 'dev' or 'prod'\n"
+	printf "\tif no arg provided, fill up .env file\n"
 	printf "\t\n"
-	printf "\t\tre:     relaunch in dev or prod mode\n"
-	printf "\t\tswitch: remove database and relauch in dev or prod mode\n"
-	printf "\t\tclean:  down all service in compose and remove volume\n"
+	printf "\t\tre:      clean and then launch in specified mode\n"
+	printf "\t\trun:     run in specified mode\n"
+	printf "\t\tswitch:  remove database and relauch in specified mode\n"
+	printf "\t\tclean:   down all service in compose and remove volume\n"
+	printf "\t\tdeploy:  helper to deploy with github\n"
 	exit 1
 }
 
 function	parse::re()
 {
+	local	do_clean
 
-	[ "${ARGS_LEN}" != "2" ] && usage
-	do_clean="1"
-
+	[ "${ARGS_LEN}" != "2" ] && parse::usage
+	do_clean="0"
 	case "${ARGS[1]}" in
 		"re")
 			do_clean="1"
@@ -146,37 +184,52 @@ function	parse::re()
 			do_clean="0"
 		;;
 	esac
-	angular::set_after_auth
+	install::env
 	docker::re "${ARGS[1]}" "${do_clean}"
-	unset do_clean
+}
+
+function	parse::run()
+{
+	local	mode
+
+	[ "${ARGS_LEN}" != "2" ] && parse::usage
+
+	case "${ARGS[1]}" in
+		"dev"|"prod") : ;;
+		*) parse::usage ;;
+	esac
+	install::env
+	docker::run "${ARGS[1]}"
 }
 
 function	parse::arg()
 {
 	if [ "${ARGS_LEN}" -eq 0 ]; then
 		install::env
-		angular::set_after_auth
 		return
 	fi
 	case "${ARGS[0]}" in
 		"re"|"switch")
 			parse::re
 		;;
+		"run")
+			parse::run
+		;;
 		"clean")
 			docker::clean
 		;;
-		*) usage ;;
+		"deploy")
+			: ${SOCKET_URL?}
+			transc::deploy
+		;;
+		"help")
+			parse::usage
+		;;
+		*) parse::usage ;;
 	esac
 }
 
-ARGS=(${@})
-ARGS_LEN="${#ARGS[@]}"
-
-declare -A KNOWN_FILE
-
-KNOWN_FILE[dev]="docker-compose-dev.yaml"
-KNOWN_FILE[prod]="docker-compose.yaml"
-
+# MAIN
 parse::arg
 
 exit $?

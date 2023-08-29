@@ -7,6 +7,7 @@ import {
 } from 'src/app/interfaces/chat.interface';
 import { WSChatGateway } from 'src/app/services/ws-chat.gateway';
 import { ChatService } from 'src/app/services/chat.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
 	selector: 'app-chat',
@@ -20,6 +21,7 @@ export class WSChatComponent implements OnInit {
 	constructor(
 		private wsChatGateway: WSChatGateway,
 		public chatService: ChatService,
+		public userService: UserService,
 	) {}
 
 	async ngOnInit() {
@@ -34,9 +36,9 @@ export class WSChatComponent implements OnInit {
 
 		this.wsChatGateway.getAllPrivateRoom();
 		this.wsChatGateway.listenAllPrivateRoom()
-			.subscribe((data: ChatRoomI[]) => {
+			.subscribe((rooms: ChatRoomI[]) => {
 				console.log("event AllPrivateRoom received")
-				this.chatService.updateAllPrivateRoom(data);
+				this.chatService.updateAllPrivateRoom(rooms);
 			}
 		)
 
@@ -49,9 +51,9 @@ export class WSChatComponent implements OnInit {
 		)
 
 		this.wsChatGateway.listenNewPrivateRoom()
-			.subscribe((data: ChatRoomI) => {
+			.subscribe((room: ChatRoomI) => {
 				console.log("event NewPrivateRoom received")
-				this.chatService.updateNewPrivateRoom(data);
+				this.chatService.updateNewPrivateRoom(room);
 			}
 		)
 
@@ -63,9 +65,9 @@ export class WSChatComponent implements OnInit {
 		)
 
 		this.wsChatGateway.listenNewStatusFriend()
-			.subscribe((friends_status: any) => {
+			.subscribe((data: any) => {
 				console.log("event NewStatusFriend received")
-				this.chatService.updateNewFriendStatus(friends_status);
+				this.chatService.updateNewFriendStatus(data);
 			}
 		)
 	}
@@ -112,42 +114,6 @@ export class WSChatComponent implements OnInit {
 	{
 		if (event.key === "Enter")
 			this.sendMessage();
-	}
-
-	getFriendInfo(friend: FriendI | undefined)
-	{
-		if (!friend)
-			return "";
-		var	tmp;
-		switch (friend.user_info.status) {
-			// case Status.CONNECTED: {
-			// 	const last_seen = new Date(dest.lastSeen);
-			// 	const now = new Date(Date.now());
-			// 	console.log("last ", last_seen);
-			// 	console.log("now  ", now);
-			// 	if (last_seen.getTime() < now.getTime() - 5000)
-			// 		tmp = "🟠 ";
-			// 	else
-			// 		tmp = "🟢 ";
-			// 	break ;
-			// }
-			case Status.AWAY: {
-				tmp = "🟠 ";
-				break ;
-			}
-			case Status.CONNECTED: {
-				tmp = "🟢 ";
-				break ;
-			}
-			case Status.DISCONNECTED: {
-				tmp = "⚫ "
-				break ;
-			}
-		}
-		tmp += friend.user_info.ftLogin + " ";
-		if (friend.user_info.nickname)
-			tmp += ` (${friend.user_info.nickname})`
-		return (tmp);
 	}
 
 	sendMessage() {

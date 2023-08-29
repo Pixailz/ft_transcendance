@@ -35,6 +35,8 @@ import { AuthenticatedLayoutComponent } from './layout/authenticated-layout.comp
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FlatButtonComponent } from './components/flat-button/flat-button.component';
 import { TwofaformComponent } from './components/twofaform/twofaform.component';
+import { ProfileComponent } from './pages/profile/profile.component';
+
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -63,6 +65,7 @@ const config: SocketIoConfig = {
 		AuthenticatedLayoutComponent,
 		FlatButtonComponent,
 		TwofaformComponent,
+    ProfileComponent
 	],
 	imports: [
 		BrowserModule,

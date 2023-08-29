@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Arvo&display=swap');
+
+
+.container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+
+.ticket {
+	background: white;
+	width: 50vw;
+	max-width: 600px;
+	border: 5px solid black;
+	min-height: 70vh;
+	position: relative;
+
+	span, h1 {
+		font-family: 'Arvo', serif;
+	}
+
+	img {
+		height: 125px;
+		border: 5px solid white;
+		position: absolute;
+		top: -50px;
+		left: -25px;
+		box-shadow: 10px 10px 100px -30px black;
+		transition: all .2s ease-out;
+		transform: rotate(10deg) translate(50px, 50px);
+
+
+		&:hover {
+			transform: rotate(20deg) translate(50px, 50px);
+		}
+	}
+
+	.login {
+		margin: 0;
+		font-size: 5em;
+		text-align: right;
+		padding: 50px 50px 50px 0;
+	}
+
+	.personal_data{
+		border-top: 5px solid black;
+		
+		.line {
+			justify-content: space-between;
+			width: calc(100% - 2 * 10px);
+			display: flex;
+			background-color: white;
+			padding: 10px;
+			margin: 0;
+			
+			&:not(:first-child) {
+				border-top: 2px dotted black;
+			}
+
+			font-size: 1.2em;
+		}
+		
+	}
+}

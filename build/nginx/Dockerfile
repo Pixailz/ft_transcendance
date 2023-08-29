@@ -9,7 +9,6 @@ RUN			apk add --update \
 
 FROM		base			AS packed
 
-COPY		--chown=root:root default.conf /etc/nginx/nginx.conf
-COPY		--chown=root:root entrypoint /run
+COPY		--chown=root:root default.conf entrypoint /run
 
 ENTRYPOINT	[ "/run/entrypoint" ]

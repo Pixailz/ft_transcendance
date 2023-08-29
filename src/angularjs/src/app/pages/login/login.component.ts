@@ -1,3 +1,4 @@
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -17,8 +18,7 @@ export class LoginComponent  implements OnInit {
 	code: string | null = null;
 	response: any = null;
 	state: any = null;
-	twofa: boolean = false;
-	login: boolean = true;
+	isButtonClickable: boolean = true;
 
 	constructor(private route: ActivatedRoute, 
 				private router: Router,
@@ -41,24 +41,21 @@ export class LoginComponent  implements OnInit {
 
 		if (this.code !== null) {
 		  await this.getToken();
+		  this.state.redirect 
+		  ? this.router.navigate([this.state.redirect]) 
+		  : this.router.navigate(['/']);
 		}
 	  }
 
 	async getToken()
 	{
-		const button = document.getElementById('login');
-		const message = document.getElementById('message');
-		if (button && message)
-		{		
-			button.style.display = 'none';
-			message.style.display = 'block';
-			message.innerHTML = 'Please wait...';
-		}
+		this.isButtonClickable = false;
 		
 		this.response = await this.http.get(environment.api_prefix + '/auth/ft_callback?code=' + this.code)
-			.toPromise()
-			.catch((err) => {
-				console.log(err);
+		.toPromise()
+		.catch((err) => {
+			console.log(err);
+				const message = document.getElementById('message');
 				if (message)
 					message.innerHTML = 'Error: ' + err.error;
 				return null;
