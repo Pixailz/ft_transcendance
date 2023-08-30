@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsOptional, IsEmail, IsString } from "class-validator";
+import {
+	IsNotEmpty,
+	IsOptional,
+	IsEmail,
+	IsString,
+	IsBoolean,
+} from "class-validator";
 
 export class DBUserPost {
 	@IsNotEmpty()
@@ -24,7 +30,11 @@ export class DBUserInfoPost {
 	@IsOptional()
 	lastSeen?: Date;
 
-	// @IsOptional()
-	// @IsBooleanString()
-	// twoAuthFactor?: boolean
+	@IsOptional()
+	@IsBoolean()
+	twoAuthFactor?: boolean;
+
+	@IsOptional()
+	@IsString()
+	twoAuthFactorSecret?: string;
 }

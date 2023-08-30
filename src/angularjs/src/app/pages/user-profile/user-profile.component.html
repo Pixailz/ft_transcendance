@@ -40,5 +40,13 @@
 				Save
 			</button>
 		</mat-card-actions>
+		<button
+			mat-flat-button
+			color="secondary"
+			(click)="setupTwoFa()"
+			*ngIf="!userForm.value.twofa"
+		>
+			Setup TwoFA
+		</button>
 	</form>
 </mat-card>

@@ -11,6 +11,7 @@ import { GameInfoEntity } from "../gameInfo/entity";
 import { MessageEntity } from "../message/entity";
 import { FriendEntity } from "../friend/entity";
 import {MutedEntity} from "../muted/entity"
+import { Exclude } from "class-transformer";
 
 export enum Status {
 	DISCONNECTED,
@@ -40,6 +41,14 @@ export class UserEntity {
 
 	@Column({ type: "boolean", default: false })
 	public twoAuthFactor: boolean;
+
+	@Exclude()
+	@Column({ type: "varchar", default: "" })
+	public twoAuthFactorSecret: string;
+
+	@Exclude()
+	@Column({ type: "varchar", length: 64, default: "" })
+	public nonce: string;
 
 	@CreateDateColumn({ type: "timestamp" })
 	public createdAt!: Date;
@@ -72,4 +81,8 @@ export class UserEntity {
 
 	@OneToMany((type) => MutedEntity, (muted) => muted.muted)
 	muted: MutedEntity[];
+
+	constructor(partial: Partial<UserEntity>) {
+		Object.assign(this, partial);
+	}
 }

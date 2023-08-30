@@ -10,6 +10,7 @@ export interface UserI {
 	nickname			: string;
 	picture?			: string;
 	email?				: string;
+	nonce				: string;
 	status?				: number;
 	twoAuthFactor?		: boolean;
 	lastSeen			: Date;
@@ -19,6 +20,7 @@ export const DefUserI: UserI = {
 	id					: -1,
 	nickname			: "",
 	lastSeen			: new Date(Date.now()),
+	nonce				: "",
 }
 
 export interface MessageI {

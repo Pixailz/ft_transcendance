@@ -12,10 +12,10 @@ export class DBUserService {
 	constructor(
 		@InjectRepository(UserEntity)
 		private readonly userRepo: Repository<UserEntity>,
-	) {}
+	) { }
 
-	async create(userPost: DBUserPost) {
-		const user = new UserEntity();
+	async create(userPost: DBUserPost): Promise<number> {
+		const user = new UserEntity({});
 		const nb = userPost.ftLogin.trim().length;
 		if (nb === 0)
 			throw new ForbiddenException("User Login can't be blank or empty");
@@ -32,11 +32,16 @@ export class DBUserService {
 		return user;
 	}
 
-	async returnAll() {
+	async returnOneByNonce(nonce: string): Promise<UserEntity> {
+		const user = await this.userRepo.findOneBy({ nonce: nonce });
+		return user;
+	}
+
+	async returnAll(): Promise<UserEntity[]> {
 		return await this.userRepo.find();
 	}
 
-	async returnOne(userId?: number, ft_login?: string) {
+	async returnOne(userId?: number, ft_login?: string): Promise<UserEntity>{
 		return await this.get_user(userId, ft_login);
 	}
 
@@ -71,14 +76,25 @@ export class DBUserService {
 		return null;
 	}
 
+	async getNonce(userId: number): Promise<any> {
+		// eslint-disable-next-line @typescript-eslint/no-var-requires
+		const crypto = require("crypto");
+		const nonce = crypto.getRandomValues(new Uint8Array(16)).join("");
+		await this.userRepo.update(userId, { nonce: nonce }).catch((err) => {
+			console.log(err);
+			throw new ForbiddenException("Error setting nonce: " + err);
+		});
+		return { nonce: nonce };
+	}
+
 	async getUserByLogin(ft_login: string | undefined): Promise<UserEntity> {
 		if (!ft_login) {
-			Promise.reject({status: "not found"});
+			Promise.reject({ status: "not found" });
 		}
 		const user_info: UserEntity = await this.userRepo.findOne({
-			where : {
+			where: {
 				ftLogin: ft_login,
-			}
+			},
 		});
 		return Promise.resolve(user_info);
 	}
