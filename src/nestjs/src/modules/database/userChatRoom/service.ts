@@ -22,11 +22,15 @@ export class DBUserChatRoomService {
 	async create(post: DBUserChatRoomPost, userId: number, roomId: number) {
 		const userChat = new UserChatRoomEntity();
 		let user = await this.userRepo.findOneBy({ id: userId });
-		if (user) userChat.userId = userId;
-		else throw new ForbiddenException("User not found");
+		if (user) 
+			userChat.userId = userId;
+		else 
+			throw new ForbiddenException("User not found");
 		let room = await this.chatRoomRepo.findOneBy({ id: roomId });
-		if (room) userChat.roomId = roomId;
-		else throw new ForbiddenException("ChatRoom not found");
+		if (room)
+			userChat.roomId = roomId;
+		else 
+			throw new ForbiddenException("ChatRoom not found");
 		userChat.isOwner = post.isOwner;
 		userChat.isAdmin = post.isAdmin;
 		return await this.userChatRoomRepo.save(userChat);
@@ -41,8 +45,10 @@ export class DBUserChatRoomService {
 			userId: user,
 			roomId: room,
 		});
-		if (tmp) return tmp;
-		else throw new ForbiddenException("userChatRoom not found");
+		if (tmp) 
+			return tmp;
+		else 
+			throw new ForbiddenException("userChatRoom not found");
 	}
 
 	async update(user: number, room: number, post: DBUserChatRoomPost) {
@@ -50,8 +56,10 @@ export class DBUserChatRoomService {
 			userId: user,
 			roomId: room,
 		});
-		if (tmp) return await this.userChatRoomRepo.update(tmp, post);
-		else throw new ForbiddenException("userChatRoom not found");
+		if (tmp) 
+			return await this.userChatRoomRepo.update(tmp, post);
+		else
+			throw new ForbiddenException("userChatRoom not found");
 	}
 
 	async delete(user: number, room: number) {
@@ -59,8 +67,10 @@ export class DBUserChatRoomService {
 			userId: user,
 			roomId: room,
 		});
-		if (tmp) return await this.userChatRoomRepo.delete(tmp);
-		else throw new ForbiddenException("userChatRoom not found");
+		if (tmp)
+			return await this.userChatRoomRepo.delete(tmp);
+		else
+			throw new ForbiddenException("userChatRoom not found");
 	}
 
 	async getAllPrivateRoom(userId: number): Promise<ChatRoomEntity[]> {
