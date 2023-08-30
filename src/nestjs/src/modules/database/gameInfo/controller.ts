@@ -5,10 +5,8 @@ import {
 	Put,
 	Get,
 	Delete,
-	Res,
 	Param,
 } from "@nestjs/common";
-import { Response } from "express";
 
 import { DBGameInfoService } from "./service";
 import { DBGameInfoPost } from "./dto";
@@ -27,26 +25,24 @@ export class DBGameInfoController {
 	}
 
 	@Get()
-	async getAll(@Res() res: Response) {
-		res.send(await this.dbGameInfoService.returnAll());
+	async getAll() {
+		return (await this.dbGameInfoService.returnAll());
 	}
 
 	@Get(":id")
-	async getOne(@Param("id") gameId: number, @Res() res: Response) {
-		res.send(await this.dbGameInfoService.returnOne(gameId));
+	async getOne(@Param("id") gameId: number) {
+		return (await this.dbGameInfoService.returnOne(gameId));
 	}
 
 	@Put(":id")
 	async update(
 		@Param("id") gameId: number,
-		@Body() userPost: DBGameInfoPost,
-		@Res() res: Response,
-	) {
-		res.send(await this.dbGameInfoService.update(gameId, userPost));
+		@Body() userPost: DBGameInfoPost) {
+		return (await this.dbGameInfoService.update(gameId, userPost));
 	}
 
 	@Delete(":id")
-	async delete(@Param("id") userId: number, @Res() res: Response) {
-		res.send(await this.dbGameInfoService.delete(userId));
+	async delete(@Param("id") userId: number) {
+		return (await this.dbGameInfoService.delete(userId));
 	}
 }
