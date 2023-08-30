@@ -8,7 +8,41 @@ mat-card {
 	margin: 20px;
 	padding: 20px;
 
-	input {
+	input[type=text] {
 		width: 200px;
+	}
+
+	input[type=checkbox] {
+		appearance: none;
+		width: 40px;
+		height: 20px;
+		margin: 0;
+		cursor: pointer;
+		border: 2px solid black;
+		position: relative;
+		padding: 2px;
+		background-color: #ff9999;
+		border-radius: 9999px;
+		transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
+	
+
+		&::before {
+			content: "";
+			height: 12px;
+			aspect-ratio: 1;
+			position: absolute;
+			left: 2px;
+			background-color: white;
+			border-radius: 9999px;
+			transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
+		}
+		
+		&:checked {
+			background-color: #a7dca3;
+		
+			&::before {
+				left: 22px;
+			}
+		}
 	}
 }

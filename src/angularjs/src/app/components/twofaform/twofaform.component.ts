@@ -7,7 +7,7 @@ import { UserService } from 'src/app/services/user.service';
 @Component({
   selector: 'app-twofaform',
   templateUrl: './twofaform.component.html',
-  styleUrls: ['./twofaform.component.css']
+  styleUrls: ['./twofaform.component.scss']
 })
 export class TwofaformComponent implements OnInit {
 
@@ -43,7 +43,7 @@ export class TwofaformComponent implements OnInit {
     const response = await this.back.req(
       'POST', 
       uri)
-    .then((res: any) => {
+    .then((res) => {
       this.dialogRef.close(res);
     })
     .catch((err: any) => {

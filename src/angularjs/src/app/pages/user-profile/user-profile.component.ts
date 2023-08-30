@@ -4,6 +4,8 @@ import { UserService } from '../../services/user.service';
 import { DefUserI, UserI } from 'src/app/interfaces/chat.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { TwofaformComponent } from 'src/app/components/twofaform/twofaform.component';
+import { DialogRef } from '@angular/cdk/dialog';
+import { BackService } from 'src/app/services/back.service';
 
 @Component({
 	selector: 'app-user-profile',
@@ -14,7 +16,10 @@ export class UserProfileComponent implements OnInit {
 	constructor(
 		private userService: UserService,
 		private formBuilder: FormBuilder,
-		public dialog: MatDialog) {}
+		private back: BackService,
+		public dialog: MatDialog
+	)
+	{}
 
 	user: UserI = DefUserI;
 	userForm!: FormGroup;
@@ -54,22 +59,42 @@ export class UserProfileComponent implements OnInit {
 	}
 
 	async setupTwoFa() {
-		await this.userService
-		.setupTwoFa()
-		.then(async (res) => {
-			this.userForm.patchValue({
-				twofa: true,
+		if (this.userForm.value.twofa)
+		{
+			this.userForm.patchValue({ twofa: false });
+			await this.back.req("PUT", "/db/user/" + this.user.id, JSON.stringify({
+				twoAuthFactor: false,
+				twoAuthFactorSecret: ""
+			}));
+		}
+		else
+		{
+			await this.userService
+			.setupTwoFa()
+			.then(async (res) => {
+				let result = this.dialog.open(TwofaformComponent, {
+					data: {
+						qrCode: res.qrCodeDataURL,
+						notice: "Scan this QR code with your app, then enter the code below",
+						nonce: await this.userService.getNonce()
+					}
+				});
+				result.afterClosed().subscribe((res) => {
+					if (res !== undefined && res.status === 'oke')
+					{
+						this.userForm.patchValue({
+							twofa: true
+						});
+					}
+					else {
+						const checkbox = document.getElementById('2fa') as HTMLInputElement;
+						checkbox.checked = false;
+					}
+				});
+			})
+			.catch((err: any) => {
+				console.log(err);
 			});
-			this.dialog.open(TwofaformComponent, {
-				data: {
-					qrCode: res.qrCodeDataURL,
-					notice: "Scan this QR code with your app, then enter the code below",
-					nonce: await this.userService.getNonce(),
-				}
-			});
-		})
-		.catch((err: any) => {
-			console.log(err);
-		});
+		}
 	}
 }

@@ -13,8 +13,8 @@ export class DBUserPost {
 }
 
 export class DBUserInfoPost {
-	@IsNotEmpty()
-	@IsString()
+	// @IsNotEmpty()
+	// @IsString()
 	nickname?: string;
 
 	@IsOptional()
