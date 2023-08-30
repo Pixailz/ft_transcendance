@@ -41,7 +41,6 @@ export class WSChatService {
 		console.log(`[WS:disconnect] Disconnected ${socket.id}`);
 		await this.setStatus(server, user_id, Status.DISCONNECTED);
 		this.wsSocket.removeSocket(socket.id);
-		socket.disconnect();
 	}
 
 	async getAllFriend(socket: Socket) {

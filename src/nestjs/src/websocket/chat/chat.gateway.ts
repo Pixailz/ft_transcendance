@@ -14,23 +14,19 @@ import { WSChatService } from "./chat.service";
 	cors: { origin: "*" },
 })
 export class WSChatGateway
-	implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
+	implements OnGatewayConnection, OnGatewayDisconnect
 {
 	constructor(private wsChatService: WSChatService) {}
 
 	@WebSocketServer()
 	server = new Server();
 
-	afterInit(socket: Socket) {
-		// this.wsChatService.wsSocket.socket_list = {};
-	}
-
 	async handleConnection(socket: Socket) {
-		this.wsChatService.connection(this.server, socket);
+		await this.wsChatService.connection(this.server, socket);
 	}
 
-	handleDisconnect(socket: Socket) {
-		this.wsChatService.disconnect(this.server, socket);
+	async handleDisconnect(socket: Socket) {
+		await this.wsChatService.disconnect(this.server, socket);
 	}
 
 	@SubscribeMessage("getAllFriend")
@@ -61,5 +57,12 @@ export class WSChatGateway
 			data[0],
 			data[1],
 		);
+	}
+
+	@SubscribeMessage("dummyConnection")
+	handleDummyConnection(socket: Socket)
+	{
+		console.log("dummy connection");
+		return ;
 	}
 }

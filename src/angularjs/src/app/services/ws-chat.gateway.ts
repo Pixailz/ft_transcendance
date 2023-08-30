@@ -68,4 +68,8 @@ export class WSChatGateway {
 	{
 		this.socket.emit("sendPrivateMessage", room_id, message);
 	}
+
+	connection() {
+		this.socket.emit("dummyConnection");
+	}
 }
