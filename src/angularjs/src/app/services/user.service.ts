@@ -51,21 +51,36 @@ export class UserService {
 
 	async setupTwoFa(): Promise<any> {
 		const user = await this.getUserInfo();
+		let nonce = "";
+		let qrcode;
+
 		if (user.twoAuthFactor || user.id < 0)
 			return (Promise.reject("User already setup or need to relogin."));
 
-		const qrcode = await this.backService.req("GET", "/2fa/setup/" + user.nonce);
-		if (!qrcode)
-			return (Promise.reject("No qrcode received."));
+		await this.backService.req("GET", "/user/nonce")
+		.catch((err: any) => {
+			console.log("[angular:UserService] setupTwoFa req err: ", err);
+			return (Promise.reject(err));
+		})
+		.then((res: any) => {
+			nonce = res.nonce;
+		});
+
+		await this.backService.req("GET", "/2fa/setup/" + nonce)
+		.then((res: any) => {
+			qrcode = res;
+		})
+		.catch((err: any) => {
+			console.log("[angular:UserService] setupTwoFa req err: ", err);
+			return (Promise.reject(err));
+		});
 
 		return (Promise.resolve(qrcode));
 	}
 
 	async getNonce(): Promise<string> {
-		const user = await this.getUserInfo();
-		if (user.id < 0)
-			return (Promise.reject("User not logged in."));
-		return (Promise.resolve(user.nonce));
+		const response = await this.backService.req("GET", "/user/nonce");
+		return (response.nonce);
 	}
 
 	getUserInfoFormated(user: UserI | undefined) {

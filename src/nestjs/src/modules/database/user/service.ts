@@ -14,7 +14,7 @@ export class DBUserService {
 		private readonly userRepo: Repository<UserEntity>,
 	) { }
 
-	async create(userPost: DBUserPost) {
+	async create(userPost: DBUserPost): Promise<number> {
 		const user = new UserEntity({});
 		const nb = userPost.ftLogin.trim().length;
 		if (nb === 0)
@@ -37,11 +37,11 @@ export class DBUserService {
 		return user;
 	}
 
-	async returnAll() {
+	async returnAll(): Promise<UserEntity[]> {
 		return await this.userRepo.find();
 	}
 
-	async returnOne(userId?: number, ft_login?: string) {
+	async returnOne(userId?: number, ft_login?: string): Promise<UserEntity>{
 		return await this.get_user(userId, ft_login);
 	}
 
@@ -76,7 +76,7 @@ export class DBUserService {
 		return null;
 	}
 
-	async getNonce(userId: number): Promise<string> {
+	async getNonce(userId: number): Promise<any> {
 		// eslint-disable-next-line @typescript-eslint/no-var-requires
 		const crypto = require("crypto");
 		const nonce = crypto.getRandomValues(new Uint8Array(16)).join("");
@@ -84,7 +84,7 @@ export class DBUserService {
 			console.log(err);
 			throw new ForbiddenException("Error setting nonce: " + err);
 		});
-		return nonce;
+		return { nonce: nonce };
 	}
 
 	async getUserByLogin(ft_login: string | undefined): Promise<UserEntity> {
@@ -94,7 +94,7 @@ export class DBUserService {
 		const user_info: UserEntity = await this.userRepo.findOne({
 			where: {
 				ftLogin: ft_login,
-			}
+			},
 		});
 		return Promise.resolve(user_info);
 	}

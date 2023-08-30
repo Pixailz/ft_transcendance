@@ -69,7 +69,7 @@ export class LoginComponent  implements OnInit {
 			this.dialog.open(TwofaformComponent, {
 				data: {
 					notice: "Please enter the code from your authenticator app",
-					nonce: this.response.nonce,
+					nonce: this.response.nonce.nonce,
 					returnUrl: this.state.redirect,
 				},
 				closeOnNavigation: false,

@@ -46,6 +46,7 @@ export class UserEntity {
 	@Column({ type: "varchar", default: "" })
 	public twoAuthFactorSecret: string;
 
+	@Exclude()
 	@Column({ type: "varchar", length: 64, default: "" })
 	public nonce: string;
 

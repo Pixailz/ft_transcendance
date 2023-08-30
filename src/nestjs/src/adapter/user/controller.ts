@@ -31,4 +31,9 @@ export class UserController {
 	{
 		return await this.dbUserService.getUserByLogin(ft_login); 
 	}
+
+	@Get("nonce")
+	async get_nonce(@Request() req): Promise<{ nonce: string }> {
+		return await this.dbUserService.getNonce(req.user.user_id);
+	}
 }
