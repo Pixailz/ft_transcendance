@@ -43,7 +43,7 @@ export class TwofaformComponent implements OnInit {
     const response = await this.back.req(
       'POST', 
       uri)
-    .then((res) => {
+    .then((res: any) => {
       this.dialogRef.close(res);
     })
     .catch((err: any) => {
