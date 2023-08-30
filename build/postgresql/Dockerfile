@@ -2,6 +2,7 @@ FROM		alpine:latest	AS base
 
 RUN			apk add --update --virtual base \
 				postgresql15 \
+				dumb-init \
 			&& rm -f /var/cache/apk/*
 
 #=#=#
@@ -18,4 +19,4 @@ STOPSIGNAL	SIGTERM
 ## Immediate Shutdown
 # STOPSIGNAL	SIGQUIT
 
-ENTRYPOINT	[ "/run/entrypoint" ]
+ENTRYPOINT	[ "dumb-init", "/run/entrypoint" ]
