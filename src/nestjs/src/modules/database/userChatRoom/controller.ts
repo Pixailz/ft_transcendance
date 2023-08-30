@@ -5,11 +5,9 @@ import {
 	Put,
 	Get,
 	Delete,
-	Res,
 	Param,
-	Req,
+	Request,
 } from "@nestjs/common";
-import { Response } from "express";
 
 import { DBUserChatRoomService } from "./service";
 import { DBUserChatRoomPost } from "./dto";
@@ -18,45 +16,42 @@ import { DBUserChatRoomPost } from "./dto";
 export class DBUserChatRoomController {
 	constructor(private readonly dbChatRoomService: DBUserChatRoomService) {}
 
-	@Post(":user_id/:chat_id")
+	@Post(":chat_id")
 	create(
-		@Param("user_id") userId: number,
+		@Request() req,
 		@Param("chat_id") chatId: number,
-		@Body() post: DBUserChatRoomPost,
-	) {
+		@Body() post: DBUserChatRoomPost) {
+		const userId = req.user.user_id;
 		return this.dbChatRoomService.create(post, userId, chatId);
 	}
 
 	@Get()
-	async getAll(@Res() res: Response) {
-		res.send(await this.dbChatRoomService.returnAll());
+	async getAll() {
+		return (await this.dbChatRoomService.returnAll());
 	}
 
-	@Get(":user_id/:chat_id")
+	@Get(":chat_id")
 	async getOne(
-		@Param("user_id") userId: number,
-		@Param("chat_id") chatId: number,
-		@Res() res: Response,
-	) {
-		res.send(await this.dbChatRoomService.returnOne(userId, chatId));
+		@Request() req,
+		@Param("chat_id") chatId: number) {
+		const userId = req.user.user_id;
+		return (await this.dbChatRoomService.returnOne(userId, chatId));
 	}
 
-	@Put(":user_id/:chat_id")
+	@Put(":chat_id")
 	async update(
-		@Param("user_id") userId: number,
+		@Request() req,
 		@Param("chat_id") chatId: number,
-		@Body() userPost: DBUserChatRoomPost,
-		@Res() res: Response,
-	) {
-		res.send(await this.dbChatRoomService.update(userId, chatId, userPost));
+		@Body() userPost: DBUserChatRoomPost) {
+		const userId = req.user.user_id;
+		return (await this.dbChatRoomService.update(userId, chatId, userPost));
 	}
 
-	@Delete(":user_id/:chat_id")
+	@Delete(":chat_id")
 	async delete(
-		@Param("user_id") userId: number,
-		@Param("chat_id") chatId: number,
-		@Res() res: Response,
-	) {
-		res.send(await this.dbChatRoomService.delete(userId, chatId));
+		@Request() req,
+		@Param("chat_id") chatId: number) {
+		const userId = req.user.user_id;
+		return (await this.dbChatRoomService.delete(userId, chatId));
 	}
 }

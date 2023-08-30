@@ -3,6 +3,12 @@ import { Entity, Column, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { UserChatRoomEntity } from "../userChatRoom/entity";
 import { MessageEntity } from "../message/entity";
 
+export enum RoomType {
+	PUBLIC,
+	PRIVATE,
+	PROTECTED,
+}
+
 @Entity()
 export class ChatRoomEntity {
 	@PrimaryGeneratedColumn()
@@ -11,8 +17,8 @@ export class ChatRoomEntity {
 	@Column({ type: "varchar", length: 120, default: "" })
 	public name: string;
 
-	@Column({ type: "varchar", length: 120, default: "" })
-	public type: string;
+	@Column({ type: "integer", default: RoomType.PUBLIC })
+	public type: number;
 
 	@Column({ type: "varchar", length: 120, default: "" })
 	public password!: string;

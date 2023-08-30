@@ -47,14 +47,18 @@ export class DBUserService {
 
 	async update(userId: number, userPost: DBUserInfoPost) {
 		const user = await this.get_user(userId, null);
-		if (user) return await this.userRepo.update(userId, userPost);
-		else throw new ForbiddenException("User not found");
+		if (user) 
+			return await this.userRepo.update(userId, userPost);
+		else 
+			throw new ForbiddenException("User not found");
 	}
 
 	async delete(userId: number) {
 		const user = await this.get_user(userId, null);
-		if (user) return await this.userRepo.delete({ id: userId });
-		else throw new ForbiddenException("User not found");
+		if (user) 
+			return await this.userRepo.delete({ id: userId });
+		else 
+			throw new ForbiddenException("User not found");
 	}
 
 	async get_user(

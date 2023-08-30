@@ -5,12 +5,10 @@ import {
 	Put,
 	Get,
 	Delete,
-	Res,
 	Param,
 	UseInterceptors,
 	ClassSerializerInterceptor,
 } from "@nestjs/common";
-import { Response } from "express";
 
 import { DBUserService } from "./service";
 import { DBUserPost, DBUserInfoPost } from "./dto";
@@ -26,28 +24,24 @@ export class DBUserController {
 	}
 
 	@Get()
-	async getAll(@Res() res: Response) {
-		res.send(await this.dbUserService.returnAll());
+	async getAll() {
+		return (await this.dbUserService.returnAll());
 	}
 
 	@Get(":id")
-	async getOne(@Param("id") userId: number, @Res() res: Response) {
-		res.send(await this.dbUserService.returnOne(userId));
+	async getOne(@Param("id") userId: number) {
+		return (await this.dbUserService.returnOne(userId));
 	}
 
 	@Put(":id")
 	async update(
 		@Param("id") userId: number,
-		@Body() userPost: DBUserInfoPost,
-		@Res() res: Response,
-	) {
-		res.send(await this.dbUserService.update(userId, userPost));
+		@Body() userPost: DBUserInfoPost) {
+		return (await this.dbUserService.update(userId, userPost));
 	}
 
 	@Delete(":id")
-	async delete(@Param("id") userId: number, @Res() res: Response) {
-		const user = await this.dbUserService.delete(userId);
-		if (user) res.send(await this.dbUserService.delete(userId));
-		else console.log("in delete user nb : ", userId, " not found");
+	async delete(@Param("id") userId: number) {
+			return (await this.dbUserService.delete(userId));
 	}
 }

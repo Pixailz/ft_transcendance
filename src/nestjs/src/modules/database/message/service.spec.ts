@@ -18,11 +18,11 @@ describe('DBmessageService', () => {
   let userService: DBUserService;
   let service: DBMessageService;
   let repo: Repository<MessageEntity>;
-  let unit_user: string = "UNIT_USER";
-  let unit_room: string = "UNIT_ROOM";
   let chatRoomRepo: Repository<ChatRoomEntity>;
   let chatRoomService: DBChatRoomService;
   let userChatRoomrepo: Repository<UserChatRoomEntity>;
+  let unit_user: string = "UNIT_USER";
+  let unit_room: string = "UNIT_ROOM";
   
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -58,7 +58,6 @@ describe('DBmessageService', () => {
     chatRoomService = module.get<DBChatRoomService>(DBChatRoomService);
     service = module.get<DBMessageService>(DBMessageService);
     repo = module.get<Repository<MessageEntity>>(getRepositoryToken(MessageEntity));
-
 });
   
   it('should be defined', () => {
@@ -67,10 +66,9 @@ describe('DBmessageService', () => {
   
   describe('testing create and returnOne', () =>
   {
-    it('[MESSAGE] TEST', async () => {
+    it('[MESSAGE] Create new message', async () => {
       const user_test = await userService.returnAll();
       let len = 0;
-      // console.log('array user len = ', user_test.length)
       if (user_test.length != 1)
       {
         len = user_test.length;
@@ -89,11 +87,16 @@ describe('DBmessageService', () => {
       const message = await service.returnOne(messId);
       expect(message.id).toEqual(messId);
       expect(message.content).toEqual(post.content);
-
+      await expect(service.create(post, -1, roomId)).rejects.toThrowError(
+        new ForbiddenException("User not found"),
+        );
+      await expect(service.create(post, userId, -1)).rejects.toThrowError(
+        new ForbiddenException("ChatRoom not found"),
+        );
     });
   });
 
-  describe('[MESSAGE] delete', () => {
+  describe('[MESSAGE] Delete message', () => {
     it('should delete a room', async () => {
       const user = await userService.returnOne(null, unit_user);
       let room_name = unit_room + '_name_BIS';
