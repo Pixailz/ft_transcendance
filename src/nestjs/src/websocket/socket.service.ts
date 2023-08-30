@@ -28,8 +28,12 @@ export class WSSocket {
 
 	removeSocket(socket_id: string) {
 		for (const user_id in this.socket_list)
+		{
 			for (let i = 0; i < this.socket_list[user_id].length; i++)
 				if (this.socket_list[user_id][i] === socket_id)
 					this.socket_list[user_id].splice(i, 1);
+			if (! this.socket_list[user_id].length)
+				delete this.socket_list[user_id];
+		}
 	}
 }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {
 	UserI,
-	Status,
 	ChatRoomI,
 	FriendI,
 } from 'src/app/interfaces/chat.interface';
