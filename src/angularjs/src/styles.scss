@@ -19,3 +19,11 @@ ul {
 	margin: 0;
 	list-style: none;
 }
+
+.custom-dialog {
+	.mat-mdc-dialog-surface.mat-mdc-dialog-surface{
+		border-radius: 0 ;
+		border: 3px solid black;
+		padding: 20px;
+	}
+}

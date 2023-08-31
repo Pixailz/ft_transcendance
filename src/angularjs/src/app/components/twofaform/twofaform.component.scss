@@ -1,4 +1,18 @@
-#container {
+code-input {
+    --item-height: 3em;
+	--item-spacing: 10px;
+    --item-border: 2px solid #dddddd;
+    --item-border-bottom: 2px solid #dddddd;
+    --item-border-has-value: 2px solid black;
+    --item-border-bottom-has-value: 2px solid black;
+    --item-border-focused: 2px solid #888888;
+    --item-border-bottom-focused: 2px solid #888888;
+    --item-shadow-focused: none;
+    --item-border-radius: 0px;
+	width: 250px;
+}
+
+:host {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -17,11 +31,6 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-}
-
-form {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
+  text-align: center;
+  font-family: 'Maven Pro', sans-serif;
 }

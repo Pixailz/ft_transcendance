@@ -72,6 +72,7 @@ export class LoginComponent  implements OnInit {
 					nonce: this.response.nonce.nonce,
 					returnUrl: this.state.redirect,
 				},
+				panelClass: 'custom-dialog',
 				closeOnNavigation: false,
 				disableClose: true
 			})

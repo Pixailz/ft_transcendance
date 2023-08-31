@@ -77,7 +77,8 @@ export class UserProfileComponent implements OnInit {
 						qrCode: res.qrCodeDataURL,
 						notice: "Scan this QR code with your app, then enter the code below",
 						nonce: await this.userService.getNonce()
-					}
+					},
+					panelClass: 'custom-dialog'
 				});
 				result.afterClosed().subscribe((res) => {
 					if (res !== undefined && res.status === 'oke')

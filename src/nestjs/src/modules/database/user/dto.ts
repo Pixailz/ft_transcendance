@@ -14,6 +14,7 @@ export class DBUserPost {
 
 export class DBUserInfoPost {
 	// @IsNotEmpty()
+	// @IsOptional()
 	// @IsString()
 	nickname?: string;
 
