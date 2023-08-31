@@ -1,4 +1,4 @@
-import { Injectable, ForbiddenException, Inject } from "@nestjs/common";
+import { Injectable, NotFoundException, Inject } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -22,7 +22,7 @@ export class DBFriendRequestService {
 		const user1 = await this.userRepo.findOneBy({id: meId});
 		const user2 = await this.userRepo.findOneBy({id: post.friendId});
 		if (!user1 || !user2)
-			throw new ForbiddenException("User not found");
+			throw new NotFoundException("User not found");
 		let request = new FriendRequestEntity();
 		request.meId = meId;
 		request.friendId = post.friendId;
@@ -39,7 +39,7 @@ export class DBFriendRequestService {
 		if (tmp)
 			return tmp;
 		else
-			throw new ForbiddenException("FriendRequest relation not found");
+			throw new NotFoundException("FriendRequest relation not found");
 	}
 
 	async delete(me_id: number, friendId: number) {
@@ -47,7 +47,7 @@ export class DBFriendRequestService {
 		if (tmp) 
 			return await this.friendRequestRepo.delete(tmp);
 		else 
-			throw new ForbiddenException("FriendRequest relation not found");
+			throw new NotFoundException("FriendRequest relation not found");
 	}
 
 	async acceptReq(me_id: number, friendId: number) {
@@ -58,7 +58,7 @@ export class DBFriendRequestService {
 			await this.friendRequestRepo.delete(req);
 		}
 		else
-			throw new ForbiddenException("FriendRequest relation not found");
+			throw new NotFoundException("FriendRequest relation not found");
 	}
 
 	async rejectReq(me_id: number, friendId: number) {
@@ -66,6 +66,6 @@ export class DBFriendRequestService {
 		if (req)
 			await this.friendRequestRepo.delete(req);
 		else
-			throw new ForbiddenException("FriendRequest relation not found");
+			throw new NotFoundException("FriendRequest relation not found");
 	}
 }

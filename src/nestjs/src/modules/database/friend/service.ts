@@ -1,4 +1,4 @@
-import { Injectable, ForbiddenException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -19,7 +19,7 @@ export class DBFriendService {
 		const user1 = await this.userRepo.findOneBy({id: meId});
 		const user2 = await this.userRepo.findOneBy({id: post.friendId});
 		if (!user1 || !user2)
-			throw new ForbiddenException("User not found");
+			throw new NotFoundException("User not found");
 		let list = new FriendEntity();
 		list.meId = meId;
 		list.friendId = post.friendId;
@@ -39,12 +39,12 @@ export class DBFriendService {
 	async returnOne(me_id: number, friend_id: number) {
 		const tmp = await this.friendRepo.findOneBy({ meId: me_id, friendId: friend_id });
 		if (tmp) return tmp;
-		else throw new ForbiddenException("Friend relation not found");
+		else throw new NotFoundException("Friend relation not found");
 	}
 
 	async delete(me_id: number, friend_id: number) {
 		const tmp = await this.friendRepo.findOneBy({ meId: me_id, friendId: friend_id });
 		if (tmp) return await this.friendRepo.delete(tmp);
-		else throw new ForbiddenException("Friend relation not found");
+		else throw new NotFoundException("Friend relation not found");
 	}
 }

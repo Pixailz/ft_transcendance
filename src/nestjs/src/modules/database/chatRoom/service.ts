@@ -1,4 +1,4 @@
-import { Injectable, ForbiddenException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -29,7 +29,7 @@ export class DBChatRoomService {
 		if (tmp)
 			return tmp;
 		else
-			throw new ForbiddenException("ChatRoom not found");
+			throw new NotFoundException("ChatRoom not found");
 	}
 
 	async update(chatId: number, post: DBChatRoomPost) {
@@ -37,7 +37,7 @@ export class DBChatRoomService {
 		if (tmp)
 			return await this.chatRoomRepo.update(chatId, post);
 		else
-			throw new ForbiddenException("ChatRoom not found");
+			throw new NotFoundException("ChatRoom not found");
 	}
 
 	async updateType(chatId: number, post: DBChatRoomTypePost) {
@@ -45,7 +45,7 @@ export class DBChatRoomService {
 		if (tmp)
 			return await this.chatRoomRepo.update(chatId, post);
 		else
-			throw new ForbiddenException("ChatRoom not found");
+			throw new NotFoundException("ChatRoom not found");
 	}
 
 	async delete(chatId: number) {
@@ -53,7 +53,7 @@ export class DBChatRoomService {
 		if (tmp)
 			return await this.chatRoomRepo.delete(chatId);
 		else
-			throw new ForbiddenException("ChatRoom not found");
+			throw new NotFoundException("ChatRoom not found");
 	}
 
 	async getAllPrivateRoom(chatId: number): Promise<ChatRoomEntity> {
