@@ -28,6 +28,6 @@ export class UserController {
 		@Param("login") ft_login: string,
 	)
 	{
-		return await this.dbUserService.getUserByLogin(ft_login); 
+		return await this.dbUserService.getUserByLogin(ft_login);
 	}
 }

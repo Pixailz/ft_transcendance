@@ -9,7 +9,7 @@ import {
 @Injectable({
 	providedIn: 'root',
 })
-export class WSChatGateway {
+export class WSGateway {
 	constructor (private socket: Socket) {}
 
 	listenAllFriend(): Observable<UserI[]>
