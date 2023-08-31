@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from "@nestjs/common";
+import { NotFoundException, Injectable, BadRequestException, InternalServerErrorException } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -16,9 +16,8 @@ export class DBUserService {
 
 	async create(userPost: DBUserPost): Promise<number> {
 		const user = new UserEntity({});
-		const nb = userPost.ftLogin.trim().length;
-		if (nb === 0)
-			throw new ForbiddenException("User Login can't be blank or empty");
+		if (userPost.ftLogin === "")
+			throw new BadRequestException("User Login can't be blank or empty");
 		user.ftLogin = userPost.ftLogin;
 		await this.userRepo.save(user);
 		return user.id;
@@ -50,7 +49,7 @@ export class DBUserService {
 		if (user) 
 			return await this.userRepo.update(userId, userPost);
 		else 
-			throw new ForbiddenException("User not found");
+			throw new NotFoundException("User not found");
 	}
 
 	async delete(userId: number) {
@@ -58,7 +57,7 @@ export class DBUserService {
 		if (user) 
 			return await this.userRepo.delete({ id: userId });
 		else 
-			throw new ForbiddenException("User not found");
+			throw new NotFoundException("User not found");
 	}
 
 	async get_user(
@@ -82,7 +81,7 @@ export class DBUserService {
 		const nonce = crypto.getRandomValues(new Uint8Array(16)).join("");
 		await this.userRepo.update(userId, { nonce: nonce }).catch((err) => {
 			console.log(err);
-			throw new ForbiddenException("Error setting nonce: " + err);
+			throw new InternalServerErrorException("Error setting nonce: " + err);
 		});
 		return { nonce: nonce };
 	}

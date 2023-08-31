@@ -1,4 +1,4 @@
-import { Injectable, ForbiddenException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -19,7 +19,7 @@ export class DBMutedService {
 		const user1 = await this.userRepo.findOneBy({id: meId});
 		const user2 = await this.userRepo.findOneBy({id: post.mutedId});
 		if (!user1 || !user2)
-			throw new ForbiddenException("User not found");
+			throw new NotFoundException("User not found");
 		let list = new MutedEntity();
 		list.meId = meId;
 		list.mutedId = post.mutedId;
@@ -34,18 +34,18 @@ export class DBMutedService {
 	async returnOne(me_id: number, Muted_id: number) {
 		const tmp = await this.mutedRepo.findOneBy({ meId: me_id, mutedId: Muted_id });
 		if (tmp) return tmp;
-		else throw new ForbiddenException("Muted relation not found");
+		else throw new NotFoundException("Muted relation not found");
 	}
 
 	// async update(me_id: number, Muted_id: number, post: DBMutedPost) {
 	// 	const tmp = await this.mutedRepo.findOneBy({ meId: me_id, MutedId: Muted_id });
 	// 	if (tmp) return await this.mutedRepo.update(tmp, post);
-	// 	else throw new ForbiddenException("Muted relation not found");
+	// 	else throw new NotFoundException("Muted relation not found");
 	// }
 
 	async delete(me_id: number, Muted_id: number) {
 		const tmp = await this.mutedRepo.findOneBy({ meId: me_id, mutedId: Muted_id });
 		if (tmp) return await this.mutedRepo.delete(tmp);
-		else throw new ForbiddenException("Muted relation not found");
+		else throw new NotFoundException("Muted relation not found");
 	}
 }
