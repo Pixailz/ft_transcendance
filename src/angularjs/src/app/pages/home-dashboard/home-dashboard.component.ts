@@ -1,16 +1,13 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
-import { WSGateway } from 'src/app/services/ws.gateway';
 
 @Component({
 	selector: 'app-home-dashboard',
 	templateUrl: './home-dashboard.component.html',
 	styleUrls: ['./home-dashboard.component.scss']
 })
-export class HomeDashboardComponent implements OnInit{
-	constructor (private wsGateway: WSGateway) {
-	}
+export class HomeDashboardComponent {
 	private breakpointObserver = inject(BreakpointObserver);
 
 	/** Based on the screen size, switch from standard to one column per row */
@@ -33,8 +30,4 @@ export class HomeDashboardComponent implements OnInit{
 			];
 		})
 	);
-
-	ngOnInit() {
-		this.wsGateway.connection();
-	}
 }

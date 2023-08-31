@@ -2,12 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DefUserI, UserI } from 'src/app/interfaces/chat.interface';
 import { BackService } from 'src/app/services/back.service';
-import { WSGateway } from 'src/app/services/ws.gateway';
 
 @Component({
-  selector: 'app-profile',
-  templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss']
+	selector: 'app-profile',
+	templateUrl: './profile.component.html',
+	styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
 	user_info: UserI = DefUserI;
@@ -15,7 +14,6 @@ export class ProfileComponent implements OnInit {
 	constructor(
 		private route: ActivatedRoute,
 		private back: BackService,
-		private wsGateway: WSGateway,
 	) {}
 
 	ngOnInit(): void {
@@ -28,6 +26,5 @@ export class ProfileComponent implements OnInit {
 					console.log("[profile]", err.status);
 				})
 		});
-		this.wsGateway.connection();
 	}
 }

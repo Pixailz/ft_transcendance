@@ -14,6 +14,7 @@ export class WSChatService {
 	) {}
 
 	async connection(server: Server, socket: Socket) {
+		console.log("[nestjs] access_token", socket.handshake.headers.authorization);
 		const user_id = this.userService.decodeToken(
 			socket.handshake.headers.authorization,
 		);
