@@ -12,8 +12,6 @@ export class BackService {
 	async req(method: string, route: string, body?: any): Promise<any>
 	{
 		const jwt_token = localStorage.getItem("access_token");
-		if (!jwt_token)
-			return null;
 		const bearer_token = "Bearer " + jwt_token;
 		switch (method) {
 			case "GET":
