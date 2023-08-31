@@ -78,6 +78,11 @@ export class UserService {
 		return (Promise.resolve(qrcode));
 	}
 
+	async disableTwoFa(): Promise<boolean> {
+		const response = await this.backService.req("POST", "/2fa/disable");
+		return response.affected > 0;
+	}
+
 	async getNonce(): Promise<string> {
 		const response = await this.backService.req("GET", "/user/nonce");
 		return (response.nonce);

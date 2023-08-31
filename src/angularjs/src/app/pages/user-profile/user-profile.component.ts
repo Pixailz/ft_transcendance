@@ -61,26 +61,28 @@ export class UserProfileComponent implements OnInit {
 	async setupTwoFa() {
 		if (this.userForm.value.twofa)
 		{
-			this.userForm.patchValue({ twofa: false });
-			await this.back.req("PUT", "/db/user/" + this.user.id, JSON.stringify({
-				twoAuthFactor: false,
-				twoAuthFactorSecret: ""
-			}));
+			await this.userService.disableTwoFa()
+			.catch((err: any) => {
+				console.log(err);
+			})
+			.then(() => {
+				this.userForm.patchValue({ twofa: false });
+			});
 		}
 		else
 		{
 			await this.userService
 			.setupTwoFa()
 			.then(async (res) => {
-				let result = this.dialog.open(TwofaformComponent, {
+				this.dialog.open(TwofaformComponent, {
 					data: {
 						qrCode: res.qrCodeDataURL,
 						notice: "Scan this QR code with your app, then enter the code below",
 						nonce: await this.userService.getNonce()
 					},
 					panelClass: 'custom-dialog'
-				});
-				result.afterClosed().subscribe((res) => {
+				})
+				.afterClosed().subscribe((res) => {
 					if (res !== undefined && res.status === 'oke')
 					{
 						this.userForm.patchValue({
