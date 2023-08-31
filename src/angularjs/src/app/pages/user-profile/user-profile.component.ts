@@ -90,7 +90,7 @@ export class UserProfileComponent implements OnInit {
 						});
 					}
 					else {
-						const checkbox = document.getElementById('2fa') as HTMLInputElement;
+						const checkbox = document.getElementById('twofa') as HTMLInputElement;
 						checkbox.checked = false;
 					}
 				});
