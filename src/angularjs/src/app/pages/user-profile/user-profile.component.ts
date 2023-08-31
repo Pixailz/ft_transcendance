@@ -32,8 +32,7 @@ export class UserProfileComponent implements OnInit {
 			picture: this.user.picture,
 			email: this.user.email,
 			twofa: this.user.twoAuthFactor,
-		},
-		{ updateOn: "change" });
+		}, { updateOn: "change" });
 	}
 
 	async onSubmit() {
@@ -46,10 +45,7 @@ export class UserProfileComponent implements OnInit {
 				delete this.userForm.value[key];
 			}
 		});
-		await this.userService.updateInfo(
-			this.userForm.value.nickname,
-			this.userForm.value.email
-		)
+		await this.userService.updateProfile(this.userForm.value)
 			.then((res) => {
 				console.log(res);
 			})

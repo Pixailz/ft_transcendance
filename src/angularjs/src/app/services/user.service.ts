@@ -39,6 +39,10 @@ export class UserService {
 		return (user);
 	}
 
+	async updateProfile(user: UserI): Promise<any> {
+		return (await this.backService.req("PUT", "/user/me", JSON.stringify(user)));
+	}
+
 	async updateInfo(nickname: string, email?: string) {
 		let body;
 
