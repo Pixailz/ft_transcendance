@@ -15,7 +15,6 @@ export class AuthenticatedLayoutComponent {
 
 	ngOnInit ()
 	{
-		//console.log("[angular] access_token", localStorage.getItem("access_token"));
-		this.wsGateway.connection();
+		this.wsGateway.socket.connect();
 	}
 }

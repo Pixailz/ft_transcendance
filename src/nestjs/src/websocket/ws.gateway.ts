@@ -58,11 +58,4 @@ export class WSGateway
 			data[1],
 		);
 	}
-
-	@SubscribeMessage("dummyConnection")
-	handleDummyConnection(socket: Socket)
-	{
-		console.log("dummy connection");
-		return ;
-	}
 }

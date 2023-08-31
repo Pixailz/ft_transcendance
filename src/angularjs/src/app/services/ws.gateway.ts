@@ -10,7 +10,7 @@ import {
 	providedIn: 'root',
 })
 export class WSGateway {
-	constructor (private socket: Socket) {
+	constructor (public socket: Socket) {
 		const config = {
 			path: "/ws",
 			extraHeaders: {
@@ -77,9 +77,5 @@ export class WSGateway {
 	sendPrivateMessage(room_id: number, message: string)
 	{
 		this.socket.emit("sendPrivateMessage", room_id, message);
-	}
-
-	connection() {
-		this.socket.emit("dummyConnection");
 	}
 }
