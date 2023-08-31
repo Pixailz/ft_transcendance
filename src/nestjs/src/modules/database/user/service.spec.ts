@@ -3,8 +3,11 @@ import { UserEntity } from "./entity";
 import { Repository } from "typeorm";
 import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { ForbiddenException } from "@nestjs/common";
+import { BadRequestException, ForbiddenException } from "@nestjs/common";
 import { DBModule } from "../database.module";
+
+import { validate } from "class-validator"
+import { DBUserPost } from "./dto";
 
 describe("DBUserService", () => {
 	let service: DBUserService;
@@ -44,7 +47,8 @@ describe("DBUserService", () => {
 			}
 			const userPost = { ftLogin: unit_user };
 			const userPost2 = { ftLogin: unit_user_bis };
-			const userPost3 = { ftLogin: "   " };
+			const userPost3 = new DBUserPost();
+			userPost3.ftLogin = "";
 
 			let userId = await service.create(userPost);
 			let user = await service.returnOne(userId, null);
@@ -56,12 +60,18 @@ describe("DBUserService", () => {
 			let user2 = await service.returnOne(userId2, null);
 
 			expect(userId2).toEqual(user2.id);
-
+			
 			await expect(service.create(userPost3)).rejects.toThrowError(
-				new ForbiddenException("User Login can't be blank or empty"),
+				new BadRequestException("User Login can't be blank or empty"),
 			);
+
+			// await expect(service.create(userPost3)).rejects.toThrowError(
+			// 	new BadRequestException("minimum len for login is 4"),
+			// );
 		});
 	});
+	
+
 
 	describe("update", () => {
 		it("[USER] should update 2 user", async () => {

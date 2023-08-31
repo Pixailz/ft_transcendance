@@ -8,6 +8,7 @@ import { JwtAuthGuard } from "./modules/auth/jwt-auth.guard";
 import { WSModule } from "./websocket/ws.module";
 import { UserModule } from "./adapter/user/module";
 import { ChatRoomModule } from "./adapter/chatRoom/module";
+import { TwofaModule } from "./modules/twofa/twofa.module";
 
 @Module({
 	imports: [
@@ -17,6 +18,7 @@ import { ChatRoomModule } from "./adapter/chatRoom/module";
 		WSModule,
 		UserModule,
 		ChatRoomModule,
+		TwofaModule,
 	],
 	controllers: [],
 	// controller

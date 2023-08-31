@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TwofaformComponent } from 'src/app/components/twofaform/twofaform.component';
 
 import { environment } from 'src/app/environments/environment';
-import { BackService } from 'src/app/services/back.service';
 
 @Component({
 	selector: 'app-login',
 	templateUrl: './login.component.html',
 	styleUrls: ['./login.component.scss'],
 })
+
 export class LoginComponent  implements OnInit {
 	code: string | null = null;
 	response: any = null;
@@ -19,6 +21,7 @@ export class LoginComponent  implements OnInit {
 		private route: ActivatedRoute,
 		private router: Router,
 		private back: BackService,
+    public dialog: MatDialog,
 	) {}
 
 	async ngOnInit() {
@@ -54,12 +57,42 @@ export class LoginComponent  implements OnInit {
 				if (message)
 					message.innerHTML = 'Error: ' + err.error;
 				return null;
-			})
-		if (!this.response || !this.response.access_token)
+			});
+
+		if (!this.response || (this.response.access_token === undefined
+								&& this.response.status === undefined))
 			console.log('Error: ' + this.response);
+
+		if (this.response.status && this.response.status == "2fa"){
+			this.dialog.open(TwofaformComponent, {
+				data: {
+					notice: "Please enter the code from your authenticator app",
+					nonce: this.response.nonce.nonce,
+					returnUrl: this.state.redirect,
+				},
+				closeOnNavigation: false,
+				disableClose: true
+			})
+			.afterClosed()
+			.subscribe((res) => {
+				if (res && res.status == "oke")
+				{
+					localStorage.setItem('access_token', res.access_token);
+					if (this.state?.redirect)
+						this.router.navigate([this.state.redirect]);
+					else
+						this.router.navigate(['/home']);
+				}
+			})
+		}
+
 		localStorage.setItem('access_token', this.response.access_token);
 		if (this.response.status == "register")
 			this.router.navigate(['/register']);
+		else if (this.response.status == "oke" && this.state?.redirect)
+			this.router.navigate([this.state.redirect]);
+		else
+			this.router.navigate(['/home']);
 	}
 
 	SignIn()

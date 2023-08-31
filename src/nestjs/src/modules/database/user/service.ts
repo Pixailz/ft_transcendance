@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from "@nestjs/common";
+import { NotFoundException, Injectable, BadRequestException, InternalServerErrorException } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -12,13 +12,12 @@ export class DBUserService {
 	constructor(
 		@InjectRepository(UserEntity)
 		private readonly userRepo: Repository<UserEntity>,
-	) {}
+	) { }
 
-	async create(userPost: DBUserPost) {
-		const user = new UserEntity();
-		const nb = userPost.ftLogin.trim().length;
-		if (nb === 0)
-			throw new ForbiddenException("User Login can't be blank or empty");
+	async create(userPost: DBUserPost): Promise<number> {
+		const user = new UserEntity({});
+		if (userPost.ftLogin === "")
+			throw new BadRequestException("User Login can't be blank or empty");
 		user.ftLogin = userPost.ftLogin;
 		await this.userRepo.save(user);
 		return user.id;
@@ -32,11 +31,16 @@ export class DBUserService {
 		return user;
 	}
 
-	async returnAll() {
+	async returnOneByNonce(nonce: string): Promise<UserEntity> {
+		const user = await this.userRepo.findOneBy({ nonce: nonce });
+		return user;
+	}
+
+	async returnAll(): Promise<UserEntity[]> {
 		return await this.userRepo.find();
 	}
 
-	async returnOne(userId?: number, ft_login?: string) {
+	async returnOne(userId?: number, ft_login?: string): Promise<UserEntity>{
 		return await this.get_user(userId, ft_login);
 	}
 
@@ -45,7 +49,7 @@ export class DBUserService {
 		if (user) 
 			return await this.userRepo.update(userId, userPost);
 		else 
-			throw new ForbiddenException("User not found");
+			throw new NotFoundException("User not found");
 	}
 
 	async delete(userId: number) {
@@ -53,7 +57,7 @@ export class DBUserService {
 		if (user) 
 			return await this.userRepo.delete({ id: userId });
 		else 
-			throw new ForbiddenException("User not found");
+			throw new NotFoundException("User not found");
 	}
 
 	async get_user(
@@ -71,14 +75,25 @@ export class DBUserService {
 		return null;
 	}
 
+	async getNonce(userId: number): Promise<any> {
+		// eslint-disable-next-line @typescript-eslint/no-var-requires
+		const crypto = require("crypto");
+		const nonce = crypto.getRandomValues(new Uint8Array(16)).join("");
+		await this.userRepo.update(userId, { nonce: nonce }).catch((err) => {
+			console.log(err);
+			throw new InternalServerErrorException("Error setting nonce: " + err);
+		});
+		return { nonce: nonce };
+	}
+
 	async getUserByLogin(ft_login: string | undefined): Promise<UserEntity> {
 		if (!ft_login) {
-			Promise.reject({status: "not found"});
+			Promise.reject({ status: "not found" });
 		}
 		const user_info: UserEntity = await this.userRepo.findOne({
-			where : {
+			where: {
 				ftLogin: ft_login,
-			}
+			},
 		});
 		return Promise.resolve(user_info);
 	}

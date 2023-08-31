@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Put, Request } from "@nestjs/common";
+import { Body, ClassSerializerInterceptor, Controller, Get, Param, Put, Request, UseInterceptors } from "@nestjs/common";
 import { DBUserInfoPost } from "../../modules/database/user/dto";
 import { DBUserService } from "../../modules/database/user/service";
 import { UserEntity } from "src/modules/database/user/entity";
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller("user")
 export class UserController {
 	constructor(private dbUserService: DBUserService) {}
@@ -29,5 +30,10 @@ export class UserController {
 	)
 	{
 		return await this.dbUserService.getUserByLogin(ft_login);
+	}
+
+	@Get("nonce")
+	async get_nonce(@Request() req): Promise<{ nonce: string }> {
+		return await this.dbUserService.getNonce(req.user.user_id);
 	}
 }

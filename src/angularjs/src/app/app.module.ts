@@ -9,6 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -33,6 +34,7 @@ import { AnonymousLayoutComponent } from './layout/anonymous-layout.component';
 import { AuthenticatedLayoutComponent } from './layout/authenticated-layout.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FlatButtonComponent } from './components/flat-button/flat-button.component';
+import { TwofaformComponent } from './components/twofaform/twofaform.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 
 const config: SocketIoConfig = {
@@ -62,7 +64,8 @@ const config: SocketIoConfig = {
 		AnonymousLayoutComponent,
 		AuthenticatedLayoutComponent,
 		FlatButtonComponent,
-  		ProfileComponent,
+		TwofaformComponent,
+    ProfileComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -72,6 +75,7 @@ const config: SocketIoConfig = {
 		MatMenuModule,
 		MatIconModule,
 		MatButtonModule,
+		MatDialogModule,
 		MatToolbarModule,
 		MatSlideToggleModule,
 		MatFormFieldModule,

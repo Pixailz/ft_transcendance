@@ -1,14 +1,23 @@
-import { IsNotEmpty, IsOptional, IsEmail, IsString } from "class-validator";
+import {
+	IsNotEmpty,
+	IsOptional,
+	IsEmail,
+	IsString,
+	IsBoolean,
+	MinLength,
+} from "class-validator";
 
 export class DBUserPost {
 	@IsNotEmpty()
 	@IsString()
+	@MinLength(4, {message: "minimum len for login is 4"})
 	ftLogin?: string;
 }
 
 export class DBUserInfoPost {
-	@IsNotEmpty()
+	@IsOptional()
 	@IsString()
+	@MinLength(4, {message: "minimum len for nickname is 4"})
 	nickname?: string;
 
 	@IsOptional()
@@ -24,7 +33,11 @@ export class DBUserInfoPost {
 	@IsOptional()
 	lastSeen?: Date;
 
-	// @IsOptional()
-	// @IsBooleanString()
-	// twoAuthFactor?: boolean
+	@IsOptional()
+	@IsBoolean()
+	twoAuthFactor?: boolean;
+
+	@IsOptional()
+	@IsString()
+	twoAuthFactorSecret?: string;
 }

@@ -27,11 +27,20 @@ export class AuthService {
 			});
 			user = await this.dbUserService.returnOne(user_id);
 		}
+		const nonce = await this.dbUserService.getNonce(user.id);
 		const payload = { sub: user.id };
 		let status;
 
+		if (user.twoAuthFactor) {
+			return {
+				status: "2fa",
+				nonce: nonce,
+			};
+		}
+
 		if (!user.nickname) status = "register";
 		else status = "oke";
+
 		return {
 			access_token: await this.jwtService.signAsync(payload),
 			status: status,
@@ -56,6 +65,15 @@ export class AuthService {
 			await this.dbUserService.update(user_id, { nickname: "leSangCho" });
 			user = await this.dbUserService.returnOne(user_id);
 		}
+
+		const nonce = await this.dbUserService.getNonce(user.id);
+		if (user.twoAuthFactor) {
+			return {
+				status: "2fa",
+				nonce: nonce,
+			};
+		}
+
 		console.log("test user created");
 		return {
 			access_token: await this.jwtService.signAsync({ sub: user.id }),
