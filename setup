@@ -172,11 +172,10 @@ function	parse::usage()
 
 function	parse::re()
 {
-	local	do_clean
+	local	do_clean="0"
 
 	[ "${ARGS_LEN}" != "2" ] && parse::usage
-	do_clean="0"
-	case "${ARGS[1]}" in
+	case "${ARGS[0]}" in
 		"re")
 			do_clean="1"
 		;;
