@@ -27,7 +27,7 @@ export class LoginComponent  implements OnInit {
 
 		if (this.code !== null) {
 			await this.getToken();
-			this.state.redirect
+			this.state?.redirect
 				? this.router.navigate([this.state.redirect])
 				: this.router.navigate(['/']);
 		}

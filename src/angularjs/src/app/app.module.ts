@@ -41,7 +41,8 @@ const config: SocketIoConfig = {
 		path: "/ws",
 		extraHeaders: {
 			Authorization: localStorage.getItem("access_token") as string
-		}
+		},
+		autoConnect: false,
 	}
 };
 
