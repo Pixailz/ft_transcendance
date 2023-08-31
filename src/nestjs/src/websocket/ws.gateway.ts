@@ -7,30 +7,26 @@ import {
 	WebSocketServer,
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
-import { WSChatService } from "./chat.service";
+import { WSChatService } from "./chat/chat.service";
 
 @WebSocketGateway(3001, {
 	path: "/ws",
 	cors: { origin: "*" },
 })
-export class WSChatGateway
-	implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
+export class WSGateway
+	implements OnGatewayConnection, OnGatewayDisconnect
 {
 	constructor(private wsChatService: WSChatService) {}
 
 	@WebSocketServer()
 	server = new Server();
 
-	afterInit(socket: Socket) {
-		// this.wsChatService.wsSocket.socket_list = {};
-	}
-
 	async handleConnection(socket: Socket) {
-		this.wsChatService.connection(this.server, socket);
+		await this.wsChatService.connection(this.server, socket);
 	}
 
-	handleDisconnect(socket: Socket) {
-		this.wsChatService.disconnect(this.server, socket);
+	async handleDisconnect(socket: Socket) {
+		await this.wsChatService.disconnect(this.server, socket);
 	}
 
 	@SubscribeMessage("getAllFriend")

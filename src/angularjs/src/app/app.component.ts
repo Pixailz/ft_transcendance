@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Socket } from 'ngx-socket-io';
 
 @Component({
 	selector: 'app-root',
@@ -9,7 +8,4 @@ import { Socket } from 'ngx-socket-io';
 
 export class AppComponent {
 	title = 'transcendence';
-	constructor(private socket: Socket) {
-		this.socket.connect();
-	}
 }

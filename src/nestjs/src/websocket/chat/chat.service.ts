@@ -45,7 +45,6 @@ export class WSChatService {
 			(err) => console.log(err),
 		);
 		this.wsSocket.removeSocket(socket.id);
-		socket.disconnect();
 	}
 
 	async getAllFriend(socket: Socket) {
