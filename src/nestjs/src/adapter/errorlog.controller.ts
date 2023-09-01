@@ -14,7 +14,7 @@ export class ErrorLogController {
         }
 
 		fs.appendFile("logs/angular.err", log, (err) => {
-			if (err) throw err;
+			if (err) console.error(err);
 		});
 
 		console.error(`[${error.url}] error received: ${error.message}. See logs/angular.err for more details.`);
