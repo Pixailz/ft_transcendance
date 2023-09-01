@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -37,6 +37,8 @@ import { FlatButtonComponent } from './components/flat-button/flat-button.compon
 import { TwofaformComponent } from './components/twofaform/twofaform.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { CodeInputModule } from 'angular-code-input';
+import { ErrordialogComponent } from './components/errordialog/errordialog.component';
+import { GlobalErrorHandlerService } from './services/global-error-handler.service';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -65,7 +67,8 @@ const config: SocketIoConfig = {
 		AuthenticatedLayoutComponent,
 		FlatButtonComponent,
 		TwofaformComponent,
-    	ProfileComponent
+    	ProfileComponent,
+     ErrordialogComponent
 	],
 	imports: [
 		BrowserModule,
@@ -89,7 +92,10 @@ const config: SocketIoConfig = {
 		SocketIoModule.forRoot(config),
 		CodeInputModule
 	],
-	providers: [AuthGuardService],
+	providers: [
+		AuthGuardService,
+		{ provide: ErrorHandler, useClass: GlobalErrorHandlerService },
+	],
 	bootstrap: [AppComponent]
 })
 export class AppModule { }

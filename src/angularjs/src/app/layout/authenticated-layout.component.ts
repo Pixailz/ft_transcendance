@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component } from '@angular/core';
 import { slideInAnimation } from '../animations';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-authenticated-layout',
@@ -7,5 +8,14 @@ import { slideInAnimation } from '../animations';
   styleUrls: ['./authenticated-layout.component.scss'],
   animations: [ slideInAnimation ]
 })
-export class AuthenticatedLayoutComponent {
+export class AuthenticatedLayoutComponent implements AfterViewInit{
+  constructor(private changeRef: ChangeDetectorRef) {}
+
+  ngAfterViewInit(): void {
+    this.changeRef.detectChanges();
+  }
+
+  prepareRoute(outlet: RouterOutlet){
+    return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
+  }
 }
