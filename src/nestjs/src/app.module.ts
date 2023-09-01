@@ -9,6 +9,7 @@ import { WSChatModule } from "./websocket/chat/chat.module";
 import { UserModule } from "./adapter/user/module";
 import { ChatRoomModule } from "./adapter/chatRoom/module";
 import { TwofaModule } from "./modules/twofa/twofa.module";
+import { ErrorLogController } from "./adapter/errorlog.controller";
 
 @Module({
 	imports: [
@@ -18,10 +19,9 @@ import { TwofaModule } from "./modules/twofa/twofa.module";
 		WSChatModule,
 		UserModule,
 		ChatRoomModule,
-		TwofaModule,
+		TwofaModule
 	],
-	controllers: [],
-	// controller
+	controllers: [ErrorLogController],
 	providers: [
 		{
 			provide: APP_GUARD,

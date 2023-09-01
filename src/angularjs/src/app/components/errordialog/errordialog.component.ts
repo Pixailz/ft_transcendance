@@ -14,4 +14,11 @@ export class ErrordialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: any) {}
   
   error = this.data.error;
+  firstLine = this.error.message.split('\n')[0];
+  stackTrace = this.error.stack.split('\n').slice(1).join('\n');
+
+  close(): void {
+    const feedback = document.getElementById('feedback') as HTMLInputElement;
+    this.dialogRef.close(feedback.checked ? 'feedback' : 'close');
+  }
 }
