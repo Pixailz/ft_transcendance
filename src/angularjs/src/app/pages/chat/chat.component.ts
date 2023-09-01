@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {
 	UserI,
-	Status,
 	ChatRoomI,
 	FriendI,
 } from 'src/app/interfaces/chat.interface';
-import { WSChatGateway } from 'src/app/services/ws-chat.gateway';
+import { WSGateway } from 'src/app/services/ws.gateway';
 import { ChatService } from 'src/app/services/chat.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -19,52 +18,52 @@ export class WSChatComponent implements OnInit {
 	message: string = "";
 
 	constructor(
-		private wsChatGateway: WSChatGateway,
+		private wsGateway: WSGateway,
 		public chatService: ChatService,
 		public userService: UserService,
 	) {}
 
 	async ngOnInit() {
 		await this.chatService.updateUserInfo();
-		this.wsChatGateway.getAllFriend();
-		this.wsChatGateway.listenAllFriend()
+		this.wsGateway.getAllFriend();
+		this.wsGateway.listenAllFriend()
 			.subscribe((friends: UserI[]) => {
 				console.log("event AllFriend received ");
 				this.chatService.updateAllFriend(friends);
 			}
 		)
 
-		this.wsChatGateway.getAllPrivateRoom();
-		this.wsChatGateway.listenAllPrivateRoom()
+		this.wsGateway.getAllPrivateRoom();
+		this.wsGateway.listenAllPrivateRoom()
 			.subscribe((rooms: ChatRoomI[]) => {
 				console.log("event AllPrivateRoom received")
 				this.chatService.updateAllPrivateRoom(rooms);
 			}
 		)
 
-		this.wsChatGateway.getAllPrivateMessage();
-		this.wsChatGateway.listenAllPrivateMessage()
+		this.wsGateway.getAllPrivateMessage();
+		this.wsGateway.listenAllPrivateMessage()
 			.subscribe((data: any) => {
 				console.log("event AllPrivateMessage received")
 				this.chatService.updateAllPrivateMessage(data);
 			}
 		)
 
-		this.wsChatGateway.listenNewPrivateRoom()
+		this.wsGateway.listenNewPrivateRoom()
 			.subscribe((room: ChatRoomI) => {
 				console.log("event NewPrivateRoom received")
 				this.chatService.updateNewPrivateRoom(room);
 			}
 		)
 
-		this.wsChatGateway.listenNewPrivateMessage()
+		this.wsGateway.listenNewPrivateMessage()
 			.subscribe((data: any) => {
 				console.log("event NewPrivateMessage received")
 				this.chatService.updateNewPrivateMessage(data);
 			}
 		)
 
-		this.wsChatGateway.listenNewStatusFriend()
+		this.wsGateway.listenNewStatusFriend()
 			.subscribe((data: any) => {
 				console.log("event NewStatusFriend received")
 				this.chatService.updateNewFriendStatus(data);
@@ -84,7 +83,7 @@ export class WSChatComponent implements OnInit {
 				.user_info.ftLogin} already created`)
 			return ;
 		}
-		this.wsChatGateway.createPrivateRoom(selected_friend.user_info.id);
+		this.wsGateway.createPrivateRoom(selected_friend.user_info.id);
 		this.onClosePopup();
 	}
 
@@ -121,7 +120,7 @@ export class WSChatComponent implements OnInit {
 
 		if (selected_room.id === -1)
 			return ;
-		this.wsChatGateway.sendPrivateMessage(selected_room.id, this.message);
+		this.wsGateway.sendPrivateMessage(selected_room.id, this.message);
 		this.message = "";
 	}
 

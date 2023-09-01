@@ -2,7 +2,6 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-
 import { ActivatedRoute, Router } from '@angular/router';
 import { TwofaformComponent } from 'src/app/components/twofaform/twofaform.component';
 

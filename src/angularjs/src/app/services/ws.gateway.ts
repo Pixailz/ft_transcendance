@@ -9,8 +9,18 @@ import {
 @Injectable({
 	providedIn: 'root',
 })
-export class WSChatGateway {
-	constructor (private socket: Socket) {}
+export class WSGateway {
+	constructor (public socket: Socket) {
+		const config = {
+			path: "/ws",
+			extraHeaders: {
+				Authorization: localStorage.getItem("access_token") as string
+			},
+			autoConnect: false,
+		};
+		this.socket.ioSocket.io.opts = config;
+		this.socket.ioSocket.open();
+	}
 
 	listenAllFriend(): Observable<UserI[]>
 	{
