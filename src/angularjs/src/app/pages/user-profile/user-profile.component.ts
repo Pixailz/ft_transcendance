@@ -4,6 +4,8 @@ import { UserService } from '../../services/user.service';
 import { DefUserI, UserI } from 'src/app/interfaces/chat.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { TwofaformComponent } from 'src/app/components/twofaform/twofaform.component';
+import { DialogRef } from '@angular/cdk/dialog';
+import { BackService } from 'src/app/services/back.service';
 
 @Component({
 	selector: 'app-user-profile',
@@ -14,7 +16,10 @@ export class UserProfileComponent implements OnInit {
 	constructor(
 		private userService: UserService,
 		private formBuilder: FormBuilder,
-		public dialog: MatDialog) {}
+		private back: BackService,
+		public dialog: MatDialog
+	)
+	{}
 
 	user: UserI = DefUserI;
 	userForm!: FormGroup;
@@ -27,8 +32,7 @@ export class UserProfileComponent implements OnInit {
 			picture: this.user.picture,
 			email: this.user.email,
 			twofa: this.user.twoAuthFactor,
-		},
-		{ updateOn: "change" });
+		}, { updateOn: "change" });
 	}
 
 	async onSubmit() {
@@ -41,10 +45,7 @@ export class UserProfileComponent implements OnInit {
 				delete this.userForm.value[key];
 			}
 		});
-		await this.userService.updateInfo(
-			this.userForm.value.nickname,
-			this.userForm.value.email
-		)
+		await this.userService.updateProfile(this.userForm.value)
 			.then((res) => {
 				console.log(res);
 			})
@@ -54,22 +55,45 @@ export class UserProfileComponent implements OnInit {
 	}
 
 	async setupTwoFa() {
-		await this.userService
-		.setupTwoFa()
-		.then(async (res) => {
-			this.userForm.patchValue({
-				twofa: true,
+		if (this.userForm.value.twofa)
+		{
+			await this.userService.disableTwoFa()
+			.catch((err: any) => {
+				console.log(err);
+			})
+			.then(() => {
+				this.userForm.patchValue({ twofa: false });
 			});
-			this.dialog.open(TwofaformComponent, {
-				data: {
-					qrCode: res.qrCodeDataURL,
-					notice: "Scan this QR code with your app, then enter the code below",
-					nonce: await this.userService.getNonce(),
-				}
+		}
+		else
+		{
+			await this.userService
+			.setupTwoFa()
+			.then(async (res) => {
+				this.dialog.open(TwofaformComponent, {
+					data: {
+						qrCode: res.qrCodeDataURL,
+						notice: "Scan this QR code with your app, then enter the code below",
+						nonce: await this.userService.getNonce()
+					},
+					panelClass: 'custom-dialog'
+				})
+				.afterClosed().subscribe((res) => {
+					if (res !== undefined && res.status === 'oke')
+					{
+						this.userForm.patchValue({
+							twofa: true
+						});
+					}
+					else {
+						const checkbox = document.getElementById('twofa') as HTMLInputElement;
+						checkbox.checked = false;
+					}
+				});
+			})
+			.catch((err: any) => {
+				console.log(err);
 			});
-		})
-		.catch((err: any) => {
-			console.log(err);
-		});
+		}
 	}
 }

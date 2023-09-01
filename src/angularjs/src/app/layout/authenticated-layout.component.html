@@ -1,5 +1,5 @@
 <app-header></app-header>
-<div class="page-container" [@routeAnimations]="o && o.activatedRouteData && o.activatedRouteData['animation']">
+<div class="page-container" [@routeAnimations]="prepareRoute(o)">
 	<div class="outlet-container">
 		<router-outlet #o="outlet"></router-outlet>
 	</div>

@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component } from '@angular/core';
 import { slideInAnimation } from '../animations';
+import { RouterOutlet } from '@angular/router';
 import { WSGateway } from '../services/ws.gateway';
 
 @Component({
@@ -8,13 +9,20 @@ import { WSGateway } from '../services/ws.gateway';
 	styleUrls: ['./authenticated-layout.component.scss'],
 	animations: [ slideInAnimation ]
 })
-export class AuthenticatedLayoutComponent {
-	constructor (
-		private wsGateway: WSGateway,
-	) {}
+export class AuthenticatedLayoutComponent implements AfterViewInit{
+  constructor(
+    private changeRef: ChangeDetectorRef,
+    private wsGateway: WSGateway) {}
 
-	ngOnInit ()
-	{
-		this.wsGateway.socket.connect();
-	}
+  ngAfterViewInit(): void {
+    this.changeRef.detectChanges();
+  }
+  
+  ngOnInit() {
+    this.wsGateway.socket.connect();
+  }
+
+  prepareRoute(outlet: RouterOutlet){
+    return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
+  }
 }

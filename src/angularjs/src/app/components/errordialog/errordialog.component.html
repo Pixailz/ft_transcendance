@@ -1,0 +1,15 @@
+<div class="container">
+    <header>Something went wrong!</header>
+    <div class="content">
+        <p class="firstline">{{ firstLine }}</p>
+        <span class="trace" role="textbox">{{ stackTrace }}</span>
+    </div>
+    <div class="checkbox">
+        <label for="feedback">Send feedback</label>
+        <input type="checkbox" id="feedback" checked="true" />
+    </div>
+    <br />
+    <div class="actions">
+        <button mat-raised-button color="primary" (click)="close()">OK</button>
+    </div>
+</div>

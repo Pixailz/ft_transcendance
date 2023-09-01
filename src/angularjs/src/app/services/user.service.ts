@@ -39,6 +39,10 @@ export class UserService {
 		return (user);
 	}
 
+	async updateProfile(user: UserI): Promise<any> {
+		return (await this.backService.req("PUT", "/user/me", JSON.stringify(user)));
+	}
+
 	async updateInfo(nickname: string, email?: string) {
 		let body;
 
@@ -76,6 +80,11 @@ export class UserService {
 		});
 
 		return (Promise.resolve(qrcode));
+	}
+
+	async disableTwoFa(): Promise<boolean> {
+		const response = await this.backService.req("POST", "/2fa/disable");
+		return response.affected > 0;
 	}
 
 	async getNonce(): Promise<string> {

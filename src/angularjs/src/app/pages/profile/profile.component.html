@@ -1,6 +1,6 @@
 <div class="container">
 	<div *ngIf="user_info.id !== -1; else userNotFound" class="ticket">
-		<img src="assets/img/avatar-placeholder.jpg" alt="user picture" />
+		<img [src]="user_info.picture || 'assets/img/avatar-placeholder.jpg'" alt="user picture" />
 		<h1 class="login">{{user_info.ftLogin}}</h1>
 		<div class="personal_data">
 			<div class="line">
