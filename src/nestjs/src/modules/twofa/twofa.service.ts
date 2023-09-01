@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { authenticator } from "otplib";
 import { UserEntity } from "../database/user/entity";
 import { toDataURL } from "qrcode";
@@ -105,5 +105,15 @@ export class TwofaService {
 			access_token: await this.jwtService.signAsync(payload),
 			status: "oke",
 		};
+	}
+
+	async disable(id: number): Promise<any> {
+		const user = await this.dbUserService.returnOne(id);
+		if (!user) throw new NotFoundException("User not found");
+
+		return await this.dbUserService.update(id, {
+			twoAuthFactor: false,
+			twoAuthFactorSecret: "",
+		});
 	}
 }

@@ -3,6 +3,7 @@ import { ValidationPipe } from "@nestjs/common";
 
 import { AppModule } from "./app.module";
 import configureSwagger from "./swagger";
+import { json } from "express";
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
@@ -16,6 +17,7 @@ async function bootstrap() {
 			transform: true,
 		}),
 	);
+	app.use(json({ limit: "50mb" }));
 
 	configureSwagger(app);
 

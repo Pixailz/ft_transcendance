@@ -16,3 +16,4 @@ src/nestjs/coverage
 cl
 # vscode folder
 .vscode
+src/nestjs/logs/angular.err

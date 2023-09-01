@@ -7,7 +7,7 @@ import { UserService } from 'src/app/services/user.service';
 @Component({
   selector: 'app-twofaform',
   templateUrl: './twofaform.component.html',
-  styleUrls: ['./twofaform.component.css']
+  styleUrls: ['./twofaform.component.scss']
 })
 export class TwofaformComponent implements OnInit {
 
@@ -26,19 +26,13 @@ export class TwofaformComponent implements OnInit {
   ngOnInit() {
   }
 
-  async sendTwoFa() {
+  async sendTwoFa(code: string) {
     const nonce = this.route.snapshot.queryParamMap.get('nonce') || this.nonce;
-    const code = document.getElementById('code') as HTMLInputElement;
     const status = document.getElementById('status') as HTMLParagraphElement;
 
-    if (code.value.length !== 6) {
-      status.innerText = 'Please enter a valid code.';
-      return;
-    }
-
-    let uri = '/2fa/verify/' + nonce + '/' + code.value;
-    if (this.qrCode && code.value != "")
-      uri = '/2fa/setup/' + nonce + '/' + code.value;
+    let uri = '/2fa/verify/' + nonce + '/' + code;
+    if (this.qrCode && code != "")
+      uri = '/2fa/setup/' + nonce + '/' + code;
 
     const response = await this.back.req(
       'POST', 

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Request } from "@nestjs/common";
 import { Public } from "src/public.decorator";
 import { TwofaService } from "./twofa.service";
 
@@ -20,5 +20,10 @@ export class TwofaController {
 	@Post("setup/:nonce/:code")
 	async verifySetup(@Param() params: any) {
 		return this.twofaService.verifySetup(params.nonce, params.code);
+	}
+
+	@Post("disable")
+	async disable(@Request() req) {
+		return this.twofaService.disable(req.user.user_id);
 	}
 }
