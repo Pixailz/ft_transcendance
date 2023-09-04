@@ -1,4 +1,13 @@
-import { Body, ClassSerializerInterceptor, Controller, Get, Param, Put, Request, UseInterceptors } from "@nestjs/common";
+import {
+	Body,
+	ClassSerializerInterceptor,
+	Controller,
+	Get,
+	Param,
+	Put,
+	Request,
+	UseInterceptors,
+} from "@nestjs/common";
 import { DBUserInfoPost } from "../../modules/database/user/dto";
 import { DBUserService } from "../../modules/database/user/service";
 import { UserEntity } from "src/modules/database/user/entity";
@@ -25,10 +34,7 @@ export class UserController {
 	}
 
 	@Get("profile/:login")
-	async getUserProfile(
-		@Param("login") ft_login: string,
-	)
-	{
+	async getUserProfile(@Param("login") ft_login: string) {
 		return await this.dbUserService.getUserByLogin(ft_login);
 	}
 

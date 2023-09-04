@@ -5,31 +5,31 @@ import {
 	FriendI,
 } from 'src/app/interfaces/chat.interface';
 import { WSGateway } from 'src/app/services/ws.gateway';
-import { ChatService } from 'src/app/services/chat.service';
+import { PrivChatService } from './priv-chat.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
-	selector: 'app-chat',
-	templateUrl: './chat.component.html',
-	styleUrls: ['./chat.component.scss']
+	selector: 'app-private-chat',
+	templateUrl: './priv-chat.component.html',
+	styleUrls: ['./priv-chat.component.scss']
 })
-export class WSChatComponent implements OnInit {
+export class WSPrivChatComponent implements OnInit {
 	isCreatingRoom: boolean = false;
 	message: string = "";
 
 	constructor(
 		private wsGateway: WSGateway,
-		public chatService: ChatService,
+		public privChatService: PrivChatService,
 		public userService: UserService,
 	) {}
 
 	async ngOnInit() {
-		await this.chatService.updateUserInfo();
+		await this.privChatService.updateUserInfo();
 		this.wsGateway.getAllFriend();
 		this.wsGateway.listenAllFriend()
 			.subscribe((friends: UserI[]) => {
 				console.log("event AllFriend received ");
-				this.chatService.updateAllFriend(friends);
+				this.privChatService.updateAllFriend(friends);
 			}
 		)
 
@@ -37,7 +37,7 @@ export class WSChatComponent implements OnInit {
 		this.wsGateway.listenAllPrivateRoom()
 			.subscribe((rooms: ChatRoomI[]) => {
 				console.log("event AllPrivateRoom received")
-				this.chatService.updateAllPrivateRoom(rooms);
+				this.privChatService.updateAllPrivateRoom(rooms);
 			}
 		)
 
@@ -45,39 +45,39 @@ export class WSChatComponent implements OnInit {
 		this.wsGateway.listenAllPrivateMessage()
 			.subscribe((data: any) => {
 				console.log("event AllPrivateMessage received")
-				this.chatService.updateAllPrivateMessage(data);
+				this.privChatService.updateAllPrivateMessage(data);
 			}
 		)
 
 		this.wsGateway.listenNewPrivateRoom()
 			.subscribe((room: ChatRoomI) => {
 				console.log("event NewPrivateRoom received")
-				this.chatService.updateNewPrivateRoom(room);
+				this.privChatService.updateNewPrivateRoom(room);
 			}
 		)
 
 		this.wsGateway.listenNewPrivateMessage()
 			.subscribe((data: any) => {
 				console.log("event NewPrivateMessage received")
-				this.chatService.updateNewPrivateMessage(data);
+				this.privChatService.updateNewPrivateMessage(data);
 			}
 		)
 
 		this.wsGateway.listenNewStatusFriend()
 			.subscribe((data: any) => {
 				console.log("event NewStatusFriend received")
-				this.chatService.updateNewFriendStatus(data);
+				this.privChatService.updateNewFriendStatus(data);
 			}
 		)
 	}
 
 	onCreateFriend(friend: FriendI) {
-		this.chatService.updateSelectedFriend(friend);
+		this.privChatService.updateSelectedFriend(friend);
 
-		const	selected_friend = this.chatService.getSelectedFriend();
+		const	selected_friend = this.privChatService.getSelectedFriend();
 		if (selected_friend.user_info.id === -1)
 			return ;
-		if (this.chatService.isGoodFriendRoom(selected_friend.room))
+		if (this.privChatService.isGoodFriendRoom(selected_friend.room))
 		{
 			console.log( `[chat] private chat room with ${selected_friend
 				.user_info.ftLogin} already created`)
@@ -88,9 +88,9 @@ export class WSChatComponent implements OnInit {
 	}
 
 	onSelectFriend(friend: FriendI) {
-		this.chatService.updateSelectedFriend(friend);
+		this.privChatService.updateSelectedFriend(friend);
 
-		const	selected_room = this.chatService.getSelectedFriendRoom();
+		const	selected_room = this.privChatService.getSelectedFriendRoom();
 
 		if (!selected_room)
 			return ;
@@ -106,7 +106,7 @@ export class WSChatComponent implements OnInit {
 
 	onGetInfo()
 	{
-		this.chatService.getInfo()
+		this.privChatService.getInfo()
 	}
 
 	onPress(event: any)
@@ -116,7 +116,7 @@ export class WSChatComponent implements OnInit {
 	}
 
 	sendMessage() {
-		const selected_room = this.chatService.getSelectedFriendRoom();
+		const selected_room = this.privChatService.getSelectedFriendRoom();
 
 		if (selected_room.id === -1)
 			return ;
@@ -125,7 +125,7 @@ export class WSChatComponent implements OnInit {
 	}
 
 	isSameUser(i: number): boolean {
-		const selected_room = this.chatService.getSelectedFriendRoom();
+		const selected_room = this.privChatService.getSelectedFriendRoom();
 		if (selected_room.id === -1)
 			return (false);
 
@@ -141,7 +141,7 @@ export class WSChatComponent implements OnInit {
 	}
 
 	isFollowingDay(i: number): boolean {
-		const selected_room = this.chatService.getSelectedFriendRoom();
+		const selected_room = this.privChatService.getSelectedFriendRoom();
 		if (selected_room.id === -1)
 			return (false);
 

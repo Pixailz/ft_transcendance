@@ -17,7 +17,7 @@ export class AuthenticatedLayoutComponent implements AfterViewInit{
   ngAfterViewInit(): void {
     this.changeRef.detectChanges();
   }
-  
+
   ngOnInit() {
     this.wsGateway.socket.connect();
   }

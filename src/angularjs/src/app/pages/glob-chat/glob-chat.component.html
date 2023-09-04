@@ -1,0 +1,303 @@
+<div class="side-bar">
+	<div *ngIf="popupType === 'create-join'" class="popup-create-join">
+		<button class="close" (click)="onClosePopup()">
+			<mat-icon fontIcon="close"></mat-icon>
+		</button>
+		<div class="room-create-join">
+			<div class="room-create">
+				<form [formGroup]="roomCreateForm">
+					<mat-card-content>
+						<mat-form-field>
+							<input
+							type="text"
+							matInput
+							formControlName="roomName"
+							placeholder="Room name"
+							[required]="true"
+						/>
+						</mat-form-field>
+						<br>
+						<mat-form-field>
+							<input
+							type="password"
+							matInput
+							formControlName="password"
+							placeholder="Room password"
+						/>
+						</mat-form-field>
+						<br>
+						<mat-card-actions>
+							<div class="buttoncontainer">
+								<button
+									mat-raised-button
+									color="primary"
+									(click)="onClearCreateDetails()"
+									[disabled]="!roomCreateForm.dirty"
+								>
+									Clear
+								</button>
+							</div>
+						</mat-card-actions>
+					</mat-card-content>
+				</form>
+				<br><br><br>
+				<form [formGroup]="roomCreateFriends">
+					<mat-form-field style="width: 80%; margin: 10px;">
+						<mat-label>Selected Friend</mat-label>
+						<mat-select multiple formControlName="user">
+							<mat-option *ngFor="let friend of privChatService.getFriends()" [value]="friend.user_info">
+							{{userService.getUserInfoFormated(friend.user_info)}}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+					<br>
+					<p *ngFor="let user of getCreateFriendUser();">{{user.ftLogin}}</p>
+					<mat-card-actions>
+						<div class="buttoncontainer">
+							<button
+								mat-raised-button
+								color="primary"
+								(click)="onClearFriend()"
+								[disabled]="!roomCreateFriends.dirty"
+							>
+								Clear
+							</button>
+						</div>
+					</mat-card-actions>
+				</form>
+				<br><br><br>
+				<div class="room-create-button">
+					<mat-card-actions>
+						<div class="buttoncontainer">
+							<button
+								mat-raised-button
+								color="primary"
+								(click)="onCreate()"
+								[disabled]="!roomCreateForm.valid"
+							>
+								Create
+							</button>
+						</div>
+						<div class="buttoncontainer">
+							<button
+								mat-raised-button
+								color="primary"
+								(click)="onClearCreate()"
+								[disabled]="!roomCreateForm.dirty && !roomCreateFriends.dirty"
+							>
+								Clear
+							</button>
+						</div>
+					</mat-card-actions>
+				</div>
+			</div>
+			<div class="room-join">
+				<mat-form-field style="margin: 10px">
+					<mat-label>Selected Room</mat-label>
+					<mat-select [(ngModel)]="joinSelectedRoom" name="room">
+						<mat-option value="-1">None</mat-option>
+						<mat-option *ngFor="let room of globChatService.getAvailableGlobalRoom()" [value]="room.id">
+						{{globChatService.getRoomTitle(room)}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+				<div *ngIf="getJoinSelected().id !== -1">
+					<div *ngIf="getJoinSelected().type === 2">
+						<form [formGroup]="roomJoinPrivateForm">
+							<mat-form-field>
+								<input
+								type="password"
+								matInput
+								formControlName="password"
+								placeholder="Room Password"
+								[required]="true"
+							/>
+							</mat-form-field>
+							<mat-card-actions>
+								<div class="buttoncontainer">
+									<button
+										mat-raised-button
+										color="primary"
+										(click)="onJoin();"
+										[disabled]="!roomJoinPrivateForm.valid"
+									>
+										Join
+									</button>
+								</div>
+							</mat-card-actions>
+							<mat-card-actions>
+								<div class="buttoncontainer">
+									<button
+										mat-raised-button
+										color="primary"
+										(click)="onClearJoin()"
+										[disabled]="!roomJoinPrivateForm.dirty"
+									>
+										Clear
+									</button>
+								</div>
+							</mat-card-actions>
+						</form>
+					</div>
+					<div *ngIf="getJoinSelected().type === 1">
+						<mat-card-actions>
+							<div class="buttoncontainer">
+								<button
+									mat-raised-button
+									color="primary"
+									(click)="onJoin()"
+								>
+									Join
+								</button>
+							</div>
+						</mat-card-actions>
+					</div>
+					<br><br><br>
+					<div class="room-join-info" *ngIf="getJoinSelected().id !== -1">
+						<h4>ROOM INFO</h4>
+						<p>ID   : {{getJoinSelected().id}}</p>
+						<p>NAME : {{getJoinSelected().name}}</p>
+						<p>TYPE : {{globChatService.getRoomTypeStr(getJoinSelected())}}</p>
+						<p>OWNER : {{globChatService.getOwner(getJoinSelected()).ftLogin }}</p>
+						<p>ADMIN :</p>
+						<p *ngFor="let user of globChatService.getAdmin(getJoinSelected())">- {{user.ftLogin}}</p>
+					</div>
+					<div class="room-join-user" *ngIf="getJoinSelected().id !== -1">
+						<h4>USERS ({{getJoinUser().length}}/40)</h4>
+						<p *ngFor="let user of getJoinUser()">{{user.ftLogin}}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div *ngIf="popupType === 'management'" class="popup-management">
+		<button class="close" (click)="onClosePopup()">
+			<mat-icon fontIcon="close"></mat-icon>
+		</button>
+		<div class="room-management">
+			<div class="room-management-detail">
+				<form [formGroup]="roomManagementDetails">
+					<mat-card-content>
+						<mat-form-field>
+							<input
+							type="text"
+							matInput
+							formControlName="name"
+							placeholder="Room name"
+						/>
+						</mat-form-field>
+						<br>
+						<mat-form-field>
+							<input
+							type="password"
+							matInput
+							formControlName="password"
+							placeholder="Room password"
+						/>
+						</mat-form-field>
+						<br>
+						<div class="button-row">
+							<mat-card-actions>
+								<button
+									mat-raised-button
+									color="primary"
+									(click)="onClearManagementDetails()"
+									[disabled]="!roomManagementDetails.dirty"
+								>
+									Clear
+								</button>
+							</mat-card-actions>
+							<mat-card-actions>
+								<button
+									mat-raised-button
+									color="primary"
+									(click)="onChangeRoomDetails()"
+									[disabled]="!canChangeRoomDetails() || !roomManagementDetails.dirty"
+								>
+									Change
+								</button>
+							</mat-card-actions>
+							<mat-slide-toggle
+								formControlName="remove_pass"
+								[disabled]="globChatService.getSelectedRoom().type !== 2">
+								Remove pass
+							</mat-slide-toggle>
+						</div>
+					</mat-card-content>
+				</form>
+			</div>
+			<div class="room-management-user">
+				<div *ngIf="globChatService.getSelectedRoom().id !== -1">
+					<h4>ROOM INFO</h4>
+					<p>ID    : {{globChatService.getSelectedRoom().id}}</p>
+					<p>NAME  : {{globChatService.getSelectedRoom().name}}</p>
+					<p>TYPE  : {{globChatService.getRoomTypeStr(globChatService.getSelectedRoom())}}</p>
+					<p>OWNER : {{globChatService.getOwnerSelectedRoom().ftLogin }}</p>
+					<p>ADMIN :</p>
+					<p *ngFor="let user of globChatService.getAdminSelectedRoom()">- {{user.ftLogin}}</p>
+				</div>
+				<div *ngIf="globChatService.getSelectedRoom().id !== -1">
+					<h4>USERS ({{globChatService.getSelectedRoomUser().length}}/40)</h4>
+					<div *ngFor="let user of globChatService.getSelectedRoomUser()">
+						{{user.ftLogin}} ({{user.nickname}})
+						<div class="button-row">
+							<button mat-raised-button color="primary"
+								(click)="onKickUser(user)"
+								[disabled]="!globChatService.isOwnerSelectedRoom()">
+								KICK
+							</button>
+							<button mat-raised-button color="primary"
+								(click)="onBanUser(user)"
+								[disabled]="!globChatService.isOwnerSelectedRoom()">
+								BAN
+							</button>
+							<button mat-raised-button color="primary"
+								(click)="onMuteUser(user)"
+								[disabled]="!globChatService.isOwnerSelectedRoom()">
+								MUTE
+							</button>
+							<button mat-raised-button color="primary"
+								(click)="onPromoteUser(user)"
+								[disabled]="!globChatService.isOwnerSelectedRoom()">
+								PROMOTE
+							</button>
+							<button mat-raised-button color="primary"
+								(click)="onGiveKrownUser(user)"
+								[disabled]="!globChatService.isOwnerSelectedRoom()">
+								GIVE OWNERSHIP
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<ul class="room-list">
+		<li *ngFor="let room of globChatService.getJoinedGlobalRoom();">
+			<button (click)="onSelectRoom(room)">{{globChatService.getRoomTitle(room)}}</button>
+		</li>
+	</ul>
+	<app-flat-button bgColor="#a7dca3" fontIcon="add" (click)="onCreatingRoom()"></app-flat-button>
+</div>
+<div *ngIf="globChatService.isGoodSelectedRoom()" class="chat-container">
+	<h2 [routerLink]="" (click)="onOpenManagement()">{{globChatService.getRoomTitle(globChatService.getSelectedRoom())}}</h2>
+	<ol class="msg-list">
+		<li *ngFor="let _ of globChatService.getSelectedRoom().message; let i=index;" [ngClass]="{'me': globChatService.getCurrentMessage(i).userId === globChatService.getCurrentUser().id, 'same': isSameUser(i)}">
+			<div class="title-line">
+				<span class="date" *ngIf="!isFollowingDay(i)">{{globChatService.getCurrentMessage(i).updateAt | date: 'dd/MM/YYYY'}}</span>
+				<span class="login" *ngIf="!isSameUser(i)">{{globChatService.getCurrentMessageUser(i).ftLogin}}</span>
+			</div>
+			<div class="msg-line">
+				<span class="content">{{globChatService.getCurrentMessage(i).content}}</span>
+				<span class="time">{{globChatService.getCurrentMessage(i).updateAt | date: 'HH:mm'}}</span>
+			</div>
+		</li>
+	</ol>
+	<div class="txt-bar">
+		<input [(ngModel)]="message" type="text" placeholder="Enter a message..." (keypress)="onPress($event)">
+		<button (click)="sendMessage()">
+			<mat-icon fontIcon="send"></mat-icon>
+		</button>
+	</div>
+</div>
+<app-flat-button class="refresh" bgColor="#ffb1b1" fontIcon="refresh" (click)="onGetInfo()"></app-flat-button>

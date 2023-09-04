@@ -27,7 +27,6 @@ import { UserProfileComponent } from './pages/user-profile/user-profile.componen
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
-import { WSChatComponent } from './pages/chat/chat.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { environment } from './environments/environment';
 import { AnonymousLayoutComponent } from './layout/anonymous-layout.component';
@@ -39,6 +38,10 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { CodeInputModule } from 'angular-code-input';
 import { ErrordialogComponent } from './components/errordialog/errordialog.component';
 import { GlobalErrorHandlerService } from './services/global-error-handler.service';
+
+// WEBSOCKET
+import { WSPrivChatComponent } from './pages/priv-chat/priv-chat.component';
+import { WSGlobChatComponent } from './pages/glob-chat/glob-chat.component';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -63,13 +66,14 @@ const config: SocketIoConfig = {
 		AvatarComponent,
 		LoginComponent,
 		RegisterComponent,
-		WSChatComponent,
+		WSPrivChatComponent,
+		WSGlobChatComponent,
 		AnonymousLayoutComponent,
 		AuthenticatedLayoutComponent,
 		FlatButtonComponent,
 		TwofaformComponent,
-    	ProfileComponent,
-     ErrordialogComponent
+		ProfileComponent,
+		ErrordialogComponent
 	],
 	imports: [
 		BrowserModule,

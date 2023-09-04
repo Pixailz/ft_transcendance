@@ -19,7 +19,7 @@ import { ErrorLogController } from "./adapter/errorlog.controller";
 		WSModule,
 		UserModule,
 		ChatRoomModule,
-		TwofaModule
+		TwofaModule,
 	],
 	controllers: [ErrorLogController],
 	providers: [

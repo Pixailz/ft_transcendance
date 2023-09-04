@@ -22,23 +22,24 @@ export class DBChatRoomController {
 
 	@Get()
 	async getAll() {
-		return (await this.dbChatRoomService.returnAll());
+		return await this.dbChatRoomService.returnAll();
 	}
 
 	@Get(":id")
 	async getOne(@Param("id") userId: number) {
-		return (await this.dbChatRoomService.returnOne(userId));
+		return await this.dbChatRoomService.returnOne(userId);
 	}
 
 	@Put(":id")
 	async update(
 		@Param("id") userId: number,
-		@Body() userPost: DBChatRoomPost) {
-		return (await this.dbChatRoomService.update(userId, userPost));
+		@Body() userPost: DBChatRoomPost,
+	) {
+		return await this.dbChatRoomService.update(userId, userPost);
 	}
 
 	@Delete(":id")
 	async delete(@Param("id") userId: number) {
-		return (await this.dbChatRoomService.delete(userId));
+		return await this.dbChatRoomService.delete(userId);
 	}
 }

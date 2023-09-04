@@ -1,24 +1,23 @@
 import { Injectable } from "@angular/core";
 import {
 	ChatRoomI,
-	DefChatI,
 	DefChatRoomI,
 	DefFriendI,
-	DefUserI,
 	FriendI,
 	UserI
-} from "../interfaces/chat.interface";
-import { UserService } from "./user.service";
+} from "src/app/interfaces/chat.interface";
+import { DefChatPrivI } from "./priv-chat.interface";
+import { UserService } from "../../services/user.service";
 
 @Injectable({
 	providedIn: "root",
 })
-export class ChatService {
+export class PrivChatService {
 	constructor(
 		private userService: UserService,
 	) {}
 
-	chat = DefChatI;
+	chat = DefChatPrivI;
 
 	updateAllFriend(friends: UserI[])
 	{

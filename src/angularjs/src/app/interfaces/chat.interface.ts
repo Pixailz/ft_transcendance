@@ -4,6 +4,12 @@ export enum Status {
 	AWAY,
 }
 
+export enum RoomType {
+	PRIVATE,
+	PUBLIC,
+	PROTECTED,
+}
+
 export interface UserI {
 	id					: number;
 	ftLogin?			: string;
@@ -27,7 +33,7 @@ export interface MessageI {
 	id					: number;
 	roomId?				: number;
 	userId				: number;
-	user?				: UserI;
+	user				: UserI;
 	room?				: ChatRoomI;
 	content?			: string;
 	updateAt?			: Date;
@@ -36,12 +42,13 @@ export interface MessageI {
 export const DefMessageI: MessageI = {
 	id					: -1,
 	userId				: -1,
+	user				: DefUserI,
 }
 
 export interface ChatRoomI {
 	id					: number;
 	name?				: string;
-	type?				: string;
+	type				: number;
 	password?			: string;
 	user				: UserI;
 	roomInfo?			: UserChatRoomI[];
@@ -51,6 +58,7 @@ export interface ChatRoomI {
 export const DefChatRoomI: ChatRoomI = {
 	id					: -1,
 	user				: DefUserI,
+	type				: -1,
 	message				: Array(DefMessageI),
 }
 
@@ -77,18 +85,4 @@ export interface FriendI {
 export const DefFriendI: FriendI = {
 	user_info			: DefUserI,
 	room				: DefChatRoomI,
-}
-
-export interface ChatI {
-	user				: UserI;
-	friends				: any;
-	selected_friend_id	: string;
-	selected_friend		: FriendI;
-}
-
-export const DefChatI: ChatI = {
-	user				: DefUserI,
-	friends				: {},
-	selected_friend_id	: "-1",
-	selected_friend		: DefFriendI,
 }

@@ -1,4 +1,9 @@
-import { ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import {
+	ForbiddenException,
+	Injectable,
+	InternalServerErrorException,
+	NotFoundException,
+} from "@nestjs/common";
 import { authenticator } from "otplib";
 import { UserEntity } from "../database/user/entity";
 import { toDataURL } from "qrcode";

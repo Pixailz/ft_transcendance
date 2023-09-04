@@ -14,9 +14,14 @@
 			<app-flat-button [isActive]="rla.isActive" color="white" bgColor="#a3d0dc" fontIcon="games"></app-flat-button>
 		</li>
 		<li *ngIf="userLoggedIn"
-		routerLink="/chat"
+		routerLink="/chat/private"
 		routerLinkActive #rla="routerLinkActive">
 			<app-flat-button [isActive]="rla.isActive" color="white" bgColor="#a3d0dc" fontIcon="message"></app-flat-button>
+		</li>
+		<li *ngIf="userLoggedIn"
+		routerLink="/chat/global"
+		routerLinkActive #rla="routerLinkActive">
+			<app-flat-button [isActive]="rla.isActive" color="white" bgColor="#a3d0dc" fontIcon="public"></app-flat-button>
 		</li>
 		<li *ngIf="userLoggedIn"
 		routerLink="/profile"

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BackService } from "./back.service";
-import { UserI, DefUserI, Status } from "../interfaces/chat.interface";
+import { UserI, DefUserI, Status } from "src/app/interfaces/chat.interface";
 
 @Injectable({
 	providedIn: "root",

@@ -49,10 +49,11 @@ export class UserService {
 	async setStatus(user_id: number, status: number) {
 		const date = new Date(Date.now());
 
-		await this.dbUserService.update(user_id, {
-			status: status,
-			lastSeen: date,
-		})
+		await this.dbUserService
+			.update(user_id, {
+				status: status,
+				lastSeen: date,
+			})
 			.catch((err) => {
 				console.log("[userService:setStatus]", err.message);
 			});

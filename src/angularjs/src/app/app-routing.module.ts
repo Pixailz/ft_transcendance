@@ -8,11 +8,12 @@ import { UserProfileComponent } from './pages/user-profile/user-profile.componen
 import { LoginComponent } from './pages/login/login.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { RegisterComponent } from './pages/register/register.component';
-import { WSChatComponent } from './pages/chat/chat.component';
+import { WSPrivChatComponent } from './pages/priv-chat/priv-chat.component';
 import { AnonymousLayoutComponent } from './layout/anonymous-layout.component';
 import { AuthenticatedLayoutComponent } from './layout/authenticated-layout.component';
 import { TwofaformComponent } from './components/twofaform/twofaform.component';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { WSGlobChatComponent } from './pages/glob-chat/glob-chat.component';
 
 const routes: Routes = [
 	{
@@ -47,9 +48,14 @@ const routes: Routes = [
 				data: { animation: 'ProfileUser' }
 			},
 			{
-				path: 'chat',
-				component: WSChatComponent,
-				data: { animation: 'Chat' }
+				path: 'chat/private',
+				component: WSPrivChatComponent,
+				data: { animation: 'PrivChat' }
+			},
+			{
+				path: 'chat/global',
+				component: WSGlobChatComponent,
+				data: { animation: 'GlobChat' }
 			}
 		]
 	},

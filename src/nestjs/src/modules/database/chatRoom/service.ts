@@ -26,34 +26,26 @@ export class DBChatRoomService {
 
 	async returnOne(chatId: number) {
 		const tmp = await this.chatRoomRepo.findOneBy({ id: chatId });
-		if (tmp)
-			return tmp;
-		else
-			throw new NotFoundException("ChatRoom not found");
+		if (tmp) return tmp;
+		else throw new NotFoundException("ChatRoom not found");
 	}
 
 	async update(chatId: number, post: DBChatRoomPost) {
 		const tmp = await this.chatRoomRepo.findOneBy({ id: chatId });
-		if (tmp)
-			return await this.chatRoomRepo.update(chatId, post);
-		else
-			throw new NotFoundException("ChatRoom not found");
+		if (tmp) return await this.chatRoomRepo.update(chatId, post);
+		else throw new NotFoundException("ChatRoom not found");
 	}
 
 	async updateType(chatId: number, post: DBChatRoomTypePost) {
 		const tmp = await this.chatRoomRepo.findOneBy({ id: chatId });
-		if (tmp)
-			return await this.chatRoomRepo.update(chatId, post);
-		else
-			throw new NotFoundException("ChatRoom not found");
+		if (tmp) return await this.chatRoomRepo.update(chatId, post);
+		else throw new NotFoundException("ChatRoom not found");
 	}
 
 	async delete(chatId: number) {
 		const tmp = await this.chatRoomRepo.findOneBy({ id: chatId });
-		if (tmp)
-			return await this.chatRoomRepo.delete(chatId);
-		else
-			throw new NotFoundException("ChatRoom not found");
+		if (tmp) return await this.chatRoomRepo.delete(chatId);
+		else throw new NotFoundException("ChatRoom not found");
 	}
 
 	async getAllPrivateRoom(chatId: number): Promise<ChatRoomEntity> {

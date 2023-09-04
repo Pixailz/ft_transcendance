@@ -16,10 +16,9 @@ export class DBMutedService {
 	) {}
 
 	async create(post: DBMutedPost, meId: number) {
-		const user1 = await this.userRepo.findOneBy({id: meId});
-		const user2 = await this.userRepo.findOneBy({id: post.mutedId});
-		if (!user1 || !user2)
-			throw new NotFoundException("User not found");
+		const user1 = await this.userRepo.findOneBy({ id: meId });
+		const user2 = await this.userRepo.findOneBy({ id: post.mutedId });
+		if (!user1 || !user2) throw new NotFoundException("User not found");
 		let list = new MutedEntity();
 		list.meId = meId;
 		list.mutedId = post.mutedId;
@@ -32,7 +31,10 @@ export class DBMutedService {
 	}
 
 	async returnOne(me_id: number, Muted_id: number) {
-		const tmp = await this.mutedRepo.findOneBy({ meId: me_id, mutedId: Muted_id });
+		const tmp = await this.mutedRepo.findOneBy({
+			meId: me_id,
+			mutedId: Muted_id,
+		});
 		if (tmp) return tmp;
 		else throw new NotFoundException("Muted relation not found");
 	}
@@ -44,7 +46,10 @@ export class DBMutedService {
 	// }
 
 	async delete(me_id: number, Muted_id: number) {
-		const tmp = await this.mutedRepo.findOneBy({ meId: me_id, mutedId: Muted_id });
+		const tmp = await this.mutedRepo.findOneBy({
+			meId: me_id,
+			mutedId: Muted_id,
+		});
 		if (tmp) return await this.mutedRepo.delete(tmp);
 		else throw new NotFoundException("Muted relation not found");
 	}

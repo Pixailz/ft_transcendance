@@ -28,7 +28,6 @@ import { DBFriendController } from "./friend/controller";
 import { DBFriendRequestController } from "./friendRequest/controller";
 import { DBMutedController } from "./muted/controller";
 
-
 @Module({
 	imports: [
 		TypeOrmModule.forRoot({

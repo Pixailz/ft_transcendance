@@ -10,14 +10,14 @@ import {
 export class DBUserPost {
 	@IsNotEmpty()
 	@IsString()
-	@MinLength(4, {message: "minimum len for login is 4"})
+	@MinLength(4, { message: "minimum len for login is 4" })
 	ftLogin?: string;
 }
 
 export class DBUserInfoPost {
 	@IsOptional()
 	@IsString()
-	@MinLength(4, {message: "minimum len for nickname is 4"})
+	@MinLength(4, { message: "minimum len for nickname is 4" })
 	nickname?: string;
 
 	@IsOptional()

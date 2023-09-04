@@ -4,8 +4,8 @@ import { UserChatRoomEntity } from "../userChatRoom/entity";
 import { MessageEntity } from "../message/entity";
 
 export enum RoomType {
-	PUBLIC,
 	PRIVATE,
+	PUBLIC,
 	PROTECTED,
 }
 
@@ -20,7 +20,7 @@ export class ChatRoomEntity {
 	@Column({ type: "integer", default: RoomType.PUBLIC })
 	public type: number;
 
-	@Column({ type: "varchar", length: 120, default: "" })
+	@Column({ type: "varchar", default: "" })
 	public password!: string;
 
 	@OneToMany((type) => UserChatRoomEntity, (roomInfo) => roomInfo.room)
