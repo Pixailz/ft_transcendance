@@ -1,22 +1,86 @@
 <h1 class="mat-h1">Dashboard</h1>
-<mat-grid-list cols="2" rowHeight="fit" colsWidth="50%" gutterSize="30px">
-<mat-grid-tile *ngFor="let card of cards | async" [colspan]="card.cols" [rowspan]="card.rows">
-	<mat-card class="dashboard-card">
-	<mat-card-header>
-		<mat-card-title>
-		{{card.title}}
-		<button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
-			<mat-icon>more_vert</mat-icon>
-		</button>
-		<mat-menu #menu="matMenu" xPosition="before">
-			<button mat-menu-item>Expand</button>
-			<button mat-menu-item>Remove</button>
-		</mat-menu>
-		</mat-card-title>
-	</mat-card-header>
-	<mat-card-content class="dashboard-card-content">
-		<div>Card Content Here</div>
-	</mat-card-content>
-	</mat-card>
-</mat-grid-tile>
+<mat-grid-list cols="3" rowHeight="fit" colsWidth="33%" gutterSize="30px">
+	<mat-grid-tile *ngIf="leaderboard" class="leaderboard" [colspan]="leaderboard.cols" [rowspan]="leaderboard.rows">
+		<mat-card class="dashboard-card">
+			<mat-card-header>
+				<mat-card-title>
+					Leaderboard
+				</mat-card-title>
+			</mat-card-header>
+			<mat-card-content class="dashboard-card-content">
+				<mat-table [dataSource]="leaderboard.content" matSort>
+					<ng-container matColumnDef="rank">
+						<mat-header-cell *matHeaderCellDef mat-sort-header> Rank </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.rank}} </mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="nickname">
+						<mat-header-cell *matHeaderCellDef mat-sort-header> Nickname </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.nickname}} </mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="score">
+						<mat-header-cell *matHeaderCellDef mat-sort-header> Score </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.score}} </mat-cell>
+					</ng-container>
+					<mat-header-row *matHeaderRowDef="['rank', 'nickname', 'score']"></mat-header-row>
+					<mat-row *matRowDef="let row; columns: ['rank', 'nickname', 'score'];"></mat-row>
+				</mat-table>
+			</mat-card-content>
+		</mat-card>
+	</mat-grid-tile>
+	<mat-grid-tile *ngIf="onlineusers" class="onlineusers" [colspan]="onlineusers.cols" [rowspan]="onlineusers.rows">
+		<mat-card class="dashboard-card">
+			<mat-card-header>
+				<mat-card-title>
+					Online Users
+					<button mat-icon-button class="refresh-button" aria-label="refresh" (click)="refOnline()">
+						<mat-icon>refresh</mat-icon>
+					</button>
+				</mat-card-title>
+			</mat-card-header>
+			<mat-card-content class="dashboard-card-content">
+				<mat-table [dataSource]="onlineusers.content" matSort>
+					<ng-container matColumnDef="avatar">
+						<mat-header-cell *matHeaderCellDef> Avatar </mat-header-cell>
+						<mat-cell *matCellDef="let element"> 
+							<img [src]="element.picture || '/assets/img/avatar-placeholder.jpg'" alt="avatar" class="avatar">
+						</mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="nickname">
+						<mat-header-cell *matHeaderCellDef mat-sort-header> Nickname </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.nickname}} </mat-cell>
+					</ng-container>
+					<ng-container matColumnDef="lastseen">
+						<mat-header-cell *matHeaderCellDef mat-sort-header> Last Seen </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.lastSeen | date:"shortTime"}} </mat-cell>
+					</ng-container>
+					<mat-header-row *matHeaderRowDef="['avatar', 'nickname', 'lastseen']"></mat-header-row>
+					<mat-row *matRowDef="let row; columns: ['avatar', 'nickname', 'lastseen'];"></mat-row>
+				</mat-table>
+			</mat-card-content>
+		</mat-card>
+	</mat-grid-tile>
+	<mat-grid-tile *ngIf="global" class="global" [colspan]="global.cols" [rowspan]="global.rows">
+		<mat-card class="dashboard-card">
+			<mat-card-header>
+				<mat-card-title>
+					Global Chatroom
+				</mat-card-title>
+			</mat-card-header>
+			<mat-card-content class="dashboard-card-content">
+				<!-- <app-global-chatroom></app-global-chatroom> -->
+			</mat-card-content>
+		</mat-card>
+	</mat-grid-tile>
+	<mat-grid-tile *ngIf="private" class="private" [colspan]="private.cols" [rowspan]="private.rows">
+		<mat-card class="dashboard-card">
+			<mat-card-header>
+				<mat-card-title>
+					Private Chatroom
+				</mat-card-title>
+			</mat-card-header>
+			<mat-card-content class="dashboard-card-content">
+				<!-- <app-private-chatroom></app-private-chatroom> -->
+			</mat-card-content>
+		</mat-card>
+	</mat-grid-tile>
 </mat-grid-list>
