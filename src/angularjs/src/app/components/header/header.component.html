@@ -3,6 +3,10 @@
 	<button ngClass="{{isExpand}}" (click)="isExpand = !isExpand" *ngIf="isSmallDevice()" class="expand-btn">
 		<mat-icon fontIcon="expand_more"></mat-icon>
 	</button>
+	<div class="friend-menu">
+		<app-flat-button (click)="displayFriendRequest = !displayFriendRequest">Menu</app-flat-button>
+		<app-flat-list *ngIf="displayFriendRequest"[friends]="friend"> </app-flat-list>
+	</div>
 	<ul (window:resize)="onResize()" [ngClass]="{'small-device': isSmallDevice(), 'expand': isExpand}" *ngIf="isExpand || !isSmallDevice()" [@enterAnimation]="isSmallDevice()">
 		<li routerLink="/home"
 		routerLinkActive #rla="routerLinkActive">

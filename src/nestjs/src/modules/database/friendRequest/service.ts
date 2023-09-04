@@ -6,7 +6,7 @@ import { FriendRequestEntity } from "./entity";
 import { DBFriendRequestPost } from "./dto";
 import { UserEntity } from "../user/entity";
 import { DBFriendService } from "../friend/service";
-
+import { FriendEntity } from "../friend/entity";
 @Injectable()
 export class DBFriendRequestService {
 	constructor(
@@ -16,6 +16,8 @@ export class DBFriendRequestService {
 		private readonly userRepo: Repository<UserEntity>,
 		@Inject(DBFriendService)
 		private readonly friendService: DBFriendService,
+		@InjectRepository(FriendRequestEntity)
+		private readonly friendRepo: Repository<FriendEntity>,
 	) {}
 
 	async create(post: DBFriendRequestPost, meId: number) {
@@ -23,6 +25,10 @@ export class DBFriendRequestService {
 		const user2 = await this.userRepo.findOneBy({id: post.friendId});
 		if (!user1 || !user2)
 			throw new NotFoundException("User not found");
+		let tmp = await this.friendRequestRepo.findOneBy({meId: meId, friendId: post.friendId});
+		let tmp2 = await this.friendRepo.findOneBy({meId: meId, friendId: post.friendId});
+		if (tmp || tmp2)
+			return tmp;
 		let request = new FriendRequestEntity();
 		request.meId = meId;
 		request.friendId = post.friendId;
@@ -48,6 +54,11 @@ export class DBFriendRequestService {
 			return await this.friendRequestRepo.delete(tmp);
 		else 
 			throw new NotFoundException("FriendRequest relation not found");
+	}
+
+	async getAllRequest(me_id: number) {
+		const requests = await this.friendRequestRepo.findBy({friendId: me_id});
+		return requests;
 	}
 
 	async acceptReq(me_id: number, friendId: number) {

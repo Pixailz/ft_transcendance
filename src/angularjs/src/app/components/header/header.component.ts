@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { trigger, style, animate, transition, state } from '@angular/animations';
+import { FriendRequestService } from 'src/app/services/friend-request.service';
+import { FriendRequestI, UserI } from 'src/app/interfaces/chat.interface';
 
 @Component({
   selector: 'app-header',
@@ -29,13 +31,22 @@ import { trigger, style, animate, transition, state } from '@angular/animations'
 export class HeaderComponent {
 	userLoggedIn = false;
 	isExpand = false;
-
+	friend: UserI[] = [];
+	displayFriendRequest: boolean = false;
 	constructor(
 		private userService: UserService,
+		public friendRequestService: FriendRequestService,
 	) {}
 
-	async ngOnInit()
-	{ this.userLoggedIn = await this.userService.checkToken(); }
+	async ngOnInit() {
+		this.userLoggedIn = await this.userService.checkToken(); 
+		const requests = await this.friendRequestService.getRequest();
+		for (let i = 0; i < requests.length; i++)
+		{
+			let user = await this.userService.getUserInfoById(requests[i].meId);
+			this.friend.push(user);
+		} 
+	}
 
 	SignOut()
 	{ this.userService.SignOut(); }
@@ -46,6 +57,7 @@ export class HeaderComponent {
 
 	onResize() {
 		if (!this.isSmallDevice())
-			this.isExpand = false;
+			this
+			.isExpand = false;
 	}
 }

@@ -28,19 +28,42 @@ export class DBFriendRequestController {
 		return (await this.dbFriendRequestService.returnAll());
 	}
 
+	@Get("me")
+	async getMyRequest(
+		@Request() req) {
+		const userId = req.user.user_id;
+		return (await this.dbFriendRequestService.getAllRequest(userId));
+	}
+
+	@Delete("/accept/:friend_id")
+	async acceptReq(
+		@Request() req,
+		@Param("friend_id") friendId: number) {
+		const userId = req.user.user_id;
+		return (await this.dbFriendRequestService.acceptReq(friendId, userId));
+	}
+
+	@Delete("/decline/:friend_id")
+	async declineReq(
+		@Request() req,
+		@Param("friend_id") friendId: number) {
+		const userId = req.user.user_id;
+		return (await this.dbFriendRequestService.rejectReq(friendId, userId));
+	}
+
 	@Get(":friend_id")
 	async getOne(
 		@Request() req,
-		@Param("friend_id") friendtId: number) {
+		@Param("friend_id") friendId: number) {
 		const userId = req.user.user_id;
-		return (await this.dbFriendRequestService.returnOne(userId, friendtId));
+		return (await this.dbFriendRequestService.returnOne(userId, friendId));
 	}
 
 	@Delete(":friend_id")
 	async delete(
 		@Request() req,
-		@Param("friend_id") friendtId: number) {
+		@Param("friend_id") friendId: number) {
 		const userId = req.user.user_id;
-		return (await this.dbFriendRequestService.delete(userId, friendtId));
+		return (await this.dbFriendRequestService.delete(userId, friendId));
 	}
 }

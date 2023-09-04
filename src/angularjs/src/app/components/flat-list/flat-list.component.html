@@ -1,0 +1,9 @@
+<ul>
+    <!-- <li *ngFor="let friendRequest of friend">meId = {{friendRequest.meId}} friendId= {{friendRequest.friendId}}</li> -->
+    <li *ngFor="let friend of friends"> 
+        <span>{{friend.ftLogin}}</span> 
+        <button (click)="friendRequestService.acceptRequest(friend.id)">Accept</button> 
+        <button (click)="friendRequestService.declineRequest(friend.id)">Decline</button> 
+    </li>
+</ul>
+
