@@ -1,8 +1,13 @@
-import { NotFoundException, Injectable, BadRequestException, InternalServerErrorException } from "@nestjs/common";
+import {
+	NotFoundException,
+	Injectable,
+	BadRequestException,
+	InternalServerErrorException,
+} from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
-import { UserEntity } from "./entity";
+import { Status, UserEntity } from "./entity";
 
 import { DBUserPost, DBUserInfoPost } from "./dto";
 import { Api42Service } from "../../api42/service";
@@ -12,7 +17,7 @@ export class DBUserService {
 	constructor(
 		@InjectRepository(UserEntity)
 		private readonly userRepo: Repository<UserEntity>,
-	) { }
+	) {}
 
 	async create(userPost: DBUserPost): Promise<number> {
 		const user = new UserEntity({});
@@ -40,24 +45,20 @@ export class DBUserService {
 		return await this.userRepo.find();
 	}
 
-	async returnOne(userId?: number, ft_login?: string): Promise<UserEntity>{
+	async returnOne(userId?: number, ft_login?: string): Promise<UserEntity> {
 		return await this.get_user(userId, ft_login);
 	}
 
 	async update(userId: number, userPost: DBUserInfoPost) {
 		const user = await this.get_user(userId, null);
-		if (user) 
-			return await this.userRepo.update(userId, userPost);
-		else 
-			throw new NotFoundException("User not found");
+		if (user) return await this.userRepo.update(userId, userPost);
+		else throw new NotFoundException("User not found");
 	}
 
 	async delete(userId: number) {
 		const user = await this.get_user(userId, null);
-		if (user) 
-			return await this.userRepo.delete({ id: userId });
-		else 
-			throw new NotFoundException("User not found");
+		if (user) return await this.userRepo.delete({ id: userId });
+		else throw new NotFoundException("User not found");
 	}
 
 	async get_user(
@@ -81,7 +82,9 @@ export class DBUserService {
 		const nonce = crypto.getRandomValues(new Uint8Array(16)).join("");
 		await this.userRepo.update(userId, { nonce: nonce }).catch((err) => {
 			console.log(err);
-			throw new InternalServerErrorException("Error setting nonce: " + err);
+			throw new InternalServerErrorException(
+				"Error setting nonce: " + err,
+			);
 		});
 		return { nonce: nonce };
 	}
@@ -96,5 +99,26 @@ export class DBUserService {
 			},
 		});
 		return Promise.resolve(user_info);
+	}
+
+	async getOnlineUsers(): Promise<Partial<UserEntity[]>> {
+		const users = await this.userRepo.find({
+			where: {
+				status: Status.CONNECTED,
+			},
+		});
+
+		users.forEach((user) => {
+			Object.getOwnPropertyNames(user).forEach((key) => {
+				if (
+					key !== "nickname" &&
+					key !== "picture" &&
+					key !== "lastSeen"
+				)
+					delete user[key];
+			});
+		});
+
+		return users;
 	}
 }
