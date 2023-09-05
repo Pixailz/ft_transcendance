@@ -28,14 +28,12 @@ export class FlatListComponent implements OnInit, OnChanges {
   }
 
   async ngOnChanges(changes: SimpleChanges) {
-    if (this.newId !== -1)
-    {
-      for (let i = 0; i < this.friendsId.length; i++)
-      {
-        if (this.friendsId[i] === this.newId)
-            return;
-      }
-      this.friends.push(await this.userService.getUserInfoById(this.newId));
+	if (this.newId !== -1)
+	{
+		for (let friend of this.friends)
+			if (friend.id === this.newId)
+				return;
+	    this.friends.push(await this.userService.getUserInfoById(this.newId));
     }
   }
 }
