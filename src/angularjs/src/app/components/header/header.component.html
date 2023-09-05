@@ -3,29 +3,29 @@
 	<button ngClass="{{isExpand}}" (click)="isExpand = !isExpand" *ngIf="isSmallDevice()" class="expand-btn">
 		<mat-icon fontIcon="expand_more"></mat-icon>
 	</button>
-	<div class="friend-menu">
-		<app-flat-button (click)="displayFriendRequest = !displayFriendRequest">Menu</app-flat-button>
-		<app-flat-list *ngIf="displayFriendRequest"[friends]="friend"> </app-flat-list>
-	</div>
 	<ul (window:resize)="onResize()" [ngClass]="{'small-device': isSmallDevice(), 'expand': isExpand}" *ngIf="isExpand || !isSmallDevice()" [@enterAnimation]="isSmallDevice()">
 		<li routerLink="/home"
-		routerLinkActive #rla="routerLinkActive">
+			routerLinkActive #rla="routerLinkActive">
 			<app-flat-button [isActive]="rla.isActive" color="white" bgColor="#a3d0dc" fontIcon="home"></app-flat-button>
 		</li>
 		<li *ngIf="userLoggedIn"
-		routerLink="/play"
-		routerLinkActive #rla="routerLinkActive">
+			routerLink="/play"
+			routerLinkActive #rla="routerLinkActive">
 			<app-flat-button [isActive]="rla.isActive" color="white" bgColor="#a3d0dc" fontIcon="games"></app-flat-button>
 		</li>
 		<li *ngIf="userLoggedIn"
-		routerLink="/chat"
-		routerLinkActive #rla="routerLinkActive">
+			routerLink="/chat"
+			routerLinkActive #rla="routerLinkActive">
 			<app-flat-button [isActive]="rla.isActive" color="white" bgColor="#a3d0dc" fontIcon="message"></app-flat-button>
 		</li>
 		<li *ngIf="userLoggedIn"
-		routerLink="/profile"
-		routerLinkActive #rla="routerLinkActive">
+			routerLink="/profile"
+			routerLinkActive #rla="routerLinkActive">
 			<app-flat-button [isActive]="rla.isActive" color="white" bgColor="#a3d0dc" fontIcon="account_circle"></app-flat-button>
+		</li>
+		<li class="friend-menu">
+			<app-flat-button (click)="displayFriendRequest = !displayFriendRequest" fontIcon="notifications" color="white" bgColor="#a7dca3">Menu</app-flat-button>
+			<app-flat-list *ngIf="displayFriendRequest"[friendsId]="friendRequestService.friendRequestId"[newId]="newId"> </app-flat-list>
 		</li>
 		<li
 		*ngIf="userLoggedIn"

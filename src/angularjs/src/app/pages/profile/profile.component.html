@@ -18,7 +18,7 @@
 		</div>
 		<app-flat-button *ngIf="!alreadyFriend"	
 			class="friend-btn" bgColor="#a3d0dc" fontIcon="person_add" 
-			color="white" (click)="sendFriendRequest()">
+			color="white" (click)="sendFriendRequest(user_info.id)">
 		</app-flat-button>
 	</div>
 </div>

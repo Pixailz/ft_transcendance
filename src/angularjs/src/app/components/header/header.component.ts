@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { trigger, style, animate, transition, state } from '@angular/animations';
 import { FriendRequestService } from 'src/app/services/friend-request.service';
-import { FriendRequestI, UserI } from 'src/app/interfaces/chat.interface';
+import { DefUserI, FriendRequestI, UserI } from 'src/app/interfaces/chat.interface';
+import { WSGateway } from 'src/app/services/ws.gateway';
 
 @Component({
   selector: 'app-header',
@@ -31,21 +32,29 @@ import { FriendRequestI, UserI } from 'src/app/interfaces/chat.interface';
 export class HeaderComponent {
 	userLoggedIn = false;
 	isExpand = false;
-	friend: UserI[] = [];
 	displayFriendRequest: boolean = false;
+	newId :number = -1;
 	constructor(
+		private wsGateway: WSGateway,
 		private userService: UserService,
 		public friendRequestService: FriendRequestService,
 	) {}
 
 	async ngOnInit() {
 		this.userLoggedIn = await this.userService.checkToken(); 
-		const requests = await this.friendRequestService.getRequest();
-		for (let i = 0; i < requests.length; i++)
-		{
-			let user = await this.userService.getUserInfoById(requests[i].meId);
-			this.friend.push(user);
-		} 
+		this.wsGateway.getAllReqById();
+		this.friendRequestService.friendRequestId = [];
+		console.log('sadas = ', this.friendRequestService.friendRequestId);
+		this.wsGateway.listenAllReqById()
+		.subscribe((friendReqId: number[]) => {
+			console.log("event AllReqById received");
+			this.friendRequestService.updateFriendRequest(friendReqId);
+		});
+		this.wsGateway.listenNewReqById()
+		.subscribe((id: number) => {
+			this.newId = id;
+			this.friendRequestService.updateNewFriendReq(id);
+		})
 	}
 
 	SignOut()

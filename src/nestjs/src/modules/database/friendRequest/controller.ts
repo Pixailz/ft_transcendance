@@ -13,14 +13,17 @@ import { DBFriendRequestPost } from "./dto";
 
 @Controller("db/friendRequest")
 export class DBFriendRequestController {
-	constructor(private readonly dbFriendRequestService: DBFriendRequestService) {}
+	constructor(
+		private readonly dbFriendRequestService: DBFriendRequestService)
+	{}
 
-	@Post()
+	 @Post()
 	create(
 		@Request() req,
 		@Body() post: DBFriendRequestPost) {
 		const userId = req.user.user_id;
-		return this.dbFriendRequestService.create(post, userId);
+		const request = this.dbFriendRequestService.create(post, userId);
+		return (request);
 	}
 
 	@Get()

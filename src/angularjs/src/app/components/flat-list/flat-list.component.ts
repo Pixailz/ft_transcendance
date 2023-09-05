@@ -1,7 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { DefFriendRequestI, DefUserI, FriendRequestI, UserI } from 'src/app/interfaces/chat.interface';
 import { FriendRequestService } from 'src/app/services/friend-request.service';
 import { UserService } from 'src/app/services/user.service';
+import { WSGateway } from 'src/app/services/ws.gateway';
 
 @Component({
   selector: 'app-flat-list',
@@ -9,10 +10,32 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./flat-list.component.scss']
 })
 
-export class FlatListComponent {
-  @Input() friends: UserI[] = [];
+export class FlatListComponent implements OnInit, OnChanges {
+  @Input() friendsId: number[] = [];
+  @Input() newId: number = -1;
+  
+  friends: UserI[]= []; 
+
   constructor (
     public userService: UserService,
-    public friendRequestService: FriendRequestService 
+    public friendRequestService: FriendRequestService,
+    private wsGateway: WSGateway
   ) {}
+  
+  async ngOnInit() {
+    for (let i = 0; i < this.friendsId.length; i++)
+      this.friends.push(await this.userService.getUserInfoById(this.friendsId[i]));
+  }
+
+  async ngOnChanges(changes: SimpleChanges) {
+    if (this.newId !== -1)
+    {
+      for (let i = 0; i < this.friendsId.length; i++)
+      {
+        if (this.friendsId[i] === this.newId)
+            return;
+      }
+      this.friends.push(await this.userService.getUserInfoById(this.newId));
+    }
+  }
 }

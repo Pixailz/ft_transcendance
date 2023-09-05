@@ -52,6 +52,15 @@ export class WSGateway {
 		return this.socket.fromEvent<any>("getNewPrivateMessage");
 	}
 
+	listenAllReqById() : Observable<number[]>
+	{
+		return this.socket.fromEvent<number[]>("getAllReqById");
+	}
+
+	listenNewReqById() : Observable<number>
+	{
+		return this.socket.fromEvent<number>("getNewReqById");
+	}
 
 
 	getAllFriend()
@@ -78,4 +87,15 @@ export class WSGateway {
 	{
 		this.socket.emit("sendPrivateMessage", room_id, message);
 	}
+
+	getAllReqById()
+	{
+		this.socket.emit("getAllReqById");
+	}
+
+	sendFriendReq(id: number)
+	{
+		this.socket.emit("sendFriendReq", id);
+	}
+	
 }

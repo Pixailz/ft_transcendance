@@ -58,4 +58,17 @@ export class WSGateway
 			data[1],
 		);
 	}
+
+	@SubscribeMessage("getAllReqById")
+	async getAllReqById(socket: Socket) {
+		console.log('in getAllById message ');
+		await this.wsChatService.getAllReqById(socket);
+	}
+
+	@SubscribeMessage("sendFriendReq")
+	async sendFriendReq(socket: Socket, id: number) {
+		console.log('in sendFriendREq message');
+		await this.wsChatService.sendFriendReq(this.server, socket, id);
+	}
+
 }

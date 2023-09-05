@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DefUserI, UserI } from 'src/app/interfaces/chat.interface';
-import { BackService } from 'src/app/services/back.service';
+import { ChatService } from 'src/app/services/chat.service';
 import { FriendRequestService } from 'src/app/services/friend-request.service';
+import { BackService } from 'src/app/services/back.service';
+import { WSGateway } from 'src/app/services/ws.gateway';
 
 @Component({
 	selector: 'app-profile',
@@ -16,6 +18,8 @@ export class ProfileComponent implements OnInit {
 		private route: ActivatedRoute,
 		private back: BackService,
 		public friendRequestService: FriendRequestService,
+		public chatService: ChatService,
+		public wsGateway: WSGateway,
 	) {}
 
 	ngOnInit() {
@@ -32,8 +36,10 @@ export class ProfileComponent implements OnInit {
 		});
 	}
 
-	async sendFriendRequest() {
+	
+	sendFriendRequest(id: number) {
 		console.log("Call send Friend Request in profile compo\n");
-		await this.friendRequestService.sendFriendRequest(this.user_info.id);
+		this.wsGateway.sendFriendReq(id);
+		// await this.chatService.sendFriendRequest(socket, this.user_info.id);
 	}
 }

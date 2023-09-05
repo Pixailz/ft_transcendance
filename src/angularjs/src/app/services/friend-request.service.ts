@@ -14,17 +14,31 @@ export class FriendRequestService {
     private userService: UserService,
   ) { }
 
-    request = DefFriendRequestI;
+    friendRequestId: number[] = [];
 
-    async sendFriendRequest(friendId: number) {
-        await this.backService.req("POST", "/db/friendRequest", JSON.stringify({friendId: friendId}))
-        .then((data) => {
-          console.log("data = ", data);
-          console.log("FriendRequest sent\n");
-        })
-        .catch((err) => {
-          console.log("[sendFriendRequest]", err.status);
-        })
+    // async sendFriendRequest(friendId: number) {
+    //     await this.backService.req("POST", "/db/friendRequest", JSON.stringify({friendId: friendId}))
+    //     .then((data) => {
+    //       console.log("data = ", data);
+    //       console.log("FriendRequest sent\n");
+    //     })
+    //     .catch((err) => {
+    //       console.log("[sendFriendRequest]", err.status);
+    //     })
+    // }
+
+    updateNewFriendReq(id: number)
+    {
+      for (let i = 0; i < this.friendRequestId.length; i++)
+      {
+        if (this.friendRequestId[i] === id)
+          return;
+      }
+      this.friendRequestId.push(id);
+    }
+
+    updateFriendRequest(tab: number[]) {
+      this.friendRequestId = tab;
     }
 
     async getRequest()  {
