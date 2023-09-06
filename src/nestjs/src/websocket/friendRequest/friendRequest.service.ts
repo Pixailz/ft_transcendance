@@ -33,12 +33,18 @@ export class WSFriendRequestService {
 		const friend_sock =  this.wsSocket.getSocketId(friend_id);
         const me = await this.userService.getInfoById(me_id);
 		const exist: boolean = await this.friendRequestService.alreadyFriend(me_id, friend_id);
-		if (exist === false)
+		const checkReverse = await this.friendRequestService.alreadySent(friend_id, me_id);
+		if (exist === true)
+			return ;
+		if (checkReverse == true)
 		{
-			await this.friendRequestService.create({friendId: friend_id}, me_id);
-			server.to(friend_sock).emit("getNewReqById", me.id);
-			socket.emit("friendReqStatus", FriendReqStatus.SENT);
+			this.acceptFriendReq(server, socket, friend_id);	
+			socket.emit("friendReqStatus", FriendReqStatus.ALREADYFRIEND);
+			return ;
 		}
+		await this.friendRequestService.create({friendId: friend_id}, me_id);
+		server.to(friend_sock).emit("getNewReqById", me.id);
+		socket.emit("friendReqStatus", FriendReqStatus.SENT);
     }
 
 	async acceptFriendReq(server: Server, socket: Socket, friend_id: number) {
