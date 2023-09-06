@@ -4,6 +4,12 @@ import { UserService } from "src/adapter/user/service";
 import { WSSocket } from "../socket.service";
 import { DBFriendRequestService } from "src/modules/database/friendRequest/service";
 
+export enum FriendReqStatus {
+	NOTSENT,
+	SENT,
+	ALREADYFRIEND,
+}
+
 @Injectable()
 export class WSFriendRequestService {
 	constructor(
@@ -26,29 +32,43 @@ export class WSFriendRequestService {
         const me_id = this.wsSocket.getUserId(socket.id)
 		const friend_sock =  this.wsSocket.getSocketId(friend_id);
         const me = await this.userService.getInfoById(me_id);
-		const exist: boolean = await this.friendRequestService.alreadyExist(me_id, friend_id);
+		const exist: boolean = await this.friendRequestService.alreadyFriend(me_id, friend_id);
 		if (exist === false)
 		{
 			await this.friendRequestService.create({friendId: friend_id}, me_id);
 			server.to(friend_sock).emit("getNewReqById", me.id);
+			socket.emit("friendReqStatus", FriendReqStatus.SENT);
 		}
     }
 
 	async acceptFriendReq(server: Server, socket: Socket, friend_id: number) {
 		const meId = this.wsSocket.getUserId(socket.id);
-		if (await this.friendRequestService.alreadyExist(friend_id, meId) == false)
+		const friend_sock =  this.wsSocket.getSocketId(friend_id);
+		if (await this.friendRequestService.alreadyFriend(friend_id, meId) == false)
 			return ;
 		await this.friendRequestService.acceptReq(friend_id, meId);
 		socket.emit("removeFriendReq", friend_id);
+		server.to(friend_sock).emit("friendReqStatus", FriendReqStatus.ALREADYFRIEND);
 	}
 
 	async rejectFriendReq(server: Server, socket: Socket, friend_id: number) {
 		const meId = this.wsSocket.getUserId(socket.id);
-		console.log("in deept reject before if");
-		if (await this.friendRequestService.alreadyExist(friend_id, meId) == false)
+		const friend_sock =  this.wsSocket.getSocketId(friend_id);
+		if (await this.friendRequestService.alreadyFriend(friend_id, meId) == false)
 			return ;
-		console.log("in deept reject after if");
 		await this.friendRequestService.rejectReq(friend_id, meId);
 		socket.emit("removeFriendReq", friend_id);
+		server.to(friend_sock).emit("friendReqStatus", FriendReqStatus.NOTSENT);
+	}
+
+	async friendReqStatus(socket: Socket, friend_id: number)
+	{
+		const meId = this.wsSocket.getUserId(socket.id);
+		if (await this.friendRequestService.alreadyFriend(friend_id, meId) == true)
+			socket.emit("friendReqStatus", FriendReqStatus.ALREADYFRIEND);
+		else if (await this.friendRequestService.alreadySent(meId, friend_id) == true)
+			socket.emit("friendReqStatus", FriendReqStatus.SENT);
+		else
+			socket.emit("friendReqStatus", FriendReqStatus.NOTSENT);
 	}
 }

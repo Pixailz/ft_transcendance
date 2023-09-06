@@ -16,9 +16,10 @@
 				<span>{{user_info.lastSeen | date: 'dd/MM/YYYY HH:mm:ss'}}</span>
 			</div>
 		</div>
-		<app-flat-button *ngIf="!alreadyFriend"	
-			class="friend-btn" bgColor="#a3d0dc" fontIcon="person_add" 
-			color="white" (click)="sendFriendRequest(user_info.id)">
+		<app-flat-button *ngIf="requestStatus!==2"	
+			class="friend-btn" bgColor="#a3d0dc" [fontIcon]="requestStatus === 1?'done':'person_add'" 
+			color="white" (click)="sendFriendRequest(user_info.id)"
+			[isActive]="requestStatus === 1">
 		</app-flat-button>
 	</div>
 </div>

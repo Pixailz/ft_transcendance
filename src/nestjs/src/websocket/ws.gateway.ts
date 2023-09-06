@@ -83,4 +83,10 @@ export class WSGateway
 	async rejectFriendReq(socket: Socket, id: number) {
 		await this.wsFriendRequestService.rejectFriendReq(this.server, socket, id);
 	}
+
+	@SubscribeMessage("friendReqStatus")
+	async friendReqStatus(socket: Socket, id: number) {
+		await this.wsFriendRequestService.friendReqStatus(socket, id);
+	}
+	
 }

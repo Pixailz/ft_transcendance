@@ -67,6 +67,13 @@ export class WSGateway {
 		return this.socket.fromEvent<number>("removeFriendReq");
 	}
 
+	listenReqStatus() : Observable<number>
+	{
+		return this.socket.fromEvent<number>("friendReqStatus");
+	}
+
+
+
 	getAllFriend()
 	{
 		this.socket.emit("getAllFriend");

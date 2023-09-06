@@ -56,9 +56,17 @@ export class DBFriendRequestService {
 			throw new NotFoundException("FriendRequest relation not found");
 	}
 
-	async alreadyExist(me_id: number, friend_id:number)
+	async alreadyFriend(me_id: number, friend_id:number)
 	{
 		const tmp = await this.friendRepo.findOneBy({meId: me_id, friendId: friend_id});
+		if (tmp)
+			return (true);
+		return (false);
+	}
+
+	async alreadySent(me_id: number, friend_id:number)
+	{
+		const tmp = await this.friendRequestRepo.findOneBy({meId: me_id, friendId: friend_id});
 		if (tmp)
 			return (true);
 		return (false);
