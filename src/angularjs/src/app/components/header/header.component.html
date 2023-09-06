@@ -25,7 +25,7 @@
 		</li>
 		<li class="friend-menu">
 			<app-flat-button (click)="displayFriendRequest = !displayFriendRequest" fontIcon="notifications" color="white" bgColor="#a7dca3">Menu</app-flat-button>
-			<app-flat-list *ngIf="displayFriendRequest"[friendsId]="friendRequestService.friendRequestId"[newId]="newId"> </app-flat-list>
+			<app-flat-list *ngIf="displayFriendRequest"[friends]="friendRequestService.friends"> </app-flat-list>
 		</li>
 		<li
 		*ngIf="userLoggedIn"

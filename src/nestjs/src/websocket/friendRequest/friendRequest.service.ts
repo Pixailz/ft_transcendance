@@ -33,4 +33,22 @@ export class WSFriendRequestService {
 			server.to(friend_sock).emit("getNewReqById", me.id);
 		}
     }
+
+	async acceptFriendReq(server: Server, socket: Socket, friend_id: number) {
+		const meId = this.wsSocket.getUserId(socket.id);
+		if (await this.friendRequestService.alreadyExist(friend_id, meId) == false)
+			return ;
+		await this.friendRequestService.acceptReq(friend_id, meId);
+		socket.emit("removeFriendReq", friend_id);
+	}
+
+	async rejectFriendReq(server: Server, socket: Socket, friend_id: number) {
+		const meId = this.wsSocket.getUserId(socket.id);
+		console.log("in deept reject before if");
+		if (await this.friendRequestService.alreadyExist(friend_id, meId) == false)
+			return ;
+		console.log("in deept reject after if");
+		await this.friendRequestService.rejectReq(friend_id, meId);
+		socket.emit("removeFriendReq", friend_id);
+	}
 }

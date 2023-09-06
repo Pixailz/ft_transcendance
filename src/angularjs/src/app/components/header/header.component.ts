@@ -33,7 +33,7 @@ export class HeaderComponent {
 	userLoggedIn = false;
 	isExpand = false;
 	displayFriendRequest: boolean = false;
-	newId :number = -1;
+	
 	constructor(
 		private wsGateway: WSGateway,
 		private userService: UserService,
@@ -43,16 +43,24 @@ export class HeaderComponent {
 	async ngOnInit() {
 		this.userLoggedIn = await this.userService.checkToken(); 
 		this.wsGateway.getAllReqById();
-		this.friendRequestService.friendRequestId = [];
-		console.log('sadas = ', this.friendRequestService.friendRequestId);
+		this.friendRequestService.friends = [];
+		
 		this.wsGateway.listenAllReqById()
-		.subscribe((friendReqId: number[]) => {
+		.subscribe(async (friendReqId: number[]) => {
 			console.log("event AllReqById received");
-			this.friendRequestService.updateFriendRequest(friendReqId);
+			await this.friendRequestService.updateFriendRequest(friendReqId);
 		});
+
 		this.wsGateway.listenNewReqById()
+		.subscribe(async (id: number) => {
+			console.log("event listenNewReqById received");
+			await this.friendRequestService.updateNewFriendReq(id);
+		});
+
+		this.wsGateway.listenRemoveFriendReq()
 		.subscribe((id: number) => {
-			this.newId = id;
+			console.log("event listenRemoveFriendReq received");
+			this.friendRequestService.removeFriendReq(id)
 		})
 	}
 

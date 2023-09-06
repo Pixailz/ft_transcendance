@@ -28,7 +28,6 @@ export class ProfileComponent implements OnInit {
 				.then(async (data) => {
 					this.user_info = data;
 					this.alreadyFriend = await this.friendRequestService.alreadyFriend(this.user_info.id);
-					console.log("user info = ", this.user_info);
 				})
 				.catch((err) => {
 					console.log("[profile]", err.status);
@@ -38,8 +37,6 @@ export class ProfileComponent implements OnInit {
 
 	
 	sendFriendRequest(id: number) {
-		console.log("Call send Friend Request in profile compo\n");
 		this.wsGateway.sendFriendReq(id);
-		// await this.chatService.sendFriendRequest(socket, this.user_info.id);
 	}
 }

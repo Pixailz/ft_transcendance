@@ -62,6 +62,10 @@ export class WSGateway {
 		return this.socket.fromEvent<number>("getNewReqById");
 	}
 
+	listenRemoveFriendReq() : Observable<number>
+	{
+		return this.socket.fromEvent<number>("removeFriendReq");
+	}
 
 	getAllFriend()
 	{
@@ -98,4 +102,14 @@ export class WSGateway {
 		this.socket.emit("sendFriendReq", id);
 	}
 	
+	acceptFriendReq(id: number)
+	{
+		this.socket.emit("acceptFriendReq", id);
+	}
+
+	rejectFriendReq(id: number)
+	{
+		this.socket.emit("rejectFriendReq", id);
+	}
+
 }

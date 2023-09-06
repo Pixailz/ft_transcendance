@@ -10,29 +10,12 @@ import { WSGateway } from 'src/app/services/ws.gateway';
   styleUrls: ['./flat-list.component.scss']
 })
 
-export class FlatListComponent implements OnInit, OnChanges {
-  @Input() friendsId: number[] = [];
-  @Input() newId: number = -1;
-  
-  friends: UserI[]= []; 
+export class FlatListComponent {
+  @Input() friends: UserI[]= []; 
 
   constructor (
     public userService: UserService,
     public friendRequestService: FriendRequestService,
   ) {}
   
-  async ngOnInit() {
-    for (let i = 0; i < this.friendsId.length; i++)
-      this.friends.push(await this.userService.getUserInfoById(this.friendsId[i]));
-  }
-
-  async ngOnChanges(changes: SimpleChanges) {
-	if (this.newId !== -1)
-	{
-    for (let i = 0; i < this.friendsId.length; i++)
-			if (this.friendsId[i] === this.newId)
-        return ;
-    this.friends.push(await this.userService.getUserInfoById(this.newId));
-    }
-  }
 }

@@ -3,7 +3,7 @@
     <li *ngFor="let friend of friends"> 
         <span>{{friend.ftLogin}}</span> 
         <button (click)="friendRequestService.acceptRequest(friend.id)">Accept</button> 
-        <button (click)="friendRequestService.declineRequest(friend.id)">Decline</button> 
+        <button (click)="friendRequestService.rejectFriendReq(friend.id)">Decline</button> 
     </li>
 </ul>
 

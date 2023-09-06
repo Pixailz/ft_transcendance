@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BackService } from "./back.service";
-import { FriendRequestI, DefFriendRequestI } from '../interfaces/chat.interface';
+import { FriendRequestI, DefFriendRequestI, UserI, DefUserI } from '../interfaces/chat.interface';
 import { UserService } from './user.service';
+import { WSGateway } from './ws.gateway';
 
 
 @Injectable({
@@ -12,22 +13,32 @@ export class FriendRequestService {
   constructor(
 		private backService: BackService,
     private userService: UserService,
+    private wsGateway: WSGateway,
   ) { }
 
-    friendRequestId: number[] = [];
+    friends: UserI [] = [ DefUserI ];
 
-    updateNewFriendReq(id: number)
+    async updateNewFriendReq(id: number)
     {
-      for (let i = 0; i < this.friendRequestId.length; i++)
+      for (let i = 0; i < this.friends.length; i++)
       {
-        if (this.friendRequestId[i] === id)
+        if (this.friends[i].id === id)
           return;
       }
-      this.friendRequestId.push(id);
+      const user = await this.userService.getUserInfoById(id);
+      this.friends.push(user);
     }
 
-    updateFriendRequest(tab: number[]) {
-      this.friendRequestId = tab;
+    async updateFriendRequest(tab: number[]) {
+      this.friends = [];
+      for (let i = 0; i < tab.length; i++)
+        this.friends.push(await this.userService.getUserInfoById(tab[i]));
+    }
+
+    removeFriendReq(id: number)
+    {
+      for (let i = 0; i < this.friends.length; i++)
+        this.friends.splice(i, 1);
     }
 
     async getRequest()  {
@@ -35,25 +46,22 @@ export class FriendRequestService {
       await this.backService.req("GET", "/db/friendRequest/me")
       .then((data) => {
         for (let i in data)
-        {
           if (data[i].meId !== -1)
             tmp.push(data[i]);
-        }
-        console.log("data in get request= ", data);
         return (tmp);
       })
       .catch((err) => {
-        console.log("[getFriendRequest]", err.status);
+        console.log('[GetFriendRequest] ', err);
       })
       return (tmp);
     }
 
     async acceptRequest(friend_id: number) {
-      await this.backService.req("DELETE", "/db/friendRequest/accept/" + friend_id);
+        this.wsGateway.acceptFriendReq(friend_id);
     }
 
-    async declineRequest(friend_id: number) {
-      await this.backService.req("DELETE", "/db/friendRequest/decline/" + friend_id);
+    async rejectFriendReq(friend_id: number) {
+      this.wsGateway.rejectFriendReq(friend_id);
     }
 
     async alreadyFriend(friend_id: number) : Promise<boolean> {
