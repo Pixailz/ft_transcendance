@@ -45,6 +45,7 @@ export class WSFriendRequestService {
 		await this.friendRequestService.create({friendId: friend_id}, me_id);
 		server.to(friend_sock).emit("getNewReqById", me.id);
 		socket.emit("friendReqStatus", FriendReqStatus.SENT);
+		this.sendNotification(server, socket, friend_id, "[Friend Request]");
     }
 
 	async acceptFriendReq(server: Server, socket: Socket, friend_id: number) {
@@ -55,6 +56,7 @@ export class WSFriendRequestService {
 		await this.friendRequestService.acceptReq(friend_id, meId);
 		socket.emit("removeFriendReq", friend_id);
 		server.to(friend_sock).emit("friendReqStatus", FriendReqStatus.ALREADYFRIEND);
+		this.sendNotification(server, socket, friend_id, "[New Friend]")
 	}
 
 	async rejectFriendReq(server: Server, socket: Socket, friend_id: number) {
@@ -65,6 +67,7 @@ export class WSFriendRequestService {
 		await this.friendRequestService.rejectReq(friend_id, meId);
 		socket.emit("removeFriendReq", friend_id);
 		server.to(friend_sock).emit("friendReqStatus", FriendReqStatus.NOTSENT);
+		this.sendNotification(server, socket, friend_id, "[Decline Request]")
 	}
 
 	async friendReqStatus(socket: Socket, friend_id: number)
@@ -76,5 +79,14 @@ export class WSFriendRequestService {
 			socket.emit("friendReqStatus", FriendReqStatus.SENT);
 		else
 			socket.emit("friendReqStatus", FriendReqStatus.NOTSENT);
+	}
+
+	async sendNotification(server: Server, socket: Socket, friend_id: number, prefix: string)
+	{
+		const meId = this.wsSocket.getUserId(socket.id);
+		const me = await this.userService.getInfoById(meId);
+		const friend_sock =  this.wsSocket.getSocketId(friend_id);
+		const message = prefix + " " + me.ftLogin;
+		server.to(friend_sock).emit("sendNotification", message);
 	}
 }

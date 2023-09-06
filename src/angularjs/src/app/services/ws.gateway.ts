@@ -72,6 +72,10 @@ export class WSGateway {
 		return this.socket.fromEvent<number>("friendReqStatus");
 	}
 
+	listenNotification() : Observable<string>
+	{
+		return this.socket.fromEvent<string>("sendNotification");
+	}
 
 
 	getAllFriend()
