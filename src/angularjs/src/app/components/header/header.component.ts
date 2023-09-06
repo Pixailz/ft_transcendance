@@ -53,7 +53,6 @@ export class HeaderComponent {
 		this.wsGateway.listenNewReqById()
 		.subscribe((id: number) => {
 			this.newId = id;
-			this.friendRequestService.updateNewFriendReq(id);
 		})
 	}
 

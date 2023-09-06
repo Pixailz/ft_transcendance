@@ -8,6 +8,8 @@ import {
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import { WSChatService } from "./chat/chat.service";
+import { WSFriendRequestService } from "./friendRequest/friendRequest.service";
+
 
 @WebSocketGateway(3001, {
 	path: "/ws",
@@ -16,7 +18,10 @@ import { WSChatService } from "./chat/chat.service";
 export class WSGateway
 	implements OnGatewayConnection, OnGatewayDisconnect
 {
-	constructor(private wsChatService: WSChatService) {}
+	constructor(
+		private wsChatService: WSChatService,
+		private wsFriendRequestService: WSFriendRequestService,	
+	) {}
 
 	@WebSocketServer()
 	server = new Server();
@@ -61,14 +66,12 @@ export class WSGateway
 
 	@SubscribeMessage("getAllReqById")
 	async getAllReqById(socket: Socket) {
-		console.log('in getAllById message ');
-		await this.wsChatService.getAllReqById(socket);
+		await this.wsFriendRequestService.getAllReqById(socket);
 	}
 
 	@SubscribeMessage("sendFriendReq")
 	async sendFriendReq(socket: Socket, id: number) {
-		console.log('in sendFriendREq message');
-		await this.wsChatService.sendFriendReq(this.server, socket, id);
+		await this.wsFriendRequestService.sendFriendReq(this.server, socket, id);
 	}
 
 }
