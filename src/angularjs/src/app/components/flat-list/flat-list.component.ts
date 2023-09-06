@@ -11,11 +11,10 @@ import { WSGateway } from 'src/app/services/ws.gateway';
 })
 
 export class FlatListComponent {
-  @Input() friends: UserI[]= []; 
+  @Input() friends: UserI[]= [];
 
   constructor (
     public userService: UserService,
     public friendRequestService: FriendRequestService,
   ) {}
-  
 }

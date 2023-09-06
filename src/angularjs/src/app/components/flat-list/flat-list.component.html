@@ -1,5 +1,4 @@
-<ul>
-    <!-- <li *ngFor="let friendRequest of friend">meId = {{friendRequest.meId}} friendId= {{friendRequest.friendId}}</li> -->
+<ul *ngIf="friends.length; else empty">
     <li *ngFor="let friend of friends"> 
         <span>{{friend.ftLogin}}</span> 
         <button (click)="friendRequestService.acceptRequest(friend.id)">Accept</button> 
@@ -7,3 +6,6 @@
     </li>
 </ul>
 
+<ng-template #empty>
+    <span>Nothing to see there ...</span>
+</ng-template>
