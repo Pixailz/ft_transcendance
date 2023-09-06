@@ -1,18 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Arvo&display=swap');
 
-.container {
+:host {
+	width: 100%;
+	height: 100%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	width: 100%;
 }
 
 .ticket {
 	background: white;
-	width: 50vw;
+	height: 100%;
 	max-width: 600px;
-	border: 5px solid black;
-	min-height: 70vh;
+	width: 100%;
 	position: relative;
 
 	span, h1 {
@@ -29,7 +29,7 @@
 		transition: all .2s ease-out;
 		transform: rotate(10deg) translate(50px, 50px);
 		background-color: white;
-
+		aspect-ratio: 1;
 
 		&:hover {
 			transform: rotate(20deg) translate(50px, 50px);
