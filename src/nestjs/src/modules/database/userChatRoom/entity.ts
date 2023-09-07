@@ -32,6 +32,6 @@ export class UserChatRoomEntity {
 	@Column({ type: "boolean", default: false })
 	public isMuted: boolean;
 
-	@Column({type: "timestamp", default: 0})
+	@Column({type: "timestamp"})
 	public mutedTime: Timestamp;
 }
