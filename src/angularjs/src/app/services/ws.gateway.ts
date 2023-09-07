@@ -52,6 +52,30 @@ export class WSGateway {
 		return this.socket.fromEvent<any>("getNewPrivateMessage");
 	}
 
+	listenAllReqById() : Observable<number[]>
+	{
+		return this.socket.fromEvent<number[]>("getAllReqById");
+	}
+
+	listenNewReqById() : Observable<number>
+	{
+		return this.socket.fromEvent<number>("getNewReqById");
+	}
+
+	listenRemoveFriendReq() : Observable<number>
+	{
+		return this.socket.fromEvent<number>("removeFriendReq");
+	}
+
+	listenReqStatus() : Observable<number>
+	{
+		return this.socket.fromEvent<number>("friendReqStatus");
+	}
+
+	listenNotification() : Observable<string>
+	{
+		return this.socket.fromEvent<string>("sendNotification");
+	}
 
 
 	getAllFriend()
@@ -78,4 +102,25 @@ export class WSGateway {
 	{
 		this.socket.emit("sendPrivateMessage", room_id, message);
 	}
+
+	getAllReqById()
+	{
+		this.socket.emit("getAllReqById");
+	}
+
+	sendFriendReq(id: number)
+	{
+		this.socket.emit("sendFriendReq", id);
+	}
+	
+	acceptFriendReq(id: number)
+	{
+		this.socket.emit("acceptFriendReq", id);
+	}
+
+	rejectFriendReq(id: number)
+	{
+		this.socket.emit("rejectFriendReq", id);
+	}
+
 }

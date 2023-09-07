@@ -1,0 +1,22 @@
+:host {
+    position: absolute;
+    background-color: white;
+    border: 3px solid black;
+    top: 70px;
+    z-index: 50;
+    right: 0;
+    padding: 10px;
+    width: 200px;
+    text-align: center;
+}
+
+ul {
+    max-height: 100px;
+    max-width: 200px;
+    li {
+        display: flex;
+        span {
+            margin-right: 5px;
+        }
+    }
+}

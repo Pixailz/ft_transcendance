@@ -92,3 +92,13 @@ export const DefChatI: ChatI = {
 	selected_friend_id	: "-1",
 	selected_friend		: DefFriendI,
 }
+
+export interface FriendRequestI {
+	meId : number;
+	friendId : number;
+}
+
+export const DefFriendRequestI : FriendRequestI = {
+	meId : -1,
+	friendId : -1,
+}

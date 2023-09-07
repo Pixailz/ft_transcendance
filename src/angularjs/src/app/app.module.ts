@@ -39,6 +39,8 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { CodeInputModule } from 'angular-code-input';
 import { ErrordialogComponent } from './components/errordialog/errordialog.component';
 import { GlobalErrorHandlerService } from './services/global-error-handler.service';
+import { FlatListComponent } from './components/flat-list/flat-list.component';
+import { NotificationComponent } from './components/notification/notification.component';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -69,7 +71,9 @@ const config: SocketIoConfig = {
 		FlatButtonComponent,
 		TwofaformComponent,
     	ProfileComponent,
-     ErrordialogComponent
+     ErrordialogComponent,
+     FlatListComponent,
+     NotificationComponent
 	],
 	imports: [
 		BrowserModule,

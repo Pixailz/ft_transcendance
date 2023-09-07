@@ -15,6 +15,7 @@ export class BackService {
 		const bearer_token = "Bearer " + jwt_token;
 		switch (method) {
 			case "GET":
+			case "DELETE":
 				this.headers = {
 					"Authorization": bearer_token
 				}
@@ -48,11 +49,12 @@ export class BackService {
 				status: res.status,
 				message: `${log_header} request failed`
 			});
+		if (method === "DELETE")
+			return (Promise.resolve(""));
 		const data_json = await res.json()
 			.catch((err) => {
 				return (Promise.reject({status: `${log_header} no data returned`}));
 			})
 		return (data_json);
 	}
-
 }
