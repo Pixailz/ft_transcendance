@@ -8,6 +8,8 @@ import { ChatRoomEntity, RoomType } from "../chatRoom/entity";
 
 import { DBUserChatRoomPost } from "./dto";
 
+import { MutePost } from "./dto";
+
 @Injectable()
 export class DBUserChatRoomService {
 	constructor(
