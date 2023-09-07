@@ -9,6 +9,7 @@ import { GameInfoEntity } from "./gameInfo/entity";
 import { FriendEntity } from "./friend/entity";
 import { FriendRequestEntity } from "./friendRequest/entity";
 import { MutedEntity } from "./muted/entity";
+import { NotificationEntity } from "./notification/entity";
 
 import { DBUserService } from "./user/service";
 import { DBChatRoomService } from "./chatRoom/service";
@@ -18,6 +19,7 @@ import { DBGameInfoService } from "./gameInfo/service";
 import { DBFriendService } from "./friend/service";
 import { DBFriendRequestService } from "./friendRequest/service";
 import { DBMutedService } from "./muted/service";
+import { DBNotificationService } from "./notification/service";
 
 import { DBUserController } from "./user/controller";
 import { DBChatRoomController } from "./chatRoom/controller";
@@ -28,6 +30,7 @@ import { DBFriendController } from "./friend/controller";
 import { DBFriendRequestController } from "./friendRequest/controller";
 import { DBMutedController } from "./muted/controller";
 import { Sanitize } from "../../sanitize-object";
+import { DBNotificationController } from "./notification/controller";
 
 @Module({
 	imports: [
@@ -47,6 +50,7 @@ import { Sanitize } from "../../sanitize-object";
 				FriendEntity,
 				FriendRequestEntity,
 				MutedEntity,
+				NotificationEntity,
 			],
 			synchronize: true,
 		}),
@@ -59,6 +63,7 @@ import { Sanitize } from "../../sanitize-object";
 			FriendEntity,
 			FriendRequestEntity,
 			MutedEntity,
+			NotificationEntity,
 		]),
 	],
 	controllers: [
@@ -70,6 +75,7 @@ import { Sanitize } from "../../sanitize-object";
 		DBFriendController,
 		DBFriendRequestController,
 		DBMutedController,
+		DBNotificationController,
 	],
 	providers: [
 		Sanitize,
@@ -81,6 +87,7 @@ import { Sanitize } from "../../sanitize-object";
 		DBFriendService,
 		DBFriendRequestService,
 		DBMutedService,
+		DBNotificationService,
 	],
 	exports: [
 		DBUserService,
@@ -91,6 +98,7 @@ import { Sanitize } from "../../sanitize-object";
 		DBFriendService,
 		DBFriendRequestService,
 		DBMutedService,
+		DBNotificationService,
 	],
 })
 export class DBModule {}
