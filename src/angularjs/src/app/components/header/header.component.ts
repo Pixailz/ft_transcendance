@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { trigger, style, animate, transition, state } from '@angular/animations';
 import { FriendService } from 'src/app/services/websocket/friend/service';
+import { NotificationI } from '../notification/notification.component';
 
 @Component({
   selector: 'app-header',
@@ -31,6 +32,7 @@ export class HeaderComponent {
 	userLoggedIn = true;
 	isExpand = false;
 	displayFriendRequest: boolean = false;
+	notifications: NotificationI[] = [];
 
 	constructor(
 		public friendService: FriendService,

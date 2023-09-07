@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { UserI } from 'src/app/interfaces/user.interface';
 import { FriendService } from 'src/app/services/websocket/friend/service';
-import { UserService } from 'src/app/services/user.service';
+import { NotificationI } from '../notification/notification.component';
 
 @Component({
 	selector: 'app-flat-list',
@@ -10,10 +9,9 @@ import { UserService } from 'src/app/services/user.service';
 })
 
 export class FlatListComponent {
-	@Input() friends: UserI[]= [];
+	@Input() notifications: NotificationI[]= [];
 
 	constructor (
 		public friendService: FriendService,
-		public userService: UserService,
 	) {}
 }

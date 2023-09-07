@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Observable } from 'rxjs';
-import {
-	ChatRoomI,
-	UserChatRoomI,
-	UserI
-} from 'src/app/interfaces/chat.interface';
-import { RoomAction } from '../components/global-chat/global-chat.interface';
 import { FriendRequestI } from '../interfaces/friend.interface';
+import { UserI } from '../interfaces/user.interface';
+import { ChatRoomI } from '../interfaces/chat-room.interface';
+import { UserChatRoomI } from '../interfaces/user-chat-room.interface';
+import { RoomAction } from '../interfaces/chat-channel.interface';
 
 @Injectable({
 	providedIn: 'root',

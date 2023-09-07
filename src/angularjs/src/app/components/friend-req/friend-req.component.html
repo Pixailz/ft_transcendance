@@ -1,0 +1,11 @@
+<div class="container">
+	<p>{{data.ft_login}}</p>
+	<button class="accept-btn" (click)="friendService.acceptRequest(data.id)">
+		<mat-icon fontIcon="done">
+		</mat-icon>
+	</button>
+	<button class="reject-btn" (click)="friendService.rejectFriendReq(data.id)">
+		<mat-icon fontIcon="close">
+		</mat-icon>
+	</button>
+</div>

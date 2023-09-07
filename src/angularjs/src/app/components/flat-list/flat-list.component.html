@@ -1,8 +1,7 @@
-<ul *ngIf="friends.length; else empty">
-	<li *ngFor="let friend of friends">
-		<span>{{friend.ftLogin}}</span>
-		<button (click)="friendService.acceptRequest(friend.id)">Accept</button>
-		<button (click)="friendService.rejectFriendReq(friend.id)">Decline</button>
+<ul *ngIf="notifications.length; else empty">
+	<li *ngFor="let notification of notifications" [ngSwitch]="notification.type">
+		<app-text-notification *ngSwitchCase="'text'" [data]="notification.data"></app-text-notification>
+		<app-friend-req *ngSwitchCase="'friendReq'" [data]="notification.data"></app-friend-req>
 	</li>
 </ul>
 

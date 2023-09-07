@@ -42,10 +42,13 @@ import { FlatListComponent } from './components/flat-list/flat-list.component';
 import { NotificationComponent } from './components/notification/notification.component';
 import { RouteReuseStrategy } from '@angular/router';
 import { CustomReuseStrategy } from './reuse-strategy';
+import {MatBadgeModule} from '@angular/material/badge';
 
 // WEBSOCKET
 import { WSChatDmComponent } from './pages/chat-dm/chat-dm.component';
 import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
+import { TextNotificationComponent } from './components/text-notification/text-notification.component';
+import { FriendReqComponent } from './components/friend-req/friend-req.component';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -78,8 +81,10 @@ const config: SocketIoConfig = {
 		ErrordialogComponent,
 		FlatListComponent,
 		NotificationComponent,
+		TextNotificationComponent,
 		WSChatDmComponent,
 		WSChatChannelComponent,
+  FriendReqComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -102,7 +107,8 @@ const config: SocketIoConfig = {
 		FormsModule,
 		MatProgressBarModule,
 		SocketIoModule.forRoot(config),
-		CodeInputModule
+		CodeInputModule,
+		MatBadgeModule
 	],
 	providers: [
 		AuthGuardService,
