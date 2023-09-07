@@ -17,7 +17,7 @@ export class DBFriendRequestController {
 		private readonly dbFriendRequestService: DBFriendRequestService)
 	{}
 
-	@Post()
+	 @Post()
 	create(
 		@Request() req,
 		@Body() post: DBFriendRequestPost) {
@@ -29,6 +29,37 @@ export class DBFriendRequestController {
 	@Get()
 	async getAll() {
 		return await this.dbFriendRequestService.returnAll();
+	}
+
+	@Get("me")
+	async getMyRequest(
+		@Request() req) {
+		const userId = req.user.user_id;
+		return (await this.dbFriendRequestService.getAllRequest(userId));
+	}
+
+	@Get("sent/:id")
+	async getAlreadySent(
+		@Request() req,
+		@Param("id") friendId: number,) {
+		const userId = req.user.user_id;
+		return (await this.dbFriendRequestService.alreadySent(userId, friendId));
+	}
+
+	@Delete("/accept/:friend_id")
+	async acceptReq(
+		@Request() req,
+		@Param("friend_id") friendId: number) {
+		const userId = req.user.user_id;
+		return (await this.dbFriendRequestService.acceptReq(friendId, userId));
+	}
+
+	@Delete("/decline/:friend_id")
+	async declineReq(
+		@Request() req,
+		@Param("friend_id") friendId: number) {
+		const userId = req.user.user_id;
+		return (await this.dbFriendRequestService.rejectReq(friendId, userId));
 	}
 
 	@Get("me")

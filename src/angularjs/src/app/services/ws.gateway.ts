@@ -154,4 +154,25 @@ export class WSGateway {
 	{
 		this.socket.emit("rejectFriendReq", id);
 	}
+
+	getAllReqById()
+	{
+		this.socket.emit("getAllReqById");
+	}
+
+	sendFriendReq(id: number)
+	{
+		this.socket.emit("sendFriendReq", id);
+	}
+
+	acceptFriendReq(id: number)
+	{
+		this.socket.emit("acceptFriendReq", id);
+	}
+
+	rejectFriendReq(id: number)
+	{
+		this.socket.emit("rejectFriendReq", id);
+	}
+
 }

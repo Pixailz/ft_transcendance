@@ -53,7 +53,6 @@ export class ProfileComponent implements OnInit {
 		// this.alreadyFriend = await this.friendRequestService.alreadyFriend(this.user_info.id);
 	}
 
-
 	sendFriendRequest(id: number) {
 		this.wsGateway.sendFriendReq(id);
 	}

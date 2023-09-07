@@ -162,7 +162,6 @@ export class WSGateway
 		await this.wsFriendRequestService.friendReqStatus(socket, id);
 	}
 
-
 	@SubscribeMessage("sendNotification")
 	async sendNotification(server: Server, socket: Socket, prefix: string, friend_id: number) {
 		await this.wsFriendRequestService.sendNotification(server, socket, friend_id, prefix);
