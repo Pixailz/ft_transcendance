@@ -1,24 +1,26 @@
-<div class="container">
-	<div *ngIf="user_info.id !== -1; else userNotFound" class="ticket">
-		<img [src]="user_info.picture || 'assets/img/avatar-placeholder.jpg'" alt="user picture" />
-		<h1 class="login">{{user_info.ftLogin}}</h1>
-		<div class="personal_data">
-			<div class="line">
-				<span>nickname:</span>
-				<span>{{user_info.nickname}}</span>
-			</div>
-			<div class="line">
-				<span>email:</span>
-				<span>{{user_info.email === '' ? '/' :  user_info.email}}</span>
-			</div>
-			<div class="line">
-				<span>lastSeen:</span>
-				<span>{{user_info.lastSeen | date: 'dd/MM/YYYY HH:mm:ss'}}</span>
-			</div>
+<div *ngIf="user_info.id !== -1; else userNotFound" class="ticket">
+	<img [src]="user_info.picture || 'assets/img/avatar-placeholder.jpg'" alt="user picture" />
+	<h1 class="login">{{user_info.ftLogin}}</h1>
+	<div class="personal_data">
+		<div class="line">
+			<span>nickname:</span>
+			<span>{{user_info.nickname}}</span>
+		</div>
+		<div class="line">
+			<span>email:</span>
+			<span>{{user_info.email === '' ? '/' :  user_info.email}}</span>
+		</div>
+		<div class="line">
+			<span>lastSeen:</span>
+			<span>{{user_info.lastSeen | date: 'dd/MM/YYYY HH:mm:ss'}}</span>
 		</div>
 	</div>
+	<app-flat-button *ngIf="requestStatus!==2"	
+		class="friend-btn" bgColor="#a3d0dc" [fontIcon]="requestStatus === 1?'done':'person_add'" 
+		color="white" (click)="sendFriendRequest(user_info.id)"
+		[isActive]="requestStatus === 1">
+	</app-flat-button>
 </div>
-
 
 <ng-template #userNotFound>
 	<h1>User Not Found</h1>

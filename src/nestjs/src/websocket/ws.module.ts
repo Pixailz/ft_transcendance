@@ -7,6 +7,7 @@ import { UserService } from "src/adapter/user/service";
 import { ChatRoomService } from "src/adapter/chatRoom/service";
 import { WSChatService } from "./chat/chat.service";
 import { WSSocket } from "./socket.service";
+import { WSFriendRequestService } from "./friendRequest/friendRequest.service";
 
 @Module({
 	imports: [AuthModule, DBModule],
@@ -16,6 +17,7 @@ import { WSSocket } from "./socket.service";
 		ChatRoomService,
 		WSChatService,
 		WSSocket,
+		WSFriendRequestService,
 	],
 })
 export class WSModule {}
