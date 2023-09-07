@@ -13,3 +13,7 @@ button.true, button:hover {
 	box-shadow: 0 0;
 	filter: brightness(80%);
 }
+
+button.true {
+	cursor: default;
+}

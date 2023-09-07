@@ -49,7 +49,7 @@ export class DBGameInfoService {
 
 	async delete(gameId: number) {
 		const tmp = await this.gameInfoRepo.findOneBy({ id: gameId });
-		if (tmp) return await this.gameInfoRepo.delete(tmp);
+		if (tmp) return await this.gameInfoRepo.delete({id: gameId});
 		else throw new NotFoundException("GameInfo not found");
 	}
 }

@@ -10,8 +10,9 @@ import { UserChatRoomEntity } from "../userChatRoom/entity";
 import { GameInfoEntity } from "../gameInfo/entity";
 import { MessageEntity } from "../message/entity";
 import { FriendEntity } from "../friend/entity";
-import { MutedEntity } from "../muted/entity";
+import { BlockedEntity } from "../blocked/entity"
 import { Exclude } from "class-transformer";
+import { NotificationEntity } from "../notification/entity";
 
 export enum Status {
 	DISCONNECTED,
@@ -75,12 +76,22 @@ export class UserEntity {
 	@OneToMany((type) => FriendEntity, (friend) => friend.friend)
 	friend: FriendEntity[];
 
-	// muted
-	@OneToMany((type) => MutedEntity, (mutedMe) => mutedMe.me)
-	meMuted: MutedEntity[];
+	//friend req
+	@OneToMany((type) => FriendEntity, (friendMe) => friendMe.me)
+	meFriendReq: FriendEntity[];
 
-	@OneToMany((type) => MutedEntity, (muted) => muted.muted)
-	muted: MutedEntity[];
+	@OneToMany((type) => FriendEntity, (friend) => friend.friend)
+	friendReq: FriendEntity[];
+
+	// muted
+	@OneToMany((type) => BlockedEntity, (blocked) => blocked.me)
+	meBlocked: BlockedEntity[];
+
+	@OneToMany((type) => BlockedEntity, (blocked) => blocked.blocked)
+	blocked: BlockedEntity[];
+
+	@OneToMany((type) => NotificationEntity, (notif) => notif.user)
+	notification: NotificationEntity[];
 
 	constructor(partial: Partial<UserEntity>) {
 		Object.assign(this, partial);

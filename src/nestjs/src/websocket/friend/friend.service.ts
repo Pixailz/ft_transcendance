@@ -89,9 +89,10 @@ export class WSFriendService {
 			return ;
 		}
 		await this.dbFriendRequestService.create(
-			{ friendId: friend_id },
-			user_id,
-		);
+		{ friendId: friend_id },
+		user_id,
+	);
+
 		const full_request = await this.dbFriendRequestService.getFullRequest(
 			user_id,
 			friend_id,

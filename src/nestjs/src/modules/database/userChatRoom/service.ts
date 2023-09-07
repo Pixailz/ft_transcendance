@@ -64,8 +64,10 @@ export class DBUserChatRoomService {
 			userId: user,
 			roomId: room,
 		});
-		if (tmp) return await this.userChatRoomRepo.update(tmp, post);
-		else throw new NotFoundException("userChatRoom not found");
+		if (tmp)
+			return await this.userChatRoomRepo.update({userId: tmp.userId, roomId :tmp.roomId}, post);
+		else
+			throw new NotFoundException("userChatRoom not found");
 	}
 
 	async delete(user: number, room: number) {
@@ -73,8 +75,10 @@ export class DBUserChatRoomService {
 			userId: user,
 			roomId: room,
 		});
-		if (tmp) return await this.userChatRoomRepo.delete(tmp);
-		else throw new NotFoundException("userChatRoom not found");
+		if (tmp)
+			return await this.userChatRoomRepo.delete({userId: tmp.userId, roomId :tmp.roomId});
+		else
+			throw new NotFoundException("userChatRoom not found");
 	}
 
 	async getUserRoom(room_id: number): Promise<UserChatRoomEntity[]> {

@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsNumber } from "class-validator";
 
-export class DBMutedPost {
+export class DBBlockedPost {
 	@IsNotEmpty()
 	@IsNumber()
-	mutedId?: number;
+	blockedId?: number;
 }

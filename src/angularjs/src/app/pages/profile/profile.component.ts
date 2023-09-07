@@ -20,8 +20,7 @@ export enum FriendReqStatus {
 })
 export class ProfileComponent implements OnInit {
 	user_info: UserI = DefUserI;
-	alreadyFriend: boolean = true;
-
+	user_id : number = -1;
 	constructor(
 		private route: ActivatedRoute,
 		private back: BackService,
@@ -37,6 +36,9 @@ export class ProfileComponent implements OnInit {
 			.catch((err) => {
 				console.log("[profile]", err.status);
 			});
+			console.log('on init user info = ', this.user_info);
+		// const userid = JSON.parse(this.userService.getToken())?.user_id;
+		this.user_id = (await this.userService.getUserInfo()).id;
 	}
 
 	onGetInfo()
