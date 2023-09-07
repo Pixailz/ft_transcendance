@@ -34,14 +34,6 @@ export class DBFriendController {
 		return (await this.dbFriendService.alreadyFriend(userId, friendId));
 	}
 
-	@Get("/alreadyFriend/:friend_id")
-	async alreadyFriend(
-		@Request() req,
-		@Param("friend_id") friendId: number) {
-		const userId = req.user.user_id;
-		return (await this.dbFriendService.alreadyFriend(userId, friendId));
-	}
-
 	@Get(":friend_id")
 	async getOne(@Request() req, @Param("friend_id") friendId: number) {
 		const userId = req.user.user_id;

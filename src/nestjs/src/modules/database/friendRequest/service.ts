@@ -79,27 +79,6 @@ export class DBFriendRequestService {
 		return requests;
 	}
 
-	async alreadyFriend(me_id: number, friend_id:number)
-	{
-		const tmp = await this.friendRepo.findOneBy({meId: me_id, friendId: friend_id});
-		if (tmp)
-			return (true);
-		return (false);
-	}
-
-	async alreadySent(me_id: number, friend_id:number)
-	{
-		const tmp = await this.friendRequestRepo.findOneBy({meId: me_id, friendId: friend_id});
-		if (tmp)
-			return (true);
-		return (false);
-	}
-
-	async getAllRequest(me_id: number) {
-		const requests = await this.friendRequestRepo.findBy({friendId: me_id});
-		return requests;
-	}
-
 	async acceptReq(me_id: number, friendId: number) {
 		const req = await this.friendRequestRepo.findOneBy({
 			meId: me_id,
