@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, Column, JoinColumn, PrimaryColumn } from "typeorm";
+import { Entity, ManyToOne, Column, JoinColumn, PrimaryColumn, Timestamp } from "typeorm";
 
 import { UserEntity } from "../user/entity";
 import { ChatRoomEntity } from "../chatRoom/entity";
@@ -28,4 +28,10 @@ export class UserChatRoomEntity {
 
 	@Column({ type: "boolean", default: false })
 	public isAdmin: boolean;
+
+	@Column({ type: "boolean", default: false })
+	public isMuted: boolean;
+
+	@Column({type: "timestamp", default: 0})
+	public mutedTime: Timestamp;
 }
