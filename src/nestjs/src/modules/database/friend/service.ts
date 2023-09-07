@@ -31,6 +31,13 @@ export class DBFriendService {
 		return list;
 	}
 
+	async alreadyFriend(me_id: number, friend_id: number){
+		const friend = await this.friendRepo.findOneBy({meId: me_id, friendId: friend_id});
+		if (friend)
+			return (true);
+		return (false);
+	}
+
 	async returnAll() {
 		return await this.friendRepo.find();
 	}
@@ -42,6 +49,28 @@ export class DBFriendService {
 		});
 		if (tmp) return tmp;
 		else throw new NotFoundException("Friend relation not found");
+	}
+
+	async returnAllFriend(me_id: number): Promise<UserEntity[]>
+	{
+		const tmp = await this.friendRepo.find({
+			relations: {
+				friend: true,
+			},
+			where: {
+				meId: me_id,
+			}
+		});
+		var user_list: UserEntity[] = [];
+
+		for (var i = 0; i < tmp.length; i++)
+		{
+			delete tmp[i].friend.nonce;
+			delete tmp[i].friend.twoAuthFactor;
+			delete tmp[i].friend.twoAuthFactorSecret;
+			user_list.push(tmp[i].friend);
+		}
+		return (user_list);
 	}
 
 	async delete(me_id: number, friend_id: number) {

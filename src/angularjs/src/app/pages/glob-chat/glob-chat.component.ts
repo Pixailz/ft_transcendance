@@ -96,7 +96,6 @@ export class WSGlobChatComponent implements OnInit {
 
 		this.wsGateway.listenNewGlobalMessage().subscribe((data: any) => {
 			console.log("event NewGlobalMessage received");
-			console.log("data", data);
 			this.globChatService.updateNewGlobalMessage(data);
 		})
 
@@ -112,7 +111,6 @@ export class WSGlobChatComponent implements OnInit {
 
 		this.wsGateway.listenRoomAction().subscribe((data: any) => {
 			console.log("event RoomAction");
-			console.log("data", data);
 			this.globChatService.updateRoomAction(data);
 		})
 	}
@@ -210,18 +208,14 @@ export class WSGlobChatComponent implements OnInit {
 
 
 	onPromoteUser(user: UserI)
-	{
-		console.log(user);
-	}
+	{ this.doRoomAction(RoomAction.PROMOTE, user.id); }
 
 	canPromoteUser()
 	{ return (this.globChatService.isOwnerSelectedRoom()); }
 
 
 	onGiveKrownUser(user: UserI)
-	{
-		console.log(user);
-	}
+	{ this.doRoomAction(RoomAction.OWNERSHIP, user.id); }
 
 	canGiveKrownUser()
 	{ return (this.globChatService.isOwnerSelectedRoom()); }

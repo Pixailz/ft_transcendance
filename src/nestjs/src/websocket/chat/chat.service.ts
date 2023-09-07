@@ -9,7 +9,11 @@ import * as bcrypt from "bcrypt";
 
 export enum RoomAction {
 	KICK,
+	PROMOTE,
+	OWNERSHIP,
 }
+
+import { DBFriendRequestService } from "src/modules/database/friendRequest/service";
 
 @Injectable()
 export class WSChatService {
@@ -17,6 +21,7 @@ export class WSChatService {
 		private userService: UserService,
 		private chatRoomService: ChatRoomService,
 		public wsSocket: WSSocket,
+		private friendRequestService: DBFriendRequestService,
 	) {}
 
 	// BASE
@@ -172,6 +177,7 @@ export class WSChatService {
 		const user_id = this.wsSocket.getUserId(socket.id);
 		var all_global_room =
 			await this.chatRoomService.getAllAvailableGlobalRoom();
+		var spliced = 0;
 
 		for (var i = 0; i < all_global_room.length; i++)
 		{
@@ -182,9 +188,17 @@ export class WSChatService {
 				if (room_info.userId === user_id)
 				{
 					delete all_global_room[i];
+					all_global_room.splice(i, 1);
 				}
 			}
 		}
+		// all_global_room.forEach((ii, i) => {
+		// 	if (all_global_room[i])
+		// 	{
+		// 		all_global_room.splice(i - spliced, 1);
+		// 		spliced++;
+		// 	}
+		// })
 		if (all_global_room.length === 0 ||
 			all_global_room[0] === null)
 			return ;
@@ -207,16 +221,11 @@ export class WSChatService {
 			);
 		}
 		all_joined.forEach((ii, i) => {
+			delete all_joined[i].password;
 			all_joined[i].roomInfo.forEach((jj, j) => {
 				delete all_joined[i].roomInfo[j].user.nonce;
 				delete all_joined[i].roomInfo[j].user.twoAuthFactor;
 				delete all_joined[i].roomInfo[j].user.twoAuthFactorSecret;
-			})
-		})
-
-		all_joined.forEach((ii, i) => {
-			all_joined[i].roomInfo.forEach((jj, j) => {
-				console.log(all_joined[i].roomInfo[j].user);
 			})
 		})
 		socket.emit("getAllJoinedGlobalRoom", all_joined);
@@ -387,13 +396,26 @@ export class WSChatService {
 		return (this.isAdmin(room, user_id) || this.isAdmin(room, user_id));
 	}
 
+	canPromote(room: ChatRoomEntity, user_id: number): boolean
+	{
+		return (this.isAdmin(room, user_id));
+	}
+
+	canGiveKrown(room: ChatRoomEntity, user_id: number): boolean
+	{
+		return (this.isAdmin(room, user_id));
+	}
+
 	canTakeAction(room: ChatRoomEntity, user_id: number, action: RoomAction): boolean
 	{
 		var result: boolean = false;
 
 		switch (action) {
 			case RoomAction.KICK: { result = this.canKick(room, user_id); break; }
+			case RoomAction.PROMOTE: { result = this.canPromote(room, user_id); break; }
+			case RoomAction.OWNERSHIP: { result = this.canGiveKrown(room, user_id); break; }
 		}
+		console.log(result);
 		return (result);
 	}
 
@@ -402,10 +424,27 @@ export class WSChatService {
 		this.chatRoomService.kickUser(room.id, target_id);
 	}
 
-	takeAction(room: ChatRoomEntity, target_id: number, action: RoomAction)
+	async promoteUser(room: ChatRoomEntity, target_id: number)
+	{
+		this.chatRoomService.promoteUser(room.id, target_id);
+	}
+
+	async giveKrown(user_id: number, room: ChatRoomEntity, target_id: number)
+	{
+		this.chatRoomService.giveKrownUser(user_id, room.id, target_id);
+	}
+
+	takeAction(
+		user_id: number,
+		room: ChatRoomEntity,
+		target_id: number,
+		action: RoomAction
+	)
 	{
 		switch (action) {
 			case RoomAction.KICK: { this.kickUser(room, target_id); break; }
+			case RoomAction.PROMOTE: { this.promoteUser(room, target_id); break; }
+			case RoomAction.OWNERSHIP: { this.giveKrown(user_id, room, target_id); break; }
 		}
 	}
 
@@ -422,8 +461,37 @@ export class WSChatService {
 		})
 	}
 
+	emitPromote(
+		server: Server,
+		room: ChatRoomEntity,
+		target_id: number,
+	)
+	{
+		this.wsSocket.sendToUserInRoom(server, room, "roomAction", {
+			action: RoomAction.PROMOTE,
+			target_id: target_id,
+			room_id: room.id,
+		})
+	}
+
+	emitOwnership(
+		server: Server,
+		user_id: number,
+		room: ChatRoomEntity,
+		target_id: number,
+	)
+	{
+		this.wsSocket.sendToUserInRoom(server, room, "roomAction", {
+			action: RoomAction.OWNERSHIP,
+			target_id: target_id,
+			user_id: user_id,
+			room_id: room.id,
+		})
+	}
+
 	actionEmit(
 		server: Server,
+		user_id: number,
 		room: ChatRoomEntity,
 		action: RoomAction,
 		target_id: number,
@@ -431,6 +499,8 @@ export class WSChatService {
 	{
 		switch (action) {
 			case RoomAction.KICK: { this.emitKick(server, room, target_id); break; }
+			case RoomAction.PROMOTE: { this.emitPromote(server, room, target_id); break; }
+			case RoomAction.OWNERSHIP: { this.emitOwnership(server, user_id, room, target_id); break; }
 		}
 	}
 
@@ -448,13 +518,8 @@ export class WSChatService {
 
 		if (!this.canTakeAction(room, user_id, action))
 			return ;
-		this.takeAction(room, target_id, action);
-		this.actionEmit(server, room, action, target_id);
-		// this.wsSocket.sendToUserInRoom(server, room, "roomAction", {
-		// 	action: action,
-		// 	target_id: target_id,
-		// 	return: room,
-		// });
+		this.takeAction(user_id, room, target_id, action);
+		this.actionEmit(server, user_id, room, action, target_id);
 	}
 
 	isOwner(room: ChatRoomEntity, user_id: number): boolean

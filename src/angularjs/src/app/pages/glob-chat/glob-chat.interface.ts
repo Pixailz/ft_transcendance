@@ -2,6 +2,8 @@ import { ChatRoomI, UserI, DefUserI, DefChatRoomI, } from "../../interfaces/chat
 
 export enum RoomAction {
 	KICK,
+	PROMOTE,
+	OWNERSHIP,
 }
 
 export interface ChatGlobI {

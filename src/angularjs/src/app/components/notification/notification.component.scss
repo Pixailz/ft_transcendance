@@ -1,0 +1,23 @@
+:host {
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    right: 0;
+    margin-top: 80px;
+    margin-right: 55px;
+    transition: transform .5s ease-in-out;
+}
+
+app-flat-button {
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.notification {
+    background-color: white;  
+    color: black;
+    border: 3px solid black;
+	padding: 15px;
+	margin-bottom: 15px;
+}

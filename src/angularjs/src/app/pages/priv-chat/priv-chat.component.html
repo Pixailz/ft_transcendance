@@ -2,7 +2,7 @@
 	<div *ngIf="isCreatingRoom" class="popup">
 		<ul class="friend-list">
 			<li *ngFor="let friend of privChatService.getFriends();">
-				<button (click)="onCreateFriend(friend)">{{userService.getUserInfoFormated(friend.user_info)}}</button>
+				<button *ngIf="friend.user_info.id !== -1" (click)="onCreateFriend(friend)">{{userService.getUserInfoFormated(friend.user_info)}}</button>
 			</li>
 			<button class="close" (click)="onClosePopup()">
 				<mat-icon fontIcon="close"></mat-icon>

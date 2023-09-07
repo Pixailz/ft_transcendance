@@ -183,12 +183,58 @@ export class GlobChatService {
 		}
 	}
 
+	updateRoomActionPromote(target_id: number, room_id: number)
+	{
+		const room = this.chat.joined_room[room_id];
+		if (room && room.roomInfo)
+		{
+			for (var i = 0; i < room.roomInfo.length; i++)
+			{
+				if (room.roomInfo[i].userId === target_id)
+				{
+					this.chat.joined_room[room_id].roomInfo[i].isAdmin = true;
+				}
+			}
+		}
+	}
+
+	updateRoomActionGiveKrown(target_id: number, user_id: number, room_id: number)
+	{
+		console.log("target_id",target_id);
+		console.log("user_id",user_id);
+		console.log("room_id",room_id);
+		const room = this.chat.joined_room[room_id];
+		if (room && room.roomInfo)
+		{
+			for (var i = 0; i < room.roomInfo.length; i++)
+			{
+				if (room.roomInfo[i].userId === target_id)
+				{
+					this.chat.joined_room[room_id].roomInfo[i].isOwner = true;
+				}
+				if (room.roomInfo[i].userId === user_id)
+				{
+					this.chat.joined_room[room_id].roomInfo[i].isOwner = false;
+				}
+			}
+		}
+	}
+
 	updateRoomAction(data: any)
 	{
 		switch (data.action) {
 			case RoomAction.KICK: { this.updateRoomActionKick(
 				data.target_id,
-				data.room_id
+				data.room_id,
+			); break; }
+			case RoomAction.PROMOTE: { this.updateRoomActionPromote(
+				data.target_id,
+				data.room_id,
+			); break; }
+			case RoomAction.OWNERSHIP: { this.updateRoomActionGiveKrown(
+				data.target_id,
+				data.user_id,
+				data.room_id,
 			); break; }
 		}
 	}

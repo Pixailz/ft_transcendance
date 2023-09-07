@@ -9,5 +9,5 @@ export class FlatButtonComponent {
 	@Input() fontIcon: string = '';
 	@Input() bgColor: string = '';
 	@Input() color: string = '';
-	@Input() isActive: any;
+	@Input() isActive: boolean = false;
 }

@@ -69,6 +69,7 @@ export class ChatRoomService {
 	async getAllPrivateMessageRoom(room_id: number): Promise<MessageEntity[]> {
 		const user_room =
 			await this.dbUserChatRoomService.getAllPrivateUserRoom(room_id);
+
 		return user_room[0].room.message;
 	}
 
@@ -150,6 +151,13 @@ export class ChatRoomService {
 	async getAllJoinedGlobalRoom(user_id: number): Promise<ChatRoomEntity[]> {
 		const all_chat_room =
 			await this.dbUserChatRoomService.getAllJoinedGlobalRoom(user_id);
+		all_chat_room.forEach((ii, i) => {
+			all_chat_room[i].message.forEach((jj, j) => {
+				delete all_chat_room[i].message[i].user.nonce;
+				delete all_chat_room[i].message[i].user.twoAuthFactor;
+				delete all_chat_room[i].message[i].user.twoAuthFactorSecret;
+			})
+		})
 		return all_chat_room;
 	}
 
@@ -163,6 +171,11 @@ export class ChatRoomService {
 		const chat_room = await this.dbUserChatRoomService.getJoinedGlobalRoom(
 			room_id,
 		);
+		chat_room.message.forEach((ii, i) => {
+			delete chat_room.message[i].user.nonce;
+			delete chat_room.message[i].user.twoAuthFactor;
+			delete chat_room.message[i].user.twoAuthFactorSecret;
+		})
 		return chat_room;
 	}
 
@@ -192,5 +205,22 @@ export class ChatRoomService {
 	async kickUser(room_id: number, target_id: number)
 	{
 		await this.dbUserChatRoomService.delete(target_id, room_id);
+	}
+
+	async promoteUser(room_id: number, target_id: number)
+	{
+		await this.dbUserChatRoomService.update(target_id, room_id, {
+			isAdmin: true,
+		});
+	}
+
+	async giveKrownUser(user_id: number, room_id: number, target_id: number)
+	{
+		await this.dbUserChatRoomService.update(target_id, room_id, {
+			isAdmin: true,
+		});
+		await this.dbUserChatRoomService.update(user_id, room_id, {
+			isAdmin: false,
+		});
 	}
 }

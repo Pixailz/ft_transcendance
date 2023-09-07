@@ -7,13 +7,20 @@ import {
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import { WSChatService } from "./chat/chat.service";
+import { WSFriendRequestService } from "./friendRequest/friendRequest.service";
+
 
 @WebSocketGateway(3001, {
 	path: "/ws",
 	cors: { origin: "*" },
 })
-export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
-	constructor(private wsChatService: WSChatService) {}
+export class WSGateway
+	implements OnGatewayConnection, OnGatewayDisconnect
+{
+	constructor(
+		private wsChatService: WSChatService,
+		private wsFriendRequestService: WSFriendRequestService,
+	) {}
 
 	@WebSocketServer()
 	server = new Server();
@@ -128,5 +135,36 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			action,
 			target_id,
 		);
+	}
+
+	@SubscribeMessage("getAllReqById")
+	async getAllReqById(socket: Socket) {
+		await this.wsFriendRequestService.getAllReqById(socket);
+	}
+
+	@SubscribeMessage("sendFriendReq")
+	async sendFriendReq(socket: Socket, id: number) {
+		await this.wsFriendRequestService.sendFriendReq(this.server, socket, id);
+	}
+
+	@SubscribeMessage("acceptFriendReq")
+	async acceptFriendReq(socket: Socket, id: number) {
+		await this.wsFriendRequestService.acceptFriendReq(this.server, socket, id);
+	}
+
+	@SubscribeMessage("rejectFriendReq")
+	async rejectFriendReq(socket: Socket, id: number) {
+		await this.wsFriendRequestService.rejectFriendReq(this.server, socket, id);
+	}
+
+	@SubscribeMessage("friendReqStatus")
+	async friendReqStatus(socket: Socket, id: number) {
+		await this.wsFriendRequestService.friendReqStatus(socket, id);
+	}
+
+
+	@SubscribeMessage("sendNotification")
+	async sendNotification(server: Server, socket: Socket, prefix: string, friend_id: number) {
+		await this.wsFriendRequestService.sendNotification(server, socket, friend_id, prefix);
 	}
 }

@@ -29,6 +29,7 @@ export class WSPrivChatComponent implements OnInit {
 		this.wsGateway.listenAllFriend()
 			.subscribe((friends: UserI[]) => {
 				console.log("event AllFriend received ");
+				console.log("friends", friends);
 				this.privChatService.updateAllFriend(friends);
 			}
 		)

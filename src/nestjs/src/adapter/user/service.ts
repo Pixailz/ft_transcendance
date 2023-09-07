@@ -2,12 +2,14 @@ import { Injectable } from "@nestjs/common";
 import { DBUserService } from "../../modules/database/user/service";
 import { JwtService } from "@nestjs/jwt";
 import { UserEntity } from "../../modules/database/user/entity";
+import { DBFriendService } from "src/modules/database/friend/service";
 
 @Injectable()
 export class UserService {
 	constructor(
 		private jwtService: JwtService,
 		private dbUserService: DBUserService,
+		private dbFriendService: DBFriendService
 	) {}
 
 	validateToken(jwt_token: string): boolean {
@@ -30,7 +32,8 @@ export class UserService {
 	}
 
 	async getAllFriend(user_id: number): Promise<UserEntity[]> {
-		return await this.dbUserService.returnAll();
+		const all_friend = await this.dbFriendService.returnAllFriend(user_id);
+		return (all_friend);
 	}
 
 	async getAllStatusFriend(user_id: number): Promise<any> {

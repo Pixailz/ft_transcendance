@@ -243,27 +243,27 @@
 						<div class="button-row">
 							<button mat-raised-button color="primary"
 								(click)="onKickUser(user)"
-								[disabled]="!globChatService.isOwnerSelectedRoom()">
+								[disabled]="!canKickUser()">
 								KICK
 							</button>
 							<button mat-raised-button color="primary"
 								(click)="onBanUser(user)"
-								[disabled]="!globChatService.isOwnerSelectedRoom()">
+								[disabled]="!canBanUser()">
 								BAN
 							</button>
 							<button mat-raised-button color="primary"
 								(click)="onMuteUser(user)"
-								[disabled]="!globChatService.isOwnerSelectedRoom()">
+								[disabled]="!canMuteUser()">
 								MUTE
 							</button>
 							<button mat-raised-button color="primary"
 								(click)="onPromoteUser(user)"
-								[disabled]="!globChatService.isOwnerSelectedRoom()">
+								[disabled]="!canPromoteUser()">
 								PROMOTE
 							</button>
 							<button mat-raised-button color="primary"
 								(click)="onGiveKrownUser(user)"
-								[disabled]="!globChatService.isOwnerSelectedRoom()">
+								[disabled]="!canGiveKrownUser()">
 								GIVE OWNERSHIP
 							</button>
 						</div>

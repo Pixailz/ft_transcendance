@@ -25,7 +25,7 @@ export class PrivChatService {
 
 		if (friends.length === 0)
 		{
-			this.chat.friends = [ DefFriendI ]
+			this.chat.friends = { "-1": DefFriendI };
 			return ;
 		}
 		for (var i = 0; i < friends.length; i++)
@@ -47,6 +47,11 @@ export class PrivChatService {
 				}
 		}
 	}
+
+	// updateNewFriend(friends: UserI)
+	// {
+
+	// }
 
 	updateAllPrivateRoom(chatroom: ChatRoomI[])
 	{
@@ -114,10 +119,8 @@ export class PrivChatService {
 		// TODO: readd correct check when friends is implemented with his listener
 		if (!this.chat.friends[friends_status.user_id])
 			return ;
-			// this.chat.friends[friends_status.user_id] = DefFriendI;
 		if (!this.chat.friends[friends_status.user_id].user_info)
 			return ;
-			// this.chat.friends[friends_status.user_id].user_info = DefUserI;
 		this.chat.friends[friends_status.user_id].user_info.status = friends_status.status;
 	}
 
@@ -189,7 +192,7 @@ export class PrivChatService {
 	getCurrentMessageUser(i: number)
 	{
 		const current_message = this.getCurrentMessage(i);
-		return(this.chat.friends[current_message.userId].user_info.ftLogin);
+		return(current_message.user.ftLogin);
 	}
 
 	getSelectedFriendRoom(): ChatRoomI
@@ -237,7 +240,8 @@ export class PrivChatService {
 
 	isGoodFriend(friend: FriendI): boolean
 	{
-		if (friend.user_info.id === -1)
+		if (friend.user_info &&
+			friend.user_info.id === -1)
 			return false
 		return true;
 	}

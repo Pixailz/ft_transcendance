@@ -86,3 +86,13 @@ export const DefFriendI: FriendI = {
 	user_info			: DefUserI,
 	room				: DefChatRoomI,
 }
+
+export interface FriendRequestI {
+	meId : number;
+	friendId : number;
+}
+
+export const DefFriendRequestI : FriendRequestI = {
+	meId : -1,
+	friendId : -1,
+}
