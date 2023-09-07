@@ -1,7 +1,5 @@
 import {
 	Entity,
-	Column,
-	OneToMany,
 	PrimaryColumn,
 	ManyToOne,
 	JoinColumn,
@@ -10,22 +8,22 @@ import {
 import { UserEntity } from "../user/entity";
 
 @Entity()
-export class MutedEntity {
+export class BlockedEntity {
 	@PrimaryColumn()
 	public meId: number;
 
 	@PrimaryColumn()
-	public mutedId: number;
+	public blockedId: number;
 
-	@ManyToOne((type) => UserEntity, (me) => me.meMuted, {
+	@ManyToOne((type) => UserEntity, (me) => me.meBlocked, {
 		onDelete: "CASCADE",
 	})
 	@JoinColumn({ name: "meId" })
 	me: UserEntity;
 
-	@ManyToOne((type) => UserEntity, (muted) => muted.muted, {
+	@ManyToOne((type) => UserEntity, (blocked) => blocked.blocked, {
 		onDelete: "CASCADE",
 	})
-	@JoinColumn({ name: "mutedId" })
-	muted: UserEntity;
+	@JoinColumn({ name: "blockedId" })
+	blocked: UserEntity;
 }

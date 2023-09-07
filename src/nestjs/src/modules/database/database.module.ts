@@ -8,7 +8,7 @@ import { MessageEntity } from "./message/entity";
 import { GameInfoEntity } from "./gameInfo/entity";
 import { FriendEntity } from "./friend/entity";
 import { FriendRequestEntity } from "./friendRequest/entity";
-import { MutedEntity } from "./muted/entity";
+import { BlockedEntity } from "./blocked/entity";
 import { NotificationEntity } from "./notification/entity";
 
 import { DBUserService } from "./user/service";
@@ -18,7 +18,7 @@ import { DBMessageService } from "./message/service";
 import { DBGameInfoService } from "./gameInfo/service";
 import { DBFriendService } from "./friend/service";
 import { DBFriendRequestService } from "./friendRequest/service";
-import { DBMutedService } from "./muted/service";
+import { DBBlockedService } from "./blocked/service";
 import { DBNotificationService } from "./notification/service";
 
 import { DBUserController } from "./user/controller";
@@ -28,8 +28,8 @@ import { DBMessageController } from "./message/controller";
 import { DBGameInfoController } from "./gameInfo/controller";
 import { DBFriendController } from "./friend/controller";
 import { DBFriendRequestController } from "./friendRequest/controller";
-import { DBMutedController } from "./muted/controller";
 import { Sanitize } from "../../sanitize-object";
+import { DBBlockedController } from "./blocked/controller";
 import { DBNotificationController } from "./notification/controller";
 
 @Module({
@@ -49,7 +49,7 @@ import { DBNotificationController } from "./notification/controller";
 				GameInfoEntity,
 				FriendEntity,
 				FriendRequestEntity,
-				MutedEntity,
+				BlockedEntity,
 				NotificationEntity,
 			],
 			synchronize: true,
@@ -62,7 +62,7 @@ import { DBNotificationController } from "./notification/controller";
 			GameInfoEntity,
 			FriendEntity,
 			FriendRequestEntity,
-			MutedEntity,
+			BlockedEntity,
 			NotificationEntity,
 		]),
 	],
@@ -74,7 +74,7 @@ import { DBNotificationController } from "./notification/controller";
 		DBGameInfoController,
 		DBFriendController,
 		DBFriendRequestController,
-		DBMutedController,
+		DBBlockedController,
 		DBNotificationController,
 	],
 	providers: [
@@ -86,7 +86,7 @@ import { DBNotificationController } from "./notification/controller";
 		DBGameInfoService,
 		DBFriendService,
 		DBFriendRequestService,
-		DBMutedService,
+		DBBlockedService,
 		DBNotificationService,
 	],
 	exports: [
@@ -97,7 +97,7 @@ import { DBNotificationController } from "./notification/controller";
 		DBGameInfoService,
 		DBFriendService,
 		DBFriendRequestService,
-		DBMutedService,
+		DBBlockedService,
 		DBNotificationService,
 	],
 })

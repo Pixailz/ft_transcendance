@@ -17,13 +17,13 @@ export class FriendRequestEntity {
 	@PrimaryColumn()
 	public friendId: number;
 
-	@ManyToOne((type) => UserEntity, (me) => me.me, {
+	@ManyToOne((type) => UserEntity, (me) => me.meFriendReq, {
 		onDelete: "CASCADE",
 	})
 	@JoinColumn({ name: "meId" })
 	me: UserEntity;
 
-	@ManyToOne((type) => UserEntity, (friend) => friend.friend, {
+	@ManyToOne((type) => UserEntity, (friend) => friend.friendReq, {
 		onDelete: "CASCADE",
 	})
 	@JoinColumn({ name: "friendId" })
