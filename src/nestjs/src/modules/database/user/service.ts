@@ -11,7 +11,6 @@ import { Status, UserEntity } from "./entity";
 
 import { DBUserPost, DBUserInfoPost } from "./dto";
 import { Api42Service } from "../../api42/service";
-import sanitizeObject from "src/sanitize";
 
 @Injectable()
 export class DBUserService {
@@ -109,8 +108,17 @@ export class DBUserService {
 			},
 		});
 
-		const resp = sanitizeObject(users, ["nickname", "picture", "lastSeen"]);
+		users.forEach((user) => {
+			Object.getOwnPropertyNames(user).forEach((key) => {
+				if (
+					key !== "nickname" &&
+					key !== "picture" &&
+					key !== "lastSeen"
+				)
+					delete user[key];
+			});
+		});
 
-		return resp;
+		return users;
 	}
 }
