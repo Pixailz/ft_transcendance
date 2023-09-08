@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { Component, HostBinding } from '@angular/core';
 
 @Component({
 	selector: 'app-root',
@@ -7,5 +8,10 @@ import { Component } from '@angular/core';
 })
 
 export class AppComponent {
+	@HostBinding('class') className = 'darkMode';
 	title = 'transcendence';
+
+	constructor(private overlay: OverlayContainer){
+		this.overlay.getContainerElement().classList.add('darkMode');
+	}
 }

@@ -47,4 +47,9 @@ export class UserController {
 	async get_nonce(@Request() req): Promise<{ nonce: string }> {
 		return await this.dbUserService.getNonce(req.user.user_id);
 	}
+
+	@Get("online")
+	async getOnlineUsers(): Promise<UserEntity[]> {
+		return await this.dbUserService.getOnlineUsers();
+	}
 }

@@ -7,7 +7,7 @@ import {
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
-import { UserEntity } from "./entity";
+import { Status, UserEntity } from "./entity";
 
 import { DBUserPost, DBUserInfoPost } from "./dto";
 import { Api42Service } from "../../api42/service";
@@ -99,5 +99,26 @@ export class DBUserService {
 			},
 		});
 		return Promise.resolve(user_info);
+	}
+
+	async getOnlineUsers(): Promise<Partial<UserEntity[]>> {
+		const users = await this.userRepo.find({
+			where: {
+				status: Status.CONNECTED,
+			},
+		});
+
+		users.forEach((user) => {
+			Object.getOwnPropertyNames(user).forEach((key) => {
+				if (
+					key !== "nickname" &&
+					key !== "picture" &&
+					key !== "lastSeen"
+				)
+					delete user[key];
+			});
+		});
+
+		return users;
 	}
 }

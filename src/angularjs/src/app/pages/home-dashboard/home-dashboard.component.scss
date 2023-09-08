@@ -11,6 +11,11 @@ mat-grid-list {
 	height: auto;
 }
 
+mat-grid-tile {
+	height: 100%;
+	color: white;
+}
+
 .dashboard-card {
 	position: absolute;
 	top: 0;
@@ -19,7 +24,7 @@ mat-grid-list {
 	left: 0;
 }
 
-.more-button {
+.refresh-button {
 	position: absolute;
 	top: 5px;
 	right: 10px;
@@ -28,6 +33,27 @@ mat-grid-list {
 .dashboard-card-content {
 	text-align: center;
 	height: 100%;
+}
+
+
+.mat-footer-row,
+.mat-header-row,
+.mat-row {
+    display: inline-flex;
+    min-width: 100%;
+}
+
+.mat-column-avatar{
+	max-width: 90px;
+	padding-right: 24px;
+	.avatar{
+		width: 40px;
+		height: 40px;
+	}
+}
+
+mat-cell.cdk-column-avatar{
+	border-right: 1px solid currentColor;
 }
 
 h1 {
