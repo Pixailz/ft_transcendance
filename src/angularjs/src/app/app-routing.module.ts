@@ -30,17 +30,17 @@ const routes: Routes = [
 			{
 				path: 'home',
 				component: HomeDashboardComponent,
-				data: { animation: 'Home' }
+				data: { animation: 'Home', reuseRoute: true }
 			},
 			{
 				path: 'play',
 				component: PongComponent,
-				data: { animation: 'Play' }
+				data: { animation: 'Play', reuseRoute: true }
 			},
 			{
 				path: 'profile',
 				component: UserProfileComponent,
-				data: { animation: 'Profile' }
+				data: { animation: 'Profile', reuseRoute: true }
 			},
 			{
 				path: 'profile/:login',
@@ -48,14 +48,21 @@ const routes: Routes = [
 				data: { animation: 'ProfileUser' }
 			},
 			{
-				path: 'chat/dm',
-				component: WSChatDmComponent,
-				data: { animation: 'ChatDm' }
+				path: 'chat',
+				component: WSChatComponent,
+				data: { animation: 'PrivChat', reuseRoute: true }
 			},
 			{
-				path: 'chat/global',
-				component: WSChatChannelComponent,
-				data: { animation: 'ChatChannel' }
+				// throw a 404 error if the route is not found
+				matcher: (url) => {
+					// matches every route except login and register, which are handled by the anonymous layout
+					// by doing this, 404 is exclusive to authenticated layout and logged out user is redirected
+					if (url.length === 1 && !(url[0].path === 'login' || url[0].path === 'register'))
+						return ({ consumed: url });
+					return ({ consumed: [] });
+				},
+				component: PageNotFoundComponent,
+				data: { animation: 'PageNotFound' }
 			}
 		]
 	},
@@ -73,10 +80,6 @@ const routes: Routes = [
 				canActivate: [AuthGuardService]
 			}
 		]
-	},
-	{
-		path: '**',
-		component: PageNotFoundComponent,
 	},
 ];
 
