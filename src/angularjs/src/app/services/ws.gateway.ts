@@ -6,7 +6,7 @@ import {
 	UserChatRoomI,
 	UserI
 } from 'src/app/interfaces/chat.interface';
-import { RoomAction } from '../pages/glob-chat/glob-chat.interface';
+import { RoomAction } from '../components/global-chat/global-chat.interface';
 
 @Injectable({
 	providedIn: 'root',
@@ -94,6 +94,9 @@ export class WSGateway {
 	listenAllJoinedGlobalRoom(): Observable<ChatRoomI[]>
 	{ return this.socket.fromEvent<ChatRoomI[]>("getAllJoinedGlobalRoom"); }
 
+	listenGetGlobalChatRoom(): Observable<ChatRoomI>
+	{ return this.socket.fromEvent<ChatRoomI>("getGlobalChatRoom"); }
+
 	listenNewJoinedGlobalRoom(): Observable<ChatRoomI>
 	{ return this.socket.fromEvent<ChatRoomI>("getNewJoinedGlobalRoom"); }
 
@@ -115,6 +118,9 @@ export class WSGateway {
 
 	getAllJoinedGlobalRoom()
 	{ this.socket.emit("getAllJoinedGlobalRoom"); }
+
+	getGlobalChatRoom()
+	{ this.socket.emit("getGlobalChatRoom"); }
 
 	createGlobalRoom(name: string, password: string, user_id: number[])
 	{ this.socket.emit("createGlobalRoom", name, password, user_id); }

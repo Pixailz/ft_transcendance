@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { DefChatGlobI, RoomAction } from "./glob-chat.interface";
+import { DefChatGlobI, RoomAction } from "./global-chat.interface";
 import { UserService } from "../../services/user.service";
 import { BackService } from "../../services/back.service";
 import { ChatRoomI, DefChatRoomI, DefUserChatRoomI, DefUserI, RoomType, UserChatRoomI, UserI } from "../../interfaces/chat.interface";
@@ -114,19 +114,19 @@ export class GlobChatService {
 
 	updateNewJoinedGlobalRoom(chatroom: ChatRoomI)
 	{
-		var founded: boolean;
+		var found: boolean;
 
-		founded = false;
+		found = false;
 		for (const room_id in this.chat.joined_room)
 		{
 			if (chatroom.id === Number(room_id))
 			{
 				this.chat.joined_room[room_id] = chatroom;
-				founded = true;
+				found = true;
 				continue ;
 			}
 		}
-		if (!founded)
+		if (!found)
 			this.chat.joined_room[chatroom.id.toString()] = chatroom
 		if (this.chat.available_room[chatroom.id])
 			delete this.chat.available_room[chatroom.id];
@@ -135,6 +135,7 @@ export class GlobChatService {
 	updateNewGlobalMessage(data: any)
 	{
 		this.chat.joined_room[data.room_id].message = data.messages;
+		this.chat.selected_room.message = data.messages;
 	}
 
 	updateNewUserJoinGlobalRoom(user_chatroom: UserChatRoomI)

@@ -44,7 +44,7 @@ import { NotificationComponent } from './components/notification/notification.co
 
 // WEBSOCKET
 import { WSPrivChatComponent } from './pages/priv-chat/priv-chat.component';
-import { WSGlobChatComponent } from './pages/glob-chat/glob-chat.component';
+import { WSGlobChatComponent } from './components/global-chat/global-chat.component';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,

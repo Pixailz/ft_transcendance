@@ -13,7 +13,6 @@ import { AnonymousLayoutComponent } from './layout/anonymous-layout.component';
 import { AuthenticatedLayoutComponent } from './layout/authenticated-layout.component';
 import { TwofaformComponent } from './components/twofaform/twofaform.component';
 import { ProfileComponent } from './pages/profile/profile.component';
-import { WSGlobChatComponent } from './pages/glob-chat/glob-chat.component';
 
 const routes: Routes = [
 	{
@@ -51,11 +50,6 @@ const routes: Routes = [
 				path: 'chat/private',
 				component: WSPrivChatComponent,
 				data: { animation: 'PrivChat' }
-			},
-			{
-				path: 'chat/global',
-				component: WSGlobChatComponent,
-				data: { animation: 'GlobChat' }
 			}
 		]
 	},

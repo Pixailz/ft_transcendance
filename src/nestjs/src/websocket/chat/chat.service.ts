@@ -175,18 +175,15 @@ export class WSChatService {
 	// GLOBAL ROOM
 	async getAllAvailableGlobalRoom(socket: Socket) {
 		const user_id = this.wsSocket.getUserId(socket.id);
-		var all_global_room =
+		const all_global_room =
 			await this.chatRoomService.getAllAvailableGlobalRoom();
-		var spliced = 0;
+		const spliced = 0;
 
-		for (var i = 0; i < all_global_room.length; i++)
-		{
-			var room = all_global_room[i];
-			for (var j = 0; j < room.roomInfo.length; j++)
-			{
-				var room_info = room.roomInfo[j];
-				if (room_info.userId === user_id)
-				{
+		for (let i = 0; i < all_global_room.length; i++) {
+			const room = all_global_room[i];
+			for (let j = 0; j < room.roomInfo.length; j++) {
+				const room_info = room.roomInfo[j];
+				if (room_info.userId === user_id) {
 					delete all_global_room[i];
 					all_global_room.splice(i, 1);
 				}
@@ -199,9 +196,7 @@ export class WSChatService {
 		// 		spliced++;
 		// 	}
 		// })
-		if (all_global_room.length === 0 ||
-			all_global_room[0] === null)
-			return ;
+		if (all_global_room.length === 0 || all_global_room[0] === null) return;
 		all_global_room.forEach((room) => {
 			delete room["password"];
 		});
@@ -212,12 +207,13 @@ export class WSChatService {
 		const user_id = this.wsSocket.getUserId(socket.id);
 		const all_joined_room =
 			await this.chatRoomService.getAllJoinedGlobalRoom(user_id);
-		let all_joined: ChatRoomEntity[] = [];
+		const all_joined: ChatRoomEntity[] = [];
 
-		for (let i = 0; i < all_joined_room.length; i++)
-		{
+		for (let i = 0; i < all_joined_room.length; i++) {
 			all_joined.push(
-				await this.chatRoomService.getJoinedGlobalRoom(all_joined_room[i].id)
+				await this.chatRoomService.getJoinedGlobalRoom(
+					all_joined_room[i].id,
+				),
 			);
 		}
 		all_joined.forEach((ii, i) => {
@@ -226,9 +222,41 @@ export class WSChatService {
 				delete all_joined[i].roomInfo[j].user.nonce;
 				delete all_joined[i].roomInfo[j].user.twoAuthFactor;
 				delete all_joined[i].roomInfo[j].user.twoAuthFactorSecret;
-			})
-		})
+			});
+		});
 		socket.emit("getAllJoinedGlobalRoom", all_joined);
+	}
+
+	async getGlobalChatRoom(socket: Socket) {
+		let globalRoom: any = undefined;
+
+		const globalRooms =
+			await this.chatRoomService.getAllAvailableGlobalRoom();
+		globalRooms.forEach((room) => {
+			if (room.name === process.env.GLOBAL_CHATROOM_NAME) {
+				globalRoom = room;
+				return;
+			}
+		});
+
+		if (globalRoom) {
+			socket.emit(
+				"getGlobalChatRoom",
+				await this.chatRoomService.getJoinedGlobalRoom(globalRoom.id),
+			);
+			return;
+		}
+
+		const room_id = await this.chatRoomService.createGlobalRoom(
+			Number(process.env.ROOT_USER_ID),
+			process.env.GLOBAL_CHATROOM_NAME,
+			"",
+		);
+
+		socket.emit(
+			"getGlobalChatRoom",
+			await this.chatRoomService.getJoinedGlobalRoom(room_id),
+		);
 	}
 
 	async createGlobalRoom(
@@ -251,10 +279,8 @@ export class WSChatService {
 			room_id,
 		);
 
-		for (var i in this.wsSocket.socket_list)
-		{
-			if (Number(i) === user_id)
-				continue;
+		for (const i in this.wsSocket.socket_list) {
+			if (Number(i) === user_id) continue;
 			this.wsSocket.sendToUser(
 				server,
 				Number(i),
@@ -287,15 +313,17 @@ export class WSChatService {
 		const user_id = this.wsSocket.getUserId(socket.id);
 		const user = await this.chatRoomService.getAllUserFromRoom(room_id);
 		user.forEach((item) => {
-			if (item === user_id)
-				return ;
-		})
+			if (item === user_id) return;
+		});
 		if (room.type === RoomType.PROTECTED) {
 			const isMatch = await bcrypt.compare(password, room.password);
 			if (!isMatch) return new UnauthorizedException("Wrong Password");
 		}
 		await this.chatRoomService.joinGlobalRoom(room.id, user_id);
-		const user_chatroom = await this.chatRoomService.getUserChatRoom(user_id, room.id)
+		const user_chatroom = await this.chatRoomService.getUserChatRoom(
+			user_id,
+			room.id,
+		);
 		this.wsSocket.sendToUser(
 			server,
 			user_id,
@@ -304,8 +332,12 @@ export class WSChatService {
 		);
 		user.forEach((user_id) => {
 			this.wsSocket.sendToUser(
-				server, user_id, "getNewUserJoinGlobalRoom", user_chatroom);
-		})
+				server,
+				user_id,
+				"getNewUserJoinGlobalRoom",
+				user_chatroom,
+			);
+		});
 	}
 
 	async setStatus(server: Server, user_id: number, status: number) {
@@ -355,82 +387,85 @@ export class WSChatService {
 		socket: Socket,
 		room_id: number,
 		detail: any,
-	)
-	{
+	) {
 		const user_id = this.wsSocket.getUserId(socket.id);
-		var room = await this.chatRoomService.getJoinedGlobalRoom(room_id);
-		var details: any = {};
-		var changed: boolean = false;
+		let room = await this.chatRoomService.getJoinedGlobalRoom(room_id);
+		const details: any = {};
+		let changed = false;
 
-		if (!this.isOwner(room, user_id))
-			return ;
-		if (detail.name && detail.name !== "")
-			details["name"] = detail.name;
-		if (detail.remove_pass === true)
-			details["password"] = "";
+		if (!this.isOwner(room, user_id)) return;
+		if (detail.name && detail.name !== "") details["name"] = detail.name;
+		if (detail.remove_pass === true) details["password"] = "";
 		else if (detail.password && detail.password !== "")
-			details["password"] = await this.chatRoomService.hashPass(detail.password);
-		if (details.name !== room.name)
-			changed = true;
-		if (detail.remove_pass && room.type === RoomType.PROTECTED)
-		{
+			details["password"] = await this.chatRoomService.hashPass(
+				detail.password,
+			);
+		if (details.name !== room.name) changed = true;
+		if (detail.remove_pass && room.type === RoomType.PROTECTED) {
 			changed = true;
 			await this.chatRoomService.updateType(room.id, RoomType.PUBLIC);
-		}
-		else if (details.password && room.type === RoomType.PUBLIC)
-		{
+		} else if (details.password && room.type === RoomType.PUBLIC) {
 			changed = true;
 			await this.chatRoomService.updateType(room.id, RoomType.PROTECTED);
 		}
-		if (changed)
-		{
+		if (changed) {
 			await this.chatRoomService.changeRoomDetails(room_id, details);
 			room = await this.chatRoomService.getJoinedGlobalRoom(room_id);
 			this.wsSocket.sendToUserInRoom(
-								server, room, "getNewDetailsGlobalRoom", room);
+				server,
+				room,
+				"getNewDetailsGlobalRoom",
+				room,
+			);
 		}
 	}
 
-	canKick(room: ChatRoomEntity, user_id: number): boolean
-	{
-		return (this.isAdmin(room, user_id) || this.isAdmin(room, user_id));
+	canKick(room: ChatRoomEntity, user_id: number): boolean {
+		return this.isAdmin(room, user_id) || this.isAdmin(room, user_id);
 	}
 
-	canPromote(room: ChatRoomEntity, user_id: number): boolean
-	{
-		return (this.isAdmin(room, user_id));
+	canPromote(room: ChatRoomEntity, user_id: number): boolean {
+		return this.isAdmin(room, user_id);
 	}
 
-	canGiveKrown(room: ChatRoomEntity, user_id: number): boolean
-	{
-		return (this.isAdmin(room, user_id));
+	canGiveKrown(room: ChatRoomEntity, user_id: number): boolean {
+		return this.isAdmin(room, user_id);
 	}
 
-	canTakeAction(room: ChatRoomEntity, user_id: number, action: RoomAction): boolean
-	{
-		var result: boolean = false;
+	canTakeAction(
+		room: ChatRoomEntity,
+		user_id: number,
+		action: RoomAction,
+	): boolean {
+		let result = false;
 
 		switch (action) {
-			case RoomAction.KICK: { result = this.canKick(room, user_id); break; }
-			case RoomAction.PROMOTE: { result = this.canPromote(room, user_id); break; }
-			case RoomAction.OWNERSHIP: { result = this.canGiveKrown(room, user_id); break; }
+			case RoomAction.KICK: {
+				result = this.canKick(room, user_id);
+				break;
+			}
+			case RoomAction.PROMOTE: {
+				result = this.canPromote(room, user_id);
+				break;
+			}
+			case RoomAction.OWNERSHIP: {
+				result = this.canGiveKrown(room, user_id);
+				break;
+			}
 		}
 		console.log(result);
-		return (result);
+		return result;
 	}
 
-	async kickUser(room: ChatRoomEntity, target_id: number)
-	{
+	async kickUser(room: ChatRoomEntity, target_id: number) {
 		this.chatRoomService.kickUser(room.id, target_id);
 	}
 
-	async promoteUser(room: ChatRoomEntity, target_id: number)
-	{
+	async promoteUser(room: ChatRoomEntity, target_id: number) {
 		this.chatRoomService.promoteUser(room.id, target_id);
 	}
 
-	async giveKrown(user_id: number, room: ChatRoomEntity, target_id: number)
-	{
+	async giveKrown(user_id: number, room: ChatRoomEntity, target_id: number) {
 		this.chatRoomService.giveKrownUser(user_id, room.id, target_id);
 	}
 
@@ -438,40 +473,38 @@ export class WSChatService {
 		user_id: number,
 		room: ChatRoomEntity,
 		target_id: number,
-		action: RoomAction
-	)
-	{
+		action: RoomAction,
+	) {
 		switch (action) {
-			case RoomAction.KICK: { this.kickUser(room, target_id); break; }
-			case RoomAction.PROMOTE: { this.promoteUser(room, target_id); break; }
-			case RoomAction.OWNERSHIP: { this.giveKrown(user_id, room, target_id); break; }
+			case RoomAction.KICK: {
+				this.kickUser(room, target_id);
+				break;
+			}
+			case RoomAction.PROMOTE: {
+				this.promoteUser(room, target_id);
+				break;
+			}
+			case RoomAction.OWNERSHIP: {
+				this.giveKrown(user_id, room, target_id);
+				break;
+			}
 		}
 	}
 
-	emitKick(
-		server: Server,
-		room: ChatRoomEntity,
-		target_id: number,
-	)
-	{
+	emitKick(server: Server, room: ChatRoomEntity, target_id: number) {
 		this.wsSocket.sendToUserInRoom(server, room, "roomAction", {
 			action: RoomAction.KICK,
 			target_id: target_id,
 			room_id: room.id,
-		})
+		});
 	}
 
-	emitPromote(
-		server: Server,
-		room: ChatRoomEntity,
-		target_id: number,
-	)
-	{
+	emitPromote(server: Server, room: ChatRoomEntity, target_id: number) {
 		this.wsSocket.sendToUserInRoom(server, room, "roomAction", {
 			action: RoomAction.PROMOTE,
 			target_id: target_id,
 			room_id: room.id,
-		})
+		});
 	}
 
 	emitOwnership(
@@ -479,14 +512,13 @@ export class WSChatService {
 		user_id: number,
 		room: ChatRoomEntity,
 		target_id: number,
-	)
-	{
+	) {
 		this.wsSocket.sendToUserInRoom(server, room, "roomAction", {
 			action: RoomAction.OWNERSHIP,
 			target_id: target_id,
 			user_id: user_id,
 			room_id: room.id,
-		})
+		});
 	}
 
 	actionEmit(
@@ -495,15 +527,22 @@ export class WSChatService {
 		room: ChatRoomEntity,
 		action: RoomAction,
 		target_id: number,
-	)
-	{
+	) {
 		switch (action) {
-			case RoomAction.KICK: { this.emitKick(server, room, target_id); break; }
-			case RoomAction.PROMOTE: { this.emitPromote(server, room, target_id); break; }
-			case RoomAction.OWNERSHIP: { this.emitOwnership(server, user_id, room, target_id); break; }
+			case RoomAction.KICK: {
+				this.emitKick(server, room, target_id);
+				break;
+			}
+			case RoomAction.PROMOTE: {
+				this.emitPromote(server, room, target_id);
+				break;
+			}
+			case RoomAction.OWNERSHIP: {
+				this.emitOwnership(server, user_id, room, target_id);
+				break;
+			}
 		}
 	}
-
 
 	async takeRoomAction(
 		server: Server,
@@ -511,36 +550,28 @@ export class WSChatService {
 		room_id: number,
 		action: RoomAction,
 		target_id: number,
-	)
-	{
+	) {
 		const user_id = this.wsSocket.getUserId(socket.id);
 		const room = await this.chatRoomService.getJoinedGlobalRoom(room_id);
 
-		if (!this.canTakeAction(room, user_id, action))
-			return ;
+		if (!this.canTakeAction(room, user_id, action)) return;
 		this.takeAction(user_id, room, target_id, action);
 		this.actionEmit(server, user_id, room, action, target_id);
 	}
 
-	isOwner(room: ChatRoomEntity, user_id: number): boolean
-	{
-		for (var i = 0; i < room.roomInfo.length; i++)
-		{
-			if (room.roomInfo[i].userId === user_id &&
-				room.roomInfo[i].isOwner)
-				return (true);
+	isOwner(room: ChatRoomEntity, user_id: number): boolean {
+		for (let i = 0; i < room.roomInfo.length; i++) {
+			if (room.roomInfo[i].userId === user_id && room.roomInfo[i].isOwner)
+				return true;
 		}
-		return (false);
+		return false;
 	}
 
-	isAdmin(room: ChatRoomEntity, user_id: number): boolean
-	{
-		for (var i = 0; i < room.roomInfo.length; i++)
-		{
-			if (room.roomInfo[i].userId === user_id &&
-				room.roomInfo[i].isAdmin)
-				return (true);
+	isAdmin(room: ChatRoomEntity, user_id: number): boolean {
+		for (let i = 0; i < room.roomInfo.length; i++) {
+			if (room.roomInfo[i].userId === user_id && room.roomInfo[i].isAdmin)
+				return true;
 		}
-		return (false);
+		return false;
 	}
 }

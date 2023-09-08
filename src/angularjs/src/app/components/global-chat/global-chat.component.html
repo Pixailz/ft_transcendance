@@ -1,4 +1,4 @@
-<div class="side-bar">
+<!-- <div class="side-bar">
 	<div *ngIf="popupType === 'create-join'" class="popup-create-join">
 		<button class="close" (click)="onClosePopup()">
 			<mat-icon fontIcon="close"></mat-icon>
@@ -278,9 +278,9 @@
 		</li>
 	</ul>
 	<app-flat-button bgColor="#a7dca3" fontIcon="add" (click)="onCreatingRoom()"></app-flat-button>
-</div>
+</div> -->
 <div *ngIf="globChatService.isGoodSelectedRoom()" class="chat-container">
-	<h2 [routerLink]="" (click)="onOpenManagement()">{{globChatService.getRoomTitle(globChatService.getSelectedRoom())}}</h2>
+	<h2>Global ChatRoom</h2>
 	<ol class="msg-list">
 		<li *ngFor="let _ of globChatService.getSelectedRoom().message; let i=index;" [ngClass]="{'me': globChatService.getCurrentMessage(i).userId === globChatService.getCurrentUser().id, 'same': isSameUser(i)}">
 			<div class="title-line">
@@ -300,4 +300,4 @@
 		</button>
 	</div>
 </div>
-<app-flat-button class="refresh" bgColor="#ffb1b1" fontIcon="refresh" (click)="onGetInfo()"></app-flat-button>
+<!-- <app-flat-button class="refresh" bgColor="#ffb1b1" fontIcon="refresh" (click)="onGetInfo()"></app-flat-button> -->

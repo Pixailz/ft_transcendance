@@ -74,6 +74,11 @@ export class WSGateway
 		this.wsChatService.getAllJoinedGlobalRoom(socket);
 	}
 
+	@SubscribeMessage("getGlobalChatRoom")
+	async handleGetGlobalChatRoom(socket: Socket) {
+		this.wsChatService.getGlobalChatRoom(socket);
+	}
+
 	@SubscribeMessage("createGlobalRoom")
 	async handleCreateGlobalRoom(socket: Socket, data: any) {
 		const name = data[0];

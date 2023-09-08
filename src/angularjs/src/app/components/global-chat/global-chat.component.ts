@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { WSGateway } from 'src/app/services/ws.gateway';
 import { UserService } from 'src/app/services/user.service';
-import { GlobChatService } from './glob-chat.service';
+import { GlobChatService } from './global-chat.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ChatRoomI, RoomType, UserChatRoomI, UserI } from 'src/app/interfaces/chat.interface';
-import { PrivChatService } from '../priv-chat/priv-chat.service';
-import { RoomAction } from './glob-chat.interface';
+import { PrivChatService } from '../../pages/priv-chat/priv-chat.service';
+import { RoomAction } from './global-chat.interface';
 
 @Component({
 	selector: 'app-global-chat',
-	templateUrl: './glob-chat.component.html',
-	styleUrls: ['./glob-chat.component.scss'],
+	templateUrl: './global-chat.component.html',
+	styleUrls: ['./global-chat.component.scss'],
 })
 export class WSGlobChatComponent implements OnInit {
 	popupType: string = "closed";
@@ -34,75 +34,22 @@ export class WSGlobChatComponent implements OnInit {
 		await this.globChatService.updateUserInfo();
 		await this.privChatService.updateUserInfo();
 
-		this.wsGateway.getAllFriend();
-		this.wsGateway.listenAllFriend()
-			.subscribe((friends: UserI[]) => {
-				console.log("event AllFriend received ");
-				this.privChatService.updateAllFriend(friends);
-			}
-		)
-
-		this.wsGateway.listenNewStatusFriend()
-			.subscribe((data: any) => {
-				console.log("event NewStatusFriend received")
-				this.privChatService.updateNewFriendStatus(data);
-			}
-		)
-
-		this.roomCreateForm = this.formBuilder.group({
-			roomName: "",
-			password: "",
-		}, { updateOn: "change" });
-
-		this.roomCreateFriends = this.formBuilder.group({
-			user: [],
-		}, { updateOn: "change" });
-
-		this.roomJoinPrivateForm = this.formBuilder.group({
-			password: "",
-		}, { updateOn: "change" });
-
-		this.roomManagementDetails = this.formBuilder.group({
-			name: "",
-			password: "",
-			remove_pass: false,
-		}, { updateOn: "change" });
-
-		this.roomManagementUser = this.formBuilder.group({
-			user: [],
-		}, { updateOn: "change" });
-
-		this.wsGateway.getAllAvailableGlobalRoom();
-		this.wsGateway.listenAllAvailableGlobalRoom().subscribe((data: ChatRoomI[]) => {
-			console.log("event AllAvailableGlobalRoom received");
-			this.globChatService.updateAllAvailableGlobalRoom(data);
-		})
-
-		this.wsGateway.listenNewAvailableGlobalRoom().subscribe((data: ChatRoomI) => {
-			console.log("event NewAvailableGlobalRoom received");
-			this.globChatService.updateNewAvailableGlobalRoom(data);
-		})
-
-		this.wsGateway.getAllJoinedGlobalRoom();
-		this.wsGateway.listenAllJoinedGlobalRoom().subscribe((data: ChatRoomI[]) => {
-			console.log("event AllJoinedGlobalRoom received");
-			this.globChatService.updateAllJoinedGlobalRoom(data);
-		})
-
-		this.wsGateway.listenNewJoinedGlobalRoom().subscribe((data: ChatRoomI) => {
-			console.log("event NewJoinedGlobalRoom received");
-			this.globChatService.updateNewJoinedGlobalRoom(data);
-		})
+		this.wsGateway.listenGetGlobalChatRoom().subscribe((data: ChatRoomI) => {
+			console.log("event GlobalChatRoom received");
+			this.globChatService.updateSelectedRoom(data);
+			this.wsGateway.joinGlobalRoom(data.id, "");
+		});
+		this.wsGateway.getGlobalChatRoom();
 
 		this.wsGateway.listenNewGlobalMessage().subscribe((data: any) => {
-			console.log("event NewGlobalMessage received");
+			console.log("event getNewGlobalMessage received");
 			this.globChatService.updateNewGlobalMessage(data);
-		})
+		});
 
-		this.wsGateway.listenNewUserJoinGlobalRoom().subscribe((data: UserChatRoomI) => {
-			console.log("event NewUserJoinGlobalRoom received");
-			this.globChatService.updateNewUserJoinGlobalRoom(data);
-		})
+		// this.wsGateway.listenNewUserJoinGlobalRoom().subscribe((data: UserChatRoomI) => {
+		// 	console.log("event NewUserJoinGlobalRoom received");
+		// 	this.globChatService.updateNewUserJoinGlobalRoom(data);
+		// })
 
 		this.wsGateway.listenNewDetailsGlobalRoom().subscribe((data: ChatRoomI) => {
 			console.log("event NewDetailsGlobalRoom received");
@@ -113,6 +60,67 @@ export class WSGlobChatComponent implements OnInit {
 			console.log("event RoomAction");
 			this.globChatService.updateRoomAction(data);
 		})
+
+		this.wsGateway.listenNewJoinedGlobalRoom().subscribe((data: ChatRoomI) => {
+			console.log("event NewJoinedGlobalRoom received");
+			this.globChatService.updateNewJoinedGlobalRoom(data);
+		})
+
+		
+		// this.wsGateway.getAllFriend();
+		// this.wsGateway.listenAllFriend()
+		// 	.subscribe((friends: UserI[]) => {
+		// 		console.log("event AllFriend received ");
+		// 		this.privChatService.updateAllFriend(friends);
+		// 	}
+		// )
+
+		// this.wsGateway.listenNewStatusFriend()
+		// 	.subscribe((data: any) => {
+		// 		console.log("event NewStatusFriend received")
+		// 		this.privChatService.updateNewFriendStatus(data);
+		// 	}
+		// )
+
+		// this.roomCreateForm = this.formBuilder.group({
+		// 	roomName: "",
+		// 	password: "",
+		// }, { updateOn: "change" });
+
+		// this.roomCreateFriends = this.formBuilder.group({
+		// 	user: [],
+		// }, { updateOn: "change" });
+
+		// this.roomJoinPrivateForm = this.formBuilder.group({
+		// 	password: "",
+		// }, { updateOn: "change" });
+
+		// this.roomManagementDetails = this.formBuilder.group({
+		// 	name: "",
+		// 	password: "",
+		// 	remove_pass: false,
+		// }, { updateOn: "change" });
+
+		// this.roomManagementUser = this.formBuilder.group({
+		// 	user: [],
+		// }, { updateOn: "change" });
+
+		// this.wsGateway.getAllAvailableGlobalRoom();
+		// this.wsGateway.listenAllAvailableGlobalRoom().subscribe((data: ChatRoomI[]) => {
+		// 	console.log("event AllAvailableGlobalRoom received");
+		// 	this.globChatService.updateAllAvailableGlobalRoom(data);
+		// })
+
+		// this.wsGateway.listenNewAvailableGlobalRoom().subscribe((data: ChatRoomI) => {
+		// 	console.log("event NewAvailableGlobalRoom received");
+		// 	this.globChatService.updateNewAvailableGlobalRoom(data);
+		// })
+
+		// this.wsGateway.getAllJoinedGlobalRoom();
+		// this.wsGateway.listenAllJoinedGlobalRoom().subscribe((data: ChatRoomI[]) => {
+		// 	console.log("event AllJoinedGlobalRoom received");
+		// 	this.globChatService.updateAllJoinedGlobalRoom(data);
+		// })
 	}
 
 	onSelectRoom(room: ChatRoomI)
