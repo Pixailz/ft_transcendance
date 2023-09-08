@@ -1,7 +1,6 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, OnInit, Renderer2 } from '@angular/core';
-import { WSGateway } from 'src/app/services/ws.gateway';
-import { FriendRequestService } from 'src/app/services/friend-request.service';
+import { WSGateway } from 'src/app/services/WebSocket/gateway';
 
 @Component({
    animations: [
@@ -26,30 +25,31 @@ import { FriendRequestService } from 'src/app/services/friend-request.service';
   styleUrls: ['./notification.component.scss']
 })
 
-  export class NotificationComponent implements OnInit {
-    constructor (
-        private renderer: Renderer2,
-        private wsGateway: WSGateway,
-        private friendRequestService: FriendRequestService
-    ) {}
+export class NotificationComponent implements OnInit
+{
+	constructor (
+		private renderer: Renderer2,
+		private wsGateway: WSGateway,
+	) {}
 
-    ngOnInit() {
+	ngOnInit() {
 
-        this.wsGateway.listenNotification()
-        .subscribe(async (message: string) => {
-          this.displayNotification(message);
-        });
-    }
-    displayNotification(message: string) {
-      const container = document.getElementById('container');
-      const elem = this.renderer.createElement('div');
-      const text = this.renderer.createText(message);
-      this.renderer.appendChild(elem, text);
-      this.renderer.addClass(elem, 'notification');
-      this.renderer.appendChild(container, elem);
-      setTimeout(() => {
-        this.renderer.removeChild(container, elem);
-      }, 5000);
-    }
+		this.wsGateway.listenNotification()
+			.subscribe(async (message: string) => {
+				this.displayNotification(message);
+			});
+	}
 
-  }
+	displayNotification(message: string) {
+		const container = document.getElementById('container');
+		const elem = this.renderer.createElement('div');
+		const text = this.renderer.createText(message);
+		this.renderer.appendChild(elem, text);
+		this.renderer.addClass(elem, 'notification');
+		this.renderer.appendChild(container, elem);
+		setTimeout(() => {
+			this.renderer.removeChild(container, elem);
+		}, 5000);
+	}
+}
+

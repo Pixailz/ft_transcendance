@@ -118,7 +118,18 @@ export class DBUserService {
 					delete user[key];
 			});
 		});
-
 		return users;
+	}
+
+	async setStatus(user_id: number, status: number) {
+		const date = new Date(Date.now());
+
+		await this.update(user_id, {
+				status: status,
+				lastSeen: date,
+			})
+			.catch((err) => {
+				console.log("[userService:setStatus]", err.message);
+			});
 	}
 }

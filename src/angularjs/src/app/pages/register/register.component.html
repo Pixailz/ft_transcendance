@@ -2,14 +2,14 @@
 	<form>
 		<mat-form-field>
 			<mat-label>Nickname</mat-label>
-			<input [(ngModel)]="user.nickname" name="nickname" required
+			<input [(ngModel)]="userService.user.nickname" name="nickname" required
 			matInput>
 		</mat-form-field>
 
 		<mat-form-field>
 
 			<mat-label>mail</mat-label>
-			<input [(ngModel)]="user.email" name="email"
+			<input [(ngModel)]="userService.user.email" name="email"
 			matInput>
 		</mat-form-field>
 		<button mat-raised-button color="primary" (click)="onSubmit()">Save</button>

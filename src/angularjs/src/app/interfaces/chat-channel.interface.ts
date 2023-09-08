@@ -1,4 +1,4 @@
-import { ChatRoomI, UserI, DefUserI, DefChatRoomI, } from "../../interfaces/chat.interface";
+import { ChatRoomI, DefChatRoomI, } from "./chat-room.interface";
 
 export enum RoomAction {
 	KICK,
@@ -6,16 +6,14 @@ export enum RoomAction {
 	OWNERSHIP,
 }
 
-export interface ChatGlobI {
-	user				: UserI;
+export interface ChatChannelI {
 	available_room		: any,
 	joined_room			: any,
 	selected_room_id	: string;
 	selected_room		: ChatRoomI;
 }
 
-export const DefChatGlobI: ChatGlobI = {
-	user				: DefUserI,
+export const DefChatChannelI: ChatChannelI = {
 	available_room		: {},
 	joined_room			: {},
 	selected_room_id	: "-1",

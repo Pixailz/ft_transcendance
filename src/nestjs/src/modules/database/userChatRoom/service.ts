@@ -77,31 +77,7 @@ export class DBUserChatRoomService {
 		else throw new NotFoundException("userChatRoom not found");
 	}
 
-	async getAllPrivateRoom(userId: number): Promise<ChatRoomEntity[]> {
-		return await this.chatRoomRepo.find({
-			relations: {
-				roomInfo: {
-					user: true,
-				},
-				message: true,
-			},
-			where: {
-				roomInfo: {
-					user: {
-						id: userId,
-					},
-				},
-				type: RoomType.PRIVATE,
-			},
-			order: {
-				message: {
-					updateAt: "ASC",
-				},
-			},
-		});
-	}
-
-	async getAllPrivateUserRoom(
+	async getUserRoom(
 		room_id: number,
 	): Promise<UserChatRoomEntity[]> {
 		return await this.userChatRoomRepo.find({
@@ -126,7 +102,7 @@ export class DBUserChatRoomService {
 		});
 	}
 
-	async getAllGlobalUserRoom(room_id: number): Promise<UserChatRoomEntity[]> {
+	async getAllChannelUserRoom(room_id: number): Promise<UserChatRoomEntity[]> {
 		return await this.userChatRoomRepo.find({
 			relations: {
 				user: true,
@@ -158,105 +134,5 @@ export class DBUserChatRoomService {
 				},
 			},
 		});
-	}
-
-	async getAllAvailableGlobalRoom(): Promise<ChatRoomEntity[]> {
-		return await this.chatRoomRepo.find({
-			relations: {
-				roomInfo: {
-					user: true,
-				},
-			},
-			where: [
-				{
-					type: RoomType.PUBLIC,
-				},
-				{
-					type: RoomType.PROTECTED,
-				},
-			],
-		});
-	}
-
-	async getAvailableGlobalRoom(room_id: number): Promise<ChatRoomEntity> {
-		return await this.chatRoomRepo.findOne({
-			relations: {
-				roomInfo: {
-					user: true,
-				},
-			},
-			where: [
-				{
-					id: room_id,
-					type: RoomType.PUBLIC,
-				},
-				{
-					id: room_id,
-					type: RoomType.PROTECTED,
-				},
-			],
-		});
-	}
-
-	async getJoinedGlobalRoom(room_id: number): Promise<ChatRoomEntity> {
-		return await this.chatRoomRepo.findOne({
-			relations: {
-				roomInfo: {
-					user: true,
-				},
-				message: {
-					user: true,
-				},
-			},
-			where: [
-				{
-					id: room_id,
-					type: RoomType.PUBLIC,
-				},
-				{
-					id: room_id,
-					type: RoomType.PROTECTED,
-				},
-			],
-		});
-	}
-
-	async getAllJoinedGlobalRoom(user_id: number): Promise<ChatRoomEntity[]> {
-		return await this.chatRoomRepo.find({
-			relations: {
-				roomInfo: {
-					user: true,
-				},
-				message: {
-					user: true,
-				},
-			},
-			where: [
-				{
-					roomInfo: {
-						user: {
-							id: user_id,
-						},
-					},
-					type: RoomType.PUBLIC,
-				},
-				{
-					roomInfo: {
-						user: {
-							id: user_id,
-						},
-					},
-					type: RoomType.PROTECTED,
-				},
-			],
-		});
-	}
-
-	async returnAllUserFromRoom(room_id: number): Promise<number[]> {
-		var user_ids = [];
-
-		const query = await this.getAllPrivateUserRoom(room_id);
-		for (var i = 0; i < query.length; i++) user_ids.push(query[i].user.id);
-		return user_ids;
 	}
 }

@@ -8,19 +8,20 @@
 		</div>
 		<div class="line">
 			<span>email:</span>
-			<span>{{user_info.email === '' ? '/' :  user_info.email}}</span>
+			<span>{{user_info.email ? user_info.email : '/'}}</span>
 		</div>
 		<div class="line">
 			<span>lastSeen:</span>
 			<span>{{user_info.lastSeen | date: 'dd/MM/YYYY HH:mm:ss'}}</span>
 		</div>
 	</div>
-	<app-flat-button *ngIf="requestStatus!==2"
-		class="friend-btn" bgColor="#a3d0dc" [fontIcon]="requestStatus === 1?'done':'person_add'"
-		color="white" (click)="sendFriendRequest(user_info.id)"
-		[isActive]="requestStatus === 1">
+	<!-- class="friend-btn" bgColor="#a3d0dc" [fontIcon]="requestStatus === 1?'done':'person_add'" -->
+	<app-flat-button
+		class="friend-btn" bgColor="#a3d0dc" [fontIcon]="'person_add'"
+		color="white" (click)="sendFriendRequest(user_info.id)">
 	</app-flat-button>
 </div>
+<app-flat-button class="refresh" bgColor="#ffb1b1" fontIcon="refresh" (click)="onGetInfo()"></app-flat-button>
 
 <ng-template #userNotFound>
 	<h1>User Not Found</h1>

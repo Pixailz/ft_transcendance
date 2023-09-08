@@ -7,6 +7,7 @@ export enum RoomType {
 	PRIVATE,
 	PUBLIC,
 	PROTECTED,
+	DIRECT_MSG,
 }
 
 @Entity()

@@ -39,7 +39,6 @@ services:
       - API42_SECRET=${API42_SECRET?}
       - API42_REDIRECTURL=${API42_REDIRECTURL_DEV?}
       - JWT_SECRET=${JWT_SECRET?}
-      - GLOBAL_CHATROOM_NAME=${GLOBAL_CHATROOM_NAME?}
       - PRODUCTION=0
     volumes:
       - type: bind

@@ -14,7 +14,7 @@
 			<app-flat-button [isActive]="rla.isActive" color="white" bgColor="#a3d0dc" fontIcon="games"></app-flat-button>
 		</li>
 		<li *ngIf="userLoggedIn"
-		routerLink="/chat/private"
+		routerLink="/chat/dm"
 		routerLinkActive #rla="routerLinkActive">
 			<app-flat-button [isActive]="rla.isActive" color="white" bgColor="#a3d0dc" fontIcon="message"></app-flat-button>
 		</li>
@@ -30,7 +30,7 @@
 		</li>
 		<li class="friend-menu">
 			<app-flat-button (click)="displayFriendRequest = !displayFriendRequest" fontIcon="notifications" color="white" bgColor="#a7dca3">Menu</app-flat-button>
-			<app-flat-list *ngIf="displayFriendRequest"[friends]="friendRequestService.friends"></app-flat-list>
+			<app-flat-list *ngIf="displayFriendRequest" [friends]="friendService.friend.friend_req"></app-flat-list>
 		</li>
 		<li
 		*ngIf="userLoggedIn"

@@ -58,25 +58,36 @@ export class DBFriendRequestService {
 		else throw new NotFoundException("FriendRequest relation not found");
 	}
 
-	async alreadyFriend(me_id: number, friend_id:number)
-	{
-		const tmp = await this.friendRepo.findOneBy({meId: me_id, friendId: friend_id});
-		if (tmp)
-			return (true);
-		return (false);
+	async getAllRequest(me_id: number): Promise<FriendRequestEntity[]> {
+		return await this.friendRequestRepo.find({
+			relations: {
+				friend: true,
+				me: true,
+			},
+			where: [
+				{ friendId: me_id },
+				{ meId: me_id }
+			]
+		});
 	}
-
-	async alreadySent(me_id: number, friend_id:number)
+	async getFullRequest(user_id: number, friend_id: number): Promise<FriendRequestEntity>
 	{
-		const tmp = await this.friendRequestRepo.findOneBy({meId: me_id, friendId: friend_id});
-		if (tmp)
-			return (true);
-		return (false);
-	}
-
-	async getAllRequest(me_id: number) {
-		const requests = await this.friendRequestRepo.findBy({friendId: me_id});
-		return requests;
+		return await this.friendRequestRepo.findOne({
+			relations: {
+				friend: true,
+				me: true,
+			},
+			where: [
+				{
+					friendId: user_id,
+					meId: friend_id,
+				},
+				{
+					friendId: friend_id,
+					meId: user_id,
+				},
+			]
+		});
 	}
 
 	async acceptReq(me_id: number, friendId: number) {

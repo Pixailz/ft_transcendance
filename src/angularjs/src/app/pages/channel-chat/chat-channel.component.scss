@@ -5,6 +5,13 @@
 }
 
 :host {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr;
+  grid-gap: 20px;
 }
 
 .side-bar {
@@ -133,14 +140,32 @@
     grid-area: 1 / 2 / 6 / 4;
     border: 3px solid;
     position: relative;
-	overflow-y: scroll;
-	height: calc(100% - 60px);
+}
+
+.chat-container h2 {
+    font-family: 'Maven Pro', sans-serif;
+    font-size: 1.8em;
+    text-align: center;
+    border-bottom: 3px solid;
+    padding: 10px 0;
+	position: sticky;
+	height: 40px;
+	margin: 0;
+	background-color: white;
+	cursor: pointer;
+	text-decoration: none;
+
+	&:hover {
+		text-decoration: underline;
+	}
 }
 
 .chat-container ol.msg-list {
 	list-style: none;
+	overflow-y: scroll;
 	margin: 0;
 	padding: 0 15px;
+	height: calc(100% - 50px - 3px - 50px - 13px);
 	display: flex;
 	flex-direction: column-reverse;
 }

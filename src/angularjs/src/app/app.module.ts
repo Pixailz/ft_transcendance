@@ -14,7 +14,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table'; 
+import { MatTableModule } from '@angular/material/table';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 
 import { AppComponent } from './app.component';
@@ -43,8 +43,8 @@ import { FlatListComponent } from './components/flat-list/flat-list.component';
 import { NotificationComponent } from './components/notification/notification.component';
 
 // WEBSOCKET
-import { WSPrivChatComponent } from './pages/priv-chat/priv-chat.component';
-import { WSGlobChatComponent } from './components/global-chat/global-chat.component';
+import { WSChatDmComponent } from './pages/chat-dm/chat-dm.component';
+import { WSChatChannelComponent } from './pages/channel-chat/chat-channel.component';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -69,8 +69,8 @@ const config: SocketIoConfig = {
 		AvatarComponent,
 		LoginComponent,
 		RegisterComponent,
-		WSPrivChatComponent,
-		WSGlobChatComponent,
+		WSChatDmComponent,
+		WSChatChannelComponent,
 		AnonymousLayoutComponent,
 		AuthenticatedLayoutComponent,
 		FlatButtonComponent,

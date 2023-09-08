@@ -1,4 +1,4 @@
-<!-- <div class="side-bar">
+<div class="side-bar">
 	<div *ngIf="popupType === 'create-join'" class="popup-create-join">
 		<button class="close" (click)="onClosePopup()">
 			<mat-icon fontIcon="close"></mat-icon>
@@ -41,7 +41,7 @@
 					</mat-card-content>
 				</form>
 				<br><br><br>
-				<form [formGroup]="roomCreateFriends">
+				<!-- <form [formGroup]="roomCreateFriends">
 					<mat-form-field style="width: 80%; margin: 10px;">
 						<mat-label>Selected Friend</mat-label>
 						<mat-select multiple formControlName="user">
@@ -64,7 +64,7 @@
 							</button>
 						</div>
 					</mat-card-actions>
-				</form>
+				</form> -->
 				<br><br><br>
 				<div class="room-create-button">
 					<mat-card-actions>
@@ -96,8 +96,8 @@
 					<mat-label>Selected Room</mat-label>
 					<mat-select [(ngModel)]="joinSelectedRoom" name="room">
 						<mat-option value="-1">None</mat-option>
-						<mat-option *ngFor="let room of globChatService.getAvailableGlobalRoom()" [value]="room.id">
-						{{globChatService.getRoomTitle(room)}}
+						<mat-option *ngFor="let room of chatChannelService.getAvailableChannelRoom()" [value]="room.id">
+						{{chatRoomService.getRoomTitle(room)}}
 						</mat-option>
 					</mat-select>
 				</mat-form-field>
@@ -157,10 +157,10 @@
 						<h4>ROOM INFO</h4>
 						<p>ID   : {{getJoinSelected().id}}</p>
 						<p>NAME : {{getJoinSelected().name}}</p>
-						<p>TYPE : {{globChatService.getRoomTypeStr(getJoinSelected())}}</p>
-						<p>OWNER : {{globChatService.getOwner(getJoinSelected()).ftLogin }}</p>
+						<p>TYPE : {{chatRoomService .getRoomTypeStr(getJoinSelected())}}</p>
+						<p>OWNER : {{chatChannelService.getOwner().ftLogin }}</p>
 						<p>ADMIN :</p>
-						<p *ngFor="let user of globChatService.getAdmin(getJoinSelected())">- {{user.ftLogin}}</p>
+						<p *ngFor="let user of chatChannelService.getAdmin()">- {{user.ftLogin}}</p>
 					</div>
 					<div class="room-join-user" *ngIf="getJoinSelected().id !== -1">
 						<h4>USERS ({{getJoinUser().length}}/40)</h4>
@@ -219,7 +219,7 @@
 							</mat-card-actions>
 							<mat-slide-toggle
 								formControlName="remove_pass"
-								[disabled]="globChatService.getSelectedRoom().type !== 2">
+								[disabled]="chatChannelService.getSelectedRoom().type !== 2">
 								Remove pass
 							</mat-slide-toggle>
 						</div>
@@ -227,18 +227,18 @@
 				</form>
 			</div>
 			<div class="room-management-user">
-				<div *ngIf="globChatService.getSelectedRoom().id !== -1">
+				<div *ngIf="chatChannelService.getSelectedRoom().id !== -1">
 					<h4>ROOM INFO</h4>
-					<p>ID    : {{globChatService.getSelectedRoom().id}}</p>
-					<p>NAME  : {{globChatService.getSelectedRoom().name}}</p>
-					<p>TYPE  : {{globChatService.getRoomTypeStr(globChatService.getSelectedRoom())}}</p>
-					<p>OWNER : {{globChatService.getOwnerSelectedRoom().ftLogin }}</p>
+					<p>ID    : {{chatChannelService.getSelectedRoom().id}}</p>
+					<p>NAME  : {{chatChannelService.getSelectedRoom().name}}</p>
+					<p>TYPE  : {{chatRoomService .getRoomTypeStr(chatChannelService.getSelectedRoom())}}</p>
+					<p>OWNER : {{chatChannelService.getOwner().ftLogin }}</p>
 					<p>ADMIN :</p>
-					<p *ngFor="let user of globChatService.getAdminSelectedRoom()">- {{user.ftLogin}}</p>
+					<p *ngFor="let user of chatChannelService.getAdmin()">- {{user.ftLogin}}</p>
 				</div>
-				<div *ngIf="globChatService.getSelectedRoom().id !== -1">
-					<h4>USERS ({{globChatService.getSelectedRoomUser().length}}/40)</h4>
-					<div *ngFor="let user of globChatService.getSelectedRoomUser()">
+				<div *ngIf="chatChannelService.getSelectedRoom().id !== -1">
+					<h4>USERS ({{chatChannelService.getSelectedRoomUser().length}}/40)</h4>
+					<div *ngFor="let user of chatChannelService.getSelectedRoomUser()">
 						{{user.ftLogin}} ({{user.nickname}})
 						<div class="button-row">
 							<button mat-raised-button color="primary"
@@ -273,23 +273,23 @@
 		</div>
 	</div>
 	<ul class="room-list">
-		<li *ngFor="let room of globChatService.getJoinedGlobalRoom();">
-			<button (click)="onSelectRoom(room)">{{globChatService.getRoomTitle(room)}}</button>
+		<li *ngFor="let room of chatChannelService.getJoinedChannelRoom();">
+			<button (click)="onSelectRoom(room)">{{chatRoomService.getRoomTitle(room)}}</button>
 		</li>
 	</ul>
 	<app-flat-button bgColor="#a7dca3" fontIcon="add" (click)="onCreatingRoom()"></app-flat-button>
-</div> -->
-<div *ngIf="globChatService.isGoodSelectedRoom()" class="chat-container">
-	<h2>Global ChatRoom</h2>
+</div>
+<div *ngIf="chatChannelService.isGoodSelectedRoom()" class="chat-container">
+	<h2 [routerLink]="" (click)="onOpenManagement()">{{chatChannelService.getRoomTitle()}}</h2>
 	<ol class="msg-list">
-		<li *ngFor="let _ of globChatService.getSelectedRoom().message; let i=index;" [ngClass]="{'me': globChatService.getCurrentMessage(i).userId === globChatService.getCurrentUser().id, 'same': isSameUser(i)}">
+		<li *ngFor="let _ of chatChannelService.getSelectedRoom().message; let i=index;" [ngClass]="{'me': chatChannelService.getCurrentMessage(i).userId === userService.user.id, 'same': chatChannelService.isSameUser(i)}">
 			<div class="title-line">
-				<span class="date" *ngIf="!isFollowingDay(i)">{{globChatService.getCurrentMessage(i).updateAt | date: 'dd/MM/YYYY'}}</span>
-				<span class="login" *ngIf="!isSameUser(i)">{{globChatService.getCurrentMessageUser(i).ftLogin}}</span>
+				<span class="date" *ngIf="!isFollowingDay(i)">{{chatChannelService.getCurrentMessage(i).updateAt | date: 'dd/MM/YYYY'}}</span>
+				<span class="login" *ngIf="!chatChannelService.isSameUser(i)">{{chatChannelService.getCurrentMessageUser(i).ftLogin}}</span>
 			</div>
 			<div class="msg-line">
-				<span class="content">{{globChatService.getCurrentMessage(i).content}}</span>
-				<span class="time">{{globChatService.getCurrentMessage(i).updateAt | date: 'HH:mm'}}</span>
+				<span class="content">{{chatChannelService.getCurrentMessage(i).content}}</span>
+				<span class="time">{{chatChannelService.getCurrentMessage(i).updateAt | date: 'HH:mm'}}</span>
 			</div>
 		</li>
 	</ol>
@@ -300,4 +300,4 @@
 		</button>
 	</div>
 </div>
-<!-- <app-flat-button class="refresh" bgColor="#ffb1b1" fontIcon="refresh" (click)="onGetInfo()"></app-flat-button> -->
+<app-flat-button class="refresh" bgColor="#ffb1b1" fontIcon="refresh" (click)="onGetInfo()"></app-flat-button>

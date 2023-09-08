@@ -1,16 +1,18 @@
-import { Injectable } from "@angular/core";
+import { Injectable, OnInit } from "@angular/core";
 import { BackService } from "./back.service";
-import { UserI, DefUserI, Status } from "src/app/interfaces/chat.interface";
+import { DefUserI, Status, UserI } from "../interfaces/user.interface";
 
 @Injectable({
 	providedIn: "root",
 })
-export class UserService {
+export class UserService{
 	constructor(
 		private backService: BackService,
 	) { }
-	private user: UserI = DefUserI;
+	user: UserI = DefUserI;
 
+
+	// AUTH
 	getToken(): string {
 		return (localStorage.getItem("access_token")
 			? localStorage.getItem("access_token")!
@@ -36,12 +38,9 @@ export class UserService {
 		user?.id
 			? user = user as UserI
 			: user = DefUserI;
+		if (this.isGoodUser(user))
+			this.user = user;
 		return (user);
-	}
-
-	async getUserInfoById(id: number): Promise<UserI> {
-		let user = await this.backService.req("GET", "/user/info/" + id);
-		return user;
 	}
 
 	async updateProfile(user: UserI): Promise<any> {
@@ -130,5 +129,12 @@ export class UserService {
 		if (user.nickname)
 			tmp += ` (${user.nickname})`
 		return (tmp);
+	}
+
+	isGoodUser(user: UserI)
+	{
+		if (user.id === -1)
+			return (false);
+		return (true);
 	}
 }

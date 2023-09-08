@@ -48,30 +48,13 @@ export class AuthService {
 	}
 
 	async ftSignInTest(): Promise<any> {
-		let user = await this.dbUserService.returnOne(null, "user_3");
-
-		if (!user) {
-			const user_id = await this.dbUserService.create({
-				ftLogin: "user_3",
-			});
-			await this.dbUserService.update(user_id, { nickname: "TheUser3" });
-			user = await this.dbUserService.returnOne(user_id);
-		}
-		user = await this.dbUserService.returnOne(null, "norminet");
+		let user = await this.dbUserService.returnOne(null, "norminet");
 		if (!user) {
 			const user_id = await this.dbUserService.create({
 				ftLogin: "norminet",
 			});
 			await this.dbUserService.update(user_id, { nickname: "leSangCho" });
 			user = await this.dbUserService.returnOne(user_id);
-		}
-
-		const nonce = await this.dbUserService.getNonce(user.id);
-		if (user.twoAuthFactor) {
-			return {
-				status: "2fa",
-				nonce: nonce,
-			};
 		}
 
 		console.log("test user created");
