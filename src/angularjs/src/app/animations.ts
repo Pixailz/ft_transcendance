@@ -18,7 +18,9 @@ import {
 		transition('Profile => Home, Profile => Chat, Profile => Play', slideTo('left')),
 		transition('Home => Profile, Chat => Profile, Play => Profile', slideTo('right')),
 		transition('Play => Chat', slideTo('right')),
-		transition('Chat => Play', slideTo('left'))
+		transition('Chat => Play', slideTo('left')),
+		transition('* => PageNotFound', slideTo('bottom')),
+		transition('PageNotFound => *', slideTo('top')),
 	]);
 
 function slideTo(direction: string)
