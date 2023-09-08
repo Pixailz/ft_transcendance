@@ -16,7 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table'; 
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
-
+import { WSChatComponent } from './pages/chat/chat.component';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HeaderComponent } from './components/header/header.component';
@@ -28,7 +28,6 @@ import { UserProfileComponent } from './pages/user-profile/user-profile.componen
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
-import { WSChatComponent } from './pages/chat/chat.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { environment } from './environments/environment';
 import { AnonymousLayoutComponent } from './layout/anonymous-layout.component';
@@ -42,6 +41,8 @@ import { ErrordialogComponent } from './components/errordialog/errordialog.compo
 import { GlobalErrorHandlerService } from './services/global-error-handler.service';
 import { FlatListComponent } from './components/flat-list/flat-list.component';
 import { NotificationComponent } from './components/notification/notification.component';
+import { RouteReuseStrategy } from '@angular/router';
+import { CustomReuseStrategy } from './reuse-strategy';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -71,10 +72,10 @@ const config: SocketIoConfig = {
 		AuthenticatedLayoutComponent,
 		FlatButtonComponent,
 		TwofaformComponent,
-    	ProfileComponent,
-     ErrordialogComponent,
-     FlatListComponent,
-     NotificationComponent
+		ProfileComponent,
+		ErrordialogComponent,
+		FlatListComponent,
+		NotificationComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -102,6 +103,7 @@ const config: SocketIoConfig = {
 	providers: [
 		AuthGuardService,
 		{ provide: ErrorHandler, useClass: GlobalErrorHandlerService },
+		{ provide: RouteReuseStrategy, useClass: CustomReuseStrategy },
 	],
 	bootstrap: [AppComponent]
 })
