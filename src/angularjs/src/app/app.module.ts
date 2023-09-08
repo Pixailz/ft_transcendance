@@ -14,6 +14,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTableModule } from '@angular/material/table'; 
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 
 import { AppComponent } from './app.component';
@@ -85,6 +86,7 @@ const config: SocketIoConfig = {
 		MatButtonModule,
 		MatDialogModule,
 		MatToolbarModule,
+		MatTableModule,
 		MatSlideToggleModule,
 		MatFormFieldModule,
 		MatInputModule,

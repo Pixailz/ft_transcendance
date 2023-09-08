@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
+import { BackService } from 'src/app/services/back.service';
 
 @Component({
 	selector: 'app-home-dashboard',
@@ -8,26 +9,89 @@ import { map } from 'rxjs/operators';
 	styleUrls: ['./home-dashboard.component.scss']
 })
 export class HomeDashboardComponent {
-	private breakpointObserver = inject(BreakpointObserver);
+	cards: any;
+	leaderboard: any;
+	onlineusers: any;
+	private: any;
+	global: any;
 
-	/** Based on the screen size, switch from standard to one column per row */
-	cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
-		map(({ matches }) => {
-			if (matches) {
+	constructor(
+		private back: BackService,
+		private breakpointObserver: BreakpointObserver
+	) { }
+
+	async ngOnInit() {
+		const leadreq = await this.back.req("GET", "/leaderboard");
+		const onlinereq = await this.back.req("GET", "/user/online");
+
+		this.breakpointObserver.observe(Breakpoints.Handset).pipe(
+			map(({ matches }) => {
+				if (matches) {
+					return [
+						{ cols: 3, rows: 1, content: leadreq }
+					];
+				}
 				return [
-				{ title: 'LeaderBoard', cols: 1, rows: 1 },
-				{ title: 'Global Chatroom', cols: 1, rows: 1 },
-				{ title: 'Online Users', cols: 1, rows: 1 },
-				{ title: 'Private Chatrooms', cols: 1, rows: 1 }
+					{ cols: 2, rows: 2, content: leadreq }
 				];
-			}
+			}))
+		.subscribe((res) => { this.leaderboard = res[0]; });
 
-			return [
-				{ title: 'LeaderBoard', cols: 2, rows: 1 },
-				{ title: 'Global Chatroom', cols: 1, rows: 1 },
-				{ title: 'Private Chatrooms', cols: 1, rows: 2 },
-				{ title: 'Online Users', cols: 1, rows: 1 }
-			];
-		})
-	);
+		this.breakpointObserver.observe(Breakpoints.HandsetPortrait).pipe(
+			map(({ matches }) => {
+				if (matches) {
+					return [
+						{ cols: 3, rows: 1, content: onlinereq }
+					];
+				}
+				return [
+					{ cols: 1, rows: 2, content: onlinereq }
+				];
+			}))
+		.subscribe((res) => { this.onlineusers = res[0]; });
+
+		this.breakpointObserver.observe(Breakpoints.HandsetPortrait).pipe(
+			map(({ matches }) => {
+				if (matches) {
+					return [
+						{ cols: 3, rows: 1, content: '' }
+					];
+				}
+				return [
+					{ cols: 2, rows: 2, content: '' }
+				];
+			}))
+		.subscribe((res) => { this.private = res[0]; });
+
+		this.breakpointObserver.observe(Breakpoints.HandsetPortrait).pipe(
+			map(({ matches }) => {
+				if (matches) {
+					return [
+						{ cols: 3, rows: 1, content: '' }
+					];
+				}
+				return [
+					{ cols: 1, rows: 2, content: '' }
+				];
+			}))
+		.subscribe((res) => { this.global = res[0]; });
+	}
+
+	async refOnline() {
+		const onlinereq = await this.back.req("GET", "/user/online");
+
+		this.breakpointObserver.observe(Breakpoints.HandsetPortrait).pipe(
+			map(({ matches }) => {
+				if (matches) {
+					return [
+						{ cols: 3, rows: 1, content: onlinereq }
+					];
+				}
+				return [
+					{ cols: 1, rows: 2, content: onlinereq }
+				];
+			}))
+		.subscribe((res) => { this.onlineusers = res[0]; });
+	}
+
 }

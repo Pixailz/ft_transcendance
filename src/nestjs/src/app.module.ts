@@ -10,6 +10,7 @@ import { UserModule } from "./adapter/user/module";
 import { ChatRoomModule } from "./adapter/chatRoom/module";
 import { TwofaModule } from "./modules/twofa/twofa.module";
 import { ErrorLogController } from "./adapter/errorlog.controller";
+import { LeaderboardController } from "./adapter/leaderboard.controller";
 
 @Module({
 	imports: [
@@ -19,9 +20,9 @@ import { ErrorLogController } from "./adapter/errorlog.controller";
 		WSModule,
 		UserModule,
 		ChatRoomModule,
-		TwofaModule
+		TwofaModule,
 	],
-	controllers: [ErrorLogController],
+	controllers: [ErrorLogController, LeaderboardController],
 	providers: [
 		{
 			provide: APP_GUARD,
