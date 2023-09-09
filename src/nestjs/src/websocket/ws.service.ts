@@ -48,16 +48,14 @@ export class WSService {
 	async setStatus(server: Server, user_id: number, status: number) {
 		await this.userService.setStatus(user_id, status);
 		const friends = await this.userService.getAllFriend(user_id);
-		for (let i = 0; i < friends.length; i++) {
-			this.wsSocket.sendToUser(
-				server,
-				friends[i].id,
-				"getNewStatusFriend",
-				{
-					user_id: user_id,
-					status: status,
-				},
-			);
-		}
+		this.wsSocket.sendToUsersInfo(
+			server,
+			friends,
+			"getNewStatusFriend",
+			{
+				user_id: user_id,
+				status: status,
+			},
+		)
 	}
 }

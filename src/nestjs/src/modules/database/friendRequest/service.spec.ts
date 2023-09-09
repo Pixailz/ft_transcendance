@@ -8,6 +8,7 @@ import { DBModule } from "../database.module";
 import { DBUserService } from "../user/service";
 import { DBFriendService } from "../friend/service";
 import { UserEntity } from "../user/entity";
+import { Sanitize } from "../../../sanitize-object";
 
 describe("DBFriendRequestService", () => {
 	let service: DBFriendRequestService;
@@ -18,6 +19,7 @@ describe("DBFriendRequestService", () => {
 		const module = await Test.createTestingModule({
 			imports: [DBModule],
 			providers: [
+				Sanitize,
 				DBFriendRequestService,
 				{
 					provide: getRepositoryToken(FriendRequestEntity),

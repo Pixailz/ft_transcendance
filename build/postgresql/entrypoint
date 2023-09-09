@@ -57,7 +57,7 @@ function	postgres_init()
 	set_var "log_directory" "'/var/log/postgresql/'"
 	set_var "log_filename" "'postgresql.log'"
 	set_var "log_file_mode" "0666"
-	echo "host all all 0.0.0.0/0 md5" | tee -a "${PGDATA}/pg_hba.conf"
+	echo "host all all 13.37.42.11 md5" | tee -a "${PGDATA}/pg_hba.conf"
 }
 
 function	postgres_db()

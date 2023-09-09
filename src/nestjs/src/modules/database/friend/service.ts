@@ -33,9 +33,7 @@ export class DBFriendService {
 
 	async alreadyFriend(me_id: number, friend_id: number){
 		const friend = await this.friendRepo.findOneBy({meId: me_id, friendId: friend_id});
-		if (friend)
-			return (true);
-		return (false);
+		return (friend ? true : false);
 	}
 
 	async returnAll() {

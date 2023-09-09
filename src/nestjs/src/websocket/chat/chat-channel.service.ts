@@ -4,6 +4,7 @@ import { WSSocket } from "../socket.service";
 import { Server, Socket } from "socket.io";
 import { ChatRoomEntity, RoomType } from "src/modules/database/chatRoom/entity";
 import * as bcrypt from "bcrypt";
+import { Sanitize } from "../../sanitize-object";
 
 export enum RoomAction {
 	KICK,
@@ -14,6 +15,7 @@ export enum RoomAction {
 @Injectable()
 export class WSChatChannelService {
 	constructor(
+		private sanitize: Sanitize,
 		private chatRoomService: ChatRoomService,
 		public wsSocket: WSSocket,
 	) {}
@@ -35,11 +37,7 @@ export class WSChatChannelService {
 		})
 
 		if (all_channel.length === 0 || all_channel[0] === null) return;
-
-		all_channel.forEach((room) => {
-			delete room["password"];
-		});
-		socket.emit("getAllAvailableChannelRoom", all_channel);
+		socket.emit("getAllAvailableChannelRoom", this.sanitize.ChatRooms(all_channel));
 	}
 
 	async getAllJoinedChannelRoom(socket: Socket) {
@@ -55,15 +53,7 @@ export class WSChatChannelService {
 				),
 			);
 		}
-		all_joined.forEach((ii, i) => {
-			delete all_joined[i].password;
-			all_joined[i].roomInfo.forEach((jj, j) => {
-				delete all_joined[i].roomInfo[j].user.nonce;
-				delete all_joined[i].roomInfo[j].user.twoAuthFactor;
-				delete all_joined[i].roomInfo[j].user.twoAuthFactorSecret;
-			});
-		});
-		socket.emit("getAllJoinedChannelRoom", all_joined);
+		socket.emit("getAllJoinedChannelRoom", this.sanitize.ChatRooms(all_joined));
 	}
 
 	async createChannelRoom(
@@ -85,28 +75,18 @@ export class WSChatChannelService {
 		const joined_room = await this.chatRoomService.getJoinedChannelRoom(
 			room_id,
 		);
-		for (const i in this.wsSocket.socket_list) {
-			if (Number(i) === user_id) continue;
-			this.wsSocket.sendToUser(
-				server,
-				Number(i),
-				"getNewAvailableChannelRoom",
-				available_room,
-			);
-		}
-		this.wsSocket.sendToUser(
+		this.wsSocket.sendToAllSocket(
 			server,
-			user_id,
-			"getNewJoinedChannelRoom",
-			joined_room,
+			"getNewAvailableChannelRoom",
+			this.sanitize.ChatRoom(available_room),
 		);
-		for (let i = 0; i < user_ids.length; i++)
-			this.wsSocket.sendToUser(
-				server,
-				user_ids[i],
-				"getNewJoinedChannelRoom",
-				joined_room,
-			);
+		user_ids.push(user_id);
+		this.wsSocket.sendToUsers(
+			server,
+			user_ids,
+			"getNewJoinedChannelRoom",
+			this.sanitize.ChatRoom(joined_room),
+		);
 	}
 
 	async joinChannelRoom(
@@ -130,20 +110,18 @@ export class WSChatChannelService {
 			user_id,
 			room.id,
 		);
-		this.wsSocket.sendToUser(
+		this.wsSocket.sendToUsers(
 			server,
-			user_id,
+			[user_id],
 			"getNewJoinedChannelRoom",
-			room,
+			this.sanitize.ChatRoom(room),
 		);
-		user.forEach((user_id) => {
-			this.wsSocket.sendToUser(
-				server,
-				user_id,
-				"getNewUserJoinChannelRoom",
-				user_chatroom,
-			);
-		});
+		this.wsSocket.sendToUsers(
+			server,
+			user,
+			"getNewUserJoinChannelRoom",
+			this.sanitize.UserChatRoom(user_chatroom),
+		);
 	}
 
 	async sendGlobalMessage(
@@ -157,17 +135,15 @@ export class WSChatChannelService {
 		const new_message = await this.chatRoomService.getMessage(message_id);
 		const all_user = await this.chatRoomService.getAllUserFromRoom(dst_id);
 
-		for (let i = 0; i < all_user.length; i++) {
-			this.wsSocket.sendToUser(
-				server,
-				all_user[i],
-				"getNewGlobalMessage",
-				{
-					room_id: dst_id,
-					message: new_message,
-				},
-			);
-		}
+		this.wsSocket.sendToUsers(
+			server,
+			all_user,
+			"getNewGlobalMessage",
+			{
+				room_id: dst_id,
+				message: this.sanitize.Message(new_message),
+			},
+		);
 	}
 
 	async changeRoomDetails(
@@ -203,7 +179,7 @@ export class WSChatChannelService {
 				server,
 				room,
 				"getNewDetailsChannelRoom",
-				room,
+				this.sanitize.ChatRoom(room),
 			);
 		}
 	}

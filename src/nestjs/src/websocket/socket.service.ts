@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Server } from "socket.io";
 import { ChatRoomEntity } from "src/modules/database/chatRoom/entity";
+import { UserEntity } from "src/modules/database/user/entity";
 
 @Injectable()
 export class WSSocket {
@@ -38,16 +39,26 @@ export class WSSocket {
 		}
 	}
 
-	sendToUser(server: Server, user_id: number, event: string, data: any) {
-		const socket_ids = this.getSocketId(user_id);
-		if (!socket_ids) return;
-		for (let i = 0; i < socket_ids.length; i++)
-			server.to(socket_ids[i]).emit(event, data);
+	sendToUsers(server: Server, user_ids: number[], event: string, data: any) {
+		for (var i = 0; i < user_ids.length; i++)
+		{
+			const socket_ids = this.getSocketId(user_ids[i]);
+			if (!socket_ids) return;
+			for (let i = 0; i < socket_ids.length; i++)
+				server.to(socket_ids[i]).emit(event, data);
+		}
+	}
+
+	sendToUsersInfo(server: Server, users: UserEntity[], event: string, data: any) {
+		var user_list: number[] = [];
+		for (var i = 0; i < users.length; i++)
+			user_list.push(users[i].id);
+		this.sendToUsers(server, user_list, event, data);
 	}
 
 	sendToAllSocket(server: Server, event: string, data: any) {
 		for (const user_id in this.socket_list)
-			this.sendToUser(server, Number(user_id), event, data);
+			this.sendToUsers(server, [Number(user_id)], event, data);
 	}
 
 	sendToUserInRoom(
@@ -57,7 +68,10 @@ export class WSSocket {
 		data:any
 	)
 	{
+		var user_list: number[] = [];
+
 		for (var i = 0; i < room.roomInfo.length; i++)
-			this.sendToUser(server, room.roomInfo[i].userId, event, data)
+			user_list.push(room.roomInfo[i].userId);
+		this.sendToUsers(server, user_list, event, data)
 	}
 }

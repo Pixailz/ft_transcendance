@@ -59,7 +59,7 @@ export class WSGateway
 			data[1],
 		); }
 
-	// GLOBAL CHAT
+	// CHANNEL CHAT
 
 	// HANDLER
 	@SubscribeMessage("getAllAvailableChannelRoom")
@@ -148,32 +148,15 @@ export class WSGateway
 	async getAllFriendRequest(socket: Socket)
 	{ await this.wsFriendService.getAllFriendRequest(socket); }
 
-	@SubscribeMessage("sendFriendReq")
+	@SubscribeMessage("sendFriendRequest")
 	async sendFriendReq(socket: Socket, id: number)
-	{ await this.wsFriendService.sendFriendReq(this.server, socket, id); }
+	{ await this.wsFriendService.sendFriendRequest(this.server, socket, id); }
 
+	@SubscribeMessage("acceptFriendRequest")
+	async acceptFriendRequest(socket: Socket, id: number)
+	{ await this.wsFriendService.acceptFriendRequest(this.server, socket, id); }
 
-	// NOTIFICATION
-
-	// HANDLER
-	// @SubscribeMessage("getAllReqById")
-	// async getAllReqById(socket: Socket)
-	// { await this.wsFriendRequestService.getAllReqById(socket); }
-
-	// @SubscribeMessage("acceptFriendReq")
-	// async acceptFriendReq(socket: Socket, id: number)
-	// { await this.wsFriendRequestService.acceptFriendReq(this.server, socket, id); }
-
-	// @SubscribeMessage("rejectFriendReq")
-	// async rejectFriendReq(socket: Socket, id: number)
-	// { await this.wsFriendRequestService.rejectFriendReq(this.server, socket, id); }
-
-	// @SubscribeMessage("friendReqStatus")
-	// async friendReqStatus(socket: Socket, id: number)
-	// { await this.wsFriendRequestService.friendReqStatus(socket, id); }
-
-	// @SubscribeMessage("sendNotification")
-	// async sendNotification(server: Server, socket: Socket, prefix: string, friend_id: number) {
-	// 	await this.wsFriendRequestService.sendNotification(server, socket, friend_id, prefix);
-	// }
+	@SubscribeMessage("rejectFriendRequest")
+	async rejectFriendRequest(socket: Socket, id: number)
+	{ await this.wsFriendService.rejectFriendRequest(this.server, socket, id); }
 }

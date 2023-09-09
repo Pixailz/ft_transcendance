@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { WSGateway } from 'src/app/services/WebSocket/gateway';
-import { ChatDmService } from 'src/app/services/WebSocket/Chat/DirectMessage/service';
+import { WSGateway } from 'src/app/services/websocket/gateway';
+import { ChatDmService } from 'src/app/services/websocket/chat/direct-message/service';
 import { UserService } from 'src/app/services/user.service';
 import { ChatRoomI, DefMessageI, MessageI } from 'src/app/interfaces/chat-room.interface';
-import { ChatRoomService } from 'src/app/services/WebSocket/Chat/chat-room.service';
+import { ChatRoomService } from 'src/app/services/websocket/chat/chatroom.service';
 import { DefUserI, UserI } from 'src/app/interfaces/user.interface';
-import { FriendService } from 'src/app/services/WebSocket/Friend/service';
+import { FriendService } from 'src/app/services/websocket/friend/service';
 
 @Component({
 	selector: 'app-chat-dm',

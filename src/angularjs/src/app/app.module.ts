@@ -16,7 +16,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
-import { WSChatComponent } from './pages/chat/chat.component';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HeaderComponent } from './components/header/header.component';
@@ -46,7 +45,7 @@ import { CustomReuseStrategy } from './reuse-strategy';
 
 // WEBSOCKET
 import { WSChatDmComponent } from './pages/chat-dm/chat-dm.component';
-import { WSChatChannelComponent } from './pages/channel-chat/chat-channel.component';
+import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -71,8 +70,6 @@ const config: SocketIoConfig = {
 		AvatarComponent,
 		LoginComponent,
 		RegisterComponent,
-		WSChatDmComponent,
-		WSChatChannelComponent,
 		AnonymousLayoutComponent,
 		AuthenticatedLayoutComponent,
 		FlatButtonComponent,
@@ -81,6 +78,8 @@ const config: SocketIoConfig = {
 		ErrordialogComponent,
 		FlatListComponent,
 		NotificationComponent,
+		WSChatDmComponent,
+		WSChatChannelComponent,
 	],
 	imports: [
 		BrowserModule,

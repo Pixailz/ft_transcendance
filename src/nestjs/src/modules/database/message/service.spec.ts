@@ -4,14 +4,15 @@ import { Repository } from "typeorm";
 import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { ForbiddenException } from "@nestjs/common";
-import { DBModule } from "../database.module";
 
+import { DBModule } from "../database.module";
 import { ChatRoomEntity } from "../chatRoom/entity";
 import { UserEntity } from "../user/entity";
 import { DBUserService } from "../user/service";
 import { DBChatRoomService } from "../chatRoom/service";
 import { DBMessageService } from "./service";
 import { MessageEntity } from "./entity";
+import { Sanitize } from "../../../sanitize-object";
 
 describe("DBmessageService", () => {
 	let userChatRoomservice: DBUserChatRoomService;
@@ -28,6 +29,7 @@ describe("DBmessageService", () => {
 		const module = await Test.createTestingModule({
 			imports: [DBModule],
 			providers: [
+				Sanitize,
 				DBUserChatRoomService,
 				{
 					provide: getRepositoryToken(UserChatRoomEntity),

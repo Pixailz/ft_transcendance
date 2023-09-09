@@ -1,47 +1,53 @@
 import { Injectable } from "@angular/core";
 
-import { ChatRoomI, DefChatRoomI, MessageI } from "src/app/interfaces/chat-room.interface";
+import { ChatRoomI, DefChatRoomI } from "src/app/interfaces/chat-room.interface";
 import { DefChatDmI } from "src/app/interfaces/chat-dm.interface";
 
 import { WSGateway } from "../../gateway";
-import { ChatRoomService } from "../chat-room.service";
+import { ChatRoomService } from "../chatroom.service";
 import { UserI } from "src/app/interfaces/user.interface";
 import { DefUserChatRoomI } from "src/app/interfaces/user-chat-room.interface";
+import { WSService } from "../../service";
+import { Subscription } from "rxjs";
 
 @Injectable({
 	providedIn: "root",
 })
 export class ChatDmService {
+	chat = DefChatDmI;
+	obsToDestroy: Subscription[] = [];
 	constructor(
 		private chatRoomService: ChatRoomService,
+		private wsService: WSService,
 		private wsGateway: WSGateway,
-	) {}
-
-	chat = DefChatDmI;
-
-	ngOnInit()
-	{
+	) {
 		this.wsGateway.getAllDmRoom();
-		this.wsGateway.listenAllDmRoom()
+		this.obsToDestroy.push(this.wsGateway.listenAllDmRoom()
 			.subscribe((rooms: ChatRoomI[]) => {
 				console.log("event AllChatDm received")
 				this.updateAllChatDm(rooms);
 			}
-		)
+		));
 
-		this.wsGateway.listenNewDmRoom()
+		this.obsToDestroy.push(this.wsGateway.listenNewDmRoom()
 			.subscribe((room: ChatRoomI) => {
 				console.log("event NewDmRoom received")
 				this.updateNewChatDm(room);
 			}
-		)
+		));
 
-		this.wsGateway.listenNewDmMessage()
+		this.obsToDestroy.push(this.wsGateway.listenNewDmMessage()
 			.subscribe((data: any) => {
 				console.log("event NewDmMessage received")
 				this.updateNewDmMessage(data);
 			}
-		)
+		));
+	}
+
+	ngOnDestroy()
+	{
+		console.log("[DM] destroyer");
+		this.wsService.unsubscribeObservables(this.obsToDestroy);
 	}
 
 	updateAllChatDm(chatroom: ChatRoomI[])
@@ -107,7 +113,10 @@ export class ChatDmService {
 			}
 		}
 		if (!founded)
-			this.chat.dm[friends.id.toString()] = friends;
+			this.chat.dm[friends.id.toString()] = {
+				user_info: friends,
+				room: DefUserChatRoomI,
+			};
 	}
 
 	updateNewDmMessage(message: any)

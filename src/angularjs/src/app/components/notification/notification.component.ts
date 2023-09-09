@@ -1,6 +1,6 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, OnInit, Renderer2 } from '@angular/core';
-import { WSGateway } from 'src/app/services/WebSocket/gateway';
+import { WSGateway } from 'src/app/services/websocket/gateway';
 
 @Component({
    animations: [
@@ -34,10 +34,10 @@ export class NotificationComponent implements OnInit
 
 	ngOnInit() {
 
-		this.wsGateway.listenNotification()
-			.subscribe(async (message: string) => {
-				this.displayNotification(message);
-			});
+		// this.wsGateway.listenNotification()
+		// 	.subscribe(async (message: string) => {
+		// 		this.displayNotification(message);
+		// 	});
 	}
 
 	displayNotification(message: string) {

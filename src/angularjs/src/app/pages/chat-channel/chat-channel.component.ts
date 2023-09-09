@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { WSGateway } from 'src/app/services/WebSocket/gateway';
+import { WSGateway } from 'src/app/services/websocket/gateway';
 import { UserService } from 'src/app/services/user.service';
-import { ChatChannelService } from 'src/app/services/WebSocket/Chat/Channel/service';
+import { ChatChannelService } from 'src/app/services/websocket/chat/channel/service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { RoomAction } from 'src/app/interfaces/chat-channel.interface';
 import { ChatRoomI, RoomType } from 'src/app/interfaces/chat-room.interface';
 import { UserI } from 'src/app/interfaces/user.interface';
-import { ChatRoomService } from 'src/app/services/WebSocket/Chat/chat-room.service';
+import { ChatRoomService } from 'src/app/services/websocket/chat/chatroom.service';
+import { FriendService } from 'src/app/services/websocket/friend/service';
+import { ChatDmService } from 'src/app/services/websocket/chat/direct-message/service';
 
 @Component({
 	selector: 'app-chat-channel',
@@ -25,6 +27,7 @@ export class WSChatChannelComponent implements OnInit {
 
 	constructor(
 		private wsGateway: WSGateway,
+		public chatDmService: ChatDmService,
 		public chatChannelService: ChatChannelService,
 		public chatRoomService: ChatRoomService,
 		public userService: UserService,

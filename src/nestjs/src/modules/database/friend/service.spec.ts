@@ -7,7 +7,7 @@ import { ForbiddenException } from "@nestjs/common";
 import { DBModule } from "../database.module";
 import { DBUserService } from "../user/service";
 import { UserEntity } from "../user/entity";
-import { exec } from "child_process";
+import { Sanitize } from "../../../sanitize-object";
 
 describe("DBFriendService", () => {
 	let service: DBFriendService;
@@ -18,6 +18,7 @@ describe("DBFriendService", () => {
 		const module = await Test.createTestingModule({
 			imports: [DBModule],
 			providers: [
+				Sanitize,
 				DBFriendService,
 				{
 					provide: getRepositoryToken(FriendEntity),

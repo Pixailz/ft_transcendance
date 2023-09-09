@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { trigger, style, animate, transition, state } from '@angular/animations';
-import { FriendRequestService } from 'src/app/services/friend-request.service';
-import { WSGateway } from 'src/app/services/WebSocket/gateway';
-import { FriendService } from 'src/app/services/WebSocket/Friend/service';
+import { FriendService } from 'src/app/services/websocket/friend/service';
 
 @Component({
   selector: 'app-header',

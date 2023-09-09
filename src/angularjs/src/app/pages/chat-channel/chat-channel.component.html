@@ -41,11 +41,11 @@
 					</mat-card-content>
 				</form>
 				<br><br><br>
-				<!-- <form [formGroup]="roomCreateFriends">
+				<form [formGroup]="roomCreateFriends">
 					<mat-form-field style="width: 80%; margin: 10px;">
 						<mat-label>Selected Friend</mat-label>
 						<mat-select multiple formControlName="user">
-							<mat-option *ngFor="let friend of privChatService.getFriends()" [value]="friend.user_info">
+							<mat-option *ngFor="let friend of chatDmService.getFriends()" [value]="friend.user_info">
 							{{userService.getUserInfoFormated(friend.user_info)}}
 							</mat-option>
 						</mat-select>
@@ -64,7 +64,7 @@
 							</button>
 						</div>
 					</mat-card-actions>
-				</form> -->
+				</form>
 				<br><br><br>
 				<div class="room-create-button">
 					<mat-card-actions>

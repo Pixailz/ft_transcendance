@@ -13,7 +13,7 @@ import { AuthenticatedLayoutComponent } from './layout/authenticated-layout.comp
 import { ProfileComponent } from './pages/profile/profile.component';
 
 import { WSChatDmComponent } from './pages/chat-dm/chat-dm.component';
-import { WSChatChannelComponent } from './pages/channel-chat/chat-channel.component';
+import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
 
 const routes: Routes = [
 	{
@@ -45,12 +45,17 @@ const routes: Routes = [
 			{
 				path: 'profile/:login',
 				component: ProfileComponent,
-				data: { animation: 'ProfileUser' }
+				data: { animation: 'ProfileUser', reuseRoute: true }
 			},
 			{
-				path: 'chat',
-				component: WSChatComponent,
-				data: { animation: 'PrivChat', reuseRoute: true }
+				path: 'chat/dm',
+				component: WSChatDmComponent,
+				data: { animation: 'ChatDm', reuseRoute: true }
+			},
+			{
+				path: 'chat/global',
+				component: WSChatChannelComponent,
+				data: { animation: 'ChatChannel', reuseRoute: true }
 			},
 			{
 				// throw a 404 error if the route is not found

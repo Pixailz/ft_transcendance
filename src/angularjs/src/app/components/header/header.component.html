@@ -30,7 +30,7 @@
 		</li>
 		<li class="friend-menu">
 			<app-flat-button (click)="displayFriendRequest = !displayFriendRequest" fontIcon="notifications" color="white" bgColor="#a7dca3">Menu</app-flat-button>
-			<app-flat-list *ngIf="displayFriendRequest" [friends]="friendService.friend.friend_req"></app-flat-list>
+			<app-flat-list *ngIf="displayFriendRequest" [friends]="friendService.getFriendsRequest()"></app-flat-list>
 		</li>
 		<li
 		*ngIf="userLoggedIn"

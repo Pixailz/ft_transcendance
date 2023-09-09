@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DefUserI, UserI } from 'src/app/interfaces/user.interface';
-import { FriendRequestService } from 'src/app/services/friend-request.service';
 import { BackService } from 'src/app/services/back.service';
-import { WSGateway } from 'src/app/services/WebSocket/gateway';
-import { FriendService } from 'src/app/services/WebSocket/Friend/service';
+import { WSGateway } from 'src/app/services/websocket/gateway';
+import { FriendService } from 'src/app/services/websocket/friend/service';
+import { UserService } from 'src/app/services/user.service';
 
 
 export enum FriendReqStatus {
@@ -25,7 +25,7 @@ export class ProfileComponent implements OnInit {
 	constructor(
 		private route: ActivatedRoute,
 		private back: BackService,
-		public friendRequestService: FriendRequestService,
+		public userService: UserService,
 		public friendService: FriendService,
 		public wsGateway: WSGateway,
 	) {}
@@ -43,5 +43,5 @@ export class ProfileComponent implements OnInit {
 	{ this.friendService.getInfo(); }
 
 	sendFriendRequest(id: number)
-	{ this.wsGateway.sendFriendReq(id); }
+	{ this.wsGateway.sendFriendRequest(id); }
 }

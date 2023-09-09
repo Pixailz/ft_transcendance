@@ -2,10 +2,12 @@ import { Injectable } from "@nestjs/common";
 import { ChatRoomService } from "src/adapter/chatRoom/service";
 import { WSSocket } from "../socket.service";
 import { Server, Socket } from "socket.io";
+import { Sanitize } from "../../sanitize-object";
 
 @Injectable()
 export class WSChatDmService {
 	constructor(
+		private sanitize: Sanitize,
 		private chatRoomService: ChatRoomService,
 		public wsSocket: WSSocket,
 	) {}
@@ -36,7 +38,7 @@ export class WSChatDmService {
 					chat_room.roomInfo.splice(j, 1);
 			rooms.push(chat_room);
 		}
-		socket.emit("getAllDmRoom", rooms);
+		socket.emit("getAllDmRoom", this.sanitize.ChatRooms(rooms));
 	}
 
 	async createDmRoom(server: Server, socket: Socket, dst_id: number) {
@@ -52,11 +54,11 @@ export class WSChatDmService {
 		for (let i = 0; i < chat_room.roomInfo.length; i++)
 			if (chat_room.roomInfo[i].user.id === user_id && user_id !== dst_id)
 				chat_room.roomInfo.splice(i, 1);
-		this.wsSocket.sendToUser(
+		this.wsSocket.sendToUsers(
 			server,
-			user_id,
+			[user_id],
 			"getNewDmRoom",
-			chat_room,
+			this.sanitize.ChatRoom(chat_room),
 		);
 		if (user_id === dst_id) return;
 		chat_room = await this.chatRoomService.getDmRoom(
@@ -65,11 +67,11 @@ export class WSChatDmService {
 		for (let i = 0; i < chat_room.roomInfo.length; i++)
 			if (chat_room.roomInfo[i].user.id === dst_id)
 				chat_room.roomInfo.splice(i, 1);
-		this.wsSocket.sendToUser(
+		this.wsSocket.sendToUsers(
 			server,
-			dst_id,
+			[dst_id],
 			"getNewDmRoom",
-			chat_room,
+			this.sanitize.ChatRoom(chat_room),
 		);
 	}
 
@@ -83,7 +85,7 @@ export class WSChatDmService {
 				await this.chatRoomService.getAllDmMessageRoom(
 					chat_room[i].id,
 				);
-		socket.emit("getAllDmMessage", messages);
+		socket.emit("getAllDmMessage", this.sanitize.Messages(messages));
 	}
 
 	async sendDmMessage(
@@ -98,16 +100,14 @@ export class WSChatDmService {
 		const new_message = await this.chatRoomService.getMessage(message_id);
 		const all_user = await this.chatRoomService.getAllUserFromRoom(dst_id);
 
-		for (let i = 0; i < all_user.length; i++) {
-			this.wsSocket.sendToUser(
-				server,
-				all_user[i],
-				"getNewDmMessage",
-				{
-					room_id: dst_id,
-					message: new_message,
-				},
-			);
-		}
+		this.wsSocket.sendToUsers(
+			server,
+			all_user,
+			"getNewDmMessage",
+			{
+				room_id: dst_id,
+				message: this.sanitize.Message(new_message),
+			},
+		);
 	}
 }

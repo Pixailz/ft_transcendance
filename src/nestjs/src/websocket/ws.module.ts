@@ -10,10 +10,12 @@ import { WSChatChannelService } from "./chat/chat-channel.service";
 import { WSChatDmService } from "./chat/chat-dm.service";
 import { WSFriendService } from "./friend/friend.service";
 import { WSService } from "./ws.service";
+import { Sanitize } from "../sanitize-object";
 
 @Module({
 	imports: [AuthModule, DBModule],
 	providers: [
+		Sanitize,
 		UserService,
 		ChatRoomService,
 		WSSocket,

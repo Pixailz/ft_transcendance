@@ -1,10 +1,11 @@
-import { AfterViewInit, ChangeDetectorRef, Component } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { slideInAnimation } from '../animations';
 import { RouterOutlet } from '@angular/router';
-import { WSGateway } from '../services/WebSocket/gateway';
-import { ChatChannelService } from '../services/WebSocket/Chat/Channel/service';
-import { FriendService } from '../services/WebSocket/Friend/service';
-import { ChatDmService } from '../services/WebSocket/Chat/DirectMessage/service';
+import { WSGateway } from '../services/websocket/gateway';
+import { ChatChannelService } from '../services/websocket/chat/channel/service';
+import { FriendService } from '../services/websocket/friend/service';
+import { ChatDmService } from '../services/websocket/chat/direct-message/service';
+import { WSService } from '../services/websocket/service';
 
 @Component({
 	selector: 'app-authenticated-layout',
@@ -12,24 +13,28 @@ import { ChatDmService } from '../services/WebSocket/Chat/DirectMessage/service'
 	styleUrls: ['./authenticated-layout.component.scss'],
 	animations: [ slideInAnimation ]
 })
-export class AuthenticatedLayoutComponent implements AfterViewInit{
+export class AuthenticatedLayoutComponent implements OnInit, OnDestroy, AfterViewInit{
 	constructor(
 		private changeRef: ChangeDetectorRef,
+		private wsService: WSService,
 		private wsGateway: WSGateway,
-		private chatChannelService: ChatChannelService,
-		private chatDmService: ChatDmService,
-		private friendService: FriendService,
-	) {}
+		
+	) {
+	}
 
 	ngAfterViewInit(): void {
 		this.changeRef.detectChanges();
 	}
 
-	ngOnInit() {
-		this.wsGateway.socket.connect();
-		this.chatChannelService.ngOnInit();
-		this.chatDmService.ngOnInit();
-		this.friendService.ngOnInit();
+	ngOnInit()
+	{
+		console.log("[AUTH_LAYOUT] onInit");
+		window.onbeforeunload = () => this.ngOnDestroy();
+	}
+
+	ngOnDestroy()
+	{
+		console.log("[AUTH_LAYOUT] onDestroy");
 	}
 
 	prepareRoute(outlet: RouterOutlet){

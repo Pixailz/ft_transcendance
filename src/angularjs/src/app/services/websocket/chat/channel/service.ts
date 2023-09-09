@@ -1,4 +1,4 @@
-import { Injectable, OnInit } from "@angular/core";
+import { Injectable } from "@angular/core";
 
 import { UserService } from "src/app/services/user.service";
 import { WSGateway } from "../../gateway";
@@ -6,64 +6,70 @@ import { WSGateway } from "../../gateway";
 import { DefChatChannelI, RoomAction } from "src/app/interfaces/chat-channel.interface";
 import { ChatRoomI, DefChatRoomI, RoomType } from "src/app/interfaces/chat-room.interface";
 import { UserChatRoomI } from "src/app/interfaces/user-chat-room.interface";
-import { ChatRoomService } from "../chat-room.service";
+import { ChatRoomService } from "../chatroom.service";
 import { UserI } from "src/app/interfaces/user.interface";
+import { Observer, Subscription } from "rxjs";
+import { WSService } from "../../service";
 
 @Injectable({
 	providedIn: "root",
 })
-export class ChatChannelService implements OnInit {
+export class ChatChannelService {
+	chat = DefChatChannelI;
+	obsToDestroy: Subscription[] = [];
 	constructor(
 		private userService: UserService,
 		private chatRoomService: ChatRoomService,
+		private wsService: WSService,
 		private wsGateway: WSGateway,
-	) {}
-
-	chat = DefChatChannelI;
-
-	ngOnInit()
-	{
+	) {
 		this.wsGateway.getAllAvailableChannelRoom();
-		this.wsGateway.listenAllAvailableChannelRoom().subscribe((data: ChatRoomI[]) => {
+		this.obsToDestroy.push(this.wsGateway.listenAllAvailableChannelRoom().subscribe((data: ChatRoomI[]) => {
 			console.log("event AllAvailableChannelRoom received");
 			this.updateAllAvailableChannelRoom(data);
-		})
+		}))
 
-		this.wsGateway.listenNewGlobalMessage().subscribe((data: any) => {
+		this.obsToDestroy.push(this.wsGateway.listenNewGlobalMessage().subscribe((data: any) => {
 			console.log("event getNewGlobalMessage received");
 			this.updateNewGlobalMessage(data);
-		});
+		}));
 
-		this.wsGateway.listenNewUserJoinChannelRoom().subscribe((data: UserChatRoomI) => {
+		this.obsToDestroy.push(this.wsGateway.listenNewUserJoinChannelRoom().subscribe((data: UserChatRoomI) => {
 			console.log("event NewUserJoinChannelRoom received");
 			this.updateNewUserJoinChannelRoom(data);
-		})
+		}));
 
-		this.wsGateway.listenNewDetailsChannelRoom().subscribe((data: ChatRoomI) => {
+		this.obsToDestroy.push(this.wsGateway.listenNewDetailsChannelRoom().subscribe((data: ChatRoomI) => {
 			console.log("event NewDetailsChannelRoom received");
 			this.updateNewDetailsChannelRoom(data);
-		})
+		}));
 
-		this.wsGateway.listenRoomAction().subscribe((data: any) => {
+		this.obsToDestroy.push(this.wsGateway.listenRoomAction().subscribe((data: any) => {
 			console.log("event RoomAction");
 			this.updateRoomAction(data);
-		})
+		}));
 
-		this.wsGateway.listenNewJoinedChannelRoom().subscribe((data: ChatRoomI) => {
+		this.obsToDestroy.push(this.wsGateway.listenNewJoinedChannelRoom().subscribe((data: ChatRoomI) => {
 			console.log("event NewJoinedChannelRoom received");
 			this.updateNewJoinedChannelRoom(data);
-		})
+		}));
 
-		this.wsGateway.listenNewAvailableChannelRoom().subscribe((data: ChatRoomI) => {
+		this.obsToDestroy.push(this.wsGateway.listenNewAvailableChannelRoom().subscribe((data: ChatRoomI) => {
 			console.log("event NewAvailableChannelRoom received");
 			this.updateNewAvailableChannelRoom(data);
-		})
+		}));
 
 		this.wsGateway.getAllJoinedChannelRoom();
-		this.wsGateway.listenAllJoinedChannelRoom().subscribe((data: ChatRoomI[]) => {
+		this.obsToDestroy.push(this.wsGateway.listenAllJoinedChannelRoom().subscribe((data: ChatRoomI[]) => {
 			console.log("event AllJoinedChannelRoom received");
 			this.updateAllJoinedChannelRoom(data);
-		})
+		}));
+	}
+
+	ngOnDestroy()
+	{
+		console.log("[CHANNEL] destroyer");
+		this.wsService.unsubscribeObservables(this.obsToDestroy);
 	}
 
 	updateAllAvailableChannelRoom(chatroom: ChatRoomI[])
@@ -313,12 +319,8 @@ export class ChatChannelService implements OnInit {
 	getAdmin(): UserI[]
 	{ return (this.chatRoomService.getAdmin(this.getSelectedRoom())); }
 
-
-
 	isOwnerSelectedRoom(): boolean
-	{
-		console.log(this.userService);
-		return (this.chatRoomService.isOwner(
+	{ return (this.chatRoomService.isOwner(
 						this.getSelectedRoom(), this.userService.user.id)); }
 
 

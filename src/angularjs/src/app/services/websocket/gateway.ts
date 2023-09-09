@@ -23,6 +23,7 @@ export class WSGateway {
 		};
 		this.socket.ioSocket.io.opts = config;
 		this.socket.ioSocket.open();
+		this.socket.connect();
 	}
 
 	// DM CHAT
@@ -130,6 +131,8 @@ export class WSGateway {
 	listenNewStatusFriend(): Observable<any>
 	{ return this.socket.fromEvent<any>("getNewStatusFriend"); }
 
+	listenDeniedFriendReq(): Observable<any>
+	{ return this.socket.fromEvent<any>("deniedFriendReq")}
 
 	// EMITER
 	getAllFriend()
@@ -138,32 +141,14 @@ export class WSGateway {
 	getAllFriendRequest()
 	{ this.socket.emit("getAllFriendRequest"); }
 
+	sendFriendRequest(id: number)
+	{ this.socket.emit("sendFriendRequest", id); }
+
+	acceptFriendRequest(id: number)
+	{ this.socket.emit("acceptFriendRequest", id); }
+
+	rejectFriendRequest(id: number)
+	{ this.socket.emit("rejectFriendRequest", id); }
 
 	// NOTIFICATION
-
-	// LISTENER
-	listenAllReqById() : Observable<number[]>
-	{ return this.socket.fromEvent<number[]>("getAllReqById"); }
-
-	listenNewReqById() : Observable<number>
-	{ return this.socket.fromEvent<number>("getNewReqById"); }
-
-	listenRemoveFriendReq() : Observable<number>
-	{ return this.socket.fromEvent<number>("removeFriendReq"); }
-
-	listenReqStatus() : Observable<number>
-	{ return this.socket.fromEvent<number>("friendReqStatus"); }
-
-	listenNotification() : Observable<string>
-	{ return this.socket.fromEvent<string>("sendNotification"); }
-
-	// EMITER
-	sendFriendReq(id: number)
-	{ this.socket.emit("sendFriendReq", id); }
-
-	acceptFriendReq(id: number)
-	{ this.socket.emit("acceptFriendReq", id); }
-
-	rejectFriendReq(id: number)
-	{ this.socket.emit("rejectFriendReq", id); }
 }

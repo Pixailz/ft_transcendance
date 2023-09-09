@@ -3,11 +3,10 @@ import { UserEntity } from "./entity";
 import { Repository } from "typeorm";
 import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { BadRequestException, ForbiddenException } from "@nestjs/common";
+import { BadRequestException } from "@nestjs/common";
 import { DBModule } from "../database.module";
-
-import { validate } from "class-validator";
 import { DBUserPost } from "./dto";
+import { Sanitize } from "../../../sanitize-object";
 
 describe("DBUserService", () => {
 	let service: DBUserService;
@@ -19,6 +18,7 @@ describe("DBUserService", () => {
 		const module = await Test.createTestingModule({
 			imports: [DBModule],
 			providers: [
+				Sanitize,
 				DBUserService,
 				{
 					provide: getRepositoryToken(UserEntity),

@@ -16,10 +16,10 @@ export const DefFriendRequestI : FriendRequestI = {
 
 export interface FriendListI {
 	friends				: any,
-	friend_req			: any,
+	friend_req			: FriendRequestI[],
 }
 
 export const DefFriendListI : FriendListI = {
 	friends				: {},
-	friend_req			: {},
+	friend_req			: Array(DefFriendRequestI),
 }

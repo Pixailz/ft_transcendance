@@ -10,10 +10,12 @@ import { Server } from "socket.io";
 import { DBUserService } from "src/modules/database/user/service";
 import { WSSocket } from "src/websocket/socket.service";
 import { UserService } from "../user/service";
+import { Sanitize } from "../../sanitize-object";
 
 @Injectable()
 export class ChatRoomService {
 	constructor(
+		private sanitize: Sanitize,
 		private dbUserChatRoomService: DBUserChatRoomService,
 		private dbChatRoomService: DBChatRoomService,
 		private dbMessageService: DBMessageService,
@@ -25,17 +27,15 @@ export class ChatRoomService {
 	async setStatus(server: Server, user_id: number, status: number) {
 		await this.dbUserService.setStatus(user_id, status);
 		const friends = await this.userService.getAllFriend(user_id);
-		for (let i = 0; i < friends.length; i++) {
-			this.wsSocket.sendToUser(
-				server,
-				friends[i].id,
-				"getNewStatusFriend",
-				{
-					user_id: user_id,
-					status: status,
-				},
-			);
-		}
+		this.wsSocket.sendToUsersInfo(
+			server,
+			friends,
+			"getNewStatusFriend",
+			{
+				user_id: user_id,
+				status: status,
+			},
+		);
 	}
 
 	async getAllDmRoom(user_id: number): Promise<ChatRoomEntity[]> {
@@ -172,14 +172,7 @@ export class ChatRoomService {
 	async getAllJoinedChannelRoom(user_id: number): Promise<ChatRoomEntity[]> {
 		const all_chat_room =
 			await this.dbChatRoomService.getAllJoinedChannelRoom(user_id);
-		all_chat_room.forEach((ii, i) => {
-			all_chat_room[i].message.forEach((jj, j) => {
-				delete all_chat_room[i].message[i].user.nonce;
-				delete all_chat_room[i].message[i].user.twoAuthFactor;
-				delete all_chat_room[i].message[i].user.twoAuthFactorSecret;
-			})
-		})
-		return all_chat_room;
+		return (this.sanitize.ChatRooms(all_chat_room));
 	}
 
 	async getAvailableChannelRoom(room_id: number): Promise<ChatRoomEntity> {
@@ -192,12 +185,7 @@ export class ChatRoomService {
 		const chat_room = await this.dbChatRoomService.getJoinedChannelRoom(
 			room_id,
 		);
-		chat_room.message.forEach((ii, i) => {
-			delete chat_room.message[i].user.nonce;
-			delete chat_room.message[i].user.twoAuthFactor;
-			delete chat_room.message[i].user.twoAuthFactorSecret;
-		})
-		return chat_room;
+		return (this.sanitize.ChatRoom(chat_room));
 	}
 
 	async sendMessage(dest_id: number, from_id: number, message: string): Promise<number> {

@@ -133,7 +133,7 @@ export class UserService{
 
 	isGoodUser(user: UserI)
 	{
-		if (user.id === -1)
+		if (!user || user.id === -1)
 			return (false);
 		return (true);
 	}
