@@ -4,11 +4,11 @@ import { UserService } from "src/app/services/user.service";
 import { WSGateway } from "../../gateway";
 
 import { DefChatChannelI, RoomAction } from "src/app/interfaces/chat-channel.interface";
-import { ChatRoomI, DefChatRoomI, RoomType } from "src/app/interfaces/chat-room.interface";
+import { ChatRoomI, DefChatRoomI } from "src/app/interfaces/chat-room.interface";
 import { UserChatRoomI } from "src/app/interfaces/user-chat-room.interface";
 import { ChatRoomService } from "../chatroom.service";
 import { UserI } from "src/app/interfaces/user.interface";
-import { Observer, Subscription } from "rxjs";
+import { Subscription } from "rxjs";
 import { WSService } from "../../service";
 
 @Injectable({

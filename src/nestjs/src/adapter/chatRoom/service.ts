@@ -27,15 +27,10 @@ export class ChatRoomService {
 	async setStatus(server: Server, user_id: number, status: number) {
 		await this.dbUserService.setStatus(user_id, status);
 		const friends = await this.userService.getAllFriend(user_id);
-		this.wsSocket.sendToUsersInfo(
-			server,
-			friends,
-			"getNewStatusFriend",
-			{
-				user_id: user_id,
-				status: status,
-			},
-		);
+		this.wsSocket.sendToUsersInfo(server, friends, "getNewStatusFriend", {
+			user_id: user_id,
+			status: status,
+		});
 	}
 
 	async getAllDmRoom(user_id: number): Promise<ChatRoomEntity[]> {
@@ -50,8 +45,9 @@ export class ChatRoomService {
 		user_id: number,
 		dst_id: number,
 	): Promise<ChatRoomEntity> {
-		const all_chat_room =
-			await this.dbChatRoomService.getAllDmRoom(user_id);
+		const all_chat_room = await this.dbChatRoomService.getAllDmRoom(
+			user_id,
+		);
 
 		for (var i = 0; i < all_chat_room.length; i++) {
 			const friends_id = await this.getAllUserFromRoom(
@@ -90,8 +86,7 @@ export class ChatRoomService {
 	}
 
 	async getAllDmMessageRoom(room_id: number): Promise<MessageEntity[]> {
-		const user_room =
-			await this.dbUserChatRoomService.getUserRoom(room_id);
+		const user_room = await this.dbUserChatRoomService.getUserRoom(room_id);
 
 		return user_room[0].room.message;
 	}
@@ -101,9 +96,8 @@ export class ChatRoomService {
 		return user_room[0].room.message;
 	}
 
-	async getUserChatRoom(user_id: number, room_id: number)
-	{
-		return (this.dbUserChatRoomService.returnOneWithUser(user_id, room_id))
+	async getUserChatRoom(user_id: number, room_id: number) {
+		return this.dbUserChatRoomService.returnOneWithUser(user_id, room_id);
 	}
 
 	async hashPass(password: string): Promise<string> {
@@ -172,12 +166,13 @@ export class ChatRoomService {
 	async getAllJoinedChannelRoom(user_id: number): Promise<ChatRoomEntity[]> {
 		const all_chat_room =
 			await this.dbChatRoomService.getAllJoinedChannelRoom(user_id);
-		return (this.sanitize.ChatRooms(all_chat_room));
+		return this.sanitize.ChatRooms(all_chat_room);
 	}
 
 	async getAvailableChannelRoom(room_id: number): Promise<ChatRoomEntity> {
-		const chat_room =
-			await this.dbChatRoomService.getAvailableChannelRoom(room_id);
+		const chat_room = await this.dbChatRoomService.getAvailableChannelRoom(
+			room_id,
+		);
 		return chat_room;
 	}
 
@@ -185,23 +180,29 @@ export class ChatRoomService {
 		const chat_room = await this.dbChatRoomService.getJoinedChannelRoom(
 			room_id,
 		);
-		return (this.sanitize.ChatRoom(chat_room));
+		return this.sanitize.ChatRoom(chat_room);
 	}
 
-	async sendMessage(dest_id: number, from_id: number, message: string): Promise<number> {
-		return (await this.dbMessageService.create(
+	async sendMessage(
+		dest_id: number,
+		from_id: number,
+		message: string,
+	): Promise<number> {
+		return await this.dbMessageService.create(
 			{ content: message },
 			from_id,
 			dest_id,
-		));
+		);
 	}
 
 	async getAllUserFromRoom(room_id: number): Promise<number[]> {
-		const all_user_chat_room = await this.dbUserChatRoomService.getUserRoom(room_id);
+		const all_user_chat_room = await this.dbUserChatRoomService.getUserRoom(
+			room_id,
+		);
 		var user_list: number[] = [];
 		all_user_chat_room.forEach((i) => {
 			user_list.push(i.userId);
-		})
+		});
 		return user_list;
 	}
 
@@ -209,27 +210,23 @@ export class ChatRoomService {
 		await this.dbChatRoomService.update(room_id, details);
 	}
 
-	async updateType(room_id: number, type: RoomType)
-	{
+	async updateType(room_id: number, type: RoomType) {
 		await this.dbChatRoomService.updateType(room_id, {
 			type: type,
 		});
 	}
 
-	async kickUser(room_id: number, target_id: number)
-	{
+	async kickUser(room_id: number, target_id: number) {
 		await this.dbUserChatRoomService.delete(target_id, room_id);
 	}
 
-	async promoteUser(room_id: number, target_id: number)
-	{
+	async promoteUser(room_id: number, target_id: number) {
 		await this.dbUserChatRoomService.update(target_id, room_id, {
 			isAdmin: true,
 		});
 	}
 
-	async giveKrownUser(user_id: number, room_id: number, target_id: number)
-	{
+	async giveKrownUser(user_id: number, room_id: number, target_id: number) {
 		await this.dbUserChatRoomService.update(target_id, room_id, {
 			isOwner: true,
 		});
@@ -238,6 +235,7 @@ export class ChatRoomService {
 		});
 	}
 
-	async getMessage(message_id: number)
-	{ return (await this.dbMessageService.getMessage(message_id)); }
+	async getMessage(message_id: number) {
+		return await this.dbMessageService.getMessage(message_id);
+	}
 }

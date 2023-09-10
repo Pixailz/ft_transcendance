@@ -40,8 +40,7 @@ export class WSSocket {
 	}
 
 	sendToUsers(server: Server, user_ids: number[], event: string, data: any) {
-		for (var i = 0; i < user_ids.length; i++)
-		{
+		for (var i = 0; i < user_ids.length; i++) {
 			const socket_ids = this.getSocketId(user_ids[i]);
 			if (!socket_ids) return;
 			for (let i = 0; i < socket_ids.length; i++)
@@ -49,10 +48,14 @@ export class WSSocket {
 		}
 	}
 
-	sendToUsersInfo(server: Server, users: UserEntity[], event: string, data: any) {
+	sendToUsersInfo(
+		server: Server,
+		users: UserEntity[],
+		event: string,
+		data: any,
+	) {
 		var user_list: number[] = [];
-		for (var i = 0; i < users.length; i++)
-			user_list.push(users[i].id);
+		for (var i = 0; i < users.length; i++) user_list.push(users[i].id);
 		this.sendToUsers(server, user_list, event, data);
 	}
 
@@ -65,13 +68,12 @@ export class WSSocket {
 		server: Server,
 		room: ChatRoomEntity,
 		event: string,
-		data:any
-	)
-	{
+		data: any,
+	) {
 		var user_list: number[] = [];
 
 		for (var i = 0; i < room.roomInfo.length; i++)
 			user_list.push(room.roomInfo[i].userId);
-		this.sendToUsers(server, user_list, event, data)
+		this.sendToUsers(server, user_list, event, data);
 	}
 }

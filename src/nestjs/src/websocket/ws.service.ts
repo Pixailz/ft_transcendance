@@ -6,10 +6,7 @@ import { UserService } from "src/adapter/user/service";
 
 @Injectable()
 export class WSService {
-	constructor(
-		private userService: UserService,
-		private wsSocket: WSSocket,
-	) {}
+	constructor(private userService: UserService, private wsSocket: WSSocket) {}
 
 	async connection(server: Server, socket: Socket) {
 		const user_id = this.userService.decodeToken(
@@ -48,14 +45,9 @@ export class WSService {
 	async setStatus(server: Server, user_id: number, status: number) {
 		await this.userService.setStatus(user_id, status);
 		const friends = await this.userService.getAllFriend(user_id);
-		this.wsSocket.sendToUsersInfo(
-			server,
-			friends,
-			"getNewStatusFriend",
-			{
-				user_id: user_id,
-				status: status,
-			},
-		)
+		this.wsSocket.sendToUsersInfo(server, friends, "getNewStatusFriend", {
+			user_id: user_id,
+			status: status,
+		});
 	}
 }

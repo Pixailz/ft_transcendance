@@ -6,7 +6,6 @@ import { UserService } from "../../user.service";
 import { DefFriendListI, FriendRequestI } from "src/app/interfaces/friend.interface";
 import { DefUserI, UserI } from "src/app/interfaces/user.interface";
 import { ChatDmService } from "../chat/direct-message/service";
-import { WSService } from "../service";
 import { Subscription } from "rxjs";
 
 @Injectable({
@@ -18,7 +17,6 @@ export class FriendService {
 	constructor(
 		private userService: UserService,
 		private chatDmService: ChatDmService,
-		private wsService: WSService,
 		private wsGateway: WSGateway,
 	) {
 		this.wsGateway.getAllFriend();
@@ -165,9 +163,9 @@ export class FriendService {
 
 	alreadySend(friend_id: number)
 	{
-		for (var req of this.friend.friend_req)
-			if (req.meId === friend_id ||
-				req.friendId === friend_id)
+		for (var i = 0; i < this.friend.friend_req.length; i++)
+			if (this.friend.friend_req[i].meId === friend_id ||
+				this.friend.friend_req[i].friendId === friend_id)
 				return (true);
 		return (false);
 	}

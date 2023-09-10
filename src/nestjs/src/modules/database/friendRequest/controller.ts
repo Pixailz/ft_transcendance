@@ -35,16 +35,10 @@ export class DBFriendRequestController {
 		return await this.dbFriendRequestService.getAllRequest(userId);
 	}
 
-	@Delete("/accept/:friend_id")
-	async acceptReq(@Request() req, @Param("friend_id") friendId: number) {
+	@Get("sent/:id")
+	async getAlreadySent(@Request() req, @Param("id") friendId: number) {
 		const userId = req.user.user_id;
-		return await this.dbFriendRequestService.acceptReq(friendId, userId);
-	}
-
-	@Delete("/decline/:friend_id")
-	async declineReq(@Request() req, @Param("friend_id") friendId: number) {
-		const userId = req.user.user_id;
-		return await this.dbFriendRequestService.rejectReq(friendId, userId);
+		return await this.dbFriendRequestService.alreadySent(userId, friendId);
 	}
 
 	@Get(":friend_id")

@@ -29,40 +29,68 @@ export class WSFriendService {
 		socket.emit(
 			"getAllFriendRequest",
 			this.sanitize.FriendRequests(
-				await this.userService.getAllFriendRequest(user_id)
+				await this.userService.getAllFriendRequest(user_id),
 			),
 		);
 	}
 
-	async acceptFriendRequest(server: Server, socket: Socket, friend_id: number) {
+	async acceptFriendRequest(
+		server: Server,
+		socket: Socket,
+		friend_id: number,
+	) {
 		const user_id = this.wsSocket.getUserId(socket.id);
 		if (await this.dbFriendService.alreadyFriend(friend_id, user_id))
-			return ;
+			return;
 		const friend = await this.userService.getInfoById(friend_id);
 		const user = await this.userService.getInfoById(user_id);
 		await this.dbFriendRequestService.acceptReq(friend_id, user_id);
-		this.wsSocket.sendToUsers(server, [user_id], "getNewFriend", this.sanitize.User(friend));
-		this.wsSocket.sendToUsers(server, [friend_id], "getNewFriend", this.sanitize.User(user));
+		this.wsSocket.sendToUsers(
+			server,
+			[user_id],
+			"getNewFriend",
+			this.sanitize.User(friend),
+		);
+		this.wsSocket.sendToUsers(
+			server,
+			[friend_id],
+			"getNewFriend",
+			this.sanitize.User(user),
+		);
 	}
 
-	async rejectFriendRequest(server: Server, socket: Socket, friend_id: number) {
+	async rejectFriendRequest(
+		server: Server,
+		socket: Socket,
+		friend_id: number,
+	) {
 		const user_id = this.wsSocket.getUserId(socket.id);
 
 		await this.dbFriendRequestService.rejectReq(friend_id, user_id);
-		this.wsSocket.sendToUsers(server, [user_id, friend_id], "deniedFriendReq", {
-			user_id: user_id,
-			target_id: friend_id,
-		});
+		this.wsSocket.sendToUsers(
+			server,
+			[user_id, friend_id],
+			"deniedFriendReq",
+			{
+				user_id: user_id,
+				target_id: friend_id,
+			},
+		);
 	}
 
-	async sendFriendRequest(server: Server, socket: Socket, friend_id: number)
-	{
+	async sendFriendRequest(server: Server, socket: Socket, friend_id: number) {
 		const user_id = this.wsSocket.getUserId(socket.id);
 
 		if (await this.dbFriendService.alreadyFriend(friend_id, user_id))
-			return ;
-		await this.dbFriendRequestService.create({friendId: friend_id}, user_id);
-		const full_request = await this.dbFriendRequestService.getFullRequest(user_id, friend_id);
+			return;
+		await this.dbFriendRequestService.create(
+			{ friendId: friend_id },
+			user_id,
+		);
+		const full_request = await this.dbFriendRequestService.getFullRequest(
+			user_id,
+			friend_id,
+		);
 		this.wsSocket.sendToUsers(
 			server,
 			[friend_id, user_id],

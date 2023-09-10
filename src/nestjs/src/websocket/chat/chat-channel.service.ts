@@ -22,22 +22,24 @@ export class WSChatChannelService {
 
 	async getAllAvailableChannelRoom(socket: Socket) {
 		const user_id = this.wsSocket.getUserId(socket.id);
-		var all_channel = await this.chatRoomService.getAllAvailableChannelRoom();
+		var all_channel =
+			await this.chatRoomService.getAllAvailableChannelRoom();
 
-		for (var i = 0; i < all_channel.length; i++)
-		{
+		for (var i = 0; i < all_channel.length; i++) {
 			all_channel[i].roomInfo.forEach((item) => {
-				if (item.userId === user_id)
-					delete all_channel[i];
-			})
+				if (item.userId === user_id) delete all_channel[i];
+			});
 		}
 
 		all_channel = all_channel.filter((data) => {
 			return data != null;
-		})
+		});
 
 		if (all_channel.length === 0 || all_channel[0] === null) return;
-		socket.emit("getAllAvailableChannelRoom", this.sanitize.ChatRooms(all_channel));
+		socket.emit(
+			"getAllAvailableChannelRoom",
+			this.sanitize.ChatRooms(all_channel),
+		);
 	}
 
 	async getAllJoinedChannelRoom(socket: Socket) {
@@ -53,7 +55,10 @@ export class WSChatChannelService {
 				),
 			);
 		}
-		socket.emit("getAllJoinedChannelRoom", this.sanitize.ChatRooms(all_joined));
+		socket.emit(
+			"getAllJoinedChannelRoom",
+			this.sanitize.ChatRooms(all_joined),
+		);
 	}
 
 	async createChannelRoom(
@@ -131,19 +136,18 @@ export class WSChatChannelService {
 		message: string,
 	) {
 		const user_id = this.wsSocket.getUserId(socket.id);
-		const message_id = await this.chatRoomService.sendMessage(dst_id, user_id, message);
+		const message_id = await this.chatRoomService.sendMessage(
+			dst_id,
+			user_id,
+			message,
+		);
 		const new_message = await this.chatRoomService.getMessage(message_id);
 		const all_user = await this.chatRoomService.getAllUserFromRoom(dst_id);
 
-		this.wsSocket.sendToUsers(
-			server,
-			all_user,
-			"getNewGlobalMessage",
-			{
-				room_id: dst_id,
-				message: this.sanitize.Message(new_message),
-			},
-		);
+		this.wsSocket.sendToUsers(server, all_user, "getNewGlobalMessage", {
+			room_id: dst_id,
+			message: this.sanitize.Message(new_message),
+		});
 	}
 
 	async changeRoomDetails(

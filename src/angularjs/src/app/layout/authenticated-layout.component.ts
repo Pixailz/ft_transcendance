@@ -2,9 +2,6 @@ import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit } from '
 import { slideInAnimation } from '../animations';
 import { RouterOutlet } from '@angular/router';
 import { WSGateway } from '../services/websocket/gateway';
-import { ChatChannelService } from '../services/websocket/chat/channel/service';
-import { FriendService } from '../services/websocket/friend/service';
-import { ChatDmService } from '../services/websocket/chat/direct-message/service';
 import { WSService } from '../services/websocket/service';
 
 @Component({
@@ -18,7 +15,6 @@ export class AuthenticatedLayoutComponent implements OnInit, OnDestroy, AfterVie
 		private changeRef: ChangeDetectorRef,
 		private wsService: WSService,
 		private wsGateway: WSGateway,
-		
 	) {
 	}
 

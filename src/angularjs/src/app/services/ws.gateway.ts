@@ -7,6 +7,7 @@ import {
 	UserI
 } from 'src/app/interfaces/chat.interface';
 import { RoomAction } from '../components/global-chat/global-chat.interface';
+import { FriendRequestI } from '../interfaces/friend.interface';
 
 @Injectable({
 	providedIn: 'root',
@@ -24,10 +25,34 @@ export class WSGateway {
 		this.socket.ioSocket.open();
 	}
 
-	// PRIVATE CHAT
+	// FRIENDS
 	listenAllFriend(): Observable<UserI[]>
 	{ return this.socket.fromEvent<UserI[]>("getAllFriend"); }
 
+	listenAllFriendRequest(): Observable<FriendRequestI[]>
+	{ return this.socket.fromEvent<FriendRequestI[]>("getAllFriendRequest"); }
+
+	listenNewFriend(): Observable<UserI>
+	{ return this.socket.fromEvent<UserI>("getNewFriend"); }
+
+	listenNewStatusFriend(): Observable<any>
+	{ return this.socket.fromEvent<any>("getNewStatusFriend"); }
+
+
+	getAllFriend()
+	{ this.socket.emit("getAllFriend"); }
+
+	sendFriendReq(id: number)
+	{ this.socket.emit("sendFriendRequest", id); }
+
+	acceptFriendReq(id: number)
+	{ this.socket.emit("acceptFriendRequest", id); }
+
+	rejectFriendReq(id: number)
+	{ this.socket.emit("rejectFriendRequest", id); }
+
+
+	// PRIVATE CHAT
 	listenAllPrivateRoom(): Observable<ChatRoomI[]>
 	{ return this.socket.fromEvent<ChatRoomI[]>("getAllPrivateRoom"); }
 
@@ -37,40 +62,9 @@ export class WSGateway {
 	listenNewPrivateRoom(): Observable<ChatRoomI>
 	{ return this.socket.fromEvent<ChatRoomI>("getNewPrivateRoom"); }
 
-	listenNewStatusFriend(): Observable<any>
-	{ return this.socket.fromEvent<any>("getNewStatusFriend"); }
-
 	listenNewPrivateMessage(): Observable<any>
 	{ return this.socket.fromEvent<any>("getNewPrivateMessage"); }
 
-	listenAllReqById() : Observable<number[]>
-	{
-		return this.socket.fromEvent<number[]>("getAllReqById");
-	}
-
-	listenNewReqById() : Observable<number>
-	{
-		return this.socket.fromEvent<number>("getNewReqById");
-	}
-
-	listenRemoveFriendReq() : Observable<number>
-	{
-		return this.socket.fromEvent<number>("removeFriendReq");
-	}
-
-	listenReqStatus() : Observable<number>
-	{
-		return this.socket.fromEvent<number>("friendReqStatus");
-	}
-
-	listenNotification() : Observable<string>
-	{
-		return this.socket.fromEvent<string>("sendNotification");
-	}
-
-
-	getAllFriend()
-	{ this.socket.emit("getAllFriend"); }
 
 	getAllPrivateRoom()
 	{ this.socket.emit("getAllPrivateRoom"); }
@@ -83,6 +77,7 @@ export class WSGateway {
 
 	sendPrivateMessage(room_id: number, message: string)
 	{ this.socket.emit("sendPrivateMessage", room_id, message); }
+
 
 	// GLOBAL CHAT
 	listenAllAvailableGlobalRoom(): Observable<ChatRoomI[]>
@@ -140,45 +135,4 @@ export class WSGateway {
 
 	roomAction(room_id: number, action: RoomAction, target_id: number)
 	{ this.socket.emit("roomAction", room_id, action, target_id); }
-
-	getAllReqById()
-	{
-		this.socket.emit("getAllReqById");
-	}
-
-	sendFriendReq(id: number)
-	{
-		this.socket.emit("sendFriendReq", id);
-	}
-
-	acceptFriendReq(id: number)
-	{
-		this.socket.emit("acceptFriendReq", id);
-	}
-
-	rejectFriendReq(id: number)
-	{
-		this.socket.emit("rejectFriendReq", id);
-	}
-
-	getAllReqById()
-	{
-		this.socket.emit("getAllReqById");
-	}
-
-	sendFriendReq(id: number)
-	{
-		this.socket.emit("sendFriendReq", id);
-	}
-
-	acceptFriendReq(id: number)
-	{
-		this.socket.emit("acceptFriendReq", id);
-	}
-
-	rejectFriendReq(id: number)
-	{
-		this.socket.emit("rejectFriendReq", id);
-	}
-
 }

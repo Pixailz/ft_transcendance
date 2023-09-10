@@ -36,11 +36,11 @@ export class UserService {
 
 	async getAllFriend(user_id: number): Promise<UserEntity[]> {
 		const all_friend = await this.dbFriendService.returnAllFriend(user_id);
-		return (all_friend);
+		return all_friend;
 	}
 
 	async getAllFriendRequest(user_id: number): Promise<FriendRequestEntity[]> {
-		return (await this.dbFriendRequestService.getAllRequest(user_id));
+		return await this.dbFriendRequestService.getAllRequest(user_id);
 	}
 
 	async getAllStatusFriend(user_id: number): Promise<any> {

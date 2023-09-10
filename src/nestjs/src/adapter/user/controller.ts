@@ -34,7 +34,9 @@ export class UserController {
 	}
 
 	@Get("profile/:login")
-	async getUserProfile(@Param("login") ft_login: string): Promise<UserEntity> {
+	async getUserProfile(
+		@Param("login") ft_login: string,
+	): Promise<UserEntity> {
 		return await this.dbUserService.getUserByLogin(ft_login);
 	}
 

@@ -48,7 +48,7 @@ export class DBUserChatRoomService {
 	async returnOneWithUser(user: number, room: number) {
 		const tmp = await this.userChatRoomRepo.findOne({
 			relations: {
-				user: true
+				user: true,
 			},
 			where: {
 				userId: user,
@@ -77,9 +77,7 @@ export class DBUserChatRoomService {
 		else throw new NotFoundException("userChatRoom not found");
 	}
 
-	async getUserRoom(
-		room_id: number,
-	): Promise<UserChatRoomEntity[]> {
+	async getUserRoom(room_id: number): Promise<UserChatRoomEntity[]> {
 		return await this.userChatRoomRepo.find({
 			relations: {
 				user: true,
@@ -102,7 +100,9 @@ export class DBUserChatRoomService {
 		});
 	}
 
-	async getAllChannelUserRoom(room_id: number): Promise<UserChatRoomEntity[]> {
+	async getAllChannelUserRoom(
+		room_id: number,
+	): Promise<UserChatRoomEntity[]> {
 		return await this.userChatRoomRepo.find({
 			relations: {
 				user: true,

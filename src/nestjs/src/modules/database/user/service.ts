@@ -116,11 +116,10 @@ export class DBUserService {
 		const date = new Date(Date.now());
 
 		await this.update(user_id, {
-				status: status,
-				lastSeen: date,
-			})
-			.catch((err) => {
-				console.log("[userService:setStatus]", err.message);
-			});
+			status: status,
+			lastSeen: date,
+		}).catch((err) => {
+			console.log("[userService:setStatus]", err.message);
+		});
 	}
 }

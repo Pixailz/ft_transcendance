@@ -48,8 +48,7 @@ export class DBChatRoomService {
 		else throw new NotFoundException("ChatRoom not found");
 	}
 
-	async getAllRoom(user_id: number): Promise<ChatRoomEntity[]>
-	{
+	async getAllRoom(user_id: number): Promise<ChatRoomEntity[]> {
 		return await this.chatRoomRepo.find({
 			relations: {
 				roomInfo: {
@@ -123,10 +122,7 @@ export class DBChatRoomService {
 					user: true,
 				},
 			},
-			where: [
-				{ type: RoomType.PUBLIC },
-				{ type: RoomType.PROTECTED },
-			],
+			where: [{ type: RoomType.PUBLIC }, { type: RoomType.PROTECTED }],
 		});
 	}
 
@@ -149,7 +145,6 @@ export class DBChatRoomService {
 			],
 		});
 	}
-
 
 	async getJoinedChannelRoom(room_id: number): Promise<ChatRoomEntity> {
 		return await this.chatRoomRepo.findOne({
@@ -217,27 +212,23 @@ export class DBChatRoomService {
 		});
 	}
 
-	async getAllRoomByType(user_id: number, room_type: RoomType[])
-	{
-		const	all_room = await this.getAllRoom(user_id);
-		return (this.filterRoomType(all_room, room_type));
+	async getAllRoomByType(user_id: number, room_type: RoomType[]) {
+		const all_room = await this.getAllRoom(user_id);
+		return this.filterRoomType(all_room, room_type);
 	}
 
-	filterRoomType(room: ChatRoomEntity[], room_type: RoomType[])
-	{
+	filterRoomType(room: ChatRoomEntity[], room_type: RoomType[]) {
 		var spliced: number = 0;
 
 		for (var i = 0; room.length; i++)
 			if (!this.isRoomType(room[i], room_type))
 				room.splice(i - spliced++, 1);
-		return (room);
+		return room;
 	}
 
-	isRoomType(room: ChatRoomEntity, room_type: RoomType[])
-	{
+	isRoomType(room: ChatRoomEntity, room_type: RoomType[]) {
 		for (var i = 0; room_type.length; i++)
-			if (room.type === room_type[i])
-				return (true);
-		return (false);
+			if (room.type === room_type[i]) return true;
+		return false;
 	}
 }
