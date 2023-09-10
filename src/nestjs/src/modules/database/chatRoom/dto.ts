@@ -1,8 +1,8 @@
 import { IsNotEmpty, IsOptional } from "class-validator";
 
 export class DBChatRoomTypePost {
-	@IsNotEmpty()
-	type?: number;
+	 @IsNotEmpty()
+	 type?: number;
 }
 
 export class DBChatRoomPost {

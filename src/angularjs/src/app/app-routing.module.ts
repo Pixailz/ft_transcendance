@@ -8,12 +8,11 @@ import { UserProfileComponent } from './pages/user-profile/user-profile.componen
 import { LoginComponent } from './pages/login/login.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { RegisterComponent } from './pages/register/register.component';
+import { WSChatComponent } from './pages/chat/chat.component';
 import { AnonymousLayoutComponent } from './layout/anonymous-layout.component';
 import { AuthenticatedLayoutComponent } from './layout/authenticated-layout.component';
+import { TwofaformComponent } from './components/twofaform/twofaform.component';
 import { ProfileComponent } from './pages/profile/profile.component';
-
-import { WSChatDmComponent } from './pages/chat-dm/chat-dm.component';
-import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
 
 const routes: Routes = [
 	{
@@ -45,17 +44,12 @@ const routes: Routes = [
 			{
 				path: 'profile/:login',
 				component: ProfileComponent,
-				data: { animation: 'ProfileUser', reuseRoute: true }
+				data: { animation: 'ProfileUser' }
 			},
 			{
-				path: 'chat/dm',
-				component: WSChatDmComponent,
-				data: { animation: 'ChatDm', reuseRoute: true }
-			},
-			{
-				path: 'chat/global',
-				component: WSChatChannelComponent,
-				data: { animation: 'ChatChannel', reuseRoute: true }
+				path: 'chat',
+				component: WSChatComponent,
+				data: { animation: 'PrivChat', reuseRoute: true }
 			},
 			{
 				// throw a 404 error if the route is not found
@@ -85,7 +79,7 @@ const routes: Routes = [
 				canActivate: [AuthGuardService]
 			}
 		]
-	},
+	}, 
 ];
 
 @NgModule({

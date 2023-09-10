@@ -3,10 +3,11 @@ import { UserEntity } from "./entity";
 import { Repository } from "typeorm";
 import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { BadRequestException } from "@nestjs/common";
+import { BadRequestException, ForbiddenException } from "@nestjs/common";
 import { DBModule } from "../database.module";
+
+import { validate } from "class-validator"
 import { DBUserPost } from "./dto";
-import { Sanitize } from "../../../sanitize-object";
 
 describe("DBUserService", () => {
 	let service: DBUserService;
@@ -18,7 +19,6 @@ describe("DBUserService", () => {
 		const module = await Test.createTestingModule({
 			imports: [DBModule],
 			providers: [
-				Sanitize,
 				DBUserService,
 				{
 					provide: getRepositoryToken(UserEntity),
@@ -60,7 +60,7 @@ describe("DBUserService", () => {
 			let user2 = await service.returnOne(userId2, null);
 
 			expect(userId2).toEqual(user2.id);
-
+			
 			await expect(service.create(userPost3)).rejects.toThrowError(
 				new BadRequestException("User Login can't be blank or empty"),
 			);
@@ -70,6 +70,8 @@ describe("DBUserService", () => {
 			// );
 		});
 	});
+	
+
 
 	describe("update", () => {
 		it("[USER] should update 2 user", async () => {

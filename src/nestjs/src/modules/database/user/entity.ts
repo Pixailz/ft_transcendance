@@ -10,7 +10,7 @@ import { UserChatRoomEntity } from "../userChatRoom/entity";
 import { GameInfoEntity } from "../gameInfo/entity";
 import { MessageEntity } from "../message/entity";
 import { FriendEntity } from "../friend/entity";
-import { MutedEntity } from "../muted/entity";
+import {MutedEntity} from "../muted/entity"
 import { Exclude } from "class-transformer";
 
 export enum Status {
@@ -67,7 +67,7 @@ export class UserEntity {
 
 	@OneToMany((type) => MessageEntity, (message) => message.user)
 	message: MessageEntity[];
-
+	
 	//friend
 	@OneToMany((type) => FriendEntity, (friendMe) => friendMe.me)
 	me: FriendEntity[];

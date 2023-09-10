@@ -7,22 +7,18 @@ export class ErrorLogController {
 	@Post()
 	async save(@Body() error: any): Promise<any> {
 		const date = new Date();
-		const log = `${date.toISOString()} ${error.message}\n${
-			error.stack
-		}\n\n`;
+		const log = `${date.toISOString()} ${error.message}\n${error.stack}\n\n`;
 
-		if (!fs.existsSync("logs")) {
-			fs.mkdirSync("logs");
-		}
+        if (!fs.existsSync("logs")) {
+            fs.mkdirSync("logs");
+        }
 
 		fs.appendFile("logs/angular.err", log, (err) => {
 			if (err) console.error(err);
 		});
 
-		console.error(
-			`[${error.url}] error received: ${error.message}. See logs/angular.err for more details.`,
-		);
+		console.error(`[${error.url}] error received: ${error.message}. See logs/angular.err for more details.`);
 
-		return { status: "ok" };
+        return { status: "ok" };
 	}
 }

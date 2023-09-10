@@ -1,8 +1,7 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component } from '@angular/core';
 import { slideInAnimation } from '../animations';
 import { RouterOutlet } from '@angular/router';
-import { WSGateway } from '../services/websocket/gateway';
-import { WSService } from '../services/websocket/service';
+import { WSGateway } from '../services/ws.gateway';
 
 @Component({
 	selector: 'app-authenticated-layout',
@@ -10,30 +9,20 @@ import { WSService } from '../services/websocket/service';
 	styleUrls: ['./authenticated-layout.component.scss'],
 	animations: [ slideInAnimation ]
 })
-export class AuthenticatedLayoutComponent implements OnInit, OnDestroy, AfterViewInit{
-	constructor(
-		private changeRef: ChangeDetectorRef,
-		private wsService: WSService,
-		private wsGateway: WSGateway,
-	) {
-	}
+export class AuthenticatedLayoutComponent implements AfterViewInit{
+  constructor(
+    private changeRef: ChangeDetectorRef,
+    private wsGateway: WSGateway) {}
 
-	ngAfterViewInit(): void {
-		this.changeRef.detectChanges();
-	}
+  ngAfterViewInit(): void {
+    this.changeRef.detectChanges();
+  }
+  
+  ngOnInit() {
+    this.wsGateway.socket.connect();
+  }
 
-	ngOnInit()
-	{
-		console.log("[AUTH_LAYOUT] onInit");
-		window.onbeforeunload = () => this.ngOnDestroy();
-	}
-
-	ngOnDestroy()
-	{
-		console.log("[AUTH_LAYOUT] onDestroy");
-	}
-
-	prepareRoute(outlet: RouterOutlet){
-		return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
-	}
+  prepareRoute(outlet: RouterOutlet){
+    return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
+  }
 }

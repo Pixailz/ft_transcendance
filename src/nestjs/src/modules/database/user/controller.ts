@@ -25,24 +25,23 @@ export class DBUserController {
 
 	@Get()
 	async getAll() {
-		return await this.dbUserService.returnAll();
+		return (await this.dbUserService.returnAll());
 	}
 
 	@Get(":id")
 	async getOne(@Param("id") userId: number) {
-		return await this.dbUserService.returnOne(userId);
+		return (await this.dbUserService.returnOne(userId));
 	}
 
 	@Put(":id")
 	async update(
 		@Param("id") userId: number,
-		@Body() userPost: DBUserInfoPost,
-	) {
-		return await this.dbUserService.update(userId, userPost);
+		@Body() userPost: DBUserInfoPost) {
+		return (await this.dbUserService.update(userId, userPost));
 	}
 
 	@Delete(":id")
 	async delete(@Param("id") userId: number) {
-		return await this.dbUserService.delete(userId);
+			return (await this.dbUserService.delete(userId));
 	}
 }

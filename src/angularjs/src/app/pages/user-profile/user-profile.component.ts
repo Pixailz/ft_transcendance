@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserService } from '../../services/user.service';
-import { DefUserI, UserI } from 'src/app/interfaces/user.interface';
+import { DefUserI, UserI } from 'src/app/interfaces/chat.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { TwofaformComponent } from 'src/app/components/twofaform/twofaform.component';
+import { DialogRef } from '@angular/cdk/dialog';
+import { BackService } from 'src/app/services/back.service';
 
 @Component({
 	selector: 'app-user-profile',
@@ -14,6 +16,7 @@ export class UserProfileComponent implements OnInit {
 	constructor(
 		private userService: UserService,
 		private formBuilder: FormBuilder,
+		private back: BackService,
 		public dialog: MatDialog
 	)
 	{}

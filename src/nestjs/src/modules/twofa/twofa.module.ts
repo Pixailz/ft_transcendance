@@ -8,4 +8,4 @@ import { DBModule } from "../database/database.module";
 	providers: [TwofaService],
 	imports: [DBModule],
 })
-export class TwofaModule {}
+export class TwofaModule {};

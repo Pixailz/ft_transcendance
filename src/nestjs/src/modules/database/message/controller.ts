@@ -28,12 +28,12 @@ export class DBMessageController {
 
 	@Get()
 	async getAll() {
-		return await this.dbMessageService.returnAll();
+		return (await this.dbMessageService.returnAll());
 	}
 
 	@Get(":id")
 	async getOne(@Param("id") MessageId: number) {
-		return await this.dbMessageService.returnOne(MessageId);
+		return (await this.dbMessageService.returnOne(MessageId));
 	}
 
 	@Put(":id")
@@ -41,11 +41,11 @@ export class DBMessageController {
 		@Param("id") MessageId: number,
 		@Body() MessagePost: DBMessagePost,
 	) {
-		return await this.dbMessageService.update(MessageId, MessagePost);
+		return (await this.dbMessageService.update(MessageId, MessagePost));
 	}
 
 	@Delete(":id")
 	async delete(@Param("id") MessageId: number) {
-		return await this.dbMessageService.delete(MessageId);
+		return (await this.dbMessageService.delete(MessageId));
 	}
 }

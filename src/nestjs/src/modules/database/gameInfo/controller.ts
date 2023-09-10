@@ -26,24 +26,23 @@ export class DBGameInfoController {
 
 	@Get()
 	async getAll() {
-		return await this.dbGameInfoService.returnAll();
+		return (await this.dbGameInfoService.returnAll());
 	}
 
 	@Get(":id")
 	async getOne(@Param("id") gameId: number) {
-		return await this.dbGameInfoService.returnOne(gameId);
+		return (await this.dbGameInfoService.returnOne(gameId));
 	}
 
 	@Put(":id")
 	async update(
 		@Param("id") gameId: number,
-		@Body() userPost: DBGameInfoPost,
-	) {
-		return await this.dbGameInfoService.update(gameId, userPost);
+		@Body() userPost: DBGameInfoPost) {
+		return (await this.dbGameInfoService.update(gameId, userPost));
 	}
 
 	@Delete(":id")
 	async delete(@Param("id") userId: number) {
-		return await this.dbGameInfoService.delete(userId);
+		return (await this.dbGameInfoService.delete(userId));
 	}
 }

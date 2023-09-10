@@ -1,11 +1,4 @@
-import {
-	Entity,
-	Column,
-	OneToMany,
-	PrimaryColumn,
-	ManyToOne,
-	JoinColumn,
-} from "typeorm";
+import { Entity, Column, OneToMany, PrimaryColumn, ManyToOne, JoinColumn } from "typeorm";
 
 import { UserEntity } from "../user/entity";
 
@@ -28,4 +21,5 @@ export class MutedEntity {
 	})
 	@JoinColumn({ name: "mutedId" })
 	muted: UserEntity;
+
 }

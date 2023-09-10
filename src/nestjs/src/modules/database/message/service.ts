@@ -53,15 +53,4 @@ export class DBMessageService {
 		if (message) return await this.messageRepo.delete(messageId);
 		else throw new NotFoundException("Message not found");
 	}
-
-	async getMessage(message_id: number): Promise<MessageEntity> {
-		return await this.messageRepo.findOne({
-			relations: {
-				user: true,
-			},
-			where: {
-				id: message_id,
-			},
-		});
-	}
 }

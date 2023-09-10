@@ -1,29 +1,23 @@
 import { Module } from "@nestjs/common";
 
+import { WSGateway } from "./ws.gateway";
 import { AuthModule } from "src/modules/auth/module";
 import { DBModule } from "src/modules/database/database.module";
 import { UserService } from "src/adapter/user/service";
 import { ChatRoomService } from "src/adapter/chatRoom/service";
-import { WSGateway } from "./ws.gateway";
+import { WSChatService } from "./chat/chat.service";
 import { WSSocket } from "./socket.service";
-import { WSChatChannelService } from "./chat/chat-channel.service";
-import { WSChatDmService } from "./chat/chat-dm.service";
-import { WSFriendService } from "./friend/friend.service";
-import { WSService } from "./ws.service";
-import { Sanitize } from "../sanitize-object";
+import { WSFriendRequestService } from "./friendRequest/friendRequest.service";
 
 @Module({
 	imports: [AuthModule, DBModule],
 	providers: [
-		Sanitize,
+		WSGateway,
 		UserService,
 		ChatRoomService,
+		WSChatService,
 		WSSocket,
-		WSGateway,
-		WSService,
-		WSChatDmService,
-		WSChatChannelService,
-		WSFriendService,
+		WSFriendRequestService,
 	],
 })
 export class WSModule {}

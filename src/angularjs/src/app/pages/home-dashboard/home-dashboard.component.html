@@ -41,7 +41,7 @@
 				<mat-table [dataSource]="onlineusers.content" matSort>
 					<ng-container matColumnDef="avatar">
 						<mat-header-cell *matHeaderCellDef> Avatar </mat-header-cell>
-						<mat-cell *matCellDef="let element">
+						<mat-cell *matCellDef="let element"> 
 							<img [src]="element.picture || '/assets/img/avatar-placeholder.jpg'" alt="avatar" class="avatar">
 						</mat-cell>
 					</ng-container>
@@ -67,7 +67,7 @@
 				</mat-card-title>
 			</mat-card-header>
 			<mat-card-content class="dashboard-card-content">
-				<app-chat-channel></app-chat-channel>
+				<!-- <app-global-chatroom></app-global-chatroom> -->
 			</mat-card-content>
 		</mat-card>
 	</mat-grid-tile>
@@ -75,11 +75,11 @@
 		<mat-card class="dashboard-card">
 			<mat-card-header>
 				<mat-card-title>
-					DM Chatroom
+					Private Chatroom
 				</mat-card-title>
 			</mat-card-header>
 			<mat-card-content class="dashboard-card-content">
-				<app-chat-dm></app-chat-dm>
+				<!-- <app-private-chatroom></app-private-chatroom> -->
 			</mat-card-content>
 		</mat-card>
 	</mat-grid-tile>

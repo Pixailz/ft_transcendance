@@ -1,169 +1,98 @@
 import {
 	OnGatewayConnection,
 	OnGatewayDisconnect,
+	OnGatewayInit,
 	SubscribeMessage,
 	WebSocketGateway,
 	WebSocketServer,
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
-import { WSService } from "./ws.service";
-import { WSChatDmService } from "./chat/chat-dm.service";
-import { WSChatChannelService } from "./chat/chat-channel.service";
-import { WSFriendService } from "./friend/friend.service";
+import { WSChatService } from "./chat/chat.service";
+import { WSFriendRequestService } from "./friendRequest/friendRequest.service";
+
 
 @WebSocketGateway(3001, {
 	path: "/ws",
 	cors: { origin: "*" },
 })
-export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class WSGateway
+	implements OnGatewayConnection, OnGatewayDisconnect
+{
 	constructor(
-		private wsService: WSService,
-		private wsChatDmService: WSChatDmService,
-		private wsChatChannelService: WSChatChannelService,
-		private wsFriendService: WSFriendService,
+		private wsChatService: WSChatService,
+		private wsFriendRequestService: WSFriendRequestService,	
 	) {}
 
 	@WebSocketServer()
 	server = new Server();
 
-	// BASE
 	async handleConnection(socket: Socket) {
-		await this.wsService.connection(this.server, socket);
+		await this.wsChatService.connection(this.server, socket);
 	}
 
 	async handleDisconnect(socket: Socket) {
-		await this.wsService.disconnect(this.server, socket);
+		await this.wsChatService.disconnect(this.server, socket);
 	}
 
-	// DIRECT MESSAGE CHAT
-
-	// HANDLER
-	@SubscribeMessage("getAllDmRoom")
-	async getAllDmRoom(socket: Socket) {
-		await this.wsChatDmService.getAllDmRoom(socket);
-	}
-
-	@SubscribeMessage("getAllDmMessage")
-	async getAllDmMessage(socket: Socket) {
-		await this.wsChatDmService.getAllDmMessage(socket);
-	}
-
-	@SubscribeMessage("createDmRoom")
-	async handleCreateDmRoom(socket: Socket, dst_id: number) {
-		await this.wsChatDmService.createDmRoom(this.server, socket, dst_id);
-	}
-
-	@SubscribeMessage("sendDmMessage")
-	async handleSendDmMessage(socket: Socket, data: any) {
-		await this.wsChatDmService.sendDmMessage(
-			this.server,
-			socket,
-			data[0],
-			data[1],
-		);
-	}
-
-	// CHANNEL CHAT
-
-	// HANDLER
-	@SubscribeMessage("getAllAvailableChannelRoom")
-	async handleGetAllAvailableChannelRoom(socket: Socket) {
-		this.wsChatChannelService.getAllAvailableChannelRoom(socket);
-	}
-
-	@SubscribeMessage("getAllJoinedChannelRoom")
-	async handleGetAllJoinedChannelRoom(socket: Socket) {
-		this.wsChatChannelService.getAllJoinedChannelRoom(socket);
-	}
-
-	@SubscribeMessage("createChannelRoom")
-	async handleCreateChannelRoom(socket: Socket, data: any) {
-		const name = data[0];
-		const password = data[1] ? data[1] : "";
-		const user_id = data[2];
-		this.wsChatChannelService.createChannelRoom(
-			this.server,
-			socket,
-			name,
-			password,
-			user_id,
-		);
-	}
-
-	@SubscribeMessage("joinChannelRoom")
-	async handleJoinChannelRoom(socket: Socket, data: any) {
-		const room_id = data[0];
-		const password = data[1] ? data[1] : "";
-		await this.wsChatChannelService.joinChannelRoom(
-			this.server,
-			socket,
-			room_id,
-			password,
-		);
-	}
-
-	@SubscribeMessage("sendGlobalMessage")
-	async handleSendGlobalMessage(socket: Socket, data: any) {
-		await this.wsChatChannelService.sendGlobalMessage(
-			this.server,
-			socket,
-			data[0],
-			data[1],
-		);
-	}
-
-	@SubscribeMessage("changeRoomDetails")
-	async handleChangeRoomDetail(socket: Socket, data: any) {
-		const room_id = data[0];
-		const details = data[1];
-		await this.wsChatChannelService.changeRoomDetails(
-			this.server,
-			socket,
-			room_id,
-			details,
-		);
-	}
-
-	@SubscribeMessage("roomAction")
-	async handleRoomAction(socket: Socket, data: any) {
-		const room_id = data[0];
-		const action = data[1];
-		const target_id = data[2];
-
-		await this.wsChatChannelService.takeRoomAction(
-			this.server,
-			socket,
-			room_id,
-			action,
-			target_id,
-		);
-	}
-
-	// FRIENDS
-
-	// HANDLER
 	@SubscribeMessage("getAllFriend")
 	async getAllFriend(socket: Socket) {
-		await this.wsFriendService.getAllFriend(socket);
+		await this.wsChatService.getAllFriend(socket);
 	}
 
-	@SubscribeMessage("getAllFriendRequest")
-	async getAllFriendRequest(socket: Socket) {
-		await this.wsFriendService.getAllFriendRequest(socket);
+	@SubscribeMessage("getAllPrivateRoom")
+	async getAllPrivateRoom(socket: Socket) {
+		await this.wsChatService.getAllPrivateRoom(socket);
 	}
 
-	@SubscribeMessage("sendFriendRequest")
+	@SubscribeMessage("getAllPrivateMessage")
+	async getAllPrivateMessage(socket: Socket) {
+		await this.wsChatService.getAllPrivateMessage(socket);
+	}
+
+	@SubscribeMessage("createPrivateRoom")
+	async handleCreatePrivateRoom(socket: Socket, dst_id: number) {
+		await this.wsChatService.createPrivateRoom(this.server, socket, dst_id);
+	}
+
+	@SubscribeMessage("sendPrivateMessage")
+	async handleSendPrivateMessage(socket: Socket, data: any) {
+		await this.wsChatService.sendPrivateMessage(
+			this.server,
+			socket,
+			data[0],
+			data[1],
+		);
+	}
+
+	@SubscribeMessage("getAllReqById")
+	async getAllReqById(socket: Socket) {
+		await this.wsFriendRequestService.getAllReqById(socket);
+	}
+
+	@SubscribeMessage("sendFriendReq")
 	async sendFriendReq(socket: Socket, id: number) {
-		await this.wsFriendService.sendFriendRequest(this.server, socket, id);
+		await this.wsFriendRequestService.sendFriendReq(this.server, socket, id);
 	}
 
-	@SubscribeMessage("acceptFriendRequest")
-	async acceptFriendRequest(socket: Socket, id: number) {
-		await this.wsFriendService.acceptFriendRequest(this.server, socket, id);
+	@SubscribeMessage("acceptFriendReq")
+	async acceptFriendReq(socket: Socket, id: number) {
+		await this.wsFriendRequestService.acceptFriendReq(this.server, socket, id);
+	}
+	
+	@SubscribeMessage("rejectFriendReq")
+	async rejectFriendReq(socket: Socket, id: number) {
+		await this.wsFriendRequestService.rejectFriendReq(this.server, socket, id);
 	}
 
-	@SubscribeMessage("rejectFriendRequest")
-	async rejectFriendRequest(socket: Socket, id: number) {
-		await this.wsFriendService.rejectFriendRequest(this.server, socket, id);
+	@SubscribeMessage("friendReqStatus")
+	async friendReqStatus(socket: Socket, id: number) {
+		await this.wsFriendRequestService.friendReqStatus(socket, id);
 	}
+	
+
+	@SubscribeMessage("sendNotification")
+	async sendNotification(server: Server, socket: Socket, prefix: string, friend_id: number) {
+		await this.wsFriendRequestService.sendNotification(server, socket, friend_id, prefix);
+	}
+	
 }

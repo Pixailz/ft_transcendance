@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
-import { DefUserI, UserI } from 'src/app/interfaces/user.interface';
+import { DefUserI, UserI } from 'src/app/interfaces/chat.interface';
 
 @Component({
   selector: 'app-register',
@@ -8,15 +8,17 @@ import { DefUserI, UserI } from 'src/app/interfaces/user.interface';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
-	constructor(public userService: UserService) {
+	user: UserI = DefUserI;
+
+	constructor(private userService: UserService) {
 	}
 
 	async ngOnInit() {
-		this.userService.user = await this.userService.getUserInfo();
+		this.user = await this.userService.getUserInfo();
 	}
 
 	async onSubmit() {
-		await this.userService.updateInfo(this.userService.user.nickname, this.userService.user.email);
+		await this.userService.updateInfo(this.user.nickname, this.user.email);
 		window.location.href = '/home';
 	}
 }

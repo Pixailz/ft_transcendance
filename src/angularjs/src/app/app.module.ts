@@ -14,8 +14,9 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table'; 
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+import { WSChatComponent } from './pages/chat/chat.component';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HeaderComponent } from './components/header/header.component';
@@ -43,10 +44,6 @@ import { NotificationComponent } from './components/notification/notification.co
 import { RouteReuseStrategy } from '@angular/router';
 import { CustomReuseStrategy } from './reuse-strategy';
 
-// WEBSOCKET
-import { WSChatDmComponent } from './pages/chat-dm/chat-dm.component';
-import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
-
 const config: SocketIoConfig = {
 	url: environment.socket_url,
 	options: {
@@ -70,6 +67,7 @@ const config: SocketIoConfig = {
 		AvatarComponent,
 		LoginComponent,
 		RegisterComponent,
+		WSChatComponent,
 		AnonymousLayoutComponent,
 		AuthenticatedLayoutComponent,
 		FlatButtonComponent,
@@ -78,8 +76,6 @@ const config: SocketIoConfig = {
 		ErrordialogComponent,
 		FlatListComponent,
 		NotificationComponent,
-		WSChatDmComponent,
-		WSChatChannelComponent,
 	],
 	imports: [
 		BrowserModule,

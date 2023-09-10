@@ -16,27 +16,27 @@ export class DBFriendService {
 	) {}
 
 	async create(post: DBFriendPost, meId: number) {
-		const user1 = await this.userRepo.findOneBy({ id: meId });
-		const user2 = await this.userRepo.findOneBy({ id: post.friendId });
-		if (!user1 || !user2) throw new NotFoundException("User not found");
+		const user1 = await this.userRepo.findOneBy({id: meId});
+		const user2 = await this.userRepo.findOneBy({id: post.friendId});
+		if (!user1 || !user2)
+			throw new NotFoundException("User not found");
 		let list = new FriendEntity();
 		list.meId = meId;
 		list.friendId = post.friendId;
 		await this.friendRepo.save(list);
-		// maybe create reverse table //
+			// maybe create reverse table //
 		let tmp = new FriendEntity();
 		tmp.meId = list.friendId;
-		tmp.friendId = list.meId;
+		tmp.friendId = list.meId
 		await this.friendRepo.save(tmp);
 		return list;
 	}
 
-	async alreadyFriend(me_id: number, friend_id: number) {
-		const friend = await this.friendRepo.findOneBy({
-			meId: me_id,
-			friendId: friend_id,
-		});
-		return friend ? true : false;
+	async alreadyFriend(me_id: number, friend_id: number){
+		const friend = await this.friendRepo.findOneBy({meId: me_id, friendId: friend_id});
+		if (friend)
+			return (true);
+		return (false);
 	}
 
 	async returnAll() {
@@ -44,39 +44,13 @@ export class DBFriendService {
 	}
 
 	async returnOne(me_id: number, friend_id: number) {
-		const tmp = await this.friendRepo.findOneBy({
-			meId: me_id,
-			friendId: friend_id,
-		});
+		const tmp = await this.friendRepo.findOneBy({ meId: me_id, friendId: friend_id });
 		if (tmp) return tmp;
 		else throw new NotFoundException("Friend relation not found");
 	}
 
-	async returnAllFriend(me_id: number): Promise<UserEntity[]> {
-		const tmp = await this.friendRepo.find({
-			relations: {
-				friend: true,
-			},
-			where: {
-				meId: me_id,
-			},
-		});
-		var user_list: UserEntity[] = [];
-
-		for (var i = 0; i < tmp.length; i++) {
-			delete tmp[i].friend.nonce;
-			delete tmp[i].friend.twoAuthFactor;
-			delete tmp[i].friend.twoAuthFactorSecret;
-			user_list.push(tmp[i].friend);
-		}
-		return user_list;
-	}
-
 	async delete(me_id: number, friend_id: number) {
-		const tmp = await this.friendRepo.findOneBy({
-			meId: me_id,
-			friendId: friend_id,
-		});
+		const tmp = await this.friendRepo.findOneBy({ meId: me_id, friendId: friend_id });
 		if (tmp) return await this.friendRepo.delete(tmp);
 		else throw new NotFoundException("Friend relation not found");
 	}
