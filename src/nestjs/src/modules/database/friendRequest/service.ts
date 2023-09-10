@@ -103,8 +103,14 @@ export class DBFriendRequestService {
 	}
 
 	async getAllRequest(me_id: number) {
-		const requests = await this.friendRequestRepo.findBy({
-			friendId: me_id,
+		const requests = await this.friendRequestRepo.find({
+			relations: {
+				me: true,
+				friend: true,
+			},
+			where: {
+				friendId: me_id,
+			}
 		});
 		return requests;
 	}
