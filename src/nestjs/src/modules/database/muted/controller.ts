@@ -16,31 +16,25 @@ export class DBMutedController {
 	constructor(private readonly dbMutedService: DBMutedService) {}
 
 	@Post()
-	create(
-		@Request() req,
-		@Body() post: DBMutedPost) {
+	create(@Request() req, @Body() post: DBMutedPost) {
 		const mutedId = req.user.user_id;
-		return (this.dbMutedService.create(post, mutedId));
+		return this.dbMutedService.create(post, mutedId);
 	}
 
 	@Get()
 	async getAll() {
-		return (await this.dbMutedService.returnAll());
+		return await this.dbMutedService.returnAll();
 	}
 
 	@Get(":muted_id")
-	async getOne(
-		@Request() req,
-		@Param("muted_id") mutedId: number) {
+	async getOne(@Request() req, @Param("muted_id") mutedId: number) {
 		const userId = req.user.user_id;
-		return (await this.dbMutedService.returnOne(userId, mutedId));
+		return await this.dbMutedService.returnOne(userId, mutedId);
 	}
 
 	@Delete(":muted_id")
-	async delete(
-		@Request() req,
-		@Param("muted_id") mutedId: number) {
+	async delete(@Request() req, @Param("muted_id") mutedId: number) {
 		const userId = req.user.user_id;
-		return (await this.dbMutedService.delete(userId, mutedId));
+		return await this.dbMutedService.delete(userId, mutedId);
 	}
 }

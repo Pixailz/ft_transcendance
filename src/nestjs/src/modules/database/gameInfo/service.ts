@@ -1,4 +1,8 @@
-import { Injectable, ForbiddenException, NotFoundException } from "@nestjs/common";
+import {
+	Injectable,
+	ForbiddenException,
+	NotFoundException,
+} from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -20,8 +24,7 @@ export class DBGameInfoService {
 		const gameInfo = new GameInfoEntity();
 		const user1 = await this.userRepo.findOneBy({ id: userA });
 		const user2 = await this.userRepo.findOneBy({ id: userB });
-		if (!user1 || !user2) 
-			throw new NotFoundException("User not found");
+		if (!user1 || !user2) throw new NotFoundException("User not found");
 		gameInfo.userA = userA;
 		gameInfo.userB = userB;
 		gameInfo.type = post.type;
@@ -34,10 +37,8 @@ export class DBGameInfoService {
 
 	async returnOne(gameId: number) {
 		const tmp = await this.gameInfoRepo.findOneBy({ id: gameId });
-		if (tmp) 
-			return await this.gameInfoRepo.findOneBy({ id: gameId });
-		else 
-			throw new NotFoundException("GameInfo not found");
+		if (tmp) return await this.gameInfoRepo.findOneBy({ id: gameId });
+		else throw new NotFoundException("GameInfo not found");
 	}
 
 	async update(gameId: number, post: DBGameInfoPost) {

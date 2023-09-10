@@ -11,12 +11,14 @@ import { Status, UserEntity } from "./entity";
 
 import { DBUserPost, DBUserInfoPost } from "./dto";
 import { Api42Service } from "../../api42/service";
+import { Sanitize } from "../../../sanitize-object";
 
 @Injectable()
 export class DBUserService {
 	constructor(
 		@InjectRepository(UserEntity)
 		private readonly userRepo: Repository<UserEntity>,
+		private sanitize: Sanitize,
 	) {}
 
 	async create(userPost: DBUserPost): Promise<number> {
@@ -101,24 +103,23 @@ export class DBUserService {
 		return Promise.resolve(user_info);
 	}
 
-	async getOnlineUsers(): Promise<Partial<UserEntity[]>> {
+	async getOnlineUsers(): Promise<UserEntity[]> {
 		const users = await this.userRepo.find({
 			where: {
 				status: Status.CONNECTED,
 			},
 		});
+		return this.sanitize.Users(users);
+	}
 
-		users.forEach((user) => {
-			Object.getOwnPropertyNames(user).forEach((key) => {
-				if (
-					key !== "nickname" &&
-					key !== "picture" &&
-					key !== "lastSeen"
-				)
-					delete user[key];
-			});
+	async setStatus(user_id: number, status: number) {
+		const date = new Date(Date.now());
+
+		await this.update(user_id, {
+			status: status,
+			lastSeen: date,
+		}).catch((err) => {
+			console.log("[userService:setStatus]", err.message);
 		});
-
-		return users;
 	}
 }

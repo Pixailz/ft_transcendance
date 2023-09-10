@@ -45,7 +45,7 @@
 
 	.personal_data{
 		border-top: 5px solid black;
-		
+
 		.line {
 			justify-content: space-between;
 			width: calc(100% - 2 * 10px);
@@ -53,14 +53,22 @@
 			background-color: white;
 			padding: 10px;
 			margin: 0;
-			
+
 			&:not(:first-child) {
 				border-top: 2px dotted black;
 			}
 
 			font-size: 1.2em;
 		}
-		
+
+	}
+
+	.friend-btn{
+		margin: 10px;
+	}
+
+	.friend-btn{
+		margin: 10px;
 	}
 
 	.friend-btn{

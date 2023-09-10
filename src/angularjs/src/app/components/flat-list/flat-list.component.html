@@ -1,11 +1,11 @@
 <ul *ngIf="friends.length; else empty">
-    <li *ngFor="let friend of friends"> 
-        <span>{{friend.ftLogin}}</span> 
-        <button (click)="friendRequestService.acceptRequest(friend.id)">Accept</button> 
-        <button (click)="friendRequestService.rejectFriendReq(friend.id)">Decline</button> 
-    </li>
+	<li *ngFor="let friend of friends">
+		<span>{{friend.ftLogin}}</span>
+		<button (click)="friendService.acceptRequest(friend.id)">Accept</button>
+		<button (click)="friendService.rejectFriendReq(friend.id)">Decline</button>
+	</li>
 </ul>
 
 <ng-template #empty>
-    <span>Nothing to see there ...</span>
+	<span>Nothing to see there ...</span>
 </ng-template>

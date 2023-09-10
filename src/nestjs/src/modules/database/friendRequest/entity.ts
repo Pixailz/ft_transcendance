@@ -1,4 +1,11 @@
-import { Entity, Column, OneToMany, PrimaryColumn, ManyToOne, JoinColumn } from "typeorm";
+import {
+	Entity,
+	Column,
+	OneToMany,
+	PrimaryColumn,
+	ManyToOne,
+	JoinColumn,
+} from "typeorm";
 
 import { UserEntity } from "../user/entity";
 
@@ -21,5 +28,4 @@ export class FriendRequestEntity {
 	})
 	@JoinColumn({ name: "friendId" })
 	friend: UserEntity;
-
 }

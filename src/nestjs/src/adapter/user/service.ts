@@ -2,12 +2,17 @@ import { Injectable } from "@nestjs/common";
 import { DBUserService } from "../../modules/database/user/service";
 import { JwtService } from "@nestjs/jwt";
 import { UserEntity } from "../../modules/database/user/entity";
+import { DBFriendService } from "src/modules/database/friend/service";
+import { DBFriendRequestService } from "src/modules/database/friendRequest/service";
+import { FriendRequestEntity } from "src/modules/database/friendRequest/entity";
 
 @Injectable()
 export class UserService {
 	constructor(
 		private jwtService: JwtService,
 		private dbUserService: DBUserService,
+		private dbFriendService: DBFriendService,
+		private dbFriendRequestService: DBFriendRequestService,
 	) {}
 
 	validateToken(jwt_token: string): boolean {
@@ -30,7 +35,12 @@ export class UserService {
 	}
 
 	async getAllFriend(user_id: number): Promise<UserEntity[]> {
-		return await this.dbUserService.returnAll();
+		const all_friend = await this.dbFriendService.returnAllFriend(user_id);
+		return all_friend;
+	}
+
+	async getAllFriendRequest(user_id: number): Promise<FriendRequestEntity[]> {
+		return await this.dbFriendRequestService.getAllRequest(user_id);
 	}
 
 	async getAllStatusFriend(user_id: number): Promise<any> {
@@ -47,14 +57,6 @@ export class UserService {
 	}
 
 	async setStatus(user_id: number, status: number) {
-		const date = new Date(Date.now());
-
-		await this.dbUserService.update(user_id, {
-			status: status,
-			lastSeen: date,
-		})
-			.catch((err) => {
-				console.log("[userService:setStatus]", err.message);
-			});
+		await this.dbUserService.setStatus(user_id, status);
 	}
 }

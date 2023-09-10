@@ -19,7 +19,7 @@ export class LoginComponent  implements OnInit {
 	state: any = null;
 	isButtonClickable: boolean = true;
 
-	constructor(private route: ActivatedRoute, 
+	constructor(private route: ActivatedRoute,
 				private router: Router,
 				private http: HttpClient,
 				public dialog: MatDialog) {}
@@ -27,7 +27,7 @@ export class LoginComponent  implements OnInit {
 	async ngOnInit() {
 		this.code = this.route.snapshot.queryParamMap.get('code');
 		this.state = this.route.snapshot.queryParamMap.get('state');
-		
+
 		if (this.state !== null) {
 			try {
 				this.state = atob(this.state);
@@ -39,26 +39,26 @@ export class LoginComponent  implements OnInit {
 		}
 
 		if (this.code !== null) {
-		  await this.getToken();
-		  this.state.redirect 
-		  ? this.router.navigate([this.state.redirect]) 
-		  : this.router.navigate(['/']);
+			await this.getToken();
+			this.state.redirect
+			? this.router.navigate([this.state.redirect])
+			: this.router.navigate(['/']);
 		}
 	  }
 
 	async getToken()
 	{
 		this.isButtonClickable = false;
-		
+
 		this.response = await this.http.get(environment.api_prefix + '/auth/ft_callback?code=' + this.code)
-		.toPromise()
-		.catch((err) => {
-			console.log(err);
-				const message = document.getElementById('message');
-				if (message)
-					message.innerHTML = 'Error: ' + err.error;
-				return null;
-			});
+			.toPromise()
+			.catch((err) => {
+				console.log(err);
+					const message = document.getElementById('message');
+					if (message)
+						message.innerHTML = 'Error: ' + err.error;
+					return null;
+				});
 
 		if (!this.response || (this.response.access_token === undefined
 								&& this.response.status === undefined))
@@ -75,17 +75,17 @@ export class LoginComponent  implements OnInit {
 				closeOnNavigation: false,
 				disableClose: true
 			})
-			.afterClosed()
-			.subscribe((res) => {
-				if (res && res.status == "oke")
-				{
-					localStorage.setItem('access_token', res.access_token);
-					if (this.state?.redirect)
-						this.router.navigate([this.state.redirect]);
-					else
-						this.router.navigate(['/home']);
-				}
-			})
+				.afterClosed()
+				.subscribe((res) => {
+					if (res && res.status == "oke")
+					{
+						localStorage.setItem('access_token', res.access_token);
+						if (this.state?.redirect)
+							this.router.navigate([this.state.redirect]);
+						else
+							this.router.navigate(['/home']);
+					}
+				});
 		}
 
 		localStorage.setItem('access_token', this.response.access_token);
@@ -99,8 +99,8 @@ export class LoginComponent  implements OnInit {
 
 	SignIn()
 	{
-		window.location.href = environment.after_auth_uri 
-		+'&state='
-		+btoa(JSON.stringify({redirect: this.route.snapshot.queryParamMap.get('returnUrl')}))
+		window.location.href = environment.after_auth_uri
+			+'&state='
+			+btoa(JSON.stringify({redirect: this.route.snapshot.queryParamMap.get('returnUrl')}))
 	};
 }

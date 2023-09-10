@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { DefUserI, UserI } from 'src/app/interfaces/chat.interface';
-import { ChatService } from 'src/app/services/chat.service';
-import { FriendRequestService } from 'src/app/services/friend-request.service';
+import { DefUserI, UserI } from 'src/app/interfaces/user.interface';
 import { BackService } from 'src/app/services/back.service';
-import { WSGateway } from 'src/app/services/ws.gateway';
+import { WSGateway } from 'src/app/services/websocket/gateway';
+import { FriendService } from 'src/app/services/websocket/friend/service';
+import { UserService } from 'src/app/services/user.service';
 
 
 export enum FriendReqStatus {
@@ -21,42 +21,27 @@ export enum FriendReqStatus {
 export class ProfileComponent implements OnInit {
 	user_info: UserI = DefUserI;
 	alreadyFriend: boolean = true;
-	requestStatus: Number = 1;
 
 	constructor(
 		private route: ActivatedRoute,
 		private back: BackService,
-		public friendRequestService: FriendRequestService,
-		public chatService: ChatService,
+		public userService: UserService,
+		public friendService: FriendService,
 		public wsGateway: WSGateway,
 	) {}
 
 
-	ngOnInit() {
-		this.route.params.subscribe(async params => {
-			await this.back.req("GET", "/user/profile/" + params['login'])
-				.then(async (data) => {
-					this.user_info = data;
-					this.requestStatus = await this.friendRequestService.alreadySend(this.user_info.id);
-					this.alreadyFriend = await this.friendRequestService.alreadyFriend(this.user_info.id);
-					if (this.alreadyFriend == true)
-						this.requestStatus = FriendReqStatus.ALREADYFRIEND;
-				})
-				.catch((err) => {
-					console.log("[profile]", err.status);1
-				})
+	async ngOnInit() {
+		this.user_info = await this.back.req("GET",
+			"/user/profile/" + this.route.snapshot.paramMap.get("login"))
+			.catch((err) => {
+				console.log("[profile]", err.status);
 			});
-		this.wsGateway.listenReqStatus()
-		.subscribe(async(status: FriendReqStatus) => {
-			console.log('event listenReqStatus received');
-			this.requestStatus = status;
-			console.log('my status = ', this.requestStatus);
-		});
-		// this.alreadyFriend = await this.friendRequestService.alreadyFriend(this.user_info.id);
 	}
 
-	
-	sendFriendRequest(id: number) {
-		this.wsGateway.sendFriendReq(id);
-	}
+	onGetInfo()
+	{ this.friendService.getInfo(); }
+
+	sendFriendRequest(id: number)
+	{ this.wsGateway.sendFriendRequest(id); }
 }
