@@ -27,7 +27,7 @@ import { DBGameInfoController } from "./gameInfo/controller";
 import { DBFriendController } from "./friend/controller";
 import { DBFriendRequestController } from "./friendRequest/controller";
 import { DBMutedController } from "./muted/controller";
-import { Sanitize } from "../../sanitize-object";
+import { Sanitize } from "./sanitize-object";
 
 @Module({
 	imports: [

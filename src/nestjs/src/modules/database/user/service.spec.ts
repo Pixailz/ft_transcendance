@@ -6,7 +6,7 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { BadRequestException } from "@nestjs/common";
 import { DBModule } from "../database.module";
 import { DBUserPost } from "./dto";
-import { Sanitize } from "../../../sanitize-object";
+import { Sanitize } from "../sanitize-object";
 
 describe("DBUserService", () => {
 	let service: DBUserService;

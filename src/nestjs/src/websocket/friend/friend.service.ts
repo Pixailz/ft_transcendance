@@ -4,7 +4,7 @@ import { UserService } from "src/adapter/user/service";
 import { WSSocket } from "../socket.service";
 import { DBFriendRequestService } from "src/modules/database/friendRequest/service";
 import { DBFriendService } from "src/modules/database/friend/service";
-import { Sanitize } from "../../sanitize-object";
+import { Sanitize } from "../../modules/database/sanitize-object";
 
 @Injectable()
 export class WSFriendService {

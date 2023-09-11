@@ -152,6 +152,7 @@ function	transc::deploy()
 	rm -f "${ENV_FILE}"
 	install::env
 	perl -pi -e "s|^	socket_url: \".*?\"|	socket_url: \"${SOCKET_URL}\"|" ./src/angularjs/src/app/environments/environment.common.ts
+	perl -pi -e "s|^	game_socket_url: \".*?\"|	game_socket_url: \"${GAME_SOCKET_URL}\"|" ./src/angularjs/src/app/environments/environment.common.ts
 }
 
 # PARSING

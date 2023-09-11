@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { ChatRoomService } from "src/adapter/chatRoom/service";
 import { WSSocket } from "../socket.service";
 import { Server, Socket } from "socket.io";
-import { Sanitize } from "../../sanitize-object";
+import { Sanitize } from "../../modules/database/sanitize-object";
 
 @Injectable()
 export class WSChatDmService {

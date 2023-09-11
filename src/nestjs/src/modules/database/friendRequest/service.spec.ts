@@ -8,7 +8,7 @@ import { DBModule } from "../database.module";
 import { DBUserService } from "../user/service";
 import { DBFriendService } from "../friend/service";
 import { UserEntity } from "../user/entity";
-import { Sanitize } from "../../../sanitize-object";
+import { Sanitize } from "../sanitize-object";
 
 describe("DBFriendRequestService", () => {
 	let service: DBFriendRequestService;

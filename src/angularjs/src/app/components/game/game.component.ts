@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { GameService } from 'src/app/services/game.service';
+import { GameService } from 'src/app/services/game/game.service';
 
 @Component({
   selector: 'app-game',
@@ -8,11 +8,15 @@ import { GameService } from 'src/app/services/game.service';
 })
 export class GameComponent implements OnInit {
 
+  roomName: string = "lobby";
+  roomState: any = null;
   constructor(
     private gameService: GameService
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.gameService.join(this.roomName);
+
   }
 
 }

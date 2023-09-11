@@ -1,15 +1,21 @@
 import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
-
 import { AppModule } from "./app.module";
-import configureSwagger from "./swagger";
 import { json } from "express";
+import * as express from "express";
+import * as http from "http";
+import configureSwagger from "./addons/swagger";
+import { ExpressAdapter } from "@nestjs/platform-express";
+import { ColyseusService } from "./addons/colyseus";
+import { LobbyRoom } from "colyseus";
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule);
+	const app = express();
+	const nestApp = await NestFactory.create(AppModule, new ExpressAdapter());
 	// Enable cors
-	app.enableCors();
-	app.useGlobalPipes(
+	nestApp.enableShutdownHooks();
+	nestApp.enableCors();
+	nestApp.useGlobalPipes(
 		new ValidationPipe({
 			// Strip not specified field in post
 			whitelist: true,
@@ -17,10 +23,24 @@ async function bootstrap() {
 			transform: true,
 		}),
 	);
-	app.use(json({ limit: "50mb" }));
+	nestApp.use(json({ limit: "50mb" }));
+	configureSwagger(nestApp);
 
-	configureSwagger(app);
+	const httpServer = http.createServer(app);
 
-	await app.listen(3000);
+	const colyseusService = nestApp.get(ColyseusService);
+	colyseusService.createServer(httpServer);
+	// colyseusService.rooms.forEach((room) => {
+	// 	colyseusService.defineRoom(room.name, room);
+	// 	console.log(`Defined room ${room.name}`);
+	// });
+	colyseusService.defineRoom("lobby", LobbyRoom);
+
+	colyseusService.listen(3002).then(() => {
+		console.log(`Listening on port 3002`);
+	});
+
+	await nestApp.listen(3000);
 }
+
 bootstrap();
