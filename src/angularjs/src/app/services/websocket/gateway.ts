@@ -32,9 +32,6 @@ export class WSGateway {
 	listenAllDmRoom(): Observable<ChatRoomI[]>
 	{ return this.socket.fromEvent<ChatRoomI[]>("getAllDmRoom"); }
 
-	listenAllDmMessage(): Observable<any>
-	{ return this.socket.fromEvent<any>("getAllDmMessage"); }
-
 	listenNewDmRoom(): Observable<ChatRoomI>
 	{ return this.socket.fromEvent<ChatRoomI>("getNewDmRoom"); }
 

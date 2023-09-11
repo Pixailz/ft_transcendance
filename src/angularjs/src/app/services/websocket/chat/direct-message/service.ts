@@ -5,7 +5,7 @@ import { DefChatDmI } from "src/app/interfaces/chat-dm.interface";
 
 import { WSGateway } from "../../gateway";
 import { ChatRoomService } from "../chatroom.service";
-import { UserI } from "src/app/interfaces/user.interface";
+import { DefUserI, UserI } from "src/app/interfaces/user.interface";
 import { DefUserChatRoomI } from "src/app/interfaces/user-chat-room.interface";
 import { WSService } from "../../service";
 import { Subscription } from "rxjs";
@@ -52,16 +52,28 @@ export class ChatDmService {
 
 	updateAllChatDm(chatroom: ChatRoomI[])
 	{
+		var found: boolean;
+
 		for (var i = 0; i < chatroom.length; i++)
 		{
+			found = false;
+			const	array_chat_room = chatroom[i].roomInfo;
+			if (!array_chat_room || !array_chat_room[0])
+				continue ;
+
 			for (const friend_id in this.chat.dm)
 			{
-				const	array_chat_room = chatroom[i].roomInfo;
-				if (!array_chat_room || !array_chat_room[0])
-					continue ;
-				if (Number(friend_id) === array_chat_room[0].user.id)
+				if (Number(friend_id) === array_chat_room[0].userId)
+				{
+					found = true;
 					this.chat.dm[friend_id].room = chatroom[i];
+				}
 			}
+			if (!found)
+				this.chat.dm[array_chat_room[0].user.id.toString()] = {
+					user_info: DefUserI,
+					room: chatroom[i],
+				}
 		}
 	}
 
