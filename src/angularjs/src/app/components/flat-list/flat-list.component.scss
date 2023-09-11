@@ -1,18 +1,21 @@
 :host {
     position: absolute;
-    background-color: white;
-    border: 3px solid black;
+	border: 1px solid rgba(255,255,255,0.4);
+	background: rgba(255, 255, 255, 0.3);
     top: 70px;
     z-index: 50;
     right: 0;
     width: 200px;
+	color: white;
+	border-radius: 10px;
 }
 
 ul {
-    max-height: 100px;
+    max-height: 300px;
+	overflow: scroll;
     max-width: 200px;
     li:not(:last-child) {
-		border-bottom: 1px dashed black;
+		border-bottom: 1px dashed rgba(255,255,255,0.4);
     }
 
 	li {

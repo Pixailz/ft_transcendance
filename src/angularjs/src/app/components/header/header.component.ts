@@ -40,6 +40,12 @@ export class HeaderComponent {
 	) {}
 
 	async ngOnInit() {
+		this.notifications.push({type: 'text', data: {message: 'test'}})
+		this.notifications.push({type: 'text', data: {message: 'test'}})
+		this.notifications.push({type: 'text', data: {message: 'test'}})
+		this.notifications.push({type: 'text', data: {message: 'test'}})
+		this.notifications.push({type: 'text', data: {message: 'test'}})
+		this.notifications.push({type: 'text', data: {message: 'test'}})
 	}
 
 	SignOut()

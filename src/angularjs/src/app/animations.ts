@@ -5,10 +5,6 @@ import {
 	style,
 	animate,
 	group,
-	animateChild,
-	stagger,
-	AnimationMetadata,
-	AnimationMetadataType
 } from '@angular/animations';
  
  export const slideInAnimation =
