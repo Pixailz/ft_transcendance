@@ -1,4 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn} from "typeorm";
+import { Entity, Column, JoinColumn, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne} from "typeorm";
+
+import { UserEntity } from "../user/entity";
 
 export enum NotificationType {
 	NOTSET,
@@ -18,8 +20,18 @@ export class NotificationEntity {
 	@PrimaryGeneratedColumn()
 	public id: number;
 
+	@Column({type: "integer", nullable: true})
+	public userId: number;
+
+	@ManyToOne((type) => UserEntity, (user) => user.notification, {
+		onDelete: "SET NULL",
+		nullable: true,
+	})
+	@JoinColumn({ name: "userId" })
+	public user: UserEntity;
+
 	@Column({ type: "integer", default: NotificationType.NOTSET })
-	public type: number;
+	public type: NotificationType;
 	
 	@Column({ type: "boolean", default: false })
 	public isSeen: boolean;

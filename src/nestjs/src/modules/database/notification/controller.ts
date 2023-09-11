@@ -17,10 +17,11 @@ export class DBNotificationController {
 		private readonly dbNotificationService: DBNotificationService)
 	{}
 
-	@Post()
+	@Post(":id")
 	create(
-		@Body() post: DBNotificationPost) {
-		const request = this.dbNotificationService.create(post);
+		@Body() post: DBNotificationPost,
+		@Param("id") userId: number ){
+		const request = this.dbNotificationService.create(post, userId);
 		return (request);
 	}
 

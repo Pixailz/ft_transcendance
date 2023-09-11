@@ -4,20 +4,31 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { NotificationEntity } from "./entity";
 import { DBNotificationPost } from "./dto";
+import { DBUserService } from "../user/service";
 
 @Injectable()
 export class DBNotificationService {
 	constructor(
 		@InjectRepository(NotificationEntity)
 		private readonly NotificationRepo: Repository<NotificationEntity>,
+		private readonly dbUserService: DBUserService,
 	) {}
 
-	async create(post: DBNotificationPost) {
+	async create(post: DBNotificationPost, destUserId: number) {
+		const user = await this.dbUserService.returnOne(destUserId);
+		if (!user)
+			throw new NotFoundException("User not found");
 		let notif = new NotificationEntity();
 		notif.isDeleted = post.isDeleted;
 		notif.isSeen = post.isSeen;
 		notif.type = post.type;
+		
+		notif.userId = destUserId;
+		// active relation for later
+		// notif.user = user;
+		//
 		const ret = await this.NotificationRepo.save(notif);
+		// console.log('notice.user.ftLogin', ret.user.ftLogin);
 		return (ret);
 	}
 
@@ -44,7 +55,7 @@ export class DBNotificationService {
 	async delete(id: number) {
 		const tmp = await this.NotificationRepo.findOneBy({id: id});
 		if (tmp) 
-			return await this.NotificationRepo.delete(tmp);
+			return await this.NotificationRepo.delete(tmp.id);
 		else 
 			throw new NotFoundException("Notification not found");
 	}
