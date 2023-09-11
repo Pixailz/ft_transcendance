@@ -129,7 +129,47 @@ services:
     << : *restart
   #
   ##############################################################################
-
+ 
+ ##############################################################################
+  # Colyseus
+  colyseus:
+    container_name: colyseus
+    hostname: colyseus
+    build:
+      context: "./build/nodejs"
+      target: "nodejs"
+    command: [ "npm", "run", "dev" ]
+    depends_on:
+      nestjs:
+        condition: service_healthy
+    ports:
+      - 127.0.0.1:2567:2567
+    networks:
+      transendence:
+        ipv4_address: "13.37.42.14"
+    volumes:
+      - type: bind
+        source: ./volume/nodejs
+        target: /usr/local/lib/nodejs
+        bind:
+          create_host_path: true
+      - type: bind
+        source: ./src/gameserver
+        target: /shared/transcendence
+        bind:
+          create_host_path: true
+      - type: bind
+        source: ./volume/gameserver
+        target: /build/
+        bind:
+          create_host_path: true
+    << : *restart
+    healthcheck:
+      test: "nc -w ${DOCKER_TIMEOUT?} 127.0.0.1 4200"
+      << : *healthcheck_conf
+  #
+  ##############################################################################
+  
   ##############################################################################
   # PostgreSQL
   postgresql:

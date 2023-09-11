@@ -22,9 +22,16 @@ function	install_angularjs()
 	npm i -g @angular/cli
 }
 
+function	install_colyseus()
+{
+	npm install
+}
+
 if [ ! -d "/shared/transcendence/node_modules" ]; then
 	update_nodejs
-	[ "${SERVICE_NAME}" == "nestjs" ] && install_nestjs || install_angularjs
+		([ "${SERVICE_NAME}" == "nestjs" 	] && install_nestjs		) \
+	||	([ "${SERVICE_NAME}" == "angularjs" ] && install_angularjs	) \
+	||  ([ "${SERVICE_NAME}" == "colyseus" 	] && install_colyseus	)
 fi
 
 npm install
