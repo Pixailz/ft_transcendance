@@ -108,9 +108,10 @@ export class DBFriendRequestService {
 				me: true,
 				friend: true,
 			},
-			where: {
-				friendId: me_id,
-			}
+			where: [
+				{ friendId: me_id},
+				{ meId: me_id},
+			]
 		});
 		return requests;
 	}

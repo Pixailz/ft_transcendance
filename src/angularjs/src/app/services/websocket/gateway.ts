@@ -103,11 +103,19 @@ export class WSGateway {
 	{ this.socket.emit("sendGlobalMessage", room_id, message); }
 
 	changeRoomDetails(room_id: number, data: any)
-	{ this.socket.emit("changeRoomDetails", room_id, {
+	{
+		this.socket.emit("changeRoomDetails", room_id, {
 			name: data.name,
 			password: data.password,
 			remove_pass: data.remove_pass,
-		}); }
+		});
+	}
+
+	addUserToRoom(room_id: number, user_id: number[])
+	{ this.socket.emit("addUserToRoom", room_id, user_id);}
+
+	leaveRoom(room_id: number, user_id: number)
+	{ this.socket.emit("leaveRoom", room_id, user_id); }
 
 	roomAction(room_id: number, action: RoomAction, target_id: number)
 	{ this.socket.emit("roomAction", room_id, action, target_id); }

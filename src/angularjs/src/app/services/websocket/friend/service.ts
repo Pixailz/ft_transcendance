@@ -70,7 +70,7 @@ export class FriendService {
 
 		if (friends.length === 0)
 		{
-			this.friend.friends = { "-1": DefUserI };
+			this.friend.friends = { };
 			return ;
 		}
 		for (var i = 0; i < friends.length; i++)
@@ -145,6 +145,14 @@ export class FriendService {
 		return (user_list);
 	}
 
+	getFriends(): UserI[]
+	{
+		var user_list: UserI[] = [];
+		for (var user_id in this.friend.friends)
+			user_list.push(this.friend.friends[user_id]);
+		return (user_list);
+	}
+
 	acceptRequest(friend_id: number)
 	{ this.wsGateway.acceptFriendRequest(friend_id); }
 
@@ -164,8 +172,7 @@ export class FriendService {
 	alreadySend(friend_id: number)
 	{
 		for (var i = 0; i < this.friend.friend_req.length; i++)
-			if (this.friend.friend_req[i].meId === friend_id ||
-				this.friend.friend_req[i].friendId === friend_id)
+			if (this.friend.friend_req[i].friendId === friend_id)
 				return (true);
 		return (false);
 	}

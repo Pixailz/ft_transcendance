@@ -124,6 +124,22 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		);
 	}
 
+	@SubscribeMessage("addUserToRoom")
+	async handleAddUserToChannel(socket: Socket, data: any)
+	{
+		const room_id: number = data[0];
+		const user_ids: number[] = data[1];
+		await this.wsChatChannelService.addUserToRoom(this.server, socket, room_id, user_ids);
+	}
+
+	@SubscribeMessage("leaveRoom")
+	async handleLeaveRoom(socket: Socket, data: any)
+	{
+		const room_id: number = data[0];
+		const user_id: number = data[1];
+		await this.wsChatChannelService.leaveRoom(this.server, socket, room_id, user_id);
+	}
+
 	@SubscribeMessage("roomAction")
 	async handleRoomAction(socket: Socket, data: any) {
 		const room_id = data[0];
@@ -153,7 +169,7 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage("sendFriendRequest")
-	async sendFriendReq(socket: Socket, id: number) {
+	async sendFriendRequest(socket: Socket, id: number) {
 		await this.wsFriendService.sendFriendRequest(this.server, socket, id);
 	}
 
