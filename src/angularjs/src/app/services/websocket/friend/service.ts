@@ -151,10 +151,17 @@ export class FriendService {
 	rejectFriendReq(friend_id: number)
 	{ this.wsGateway.rejectFriendRequest(friend_id); }
 
+	isMe(friend_id: number, id: number)
+	{
+		if (friend_id === id)
+			return (true);
+		return (false);
+	}
+	
 	alreadyFriend(friend_id: number)
 	{
 		const friend_id_str = friend_id.toString();
-
+		console.log('in already friend this.friend = ', this.friend);
 		for (var friends_id in this.friend.friends)
 			if (friends_id === friend_id_str)
 				return (true);
@@ -163,12 +170,14 @@ export class FriendService {
 
 	alreadySend(friend_id: number)
 	{
+		console.log('in already send this.friend = ', this.friend);
 		for (var i = 0; i < this.friend.friend_req.length; i++)
 			if (this.friend.friend_req[i].meId === friend_id ||
 				this.friend.friend_req[i].friendId === friend_id)
 				return (true);
 		return (false);
 	}
+
 
 	getInfo()
 	{
