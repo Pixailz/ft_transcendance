@@ -59,4 +59,22 @@ export class DBNotificationService {
 		else 
 			throw new NotFoundException("Notification not found");
 	}
+
+	async getNotifByUserId(id: number)
+	{
+		const ret = await this.NotificationRepo.find({
+			relations: {
+				user: true,
+			},
+			where: {
+				userId: id,
+			},
+			order: {
+				createdAt: "ASC",
+			},
+		});
+		if (ret)
+			return (ret);
+		throw new NotFoundException("Notification not found");
+	}
 }
