@@ -83,10 +83,17 @@ export class WSFriendService {
 
 		if (await this.dbFriendService.alreadyFriend(friend_id, user_id))
 			return;
+		if (await this.dbFriendRequestService.alreadySent(friend_id, user_id))
+		{
+			await this.acceptFriendRequest(server, socket, friend_id);
+			return ;
+		}
+		
 		await this.dbFriendRequestService.create(
-			{ friendId: friend_id },
-			user_id,
-		);
+		{ friendId: friend_id },
+		user_id,
+	);
+
 		const full_request = await this.dbFriendRequestService.getFullRequest(
 			user_id,
 			friend_id,
