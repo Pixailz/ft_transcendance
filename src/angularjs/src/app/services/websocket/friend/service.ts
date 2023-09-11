@@ -119,7 +119,11 @@ export class FriendService {
 	}
 
 	updateNewFriendRequest(friend_request: FriendRequestI)
-	{ this.friend.friend_req.push(friend_request); }
+	{ 
+		if (this.alreadySend(friend_request.meId))
+			return ;
+		this.friend.friend_req.push(friend_request);
+	}
 
 	updateDeniedFriendReq(data: any)
 	{
@@ -161,7 +165,6 @@ export class FriendService {
 	alreadyFriend(friend_id: number)
 	{
 		const friend_id_str = friend_id.toString();
-		console.log('in already friend this.friend = ', this.friend);
 		for (var friends_id in this.friend.friends)
 			if (friends_id === friend_id_str)
 				return (true);
@@ -170,10 +173,11 @@ export class FriendService {
 
 	alreadySend(friend_id: number)
 	{
-		console.log('in already send this.friend = ', this.friend);
+		// for (var i = 0; i < this.friend.friend_req.length; i++)
+			// if (this.friend.friend_req[i].meId === friend_id ||
+			// 	this.friend.friend_req[i].friendId === friend_id)
 		for (var i = 0; i < this.friend.friend_req.length; i++)
-			if (this.friend.friend_req[i].meId === friend_id ||
-				this.friend.friend_req[i].friendId === friend_id)
+			if (this.friend.friend_req[i].friendId === friend_id)
 				return (true);
 		return (false);
 	}
