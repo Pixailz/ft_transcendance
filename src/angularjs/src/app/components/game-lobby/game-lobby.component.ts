@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
+import { GameService } from 'src/app/services/game/game.service';
 
 @Component({
   selector: 'app-game-lobby',
@@ -6,18 +7,22 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./game-lobby.component.css']
 })
 export class GameLobbyComponent implements OnInit {
-
-  constructor() { }
+  @Output() public joinRoom: string = "";
+  
+  constructor(
+    private gameService: GameService
+  ) { }
 
   ngOnInit() {
+    console.log(this.gameService.room?.name);
   }
 
   onAction1() {
-    console.log("Action 1");
+    this.gameService.join("game");
   }
 
   onAction2() {
-    console.log("Action 2");
+    this.gameService.leave();
   }
 
   onAction3() {

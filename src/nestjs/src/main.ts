@@ -8,6 +8,7 @@ import configureSwagger from "./addons/swagger";
 import { ExpressAdapter } from "@nestjs/platform-express";
 import { ColyseusService } from "./addons/colyseus";
 import { LobbyRoom } from "colyseus";
+import { GameRoom } from "./addons/game-room";
 
 async function bootstrap() {
 	const app = express();
@@ -35,6 +36,7 @@ async function bootstrap() {
 	// 	console.log(`Defined room ${room.name}`);
 	// });
 	colyseusService.defineRoom("lobby", LobbyRoom);
+	colyseusService.defineRoom("game", GameRoom);
 
 	colyseusService.listen(3002).then(() => {
 		console.log(`Listening on port 3002`);

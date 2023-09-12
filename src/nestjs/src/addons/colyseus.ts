@@ -2,12 +2,13 @@ import { Injectable, OnApplicationShutdown } from "@nestjs/common";
 import * as http from "http";
 
 import { Server, Room, LobbyRoom } from "colyseus";
+import { GameRoom } from "./game-room";
 
 type Type<T> = new (...args: any[]) => T;
 
 @Injectable()
 export class ColyseusService implements OnApplicationShutdown {
-	rooms: Type<Room<any, any>>[] = [LobbyRoom];
+	rooms: Type<Room<any, any>>[] = [LobbyRoom, GameRoom];
 	server: Server = null;
 
 	createServer(httpServer: http.Server) {

@@ -36,6 +36,5 @@ import { ColyseusService } from "./addons/colyseus";
 export class AppModule implements NestModule {
 	configure(consumer: MiddlewareConsumer) {
 		consumer.apply(monitor()).forRoutes("/monitor");
-		consumer.apply(playground).forRoutes("/playground");
 	}
 }
