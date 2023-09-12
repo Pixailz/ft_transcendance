@@ -6,6 +6,7 @@ import { ChatRoomI } from 'src/app/interfaces/chat-room.interface';
 import { FriendRequestI } from 'src/app/interfaces/friend.interface';
 import { UserChatRoomI } from 'src/app/interfaces/user-chat-room.interface';
 import { UserI } from 'src/app/interfaces/user.interface';
+import { NotificationI } from 'src/app/interfaces/notification.interface';
 
 @Injectable({
 	providedIn: 'root',
@@ -156,4 +157,12 @@ export class WSGateway {
 	{ this.socket.emit("rejectFriendRequest", id); }
 
 	// NOTIFICATION
+
+	// LISTENER
+	listenAllNotifications(): Observable<NotificationI[]>
+	{ return this.socket.fromEvent<NotificationI[]>("getAllNotifications") }
+
+	// EMITER
+	getAllNotifications()
+	{ this.socket.emit("getAllNotifications"); }
 }

@@ -8,4 +8,8 @@ export class DBNotificationPost {
 	isSeen?: boolean;
 	@IsOptional()
 	isDeleted?: boolean;
+	@IsOptional()
+	sourceId?: number;
+	@IsOptional()
+	data?: string;
 }

@@ -10,6 +10,7 @@ import { WSService } from "./ws.service";
 import { WSChatDmService } from "./chat/chat-dm.service";
 import { WSChatChannelService } from "./chat/chat-channel.service";
 import { WSFriendService } from "./friend/friend.service";
+import { WSNotificationService } from "./notifications/notifications.service";
 
 @WebSocketGateway(3001, {
 	path: "/ws",
@@ -21,6 +22,7 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		private wsChatDmService: WSChatDmService,
 		private wsChatChannelService: WSChatChannelService,
 		private wsFriendService: WSFriendService,
+		private wsNotificationService: WSNotificationService
 	) {}
 
 	@WebSocketServer()
@@ -181,5 +183,13 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage("rejectFriendRequest")
 	async rejectFriendRequest(socket: Socket, id: number) {
 		await this.wsFriendService.rejectFriendRequest(this.server, socket, id);
+	}
+
+	// NOTIFICATIONS
+
+	// HANDLER
+	@SubscribeMessage("getAllNotifications")
+	async getAllNotifications(socket: Socket) {
+		await this.wsNotificationService.getAllNotifications(socket);
 	}
 }

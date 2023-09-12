@@ -29,7 +29,13 @@ export class NotificationEntity {
 	})
 	@JoinColumn({ name: "userId" })
 	public user: UserEntity;
+	//
+	@Column({ type: "varchar", default: "" })
+	public data: string;
 
+	@Column({ type: "integer", default: -1 })
+	public sourceId: number;
+	//
 	@Column({ type: "integer", default: NotificationType.NOTSET })
 	public type: NotificationType;
 	

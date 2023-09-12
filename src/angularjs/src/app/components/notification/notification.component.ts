@@ -3,11 +3,9 @@ import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef, El
 import { WSGateway } from 'src/app/services/ws.gateway';
 import { TextNotificationComponent } from '../text-notification/text-notification.component';
 import { FriendReqComponent } from '../friend-req/friend-req.component';
+import { NotificationType } from 'src/app/interfaces/notification.interface';
+import { NotificationI } from 'src/app/interfaces/notification.interface';
 
-export interface NotificationI {
-	type			: string,
-	data			: any,
-}
 
 @Component({
 	animations: [
@@ -46,10 +44,10 @@ export class NotificationComponent implements OnInit {
 	displayNewNotification(notification: NotificationI) {
 		let component: ComponentRef<any> | null = null;
 		switch (notification.type) {
-			case 'text':
+			case NotificationType.NOTSET:
 				component = this.container.createComponent(TextNotificationComponent);
 				break;
-			case 'friendReq':
+			case NotificationType.FRIENDREQUEST:
 				component = this.container.createComponent(FriendReqComponent);
 				break;
 			default:

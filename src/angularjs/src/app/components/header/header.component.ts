@@ -46,6 +46,7 @@ export class HeaderComponent {
 		this.notifications.push({type: 'text', data: {message: 'test'}})
 		this.notifications.push({type: 'text', data: {message: 'test'}})
 		this.notifications.push({type: 'text', data: {message: 'test'}})
+		this.notifications.push({type: 'friendReq', data: {ft_login: 'rrollin', id: 'id'}})
 	}
 
 	SignOut()

@@ -22,6 +22,8 @@ export class DBNotificationService {
 		notif.isDeleted = post.isDeleted;
 		notif.isSeen = post.isSeen;
 		notif.type = post.type;
+		notif.data = post.data;
+		notif.sourceId = post.sourceId;
 		
 		notif.userId = destUserId;
 		// active relation for later
