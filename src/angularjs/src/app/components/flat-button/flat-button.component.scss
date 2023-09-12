@@ -10,10 +10,14 @@ button {
 	background: rgba(var(--bg-color), 0.3);
 	color: var(--color);
 	border-radius: 10px;
+	backdrop-filter: blur(10px);
 	cursor: pointer;
 }
 
 button.true, button:hover {
-	cursor: default;
 	background: rgba(var(--bg-color), 0.6);
+}
+
+button.true {
+	cursor: default;
 }

@@ -30,7 +30,7 @@
 		</li>
 		<li class="friend-menu" matBadge="{{notifications.length}}" [matBadgeHidden]="!notifications.length">
 			<app-flat-button class="friend-btn" (click)="displayFriendRequest = !displayFriendRequest" fontIcon="notifications">Menu</app-flat-button>
-			<app-flat-list *ngIf="displayFriendRequest" [notifications]="notifications"></app-flat-list>
+			<app-flat-list class="glass" *ngIf="displayFriendRequest" [notifications]="notifications"></app-flat-list>
 		</li>
 		<li
 		*ngIf="userLoggedIn"
