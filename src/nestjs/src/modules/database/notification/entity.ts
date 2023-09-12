@@ -22,17 +22,10 @@ export class NotificationEntity {
 
 	@Column({type: "integer", nullable: true})
 	public userId: number;
-
-	@ManyToOne((type) => UserEntity, (user) => user.notification, {
-		onDelete: "SET NULL",
-		nullable: true,
-	})
-	@JoinColumn({ name: "userId" })
-	public user: UserEntity;
 	//
 	@Column({ type: "varchar", default: "" })
 	public data: string;
-
+	
 	@Column({ type: "integer", default: -1 })
 	public sourceId: number;
 	//
@@ -44,7 +37,14 @@ export class NotificationEntity {
 
 	@Column({ type: "boolean", default: false })
 	public isDeleted: boolean;
-
+	
 	@CreateDateColumn({ type: "timestamp" })
 	public createdAt!: Date;
+	
+	@ManyToOne((type) => UserEntity, (user) => user.notification, {
+		onDelete: "SET NULL",
+		nullable: true,
+	})
+	@JoinColumn({ name: "userId" })
+	public user: UserEntity;
 }

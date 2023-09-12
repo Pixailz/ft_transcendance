@@ -3,7 +3,7 @@ import { UserService } from '../../services/user.service';
 import { trigger, style, animate, transition, state } from '@angular/animations';
 import { FriendService } from 'src/app/services/websocket/friend/service';
 import { NotificationI, NotificationType } from 'src/app/interfaces/notification.interface';
-
+import { NotificationService } from 'src/app/services/websocket/notification/service';
 @Component({
   selector: 'app-header',
   animations: [
@@ -33,15 +33,13 @@ export class HeaderComponent {
 	isExpand = false;
 	displayFriendRequest: boolean = false;
 	notifications: NotificationI[] = [];
-
+	
 	constructor(
-		public friendService: FriendService,
 		private userService: UserService,
-	) {}
+		public notificationService: NotificationService
+		) {}
 
 	async ngOnInit() {
-		this.notifications.push({type: NotificationType.NOTSET, data: {message: 'test'}})
-		this.notifications.push({type:  NotificationType.NOTSET, data: {ft_login: 'rrollin', id: 'id'}})
 	}
 
 	SignOut()

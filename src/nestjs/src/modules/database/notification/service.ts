@@ -77,6 +77,6 @@ export class DBNotificationService {
 		});
 		if (ret)
 			return (ret);
-		throw new NotFoundException("Notification not found");
+		// throw new NotFoundException("Notification not found");
 	}
 }

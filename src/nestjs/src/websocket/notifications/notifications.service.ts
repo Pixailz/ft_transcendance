@@ -19,13 +19,9 @@ enum NotificationType {
 }
 
 interface NotificationI {
+	id				: number,
 	type			: NotificationType,
 	data			: any,
-}
-
-export const DefNotificationI =  {
-	type : -1,
-	data : null,
 }
 
 @Injectable()
@@ -41,22 +37,37 @@ export class WSNotificationService {
 		const notifs_e: NotificationEntity[] = await this.dbNotificationService.getNotifByUserId(user_id)
 		let notifs_i: NotificationI[] = [];
 		for (let notif of notifs_e) {
-			let notif_i: NotificationI = DefNotificationI;
-			let data = {};
-			notif_i.type = notif.type;
-			switch (notif.type) {
-				case (NotificationType.FRIENDREQUEST):
-					const user = await this.dBUserService.returnOne(notif.sourceId);
-					data = {ft_login: user.ftLogin, id: user.id};
-					break ;
-				case (NotificationType.NOTSET):
-					data = {message: notif.data};
-						break ;
-				default:
-					break ;
-			}
+			let notif_i: NotificationI;
+			notif_i = await this.formatData(notif);
 			notifs_i.push(notif_i);
 		}
 		socket.emit("getAllNotifications", notifs_i);
+	}
+
+	async formatData(notif: any)
+	{
+		let notif_i: NotificationI = {id: -1, type: 0, data: {}};
+		let data = {};
+		notif_i.id = notif.id;
+		notif_i.type = notif.type;
+		switch (notif.type) {
+		case (NotificationType.FRIENDREQUEST):
+			const user = await this.dBUserService.returnOne(notif.sourceId);
+			data = {ft_login: user.ftLogin, id: user.id};
+			break ;
+		case (NotificationType.NOTSET):
+			data = {message: notif.data};
+			break ;
+			default:
+				break ;
+			}
+		notif_i.data = data;
+		return(notif_i);
+	}
+
+	async removeNotif(socket: Socket, id: number)
+	{
+		await this.dbNotificationService.delete(id);
+		socket.emit("removeNotification", id);
 	}
 }

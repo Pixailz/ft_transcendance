@@ -176,13 +176,19 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage("acceptFriendRequest")
-	async acceptFriendRequest(socket: Socket, id: number) {
-		await this.wsFriendService.acceptFriendRequest(this.server, socket, id);
+	async acceptFriendRequest(socket: Socket, param: number[]) {
+		const friend_id = param[0];
+		const notif_id = param[1];
+		await this.wsFriendService.acceptFriendRequest(this.server, socket, friend_id);
+		await this.wsNotificationService.removeNotif(socket, notif_id);
 	}
 
 	@SubscribeMessage("rejectFriendRequest")
-	async rejectFriendRequest(socket: Socket, id: number) {
-		await this.wsFriendService.rejectFriendRequest(this.server, socket, id);
+	async rejectFriendRequest(socket: Socket, param: number[]) {
+		const friend_id = param[0];
+		const notif_id = param[1];
+		await this.wsFriendService.rejectFriendRequest(this.server, socket, friend_id);
+		await this.wsNotificationService.removeNotif(socket, notif_id);
 	}
 
 	// NOTIFICATIONS

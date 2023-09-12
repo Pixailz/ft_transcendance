@@ -150,17 +150,25 @@ export class WSGateway {
 	sendFriendRequest(id: number)
 	{ this.socket.emit("sendFriendRequest", id); }
 
-	acceptFriendRequest(id: number)
-	{ this.socket.emit("acceptFriendRequest", id); }
+	acceptFriendRequest(id: number, notif_id: number)
+	{ this.socket.emit("acceptFriendRequest", id, notif_id); }
 
-	rejectFriendRequest(id: number)
-	{ this.socket.emit("rejectFriendRequest", id); }
+	rejectFriendRequest(id: number, notif_id: number)
+	{ 
+		this.socket.emit("rejectFriendRequest", id, notif_id); 
+	}
 
 	// NOTIFICATION
 
 	// LISTENER
 	listenAllNotifications(): Observable<NotificationI[]>
 	{ return this.socket.fromEvent<NotificationI[]>("getAllNotifications") }
+
+	listenNewNotification(): Observable<NotificationI>
+	{ return this.socket.fromEvent<NotificationI>("getNewNotification") }
+
+	listenRemoveNotification(): Observable<number>
+	{ return this.socket.fromEvent<number>("removeNotification") }
 
 	// EMITER
 	getAllNotifications()

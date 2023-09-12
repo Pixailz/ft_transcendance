@@ -12,11 +12,12 @@ export enum NotificationType {
 }
 
 export interface NotificationI {
+	id				: number,
 	type			: NotificationType,
 	data			: any,
 }
 
-export const DefNotificationI =  {
-	type : -1,
-	data : null,
-}
+// export const DefNotificationI =  {
+// 	type : -1,
+// 	data : null,
+// }

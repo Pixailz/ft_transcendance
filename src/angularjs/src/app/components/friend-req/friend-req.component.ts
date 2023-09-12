@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { NotificationI } from 'src/app/interfaces/notification.interface';
 import { FriendService } from 'src/app/services/websocket/friend/service';
 
 @Component({
@@ -7,7 +8,7 @@ import { FriendService } from 'src/app/services/websocket/friend/service';
   styleUrls: ['./friend-req.component.scss']
 })
 export class FriendReqComponent {
-	@Input() data = {ft_login: '', id: -1};
+	@Input() notif: NotificationI = {id: -1, type: 0, data: {}};
 
 	constructor(public friendService: FriendService) {}
 }

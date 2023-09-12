@@ -157,11 +157,15 @@ export class FriendService {
 		return (user_list);
 	}
 
-	acceptRequest(friend_id: number)
-	{ this.wsGateway.acceptFriendRequest(friend_id); }
+	acceptRequest(friend_id: number, notif_id: number)
+	{ 
+		this.wsGateway.acceptFriendRequest(friend_id, notif_id);
+	}
 
-	rejectFriendReq(friend_id: number)
-	{ this.wsGateway.rejectFriendRequest(friend_id); }
+	rejectFriendReq(friend_id: number, notif_id: number)
+	{ 
+		this.wsGateway.rejectFriendRequest(friend_id, notif_id); 
+	}
 
 	isMe(friend_id: number, id: number)
 	{
@@ -181,9 +185,6 @@ export class FriendService {
 
 	alreadySend(friend_id: number)
 	{
-		// for (var i = 0; i < this.friend.friend_req.length; i++)
-			// if (this.friend.friend_req[i].meId === friend_id ||
-			// 	this.friend.friend_req[i].friendId === friend_id)
 		for (var i = 0; i < this.friend.friend_req.length; i++)
 			if (this.friend.friend_req[i].friendId === friend_id)
 				return (true);
