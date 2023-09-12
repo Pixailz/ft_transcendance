@@ -118,9 +118,9 @@ export class WSChatChannelService {
 			user_id,
 			room.id,
 		);
-		this.wsSocket.sendToUsers(
+		this.wsSocket.sendToUser(
 			server,
-			[user_id],
+			user_id,
 			"getNewJoinedChannelRoom",
 			this.sanitize.ChatRoom(room),
 		);

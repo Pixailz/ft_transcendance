@@ -1,7 +1,11 @@
 <ul *ngIf="notifications.length; else empty">
 	<li *ngFor="let notification of notifications" [ngSwitch]="notification.type">
-		<app-text-notification *ngSwitchCase=NotificationType.NOTSET [notif]="notification"></app-text-notification>
-		<app-friend-req *ngSwitchCase=NotificationType.FRIENDREQUEST [notif]="notification"></app-friend-req>
+		<app-text-notification *ngSwitchCase=NotificationType.UNDEFINED [notif]="notification"></app-text-notification>
+		<app-friend-req-received *ngSwitchCase=NotificationType.FRIEND_REQ_RECEIVED [notif]="notification"></app-friend-req-received>
+		<app-friend-req-sent *ngSwitchCase=NotificationType.FRIEND_REQ_SENT [notif]="notification"></app-friend-req-sent>
+		<app-friend-req-accepted *ngSwitchCase=NotificationType.FRIEND_REQ_ACCEPTED [notif]="notification"></app-friend-req-accepted>
+		<app-friend-req-denied-from *ngSwitchCase=NotificationType.FRIEND_REQ_DENIED_FROM [notif]="notification"></app-friend-req-denied-from>
+		<app-friend-req-denied-to *ngSwitchCase=NotificationType.FRIEND_REQ_DENIED_TO [notif]="notification"></app-friend-req-denied-to>
 	</li>
 </ul>
 

@@ -36,13 +36,8 @@ export class ProfileComponent implements OnInit {
 			.catch((err) => {
 				console.log("[profile]", err.status);
 			});
-			console.log('on init user info = ', this.user_info);
-		// const userid = JSON.parse(this.userService.getToken())?.user_id;
 		this.user_id = (await this.userService.getUserInfo()).id;
 	}
-
-	onGetInfo()
-	{ this.friendService.getInfo(); }
 
 	sendFriendRequest(id: number)
 	{ this.wsGateway.sendFriendRequest(id); }

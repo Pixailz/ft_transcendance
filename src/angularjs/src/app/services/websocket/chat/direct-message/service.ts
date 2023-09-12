@@ -16,37 +16,40 @@ import { Subscription } from "rxjs";
 export class ChatDmService {
 	chat = DefChatDmI;
 	obsToDestroy: Subscription[] = [];
+
 	constructor(
 		private chatRoomService: ChatRoomService,
 		private wsService: WSService,
 		private wsGateway: WSGateway,
-	) {
-		this.wsGateway.getAllDmRoom();
+	) { }
+
+	onInit()
+	{
 		this.obsToDestroy.push(this.wsGateway.listenAllDmRoom()
 			.subscribe((rooms: ChatRoomI[]) => {
-				console.log("event AllChatDm received")
+				console.log("[WS:DM] AllChatDm event")
 				this.updateAllChatDm(rooms);
 			}
 		));
 
 		this.obsToDestroy.push(this.wsGateway.listenNewDmRoom()
 			.subscribe((room: ChatRoomI) => {
-				console.log("event NewDmRoom received")
+				console.log("[WS:DM] NewDmRoom event")
 				this.updateNewChatDm(room);
 			}
 		));
 
 		this.obsToDestroy.push(this.wsGateway.listenNewDmMessage()
 			.subscribe((data: any) => {
-				console.log("event NewDmMessage received")
+				console.log("[WS:DM] NewDmMessage event")
 				this.updateNewDmMessage(data);
 			}
 		));
 	}
 
-	ngOnDestroy()
+	onDestroy()
 	{
-		console.log("[DM] destroyer");
+		console.log("[WS:ChatDM] onDestroy")
 		this.wsService.unsubscribeObservables(this.obsToDestroy);
 	}
 
@@ -188,16 +191,7 @@ export class ChatDmService {
 
 	getInfo()
 	{
-		const	selected_dm = this.getSelectedDm();
-
-		// console.clear();
-
+		console.log("[DM]");
 		console.log(this.chat);
-
-		if (selected_dm.id === -1)
-			console.log("[onGetInfo] selected_dm not found");
-		else
-			console.log("[onGetInfo] selected_dm", selected_dm);
 	}
-
 }

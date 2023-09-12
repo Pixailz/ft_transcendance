@@ -1,0 +1,11 @@
+<div class="container">
+	<p>{{notif.data.from.ftLogin}}</p>
+	<button class="accept-btn" (click)="friendService.acceptRequest(notif.data.from.id)">
+		<mat-icon fontIcon="done">
+		</mat-icon>
+	</button>
+	<button class="reject-btn" (click)="friendService.rejectRequest(notif.data.from.id)">
+		<mat-icon fontIcon="close">
+		</mat-icon>
+	</button>
+</div>

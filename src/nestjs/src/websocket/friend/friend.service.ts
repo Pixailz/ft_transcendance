@@ -6,8 +6,6 @@ import { DBFriendRequestService } from "src/modules/database/friendRequest/servi
 import { DBFriendService } from "src/modules/database/friend/service";
 import { Sanitize } from "../../sanitize-object";
 import { DBNotificationService } from "src/modules/database/notification/service";
-import { NotificationType } from "src/modules/database/notification/entity";
-import { DBNotificationPost } from "src/modules/database/notification/dto";
 import { WSNotificationService } from "../notifications/notifications.service";
 
 @Injectable()
@@ -17,9 +15,8 @@ export class WSFriendService {
 		private userService: UserService,
 		private dbFriendRequestService: DBFriendRequestService,
 		private dbFriendService: DBFriendService,
-		private dbNotificationService: DBNotificationService,
-		private wsNotificationService: WSNotificationService,
 		public wsSocket: WSSocket,
+		public wsNotificationService: WSNotificationService,
 	) {}
 
 	async getAllFriend(socket: Socket) {
@@ -51,18 +48,19 @@ export class WSFriendService {
 		const friend = await this.userService.getInfoById(friend_id);
 		const user = await this.userService.getInfoById(user_id);
 		await this.dbFriendRequestService.acceptReq(friend_id, user_id);
-		this.wsSocket.sendToUsers(
+		this.wsSocket.sendToUser(
 			server,
-			[user_id],
+			user_id,
 			"getNewFriend",
 			this.sanitize.User(friend),
 		);
-		this.wsSocket.sendToUsers(
+		this.wsSocket.sendToUser(
 			server,
-			[friend_id],
+			friend_id,
 			"getNewFriend",
 			this.sanitize.User(user),
 		);
+		await this.wsNotificationService.acceptFriendRequest(server, friend_id, user_id);
 	}
 
 	async rejectFriendRequest(
@@ -81,7 +79,7 @@ export class WSFriendService {
 				target_id: friend_id,
 			},
 		);
-		
+		await this.wsNotificationService.rejectFriendRequest(server, friend_id, user_id);
 	}
 
 	async sendFriendRequest(server: Server, socket: Socket, friend_id: number) {
@@ -95,32 +93,20 @@ export class WSFriendService {
 			return ;
 		}
 		await this.dbFriendRequestService.create(
-		{ friendId: friend_id },
-		user_id );
-	
+			{ friendId: friend_id },
+			user_id,
+		);
+
 		const full_request = await this.dbFriendRequestService.getFullRequest(
 			user_id,
 			friend_id,
 		);
-		
 		this.wsSocket.sendToUsers(
 			server,
 			[friend_id, user_id],
 			"getNewFriendRequest",
 			this.sanitize.FriendRequest(full_request),
 		);
-
-		const post : DBNotificationPost = {
-			type: NotificationType.FRIENDREQUEST,
-			sourceId: user_id
-		};
-		const notif = await this.dbNotificationService.create(post, friend_id);
-		const data = await this.wsNotificationService.formatData(notif);
-		this.wsSocket.sendToUsers(
-			server,
-			[friend_id],
-			"getNewNotification",
-			data
-		);
+		this.wsNotificationService.sendFriendRequest(server, friend_id, user_id);
 	}
 }

@@ -9,7 +9,6 @@ import {
 } from "@nestjs/common";
 
 import { DBNotificationService } from "./service";
-import { DBNotificationPost } from "./dto";
 
 @Controller("db/notification")
 export class DBNotificationController {
@@ -17,13 +16,13 @@ export class DBNotificationController {
 		private readonly dbNotificationService: DBNotificationService)
 	{}
 
-	@Post(":id")
-	create(
-		@Body() post: DBNotificationPost,
-		@Param("id") userId: number ){
-		const request = this.dbNotificationService.create(post, userId);
-		return (request);
-	}
+	// @Post(":id")
+	// create(
+	// 	@Body() post: DBNotificationPost,
+	// 	@Param("id") userId: number ){
+	// 	const request = this.dbNotificationService.create(post);
+	// 	return (request);
+	// }
 
 	@Get()
 	async getAll() {

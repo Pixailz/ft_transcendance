@@ -2,35 +2,22 @@ import { Injectable, NotFoundException, Inject } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
-import { NotificationEntity } from "./entity";
+import { NotificationEntity, NotificationType } from "./entity";
 import { DBNotificationPost } from "./dto";
-import { DBUserService } from "../user/service";
 
 @Injectable()
 export class DBNotificationService {
 	constructor(
 		@InjectRepository(NotificationEntity)
 		private readonly NotificationRepo: Repository<NotificationEntity>,
-		private readonly dbUserService: DBUserService,
 	) {}
 
-	async create(post: DBNotificationPost, destUserId: number) {
-		const user = await this.dbUserService.returnOne(destUserId);
-		if (!user)
-			throw new NotFoundException("User not found");
+	async create(post: DBNotificationPost) {
 		let notif = new NotificationEntity();
-		notif.isDeleted = post.isDeleted;
-		notif.isSeen = post.isSeen;
 		notif.type = post.type;
+		notif.userId = post.userId;
 		notif.data = post.data;
-		notif.sourceId = post.sourceId;
-		
-		notif.userId = destUserId;
-		// active relation for later
-		// notif.user = user;
-		//
 		const ret = await this.NotificationRepo.save(notif);
-		// console.log('notice.user.ftLogin', ret.user.ftLogin);
 		return (ret);
 	}
 
@@ -56,18 +43,30 @@ export class DBNotificationService {
 
 	async delete(id: number) {
 		const tmp = await this.NotificationRepo.findOneBy({id: id});
-		if (tmp) 
+		if (tmp)
 			return await this.NotificationRepo.delete(tmp.id);
-		else 
+		else
 			throw new NotFoundException("Notification not found");
+	}
+
+	async getNotif(user_id: number, data?: string, type?: NotificationType)
+	{
+		var where_query: any = {
+			userId: user_id,
+		}
+		if (data) where_query["data"] = data;
+		if (type) where_query["type"] = type;
+		return await this.NotificationRepo.findOne({
+			where: where_query,
+			order: {
+				createdAt: "ASC",
+			},
+		});
 	}
 
 	async getNotifByUserId(id: number)
 	{
-		const ret = await this.NotificationRepo.find({
-			relations: {
-				user: true,
-			},
+		return await this.NotificationRepo.find({
 			where: {
 				userId: id,
 			},
@@ -75,8 +74,5 @@ export class DBNotificationService {
 				createdAt: "ASC",
 			},
 		});
-		if (ret)
-			return (ret);
-		// throw new NotFoundException("Notification not found");
 	}
 }

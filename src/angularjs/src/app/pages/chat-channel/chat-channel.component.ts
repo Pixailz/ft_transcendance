@@ -160,10 +160,6 @@ export class WSChatChannelComponent implements OnInit {
 	onGiveKrownUser(user: UserI)
 	{ this.onRoomAction(RoomAction.OWNERSHIP, user.id); }
 
-
-	onGetInfo()
-	{ this.chatChannelService.getInfo(); }
-
 	onCreatingRoom()
 	{ this.popupType = "create-join"; }
 

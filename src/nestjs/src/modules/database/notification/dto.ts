@@ -1,15 +1,13 @@
-import { IsNotEmpty, IsNumber, IsOptional } from "class-validator";
+import { IsNotIn, IsOptional } from "class-validator";
 import { NotificationType } from "./entity";
 
 export class DBNotificationPost {
+	userId: number;
 	@IsOptional()
 	type?: NotificationType;
 	@IsOptional()
 	isSeen?: boolean;
 	@IsOptional()
 	isDeleted?: boolean;
-	@IsOptional()
-	sourceId?: number;
-	@IsOptional()
-	data?: string;
+	data: string;
 }

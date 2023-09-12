@@ -1,16 +1,18 @@
 import {
 	Entity,
-	Column,
-	OneToMany,
 	PrimaryColumn,
 	ManyToOne,
 	JoinColumn,
+	PrimaryGeneratedColumn,
 } from "typeorm";
 
 import { UserEntity } from "../user/entity";
 
 @Entity()
 export class FriendRequestEntity {
+	@PrimaryGeneratedColumn()
+	public id: number;
+
 	@PrimaryColumn()
 	public meId: number;
 

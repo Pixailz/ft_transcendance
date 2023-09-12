@@ -1,16 +1,16 @@
 :host {
-    position: fixed;
-    z-index: 100;
-    bottom: 0;
-    right: 0;
-    margin-bottom: 55px;
-    margin-right: 55px;
-    transition: transform .5s ease-in-out;
+	position: fixed;
+	z-index: 100;
+	bottom: 0;
+	right: 0;
+	margin-bottom: 55px;
+	margin-right: 55px;
+	transition: transform .5s ease-in-out;
 	width: 200px;
 }
 
 app-flat-button {
-    position: fixed;
-    top: 0;
-    left: 0;
+	position: fixed;
+	top: 0;
+	left: 0;
 }

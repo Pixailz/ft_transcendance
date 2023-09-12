@@ -43,9 +43,6 @@ export class WSGateway {
 	getAllDmRoom()
 	{ this.socket.emit("getAllDmRoom"); }
 
-	getAllDmMessage()
-	{ this.socket.emit("getAllDmMessage"); }
-
 	createDmRoom(dst_id: number)
 	{ this.socket.emit("createDmRoom", dst_id); }
 
@@ -150,25 +147,23 @@ export class WSGateway {
 	sendFriendRequest(id: number)
 	{ this.socket.emit("sendFriendRequest", id); }
 
-	acceptFriendRequest(id: number, notif_id: number)
-	{ this.socket.emit("acceptFriendRequest", id, notif_id); }
+	acceptFriendRequest(id: number)
+	{ this.socket.emit("acceptFriendRequest", id); }
 
-	rejectFriendRequest(id: number, notif_id: number)
-	{ 
-		this.socket.emit("rejectFriendRequest", id, notif_id); 
-	}
+	rejectFriendRequest(id: number)
+	{ this.socket.emit("rejectFriendRequest", id); }
 
 	// NOTIFICATION
 
 	// LISTENER
-	listenAllNotifications(): Observable<NotificationI[]>
-	{ return this.socket.fromEvent<NotificationI[]>("getAllNotifications") }
+	listenAllNotifications(): Observable<any[]>
+	{ return this.socket.fromEvent<any[]>("getAllNotifications") }
 
-	listenNewNotification(): Observable<NotificationI>
-	{ return this.socket.fromEvent<NotificationI>("getNewNotification") }
+	listenNewNotification(): Observable<any>
+	{ return this.socket.fromEvent<any>("getNewNotification") }
 
-	listenRemoveNotification(): Observable<number>
-	{ return this.socket.fromEvent<number>("removeNotification") }
+	listenDelNotification(): Observable<number>
+	{ return this.socket.fromEvent<number>("delNotification") }
 
 	// EMITER
 	getAllNotifications()

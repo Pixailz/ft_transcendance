@@ -3,6 +3,10 @@ import { slideInAnimation } from '../animations';
 import { RouterOutlet } from '@angular/router';
 import { WSGateway } from '../services/websocket/gateway';
 import { WSService } from '../services/websocket/service';
+import { FriendService } from '../services/websocket/friend/service';
+import { ChatDmService } from '../services/websocket/chat/direct-message/service';
+import { ChatChannelService } from '../services/websocket/chat/channel/service';
+import { NotificationService } from '../services/websocket/notification/service';
 
 @Component({
 	selector: 'app-authenticated-layout',
@@ -13,6 +17,10 @@ import { WSService } from '../services/websocket/service';
 export class AuthenticatedLayoutComponent implements OnInit, OnDestroy, AfterViewInit{
 	constructor(
 		private changeRef: ChangeDetectorRef,
+		private chatChannelService: ChatChannelService,
+		private friendService: FriendService,
+		private chatDmService: ChatDmService,
+		private notificationService: NotificationService,
 		private wsService: WSService,
 		private wsGateway: WSGateway,
 	) {
@@ -25,11 +33,19 @@ export class AuthenticatedLayoutComponent implements OnInit, OnDestroy, AfterVie
 	ngOnInit()
 	{
 		console.log("[AUTH_LAYOUT] onInit");
+		this.chatChannelService.onInit();
+		this.friendService.onInit();
+		this.chatDmService.onInit();
+		this.notificationService.onInit();
 		window.onbeforeunload = () => this.ngOnDestroy();
 	}
 
 	ngOnDestroy()
 	{
+		this.chatChannelService.onDestroy();
+		this.friendService.onDestroy();
+		this.chatDmService.onDestroy();
+		this.notificationService.onDestroy();
 		console.log("[AUTH_LAYOUT] onDestroy");
 	}
 

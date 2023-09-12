@@ -2,10 +2,10 @@ import { Component, Input } from '@angular/core';
 import { DefNotificationI, NotificationI } from 'src/app/interfaces/notification.interface';
 
 @Component({
-  selector: 'app-text-notification',
-  templateUrl: './text-notification.component.html',
-  styleUrls: ['./text-notification.component.scss'],
+	selector: 'app-friend-req-denied-to',
+	templateUrl: './friend-req-denied-to.component.html',
+	styleUrls: ['./friend-req-denied-to.component.scss']
 })
-export class TextNotificationComponent {
+export class NotifFriendReqDeniedToComponent {
 	@Input() notif: NotificationI = DefNotificationI;
 }

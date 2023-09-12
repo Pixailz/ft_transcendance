@@ -45,11 +45,6 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		await this.wsChatDmService.getAllDmRoom(socket);
 	}
 
-	@SubscribeMessage("getAllDmMessage")
-	async getAllDmMessage(socket: Socket) {
-		await this.wsChatDmService.getAllDmMessage(socket);
-	}
-
 	@SubscribeMessage("createDmRoom")
 	async handleCreateDmRoom(socket: Socket, dst_id: number) {
 		await this.wsChatDmService.createDmRoom(this.server, socket, dst_id);
@@ -176,19 +171,13 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage("acceptFriendRequest")
-	async acceptFriendRequest(socket: Socket, param: number[]) {
-		const friend_id = param[0];
-		const notif_id = param[1];
+	async acceptFriendRequest(socket: Socket, friend_id: number) {
 		await this.wsFriendService.acceptFriendRequest(this.server, socket, friend_id);
-		await this.wsNotificationService.removeNotif(socket, notif_id);
 	}
 
 	@SubscribeMessage("rejectFriendRequest")
-	async rejectFriendRequest(socket: Socket, param: number[]) {
-		const friend_id = param[0];
-		const notif_id = param[1];
+	async rejectFriendRequest(socket: Socket, friend_id: number) {
 		await this.wsFriendService.rejectFriendRequest(this.server, socket, friend_id);
-		await this.wsNotificationService.removeNotif(socket, notif_id);
 	}
 
 	// NOTIFICATIONS
