@@ -1,0 +1,8 @@
+<div class="container" [ngSwitch]="roomName">
+  <app-game-lobby *ngSwitchCase="'lobby'"></app-game-lobby>
+  <app-game-room *ngSwitchCase="'room'"></app-game-room>
+  <app-game-over *ngSwitchCase="'over'"></app-game-over>
+  <div *ngSwitchDefault>
+    <h1 style="color:red">ERROR OMG THERE IS AN ERROR RUN AWAAAAYYYYYYYY</h1>
+  </div>
+</div>

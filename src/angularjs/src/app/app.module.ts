@@ -35,7 +35,6 @@ import { HomeDashboardComponent } from './pages/home-dashboard/home-dashboard.co
 import { LoginComponent } from './pages/login/login.component';
 import { NotificationComponent } from './components/notification/notification.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
-import { PongComponent } from './pages/pong/pong.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
@@ -45,7 +44,10 @@ import { WSChatDmComponent } from './pages/chat-dm/chat-dm.component';
 import { GlobalErrorHandlerService } from './services/global-error-handler.service';
 import { CustomReuseStrategy } from './reuse-strategy';
 import { environment } from './environments/environment';
-import { GameComponent } from './components/game/game.component';
+import { GameComponent } from './pages/game/game.component';
+import { GameLobbyComponent } from './components/game-lobby/game-lobby.component';
+import { GameRoomComponent } from './components/game-room/game-room.component';
+import { GameOverComponent } from './components/game-over/game-over.component';
 
 const config: SocketIoConfig = {
     url: environment.socket_url,
@@ -64,11 +66,13 @@ const config: SocketIoConfig = {
         HeaderComponent,
         FooterComponent,
         HomeDashboardComponent,
-        PongComponent,
         PageNotFoundComponent,
         UserProfileComponent,
         AvatarComponent,
 		GameComponent,
+        GameLobbyComponent,
+        GameRoomComponent,
+        GameOverComponent,
         LoginComponent,
         RegisterComponent,
         AnonymousLayoutComponent,

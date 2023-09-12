@@ -8,15 +8,19 @@ import { GameService } from 'src/app/services/game/game.service';
 })
 export class GameComponent implements OnInit {
 
-  roomName: string = "lobby";
+  roomName: string | null = "";
   roomState: any = null;
   constructor(
     private gameService: GameService
   ) { }
 
   async ngOnInit() {
-    this.gameService.join(this.roomName);
-
+    await this.gameService.join("lobby");
+    if (this.gameService.room) {
+      this.roomState = this.gameService.state;
+      this.roomName = this.gameService.room.name;
+    }
+    console.log(this.gameService.room)
   }
 
 }
