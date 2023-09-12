@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { trigger, style, animate, transition, state } from '@angular/animations';
 import { FriendService } from 'src/app/services/websocket/friend/service';
-import { NotificationI } from '../notification/notification.component';
+import { NotificationI, NotificationType } from 'src/app/interfaces/notification.interface';
 
 @Component({
   selector: 'app-header',
@@ -40,13 +40,8 @@ export class HeaderComponent {
 	) {}
 
 	async ngOnInit() {
-		this.notifications.push({type: 'text', data: {message: 'test'}})
-		this.notifications.push({type: 'text', data: {message: 'test'}})
-		this.notifications.push({type: 'text', data: {message: 'test'}})
-		this.notifications.push({type: 'text', data: {message: 'test'}})
-		this.notifications.push({type: 'text', data: {message: 'test'}})
-		this.notifications.push({type: 'text', data: {message: 'test'}})
-		this.notifications.push({type: 'friendReq', data: {ft_login: 'rrollin', id: 'id'}})
+		this.notifications.push({type: NotificationType.NOTSET, data: {message: 'test'}})
+		this.notifications.push({type:  NotificationType.NOTSET, data: {ft_login: 'rrollin', id: 'id'}})
 	}
 
 	SignOut()

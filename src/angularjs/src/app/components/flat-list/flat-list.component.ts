@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FriendService } from 'src/app/services/websocket/friend/service';
-import { NotificationI } from '../notification/notification.component';
+import { NotificationI } from 'src/app/interfaces/notification.interface';
 
 @Component({
 	selector: 'app-flat-list',
