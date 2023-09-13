@@ -8,20 +8,18 @@ export enum GameRoomStatus {
 }
 
 export class GameRoomState extends Schema {
-    @type('int8') private ballX = 0;
-    @type('int8') private ballY = 0;
-    @type('int8') private ballVX = 0;
-    @type('int8') private ballVY = 0;
+    @type('int8') public ballX = 0;
+    @type('int8') public ballY = 0;
+    @type('int8') public ballVX = 0;
+    @type('int8') public ballVY = 0;
 
-    @type('int8') private player1Y = 0;
-    @type('int8') private player1X = 0;
-    @type('int8') private player2Y = 0;
-    @type('int8') private player2X = 0;
+    @type('int8') public player1X = 0;
+    @type('int8') public player2X = 0;
 
-    @type('int8') private score1 = 0;
-    @type('int8') private score2 = 0;
+    @type('int8') public score1 = 0;
+    @type('int8') public score2 = 0;
 
-    @type('int8') private gameStatus = GameRoomStatus['WAITING'];
+    @type('int8') public gameStatus = GameRoomStatus['WAITING'];
 
     constructor() {
         super();
