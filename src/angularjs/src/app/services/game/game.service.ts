@@ -8,7 +8,7 @@ import { environment } from '../../environments/environment';
 })
 export class GameService {
   private _client: Colyseus.Client = {} as Colyseus.Client;
-  private _room: Colyseus.Room<Schema> | null = null;
+  private _room: Colyseus.Room | null = null;
   private _state: Schema | null = null;
 
   public  defaultRoomName: string = "lobby";
@@ -45,7 +45,7 @@ export class GameService {
     return this._state;
   }
 
-  get room(): Colyseus.Room<Schema> | null {
+  get room(): Colyseus.Room | null {
     return this._room;
   }
 

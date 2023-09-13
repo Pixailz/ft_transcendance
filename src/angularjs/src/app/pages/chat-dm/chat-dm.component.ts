@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { WSGateway } from 'src/app/services/websocket/gateway';
 import { ChatDmService } from 'src/app/services/websocket/chat/direct-message/service';
 import { UserService } from 'src/app/services/user.service';
-import { ChatRoomI, DefMessageI, MessageI } from 'src/app/interfaces/chat-room.interface';
+import { ChatRoomI, DefMessageI, MessageI } from 'src/app/interfaces/chats/chat-room.interface';
 import { ChatRoomService } from 'src/app/services/websocket/chat/chatroom.service';
-import { DefUserI, UserI } from 'src/app/interfaces/user.interface';
+import { DefUserI, UserI } from 'src/app/interfaces/user/user.interface';
 import { FriendService } from 'src/app/services/websocket/friend/service';
 
 @Component({

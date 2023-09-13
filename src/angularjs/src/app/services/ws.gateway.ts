@@ -1,13 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Observable } from 'rxjs';
-import {
-	ChatRoomI,
-	UserChatRoomI,
-	UserI
-} from 'src/app/interfaces/chat.interface';
-import { RoomAction } from '../components/global-chat/global-chat.interface';
-import { FriendRequestI } from '../interfaces/friend.interface';
+import { ChatRoomI } from 'src/app/interfaces/chats/chat-room.interface';
+import { UserChatRoomI } from '../interfaces/user/user-chat-room.interface';
+import { UserI } from '../interfaces/user/user.interface';
+import { FriendRequestI } from '../interfaces/user/friend.interface';
 
 @Injectable({
 	providedIn: 'root',
@@ -132,7 +129,4 @@ export class WSGateway {
 			password: data.password,
 			remove_pass: data.remove_pass,
 		}); }
-
-	roomAction(room_id: number, action: RoomAction, target_id: number)
-	{ this.socket.emit("roomAction", room_id, action, target_id); }
 }

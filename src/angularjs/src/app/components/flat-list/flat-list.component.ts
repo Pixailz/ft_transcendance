@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { UserI } from 'src/app/interfaces/user.interface';
+import { UserI } from 'src/app/interfaces/user/user.interface';
 import { FriendService } from 'src/app/services/websocket/friend/service';
 import { UserService } from 'src/app/services/user.service';
 

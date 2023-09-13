@@ -3,11 +3,11 @@ import { Injectable } from "@angular/core";
 import { UserService } from "src/app/services/user.service";
 import { WSGateway } from "../../gateway";
 
-import { DefChatChannelI, RoomAction } from "src/app/interfaces/chat-channel.interface";
-import { ChatRoomI, DefChatRoomI } from "src/app/interfaces/chat-room.interface";
-import { UserChatRoomI } from "src/app/interfaces/user-chat-room.interface";
+import { DefChatChannelI, RoomAction } from "src/app/interfaces/chats/chat-channel.interface";
+import { ChatRoomI, DefChatRoomI } from "src/app/interfaces/chats/chat-room.interface";
+import { UserChatRoomI } from "src/app/interfaces/user/user-chat-room.interface";
 import { ChatRoomService } from "../chatroom.service";
-import { UserI } from "src/app/interfaces/user.interface";
+import { UserI } from "src/app/interfaces/user/user.interface";
 import { Subscription } from "rxjs";
 import { WSService } from "../../service";
 

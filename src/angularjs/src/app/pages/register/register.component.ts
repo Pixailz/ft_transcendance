@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
-import { DefUserI, UserI } from 'src/app/interfaces/user.interface';
+import { DefUserI, UserI } from 'src/app/interfaces/user/user.interface';
 
 @Component({
   selector: 'app-register',

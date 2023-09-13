@@ -1,5 +1,5 @@
-import { UserI, DefUserI } from "./user.interface";
-import { DefUserChatRoomI, UserChatRoomI } from "./user-chat-room.interface";
+import { UserI, DefUserI } from "../user/user.interface";
+import { DefUserChatRoomI, UserChatRoomI } from "../user/user-chat-room.interface";
 
 export enum RoomType {
 	PRIVATE,

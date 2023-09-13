@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BackService } from "./back.service";
-import { FriendRequestI, DefFriendRequestI, UserI, DefUserI } from '../interfaces/chat.interface';
+import { UserI, DefUserI } from '../interfaces/user/user.interface';
+import { FriendRequestI } from '../interfaces/user/friend.interface';
 import { UserService } from './user.service';
 import { WSGateway } from './ws.gateway';
 import { FriendReqStatus } from '../pages/profile/profile.component';
