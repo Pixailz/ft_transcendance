@@ -1,4 +1,4 @@
-<div class="container" [ngSwitch]="roomName">
+<div class="container" [ngSwitch]="gameService.room?.name">
   <app-game-lobby *ngSwitchCase="'lobby'"></app-game-lobby>
   <app-game-room *ngSwitchCase="'game'"></app-game-room>
   <app-game-over *ngSwitchCase="'over'"></app-game-over>

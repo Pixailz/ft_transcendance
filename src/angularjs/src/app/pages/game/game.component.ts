@@ -12,7 +12,7 @@ import { Room } from 'colyseus.js';
 export class GameComponent implements OnInit {
   roomName: string | null = '';
   roomState: Schema | null = null;
-  constructor(private gameService: GameService) {}
+  constructor(public gameService: GameService) {}
 
   async ngOnInit() {
     await this.gameService.join('lobby');
@@ -58,6 +58,7 @@ export class GameComponent implements OnInit {
       else {
         room.onStateChange((state) => {
           this.roomState = state;
+          console.log(state.gameStatus);
         });
       }
       if (onmessage) room.onMessage('*', onmessage);
