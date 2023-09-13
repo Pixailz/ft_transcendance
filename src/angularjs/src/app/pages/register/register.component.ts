@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
 import { DefUserI, UserI } from 'src/app/interfaces/user.interface';
+import { NotificationService } from 'src/app/services/websocket/notification/service';
 
 @Component({
   selector: 'app-register',
@@ -16,7 +17,10 @@ export class RegisterComponent {
 	}
 
 	async onSubmit() {
-		await this.userService.updateInfo(this.userService.user.nickname, this.userService.user.email);
+		await this.userService.updateInfo(this.userService.user.nickname, this.userService.user.email)
+			.catch((err) => {
+				console.log(err);
+			});
 		window.location.href = '/home';
 	}
 }
