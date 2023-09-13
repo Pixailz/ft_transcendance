@@ -1,12 +1,14 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, ComponentRef, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
-import { NotificationType } from 'src/app/interfaces/notification.interface';
+import { DefNotificationI, NotificationType } from 'src/app/interfaces/notification.interface';
 import { NotificationI } from 'src/app/interfaces/notification.interface';
 import { NotifFriendReqReceivedComponent } from './friend-req-received/friend-req-received.component';
 import { NotifFriendReqSentComponent } from './friend-req-sent/friend-req-sent.component';
 import { NotifFriendReqAcceptedComponent } from './friend-req-accepted/friend-req-accepted.component';
 import { NotifFriendReqDeniedFromComponent } from './friend-req-denied-from/friend-req-denied-from.component';
 import { NotifFriendReqDeniedToComponent } from './friend-req-denied-to/friend-req-denied-to.component';
+import { Subject } from 'rxjs';
+import { NotificationService } from 'src/app/services/websocket/notification/service';
 
 
 @Component({
@@ -32,11 +34,19 @@ export class NotificationComponent{
 	@ViewChild('container', { static: true, read: ViewContainerRef })
 		container!: ViewContainerRef;
 
+	private eventCallback = new Subject<string>();
+	eventCallback$ = this.eventCallback.asObservable();
+
 	constructor (
 		private renderer: Renderer2,
-	) {}
+		private notificationService: NotificationService,
+	) {
+		notificationService.createPopup.subscribe((data: NotificationI) => {
+			this.displayNotifications(data);
+		});
+	}
 
-	displayNewNotification(notification: NotificationI) {
+	displayNotifications(notification: NotificationI) {
 		let component: ComponentRef<any> | null = null;
 		switch (notification.type) {
 			case NotificationType.FRIEND_REQ_RECEIVED:
@@ -59,7 +69,7 @@ export class NotificationComponent{
 		}
 		if (!component)
 			return;
-		component.instance.data = notification.data;
+		component.instance.notif = notification;
 		this.renderer.addClass(component.location.nativeElement, 'notification');
 		setTimeout(() => {
 			this.container.remove(0);
@@ -67,7 +77,8 @@ export class NotificationComponent{
 	}
 
 
-	displayNotification(message: string) {
+
+	displayPopup(message: string) {
 		const container = document.getElementById('container');
 		const elem = this.renderer.createElement('div');
 		const text = this.renderer.createText(message);

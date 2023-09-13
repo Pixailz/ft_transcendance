@@ -21,10 +21,7 @@ export class ChatDmService {
 		private chatRoomService: ChatRoomService,
 		private wsService: WSService,
 		private wsGateway: WSGateway,
-	) { }
-
-	onInit()
-	{
+	) {
 		this.obsToDestroy.push(this.wsGateway.listenAllDmRoom()
 			.subscribe((rooms: ChatRoomI[]) => {
 				console.log("[WS:DM] AllChatDm event")
@@ -42,12 +39,13 @@ export class ChatDmService {
 		this.obsToDestroy.push(this.wsGateway.listenNewDmMessage()
 			.subscribe((data: any) => {
 				console.log("[WS:DM] NewDmMessage event")
+				console.log("[WS:DM] data ", data);
 				this.updateNewDmMessage(data);
 			}
 		));
 	}
 
-	onDestroy()
+	ngOnDestroy()
 	{
 		console.log("[WS:ChatDM] onDestroy")
 		this.wsService.unsubscribeObservables(this.obsToDestroy);

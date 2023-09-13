@@ -23,8 +23,7 @@ export class AuthenticatedLayoutComponent implements OnInit, OnDestroy, AfterVie
 		private notificationService: NotificationService,
 		private wsService: WSService,
 		private wsGateway: WSGateway,
-	) {
-	}
+	) { }
 
 	ngAfterViewInit(): void {
 		this.changeRef.detectChanges();
@@ -33,19 +32,15 @@ export class AuthenticatedLayoutComponent implements OnInit, OnDestroy, AfterVie
 	ngOnInit()
 	{
 		console.log("[AUTH_LAYOUT] onInit");
-		this.chatChannelService.onInit();
-		this.friendService.onInit();
-		this.chatDmService.onInit();
-		this.notificationService.onInit();
 		window.onbeforeunload = () => this.ngOnDestroy();
 	}
 
 	ngOnDestroy()
 	{
-		this.chatChannelService.onDestroy();
-		this.friendService.onDestroy();
-		this.chatDmService.onDestroy();
-		this.notificationService.onDestroy();
+		this.chatChannelService.ngOnDestroy();
+		this.friendService.ngOnDestroy();
+		this.chatDmService.ngOnDestroy();
+		this.notificationService.ngOnDestroy();
 		console.log("[AUTH_LAYOUT] onDestroy");
 	}
 

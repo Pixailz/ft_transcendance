@@ -22,10 +22,7 @@ export class ChatChannelService {
 		private chatRoomService: ChatRoomService,
 		private wsService: WSService,
 		private wsGateway: WSGateway,
-	) { }
-
-	onInit()
-	{
+	) {
 		this.wsGateway.getAllAvailableChannelRoom();
 		this.obsToDestroy.push(this.wsGateway.listenAllAvailableChannelRoom().subscribe((data: ChatRoomI[]) => {
 			console.log("[WS:ChatChannel] AllAvailableChannelRoom event")
@@ -69,7 +66,7 @@ export class ChatChannelService {
 		}));
 	}
 
-	onDestroy()
+	ngOnDestroy()
 	{
 		console.log("[WS:ChatChannel] onDestroy")
 		this.wsService.unsubscribeObservables(this.obsToDestroy);

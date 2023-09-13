@@ -21,10 +21,7 @@ export class FriendService {
 		private chatDmService: ChatDmService,
 		private wsGateway: WSGateway,
 		private wsService: WSService,
-	) { }
-
-	onInit()
-	{
+	) {
 		this.wsGateway.getAllFriend();
 		this.obsToDestroy.push(this.wsGateway.listenAllFriend()
 			.subscribe((friends: UserI[]) => {
@@ -72,7 +69,7 @@ export class FriendService {
 		));
 	}
 
-	onDestroy()
+	ngOnDestroy()
 	{
 		console.log("[WS:Friend] onDestroy");
 		this.wsService.unsubscribeObservables(this.obsToDestroy);

@@ -6,7 +6,6 @@ import { ChatRoomI } from 'src/app/interfaces/chat-room.interface';
 import { FriendRequestI } from 'src/app/interfaces/friend.interface';
 import { UserChatRoomI } from 'src/app/interfaces/user-chat-room.interface';
 import { UserI } from 'src/app/interfaces/user.interface';
-import { NotificationI } from 'src/app/interfaces/notification.interface';
 
 @Injectable({
 	providedIn: 'root',
@@ -50,7 +49,7 @@ export class WSGateway {
 	{ this.socket.emit("sendDmMessage", room_id, message); }
 
 
-	// GLOBAL CHAT
+	// CHANNEL CHAT
 
 	// LISTENER
 	listenAllAvailableChannelRoom(): Observable<ChatRoomI[]>

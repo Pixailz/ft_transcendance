@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { EventEmitter, Injectable, Output } from "@angular/core";
 import { DefNotificationI, NotificationI, NotificationType } from "src/app/interfaces/notification.interface";
 import { WSGateway } from "../gateway";
 import { Subscription } from "rxjs";
@@ -11,15 +11,13 @@ import { FriendService } from "../friend/service";
 export class NotificationService {
 	notif: NotificationI[] = [];
 	obsToDestroy: Subscription[] = [];
+	createPopup: EventEmitter<NotificationI> = new EventEmitter();
 
 	constructor (
 		private friendService: FriendService,
 		private wsGateway: WSGateway,
 		private wsService: WSService,
-	){ }
-
-	onInit()
-	{
+	){
 		this.obsToDestroy.push(this.wsGateway.listenAllNotifications()
 			.subscribe((notifications: NotificationI[]) => {
 				console.log("[WS:Notification] AllNotifications event")
@@ -30,7 +28,7 @@ export class NotificationService {
 		this.obsToDestroy.push(this.wsGateway.listenNewNotification()
 			.subscribe((notification: NotificationI) => {
 				console.log("[WS:Notification] NewNotification event")
-				this.updateNewNotification(notification);
+				this.createPopup.next(this.updateNewNotification(notification));
 			}
 		));
 
@@ -42,7 +40,7 @@ export class NotificationService {
 			));
 	}
 
-	onDestroy()
+	ngOnDestroy()
 	{
 		console.log("[WS:Notification] onDestroy");
 		this.wsService.unsubscribeObservables(this.obsToDestroy);
@@ -129,7 +127,12 @@ export class NotificationService {
 	}
 
 	updateNewNotification(notification: any)
-	{ this.notif.push(this.getNotification(notification)); }
+	{
+		const notif = this.getNotification(notification);
+		this.notif.push(notif);
+		console.log(notif);
+		return (notif);
+	}
 
 	updateDelNotification(id: number)
 	{
