@@ -67,9 +67,9 @@ services:
       context: "./build/nodejs"
       target: "nodejs"
     command: [ "npm", "run", "dev" ]
-    depends_on:
-      nestjs:
-        condition: service_healthy
+    # depends_on:
+    #   nestjs:
+    #     condition: service_healthy
     ports:
       - 4200:4200
     networks:

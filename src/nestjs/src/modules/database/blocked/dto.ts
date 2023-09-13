@@ -3,5 +3,8 @@ import { IsNotEmpty, IsNumber } from "class-validator";
 export class DBBlockedPost {
 	@IsNotEmpty()
 	@IsNumber()
-	blockedId?: number;
+	meId?: number;
+	@IsNotEmpty()
+	@IsNumber()
+	targetId?: number;
 }

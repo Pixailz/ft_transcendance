@@ -54,11 +54,11 @@ export class DBUserService {
 
 	async update(userId: number, userPost: DBUserInfoPost) {
 		const user = await this.get_user(userId, null);
-		if (!user)
-			throw new NotFoundException("User not found");
-		if (userPost.nickname)
-		{
-			const check_name = await this.userRepo.findOneBy({nickname: userPost.nickname});
+		if (!user) throw new NotFoundException("User not found");
+		if (userPost.nickname) {
+			const check_name = await this.userRepo.findOneBy({
+				nickname: userPost.nickname,
+			});
 			if (check_name)
 				throw new ConflictException("Nickname already taken");
 		}

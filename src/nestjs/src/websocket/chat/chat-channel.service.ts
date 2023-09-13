@@ -6,11 +6,16 @@ import { ChatRoomEntity, RoomType } from "src/modules/database/chatRoom/entity";
 import * as bcrypt from "bcrypt";
 import { Sanitize } from "../../sanitize-object";
 import { UserService } from "src/adapter/user/service";
+import { DBUserChatRoomService } from "src/modules/database/userChatRoom/service";
 
 export enum RoomAction {
 	KICK,
 	PROMOTE,
+	DEMOTE,
 	OWNERSHIP,
+	UNBAN,
+	BAN,
+	UNMUTE,
 }
 
 @Injectable()
@@ -19,6 +24,7 @@ export class WSChatChannelService {
 		private sanitize: Sanitize,
 		private chatRoomService: ChatRoomService,
 		private userService: UserService,
+		private dbUserChatRoomService: DBUserChatRoomService,
 		public wsSocket: WSSocket,
 	) {}
 
@@ -109,14 +115,32 @@ export class WSChatChannelService {
 	) {
 		var room = await this.chatRoomService.getJoinedChannelRoom(room_id);
 		const user_id = this.wsSocket.getUserId(socket.id);
+		const current_user_chatroom = await this.chatRoomService.getUserChatRoom(
+			user_id,
+			room.id,
+		)
+			.catch((err) => {});
+
+		if (current_user_chatroom && current_user_chatroom.isBanned)
+		{
+			const user = current_user_chatroom.user;
+			console.log(`${user.ftLogin} (${user.nickname}) banned from`,
+				`${room.name} (${room.id})`);
+			return ;
+		}
 		const user = await this.chatRoomService.getAllUserFromRoom(room_id);
+		var not_good_pass: boolean = false;
 		user.forEach((item) => {
 			if (item === user_id) return;
 		});
 		if (room.type === RoomType.PROTECTED) {
-			const isMatch = await bcrypt.compare(password, room.password);
-			if (!isMatch) return new UnauthorizedException("Wrong Password");
+			if (!password || password === "") not_good_pass = true;
+			else {
+				const isMatch = await bcrypt.compare(password, room.password);
+				if (!isMatch) not_good_pass = true;
+			}
 		}
+		if (not_good_pass) return new UnauthorizedException("Wrong Password");
 		await this.chatRoomService.joinChannelRoom(room.id, user_id);
 		room = await this.chatRoomService.getJoinedChannelRoom(room_id);
 		const user_chatroom = await this.chatRoomService.getUserChatRoom(
@@ -144,6 +168,31 @@ export class WSChatChannelService {
 		message: string,
 	) {
 		const user_id = this.wsSocket.getUserId(socket.id);
+		var not_in_room: boolean = false;
+		const user_chatroom = await this.chatRoomService
+			.getUserChatRoom(user_id, dst_id)
+			.catch((err) => {
+				not_in_room = true;
+			});
+		if (not_in_room) return;
+		if (!user_chatroom || user_chatroom.isBanned) return;
+		if (user_chatroom.isMuted) {
+			if (user_chatroom.demuteDate < new Date())
+				await this.takeRoomAction(
+					server,
+					socket,
+					user_chatroom.roomId,
+					RoomAction.UNMUTE,
+					user_id,
+				);
+			else {
+				console.log(
+					`${user_chatroom.user.ftLogin} (${user_chatroom.user.nickname})`,
+					"muted",
+				);
+				return;
+			}
+		}
 		const message_id = await this.chatRoomService.sendMessage(
 			dst_id,
 			user_id,
@@ -158,6 +207,53 @@ export class WSChatChannelService {
 		});
 	}
 
+	async changeRoomDetailParse(detail: any) {
+		const details: any = {};
+
+		if (detail.name && detail.name !== "") details["name"] = detail.name;
+		if (
+			detail.remove_pass === true ||
+			(detail.change_private === true && detail.is_private)
+		)
+			details["password"] = "";
+		else if (detail.password && detail.password !== "")
+			details["password"] = await this.chatRoomService.hashPass(
+				detail.password,
+			);
+		return details;
+	}
+
+	async changeRoomDetailsIsChanged(
+		details: any,
+		detail: any,
+		room: ChatRoomEntity,
+	) {
+		var changed = 0;
+
+		if (details.name && details.name !== room.name) changed = 2;
+		if (detail.change_private) {
+			changed = changed === 2 ? 2 : 1;
+			if (detail.is_private && room.type !== RoomType.PRIVATE)
+				await this.chatRoomService.updateType(
+					room.id,
+					RoomType.PRIVATE,
+				);
+			else
+				await this.chatRoomService.updateType(room.id, RoomType.PUBLIC);
+		}
+		if (detail.remove_pass && room.type === RoomType.PROTECTED) {
+			changed = 2;
+			await this.chatRoomService.updateType(room.id, RoomType.PUBLIC);
+		} else if (
+			details.password &&
+			(room.type === RoomType.PUBLIC || room.type === RoomType.PRIVATE)
+		) {
+			changed = 2;
+			await this.chatRoomService.updateType(room.id, RoomType.PROTECTED);
+		}
+		return changed;
+	}
+
 	async changeRoomDetails(
 		server: Server,
 		socket: Socket,
@@ -166,26 +262,18 @@ export class WSChatChannelService {
 	) {
 		const user_id = this.wsSocket.getUserId(socket.id);
 		let room = await this.chatRoomService.getJoinedChannelRoom(room_id);
-		const details: any = {};
-		let changed = false;
 
-		if (!this.canChangeDetails(room, user_id)) return;
-		if (detail.name && detail.name !== "") details["name"] = detail.name;
-		if (detail.remove_pass === true) details["password"] = "";
-		else if (detail.password && detail.password !== "")
-			details["password"] = await this.chatRoomService.hashPass(
-				detail.password,
-			);
-		if (details.name !== room.name) changed = true;
-		if (detail.remove_pass && room.type === RoomType.PROTECTED) {
-			changed = true;
-			await this.chatRoomService.updateType(room.id, RoomType.PUBLIC);
-		} else if (details.password && room.type === RoomType.PUBLIC) {
-			changed = true;
-			await this.chatRoomService.updateType(room.id, RoomType.PROTECTED);
-		}
-		if (changed) {
-			await this.chatRoomService.changeRoomDetails(room_id, details);
+		if (!this.isOwner(room, user_id)) return;
+		const details: any = await this.changeRoomDetailParse(detail);
+		const changed: number = await this.changeRoomDetailsIsChanged(
+			details,
+			detail,
+			room,
+		);
+
+		if (changed > 0) {
+			if (changed === 2)
+				await this.chatRoomService.changeRoomDetails(room_id, details);
 			room = await this.chatRoomService.getJoinedChannelRoom(room_id);
 			this.wsSocket.sendToUserInRoom(
 				server,
@@ -196,12 +284,24 @@ export class WSChatChannelService {
 		}
 	}
 
-	async addUserToRoom(server: Server, socket: Socket, room_id: number, user_ids: number[])
-	{
+	async addUserToRoom(
+		server: Server,
+		socket: Socket,
+		room_id: number,
+		user_ids: number[],
+	) {
 		var room = await this.chatRoomService.getJoinedChannelRoom(room_id);
-
-		if (!this.canAddUser(room, this.wsSocket.getUserId(socket.id)))
-			return ;
+		var parsed_user_ids: number[] = [];
+		if (!this.isAdmin(room, this.wsSocket.getUserId(socket.id))) return;
+		for (var i = 0; i < user_ids.length; i++) {
+			const user_chatroom = await this.chatRoomService
+				.getUserChatRoom(user_ids[i], room_id)
+				.catch((err) => {
+					parsed_user_ids.push(user_ids[i]);
+				});
+			if (user_chatroom && !user_chatroom.isBanned)
+				parsed_user_ids.push(user_ids[i]);
+		}
 		for (var i = 0; i < user_ids.length; i++)
 			await this.chatRoomService.joinChannelRoom(room_id, user_ids[i]);
 
@@ -209,23 +309,23 @@ export class WSChatChannelService {
 		var user_list = await this.chatRoomService.getAllUserFromRoom(room_id);
 		this.wsSocket.sendToUsers(
 			server,
-			user_ids,
+			parsed_user_ids,
 			"getNewJoinedChannelRoom",
 			this.sanitize.ChatRoom(room),
 		);
 		for (var i = 0; i < user_list.length; i++)
-			for (var j = 0; j < user_ids.length; j++)
-				if (user_list[i] === user_ids[j])
-					user_list.splice(i, 1);
-		for (var i = 0; i < user_ids.length; i++)
-		{
-			const user = this.sanitize.User(await this.userService.getInfoById(user_ids[i]));
+			for (var j = 0; j < parsed_user_ids.length; j++)
+				if (user_list[i] === parsed_user_ids[j]) user_list.splice(i, 1);
+		for (var i = 0; i < parsed_user_ids.length; i++) {
+			const user = this.sanitize.User(
+				await this.userService.getInfoById(parsed_user_ids[i]),
+			);
 			this.wsSocket.sendToUsers(
 				server,
 				user_list,
 				"getNewUserJoinChannelRoom",
 				{
-					userId: user_ids[i],
+					userId: parsed_user_ids[i],
 					roomId: room.id,
 					isOwner: false,
 					isAdmin: false,
@@ -235,13 +335,16 @@ export class WSChatChannelService {
 		}
 	}
 
-	async leaveRoom(server: Server, socket: Socket, room_id: number, target_id: number)
-	{
+	async leaveRoom(
+		server: Server,
+		socket: Socket,
+		room_id: number,
+		target_id: number,
+	) {
 		const user_id = this.wsSocket.getUserId(socket.id);
 		const room = await this.chatRoomService.getJoinedChannelRoom(room_id);
 
-		if (user_id !== target_id)
-			return ;
+		if (user_id !== target_id) return;
 
 		await this.chatRoomService.kickUser(room_id, target_id);
 		this.wsSocket.sendToUserInRoom(server, room, "roomAction", {
@@ -251,44 +354,29 @@ export class WSChatChannelService {
 		});
 	}
 
-	canAddUser(room: ChatRoomEntity, user_id: number): boolean {
-		return this.isOwner(room, user_id) || this.isAdmin(room, user_id);
-	}
-
-	canChangeDetails(room: ChatRoomEntity, user_id: number): boolean {
-		return this.isOwner(room, user_id);
-	}
-
-	canKick(room: ChatRoomEntity, user_id: number): boolean {
-		return this.isOwner(room, user_id) || this.isAdmin(room, user_id);
-	}
-
-	canPromote(room: ChatRoomEntity, user_id: number): boolean {
-		return this.isAdmin(room, user_id);
-	}
-
-	canGiveKrown(room: ChatRoomEntity, user_id: number): boolean {
-		return this.isOwner(room, user_id);
-	}
-
 	canTakeAction(
 		room: ChatRoomEntity,
 		user_id: number,
+		target_id: number,
 		action: RoomAction,
 	): boolean {
 		let result = false;
 
+		if (this.isOwner(room, target_id)) return false;
 		switch (action) {
-			case RoomAction.KICK: {
-				result = this.canKick(room, user_id);
-				break;
-			}
-			case RoomAction.PROMOTE: {
-				result = this.canPromote(room, user_id);
-				break;
-			}
+			case RoomAction.PROMOTE:
+			case RoomAction.DEMOTE:
 			case RoomAction.OWNERSHIP: {
-				result = this.canGiveKrown(room, user_id);
+				result = this.isOwner(room, user_id);
+				break;
+			}
+
+			case RoomAction.KICK:
+			case RoomAction.UNBAN:
+			case RoomAction.BAN:
+			case RoomAction.UNBAN:
+			case RoomAction.UNMUTE: {
+				result = this.isAdmin(room, user_id);
 				break;
 			}
 		}
@@ -299,13 +387,41 @@ export class WSChatChannelService {
 		this.chatRoomService.kickUser(room.id, target_id);
 	}
 
-	async promoteUser(room: ChatRoomEntity, target_id: number) {
-		this.chatRoomService.promoteUser(room.id, target_id);
-	}
-
 	async giveKrown(user_id: number, room: ChatRoomEntity, target_id: number) {
 		if (user_id !== target_id)
 			this.chatRoomService.giveKrownUser(user_id, room.id, target_id);
+	}
+
+	async promoteUser(room: ChatRoomEntity, target_id: number) {
+		await this.dbUserChatRoomService.update(target_id, room.id, {
+			isAdmin: true,
+		});
+	}
+
+	async demoteUser(room: ChatRoomEntity, target_id: number) {
+		await this.dbUserChatRoomService.update(target_id, room.id, {
+			isAdmin: false,
+		});
+	}
+
+	async ban(room: ChatRoomEntity, target_id: number) {
+		await this.dbUserChatRoomService.update(target_id, room.id, {
+			isAdmin: false,
+			isBanned: true,
+		});
+	}
+
+	async unban(room: ChatRoomEntity, target_id: number) {
+		await this.dbUserChatRoomService.update(target_id, room.id, {
+			isBanned: false,
+		});
+	}
+
+	async unmute(room: ChatRoomEntity, target_id: number) {
+		await this.dbUserChatRoomService.update(target_id, room.id, {
+			isMuted: false,
+			demuteDate: new Date(),
+		});
 	}
 
 	takeAction(
@@ -319,12 +435,34 @@ export class WSChatChannelService {
 				this.kickUser(room, target_id);
 				break;
 			}
+
+			case RoomAction.DEMOTE: {
+				this.demoteUser(room, target_id);
+				break;
+			}
+
 			case RoomAction.PROMOTE: {
 				this.promoteUser(room, target_id);
 				break;
 			}
+
 			case RoomAction.OWNERSHIP: {
 				this.giveKrown(user_id, room, target_id);
+				break;
+			}
+
+			case RoomAction.BAN: {
+				this.ban(room, target_id);
+				break;
+			}
+
+			case RoomAction.UNBAN: {
+				this.unban(room, target_id);
+				break;
+			}
+
+			case RoomAction.UNMUTE: {
+				this.unmute(room, target_id);
 				break;
 			}
 		}
@@ -346,6 +484,14 @@ export class WSChatChannelService {
 		});
 	}
 
+	emitDemote(server: Server, room: ChatRoomEntity, target_id: number) {
+		this.wsSocket.sendToUserInRoom(server, room, "roomAction", {
+			action: RoomAction.DEMOTE,
+			target_id: target_id,
+			room_id: room.id,
+		});
+	}
+
 	emitGiveKrown(
 		server: Server,
 		user_id: number,
@@ -359,6 +505,45 @@ export class WSChatChannelService {
 				user_id: user_id,
 				room_id: room.id,
 			});
+	}
+
+	emitBan(server: Server, room: ChatRoomEntity, target_id: number) {
+		this.wsSocket.sendToUserInRoom(server, room, "roomAction", {
+			action: RoomAction.BAN,
+			target_id: target_id,
+			room_id: room.id,
+		});
+	}
+
+	async emitUnban(server: Server, room: ChatRoomEntity, target_id: number) {
+		var user_list: number[] = [];
+
+		for (var i = 0; i < room.roomInfo.length; i++)
+			if (room.roomInfo[i].userId !== target_id)
+				user_list.push(room.roomInfo[i].userId);
+		this.wsSocket.sendToUsers(server, user_list, "roomAction", {
+			action: RoomAction.UNBAN,
+			target_id: target_id,
+			room_id: room.id,
+		});
+
+		const chatroom = await this.chatRoomService.getJoinedChannelRoom(
+			room.id,
+		);
+		this.wsSocket.sendToUser(
+			server,
+			target_id,
+			"getNewJoinedChannelRoom",
+			this.sanitize.ChatRoom(chatroom),
+		);
+	}
+
+	emitUnmute(server: Server, room: ChatRoomEntity, target_id: number) {
+		this.wsSocket.sendToUserInRoom(server, room, "roomAction", {
+			action: RoomAction.UNMUTE,
+			target_id: target_id,
+			room_id: room.id,
+		});
 	}
 
 	actionEmit(
@@ -377,11 +562,47 @@ export class WSChatChannelService {
 				this.emitPromote(server, room, target_id);
 				break;
 			}
+			case RoomAction.DEMOTE: {
+				this.emitDemote(server, room, target_id);
+				break;
+			}
 			case RoomAction.OWNERSHIP: {
 				this.emitGiveKrown(server, user_id, room, target_id);
 				break;
 			}
+			case RoomAction.BAN: {
+				this.emitBan(server, room, target_id);
+				break;
+			}
+			case RoomAction.UNBAN: {
+				this.emitUnban(server, room, target_id);
+				break;
+			}
+			case RoomAction.UNMUTE: {
+				this.emitUnmute(server, room, target_id);
+				break;
+			}
 		}
+	}
+
+	getRoomActionStr(action: RoomAction) {
+		switch (action) {
+			case RoomAction.KICK:
+				return `(${RoomAction.KICK}) KICK`;
+			case RoomAction.PROMOTE:
+				return `(${RoomAction.PROMOTE}) PROMOTE`;
+			case RoomAction.DEMOTE:
+				return `(${RoomAction.DEMOTE}) DEMOTE`;
+			case RoomAction.OWNERSHIP:
+				return `(${RoomAction.OWNERSHIP}) OWNERSHIP`;
+			case RoomAction.UNBAN:
+				return `(${RoomAction.UNBAN}) UNBAN`;
+			case RoomAction.BAN:
+				return `(${RoomAction.BAN}) BAN`;
+			case RoomAction.UNMUTE:
+				return `(${RoomAction.UNMUTE}) UNMUTE`;
+		}
+		return "UNKNOWN";
 	}
 
 	async takeRoomAction(
@@ -394,9 +615,46 @@ export class WSChatChannelService {
 		const user_id = this.wsSocket.getUserId(socket.id);
 		const room = await this.chatRoomService.getJoinedChannelRoom(room_id);
 
-		if (!this.canTakeAction(room, user_id, action)) return;
+		if (!this.canTakeAction(room, user_id, target_id, action)) {
+			const user = await this.userService.getInfoById(user_id);
+			const target = await this.userService.getInfoById(user_id);
+			console.log(
+				`[WS:ChatChannel] ${
+					user.nickname
+				} cannot do ${this.getRoomActionStr(action)} in ${
+					room.name
+				} to ${target.nickname}`,
+			);
+			return;
+		}
 		this.takeAction(user_id, room, target_id, action);
 		this.actionEmit(server, user_id, room, action, target_id);
+	}
+
+	async muteUser(
+		server: Server,
+		socket: Socket,
+		room_id: number,
+		target_id: number,
+		muted_time: number,
+	) {
+		if (!muted_time) return;
+		const user_id = this.wsSocket.getUserId(socket.id);
+		const room = await this.chatRoomService.getJoinedChannelRoom(room_id);
+		if (!this.isAdmin(room, user_id) && !this.isAdmin(room, user_id))
+			return;
+		await this.dbUserChatRoomService.mute(target_id, room.id, muted_time);
+		this.wsSocket.sendToUserInRoom(
+			server,
+			room,
+			"channelMute",
+			this.sanitize.UserChatRoom(
+				await this.dbUserChatRoomService.getUserChatRoom(
+					room.id,
+					target_id,
+				),
+			),
+		);
 	}
 
 	isOwner(room: ChatRoomEntity, user_id: number): boolean {
@@ -408,6 +666,7 @@ export class WSChatChannelService {
 	}
 
 	isAdmin(room: ChatRoomEntity, user_id: number): boolean {
+		if (this.isOwner(room, user_id)) return true;
 		for (let i = 0; i < room.roomInfo.length; i++) {
 			if (room.roomInfo[i].userId === user_id && room.roomInfo[i].isAdmin)
 				return true;

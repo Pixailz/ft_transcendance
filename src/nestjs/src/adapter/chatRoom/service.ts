@@ -97,7 +97,10 @@ export class ChatRoomService {
 	}
 
 	async getUserChatRoom(user_id: number, room_id: number) {
-		return this.dbUserChatRoomService.returnOneWithUser(user_id, room_id);
+		return await this.dbUserChatRoomService.returnOneWithUser(
+			user_id,
+			room_id,
+		);
 	}
 
 	async hashPass(password: string): Promise<string> {
@@ -215,7 +218,7 @@ export class ChatRoomService {
 		);
 		var user_list: number[] = [];
 		all_user_chat_room.forEach((i) => {
-			user_list.push(i.userId);
+			if (!i.isBanned) user_list.push(i.userId);
 		});
 		return user_list;
 	}
@@ -232,12 +235,6 @@ export class ChatRoomService {
 
 	async kickUser(room_id: number, target_id: number) {
 		await this.dbUserChatRoomService.delete(target_id, room_id);
-	}
-
-	async promoteUser(room_id: number, target_id: number) {
-		await this.dbUserChatRoomService.update(target_id, room_id, {
-			isAdmin: true,
-		});
 	}
 
 	async giveKrownUser(user_id: number, room_id: number, target_id: number) {

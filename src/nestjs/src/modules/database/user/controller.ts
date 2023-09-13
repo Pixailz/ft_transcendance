@@ -36,7 +36,8 @@ export class DBUserController {
 	@Put(":id")
 	async update(
 		@Param("id") userId: number,
-		@Body() userPost: DBUserInfoPost) {
+		@Body() userPost: DBUserInfoPost,
+	) {
 		return await this.dbUserService.update(userId, userPost);
 	}
 

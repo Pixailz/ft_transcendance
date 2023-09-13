@@ -1,4 +1,9 @@
-import { IsBooleanString, IsNotEmpty, IsOptional } from "class-validator";
+import {
+	IsBooleanString,
+	IsDate,
+	IsNotEmpty,
+	IsOptional,
+} from "class-validator";
 import { Timestamp } from "typeorm";
 
 export class MutePost {
@@ -16,4 +21,13 @@ export class DBUserChatRoomPost {
 	@IsOptional()
 	@IsBooleanString()
 	isAdmin?: boolean;
+	@IsOptional()
+	@IsBooleanString()
+	isBanned?: boolean;
+	@IsOptional()
+	@IsBooleanString()
+	isMuted?: boolean;
+	@IsOptional()
+	@IsDate()
+	demuteDate?: Date;
 }

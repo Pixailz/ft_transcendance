@@ -189,6 +189,7 @@ export class DBChatRoomService {
 						user: {
 							id: user_id,
 						},
+						isBanned: false,
 					},
 					type: RoomType.PUBLIC,
 				},
@@ -197,6 +198,7 @@ export class DBChatRoomService {
 						user: {
 							id: user_id,
 						},
+						isBanned: false,
 					},
 					type: RoomType.PROTECTED,
 				},
@@ -205,6 +207,7 @@ export class DBChatRoomService {
 						user: {
 							id: user_id,
 						},
+						isBanned: false,
 					},
 					type: RoomType.PRIVATE,
 				},

@@ -41,4 +41,10 @@ export class ProfileComponent implements OnInit {
 
 	sendFriendRequest(id: number)
 	{ this.wsGateway.sendFriendRequest(id); }
+
+	blockUser(id: number)
+	{ this.wsGateway.blockUser(id); }
+
+	unblockUser(id: number)
+	{ this.wsGateway.unblockUser(id); }
 }

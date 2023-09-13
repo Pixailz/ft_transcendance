@@ -15,6 +15,7 @@ import { WSService } from "../service";
 export class FriendService {
 	friend = DefFriendListI;
 	obsToDestroy: Subscription[] = [];
+	blocked: any = {};
 
 	constructor(
 		private userService: UserService,
@@ -22,15 +23,12 @@ export class FriendService {
 		private wsGateway: WSGateway,
 		private wsService: WSService,
 	) {
-		this.wsGateway.getAllFriend();
 		this.obsToDestroy.push(this.wsGateway.listenAllFriend()
 			.subscribe((friends: UserI[]) => {
 				console.log("[WS:Friend] AllFriend event")
 				this.updateAllFriend(friends);
 			}
 		));
-
-		this.wsGateway.getAllFriendRequest();
 		this.obsToDestroy.push(this.wsGateway.listenAllFriendRequest()
 			.subscribe((friend_request: FriendRequestI[]) => {
 				console.log("[WS:Friend] AllFriendRequest event")
@@ -39,34 +37,52 @@ export class FriendService {
 				this.wsGateway.getAllNotifications();
 			}
 		));
-
-		this.obsToDestroy.push(this.wsGateway.listenNewFriendRequest()
-			.subscribe((friend_request: FriendRequestI) => {
-				console.log("[WS:Friend] NewFriendRequest event")
-				this.updateNewFriendRequest(friend_request);
+		this.obsToDestroy.push(this.wsGateway.listenAllBlocked()
+			.subscribe((data: UserI[]) => {
+				console.log("[WS:Friend] AllBlocked event")
+				this.updateAllBlocked(data);
 			}
 		));
-
 		this.obsToDestroy.push(this.wsGateway.listenNewFriend()
 			.subscribe((friends: UserI) => {
 				console.log("[WS:Friend] NewFriend event")
 				this.updateNewFriend(friends);
 			}
 		));
-
-		this.obsToDestroy.push(this.wsGateway.listenDeniedFriendReq()
-			.subscribe((friends: UserI) => {
-				console.log("[WS:Friend] DeniedFriendReq event")
-				this.updateDeniedFriendReq(friends);
-			}
-		));
-
 		this.obsToDestroy.push(this.wsGateway.listenNewStatusFriend()
 			.subscribe((data: any) => {
 				console.log("[WS:Friend] NewStatusFriend event")
 				this.updateNewFriendStatus(data);
 			}
 		));
+		this.obsToDestroy.push(this.wsGateway.listenNewFriendRequest()
+			.subscribe((friend_request: FriendRequestI) => {
+				console.log("[WS:Friend] NewFriendRequest event")
+				this.updateNewFriendRequest(friend_request);
+			}
+		));
+		this.obsToDestroy.push(this.wsGateway.listenDeniedFriendReq()
+			.subscribe((friends: UserI) => {
+				console.log("[WS:Friend] DeniedFriendReq event")
+				this.updateDeniedFriendReq(friends);
+			}
+		));
+		this.obsToDestroy.push(this.wsGateway.listenNewBlocked()
+			.subscribe((data: UserI) => {
+				console.log("[WS:Friend] NewBlocked event")
+				this.updateNewBlocked(data);
+			}
+		));
+		this.obsToDestroy.push(this.wsGateway.listenNewUnblocked()
+			.subscribe((data: number) => {
+				console.log("[WS:Friend] NewUnblocked event")
+				this.updateNewUnblocked(data);
+			}
+		));
+
+		this.wsGateway.getAllFriend();
+		this.wsGateway.getAllFriendRequest();
+		this.wsGateway.getAllBlocked();
 	}
 
 	ngOnDestroy()
@@ -150,6 +166,30 @@ export class FriendService {
 		this.friend.friends[friends_status.user_id].status = friends_status.status;
 	}
 
+	updateAllBlocked(targets: UserI[]) {
+		for (var i = 0; i < targets.length; i++)
+		{
+			if (!targets[i].id) continue ;
+			const tmp_id = targets[i].id.toString();
+			if (this.blocked[tmp_id]) continue ;
+			this.blocked[tmp_id] = targets[i];
+		}
+	}
+
+	updateNewBlocked(target: UserI) {
+		const target_id_str = target.id.toString();
+		if (this.blocked[target_id_str])
+			return ;
+		this.blocked[target_id_str] = target;
+	}
+
+	updateNewUnblocked(target_id: number) {
+		const target_id_str = target_id.toString();
+		if (!this.blocked[target_id_str])
+			return ;
+		delete this.blocked[target_id_str];
+	}
+
 	getFriendsRequest(): FriendRequestI[]
 	{
 		var friend_req: FriendRequestI[] = [];
@@ -173,13 +213,6 @@ export class FriendService {
 	rejectRequest(friend_id: number)
 	{ this.wsGateway.rejectFriendRequest(friend_id); }
 
-	isMe(friend_id: number, id: number)
-	{
-		if (friend_id === id)
-			return (true);
-		return (false);
-	}
-
 	alreadyFriend(friend_id: number)
 	{
 		const friend_id_str = friend_id.toString();
@@ -197,11 +230,21 @@ export class FriendService {
 		return (false);
 	}
 
+	isBlocked(user_id: number)
+	{
+		const user_id_str = user_id.toString();
+
+		for (var target_id in this.blocked)
+			if (target_id === user_id_str)
+				return (true);
+		return (false);
+	}
 
 	getInfo()
 	{
 		console.log("[FRIEND]");
 		console.log(this.friend);
+		console.log(this.blocked);
 	}
 }
 
