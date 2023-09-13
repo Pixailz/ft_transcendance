@@ -104,25 +104,38 @@ export class ChatRoomService {
 		const salt = await bcrypt.genSalt();
 		return await bcrypt.hash(password, salt);
 	}
-	async createChannelRoom(user_id: number, name: string, password: string) {
+	async createChannelRoom(user_id: number, name: string, password: string, is_private: boolean) {
 		var room_id: number = -1;
-		if (password.length !== 0) {
-			const hashed_pass = await this.hashPass(password);
-			room_id = await this.dbChatRoomService.create({
-				name: name,
-				password: hashed_pass,
-			});
-			await this.dbChatRoomService.updateType(room_id, {
-				type: RoomType.PROTECTED,
-			});
-		} else {
+		if (is_private)
+		{
 			room_id = await this.dbChatRoomService.create({
 				name: name,
 				password: "",
 			});
 			await this.dbChatRoomService.updateType(room_id, {
-				type: RoomType.PUBLIC,
+				type: RoomType.PRIVATE,
 			});
+		}
+		else
+		{
+			if (password.length !== 0) {
+				const hashed_pass = await this.hashPass(password);
+				room_id = await this.dbChatRoomService.create({
+					name: name,
+					password: hashed_pass,
+				});
+				await this.dbChatRoomService.updateType(room_id, {
+					type: RoomType.PROTECTED,
+				});
+			} else {
+				room_id = await this.dbChatRoomService.create({
+					name: name,
+					password: "",
+				});
+				await this.dbChatRoomService.updateType(room_id, {
+					type: RoomType.PUBLIC,
+				});
+			}
 		}
 		await this.dbUserChatRoomService.create(
 			{ isOwner: true, isAdmin: true },
@@ -136,9 +149,10 @@ export class ChatRoomService {
 		user_id: number,
 		name: string,
 		password: string,
+		is_private: boolean,
 		user_ids: number[],
 	) {
-		const room_id = await this.createChannelRoom(user_id, name, password);
+		const room_id = await this.createChannelRoom(user_id, name, password, is_private);
 		for (let id of user_ids) {
 			await this.dbUserChatRoomService.create(
 				{ isOwner: false, isAdmin: false },
