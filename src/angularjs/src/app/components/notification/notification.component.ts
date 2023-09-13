@@ -37,6 +37,13 @@ export class NotificationComponent{
 	private eventCallback = new Subject<string>();
 	eventCallback$ = this.eventCallback.asObservable();
 
+	notif: NotificationI = {
+		id: 1,
+		type: NotificationType.FRIEND_REQ_DENIED_FROM,
+		isSeen: false,
+		data: 'rrollin'
+	};
+
 	constructor (
 		private renderer: Renderer2,
 		private notificationService: NotificationService,
@@ -73,20 +80,6 @@ export class NotificationComponent{
 		this.renderer.addClass(component.location.nativeElement, 'notification');
 		setTimeout(() => {
 			this.container.remove(0);
-		}, 5000);
-	}
-
-
-
-	displayPopup(message: string) {
-		const container = document.getElementById('container');
-		const elem = this.renderer.createElement('div');
-		const text = this.renderer.createText(message);
-		this.renderer.appendChild(elem, text);
-		this.renderer.addClass(elem, 'notification');
-		this.renderer.appendChild(container, elem);
-		setTimeout(() => {
-			this.renderer.removeChild(container, elem);
 		}, 5000);
 	}
 }

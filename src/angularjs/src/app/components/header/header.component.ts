@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { trigger, style, animate, transition, state } from '@angular/animations';
-import { FriendService } from 'src/app/services/websocket/friend/service';
-import { NotificationI, NotificationType } from 'src/app/interfaces/notification.interface';
+import { NotificationI } from 'src/app/interfaces/notification.interface';
 import { NotificationService } from 'src/app/services/websocket/notification/service';
 @Component({
   selector: 'app-header',
@@ -38,9 +37,6 @@ export class HeaderComponent {
 		private userService: UserService,
 		public notificationService: NotificationService
 		) {}
-
-	async ngOnInit() {
-	}
 
 	SignOut()
 	{ this.userService.SignOut(); }

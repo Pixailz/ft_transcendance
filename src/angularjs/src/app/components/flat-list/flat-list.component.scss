@@ -9,14 +9,13 @@
 
 ul {
 	max-height: 300px;
-	overflow-y: scroll;
-	overflow-x: hidden;
 	width: 200px;
+	overflow-y: scroll;
 	li:not(:last-child) {
 		border-bottom: 1px dashed rgba(255,255,255,0.4);
 	}
+}
 
-	li {
-		margin: 10px;
-	}
+li, .container {
+	padding: 10px;
 }
