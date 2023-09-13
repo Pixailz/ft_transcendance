@@ -12,6 +12,7 @@ import { MessageEntity } from "../message/entity";
 import { FriendEntity } from "../friend/entity";
 import { BlockedEntity } from "../blocked/entity"
 import { Exclude } from "class-transformer";
+import { MutedEntity } from "../muted/entity";
 
 export enum Status {
 	DISCONNECTED,
@@ -82,12 +83,19 @@ export class UserEntity {
 	@OneToMany((type) => FriendEntity, (friend) => friend.friend)
 	friendReq: FriendEntity[];
 
-	// muted
+	// blocked
 	@OneToMany((type) => BlockedEntity, (blocked) => blocked.me)
 	meBlocked: BlockedEntity[];
 
 	@OneToMany((type) => BlockedEntity, (blocked) => blocked.blocked)
 	blocked: BlockedEntity[];
+
+	// muted
+	@OneToMany((type) => MutedEntity, (muted) => muted.me)
+	meMuted: MutedEntity[];
+
+	@OneToMany((type) => MutedEntity, (muted) => muted.muted)
+	muted: MutedEntity[];
 
 	constructor(partial: Partial<UserEntity>) {
 		Object.assign(this, partial);
