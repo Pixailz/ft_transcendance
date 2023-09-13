@@ -15,13 +15,12 @@
 			<span>{{user_info.lastSeen | date: 'dd/MM/YYYY HH:mm:ss'}}</span>
 		</div>
 	</div>
-	<app-flat-button *ngIf="!friendService.alreadyFriend(user_info.id)"
+	<app-flat-button *ngIf="!friendService.alreadyFriend(user_info.id) && !friendService.isMe(user_info.id, user_id)"
 		class="friend-btn" bgColor="#a3d0dc" [fontIcon]="friendService.alreadySend(user_info.id)?'done':'person_add'"
 		color="white" (click)="sendFriendRequest(user_info.id)"
 		[isActive]="friendService.alreadySend(user_info.id)">
 	</app-flat-button>
 </div>
-<app-flat-button class="refresh" bgColor="#ffb1b1" fontIcon="refresh" (click)="onGetInfo()"></app-flat-button>
 
 <ng-template #userNotFound>
 	<h1>User Not Found</h1>

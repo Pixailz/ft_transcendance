@@ -1,22 +1,22 @@
 :host {
-    position: absolute;
-    background-color: white;
-    border: 3px solid black;
-    top: 70px;
-    z-index: 50;
-    right: 0;
-    padding: 10px;
-    width: 200px;
-    text-align: center;
+	position: absolute;
+	top: 70px;
+	z-index: 50;
+	right: 0;
+	width: 200px;
+	color: white;
 }
 
 ul {
-    max-height: 100px;
-    max-width: 200px;
-    li {
-        display: flex;
-        span {
-            margin-right: 5px;
-        }
-    }
+	max-height: 300px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	width: 200px;
+	li:not(:last-child) {
+		border-bottom: 1px dashed rgba(255,255,255,0.4);
+	}
+
+	li {
+		margin: 10px;
+	}
 }

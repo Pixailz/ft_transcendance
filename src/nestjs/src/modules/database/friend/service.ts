@@ -77,7 +77,10 @@ export class DBFriendService {
 			meId: me_id,
 			friendId: friend_id,
 		});
-		if (tmp) return await this.friendRepo.delete(tmp);
+		if (tmp) return await this.friendRepo.delete({
+			meId: me_id,
+			friendId: friend_id,
+		});
 		else throw new NotFoundException("Friend relation not found");
 	}
 }

@@ -25,50 +25,50 @@ export class ChatChannelService {
 	) {
 		this.wsGateway.getAllAvailableChannelRoom();
 		this.obsToDestroy.push(this.wsGateway.listenAllAvailableChannelRoom().subscribe((data: ChatRoomI[]) => {
-			console.log("event AllAvailableChannelRoom received");
+			console.log("[WS:ChatChannel] AllAvailableChannelRoom event")
 			this.updateAllAvailableChannelRoom(data);
 		}))
 
 		this.obsToDestroy.push(this.wsGateway.listenNewGlobalMessage().subscribe((data: any) => {
-			console.log("event getNewGlobalMessage received");
+			console.log("[WS:ChatChannel] getNewGlobalMessage event")
 			this.updateNewGlobalMessage(data);
 		}));
 
 		this.obsToDestroy.push(this.wsGateway.listenNewUserJoinChannelRoom().subscribe((data: UserChatRoomI) => {
-			console.log("event NewUserJoinChannelRoom received");
+			console.log("[WS:ChatChannel] NewUserJoinChannelRoom event")
 			this.updateNewUserJoinChannelRoom(data);
 		}));
 
 		this.obsToDestroy.push(this.wsGateway.listenNewDetailsChannelRoom().subscribe((data: ChatRoomI) => {
-			console.log("event NewDetailsChannelRoom received");
+			console.log("[WS:ChatChannel] NewDetailsChannelRoom event")
 			this.updateNewDetailsChannelRoom(data);
 		}));
 
 		this.obsToDestroy.push(this.wsGateway.listenRoomAction().subscribe((data: any) => {
-			console.log("event RoomAction");
+			console.log("[WS:ChatChannel] RoomAction event")
 			this.updateRoomAction(data);
 		}));
 
 		this.obsToDestroy.push(this.wsGateway.listenNewJoinedChannelRoom().subscribe((data: ChatRoomI) => {
-			console.log("event NewJoinedChannelRoom received");
+			console.log("[WS:ChatChannel] NewJoinedChannelRoom event")
 			this.updateNewJoinedChannelRoom(data);
 		}));
 
 		this.obsToDestroy.push(this.wsGateway.listenNewAvailableChannelRoom().subscribe((data: ChatRoomI) => {
-			console.log("event NewAvailableChannelRoom received");
+			console.log("[WS:ChatChannel] NewAvailableChannelRoom event")
 			this.updateNewAvailableChannelRoom(data);
 		}));
 
 		this.wsGateway.getAllJoinedChannelRoom();
 		this.obsToDestroy.push(this.wsGateway.listenAllJoinedChannelRoom().subscribe((data: ChatRoomI[]) => {
-			console.log("event AllJoinedChannelRoom received");
+			console.log("[WS:ChatChannel] AllJoinedChannelRoom event")
 			this.updateAllJoinedChannelRoom(data);
 		}));
 	}
 
 	ngOnDestroy()
 	{
-		console.log("[CHANNEL] destroyer");
+		console.log("[WS:ChatChannel] onDestroy")
 		this.wsService.unsubscribeObservables(this.obsToDestroy);
 	}
 
@@ -350,24 +350,8 @@ export class ChatChannelService {
 
 	getInfo()
 	{
-		const	selected_room = this.getSelectedRoom();
-
-		// console.clear();
-
+		console.log("[CHANNEL]");
 		console.log(this.chat);
-
-		if (selected_room.id === -1)
-			console.log("[onGetInfo] selected_room not found");
-		else
-			console.log("[onGetInfo] selected_room", selected_room);
-
-		console.log("[onGetinfo] available_room", this.chat.available_room);
-		console.log("[onGetinfo] joined_room", this.chat.joined_room);
-
-		// if (selected_room.id === -1)
-		// 	console.log("[onGetInfo] selected_room not found");
-		// else
-		// 	console.log("[onGetInfo] selected_room", selected_room);
 	}
 }
 

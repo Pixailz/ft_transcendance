@@ -225,10 +225,52 @@
 						</div>
 					</mat-card-content>
 				</form>
+				<form [formGroup]="roomManagementUser">
+					<mat-form-field style="width: 80%; margin: 10px;">
+						<mat-label>Selected Friend</mat-label>
+						<mat-select multiple formControlName="user">
+							<mat-option *ngFor="let friend of getManagementAddUser()" [value]="friend">
+							{{userService.getUserInfoFormated(friend)}}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+					<br>
+					<p *ngFor="let user of roomManagementUser.value?.user;">{{user.ftLogin}}</p>
+					<mat-card-actions>
+						<div class="buttoncontainer">
+							<button
+								mat-raised-button
+								color="primary"
+								(click)="onClearManagementUser()"
+								[disabled]="!roomManagementUser.value?.user?.length"
+							>
+								Clear
+							</button>
+						</div>
+					</mat-card-actions>
+					<mat-card-actions>
+						<div class="buttoncontainer">
+							<button
+								mat-raised-button
+								color="primary"
+								(click)="onAddUser()"
+								[disabled]="!roomManagementUser.value?.user?.length"
+							>
+								Add
+							</button>
+						</div>
+					</mat-card-actions>
+				</form>
 			</div>
 			<div class="room-management-user">
 				<div *ngIf="chatChannelService.getSelectedRoom().id !== -1">
 					<h4>ROOM INFO</h4>
+				</div>
+				<button mat-raised-button color="warn"
+					(click)="onLeave()">
+					LEAVE
+				</button>
+				<div>
 					<p>ID    : {{chatChannelService.getSelectedRoom().id}}</p>
 					<p>NAME  : {{chatChannelService.getSelectedRoom().name}}</p>
 					<p>TYPE  : {{chatRoomService .getRoomTypeStr(chatChannelService.getSelectedRoom())}}</p>
@@ -241,19 +283,19 @@
 					<div *ngFor="let user of chatChannelService.getSelectedRoomUser()">
 						{{user.ftLogin}} ({{user.nickname}})
 						<div class="button-row">
-							<button mat-raised-button color="primary"
+							<button mat-raised-button color="warn"
 								(click)="onKickUser(user)"
-								[disabled]="!canKickUser()">
+								[disabled]="!canKickUser(user)">
 								KICK
 							</button>
-							<button mat-raised-button color="primary"
+							<button mat-raised-button color="warn"
 								(click)="onBanUser(user)"
-								[disabled]="!canBanUser()">
+								[disabled]="!canBanUser(user)">
 								BAN
 							</button>
-							<button mat-raised-button color="primary"
+							<button mat-raised-button color="warn"
 								(click)="onMuteUser(user)"
-								[disabled]="!canMuteUser()">
+								[disabled]="!canMuteUser(user)">
 								MUTE
 							</button>
 							<button mat-raised-button color="primary"
@@ -300,4 +342,3 @@
 		</button>
 	</div>
 </div>
-<app-flat-button class="refresh" bgColor="#ffb1b1" fontIcon="refresh" (click)="onGetInfo()"></app-flat-button>

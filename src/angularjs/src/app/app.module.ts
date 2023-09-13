@@ -42,10 +42,17 @@ import { FlatListComponent } from './components/flat-list/flat-list.component';
 import { NotificationComponent } from './components/notification/notification.component';
 import { RouteReuseStrategy } from '@angular/router';
 import { CustomReuseStrategy } from './reuse-strategy';
+import {MatBadgeModule} from '@angular/material/badge';
 
 // WEBSOCKET
 import { WSChatDmComponent } from './pages/chat-dm/chat-dm.component';
 import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
+import { TextNotificationComponent } from './components/text-notification/text-notification.component';
+import { NotifFriendReqReceivedComponent } from './components/notification/friend-req-received/friend-req-received.component';
+import { NotifFriendReqSentComponent } from './components/notification/friend-req-sent/friend-req-sent.component';
+import { NotifFriendReqAcceptedComponent } from './components/notification/friend-req-accepted/friend-req-accepted.component';
+import { NotifFriendReqDeniedFromComponent } from './components/notification/friend-req-denied-from/friend-req-denied-from.component';
+import { NotifFriendReqDeniedToComponent } from './components/notification/friend-req-denied-to/friend-req-denied-to.component';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -78,8 +85,14 @@ const config: SocketIoConfig = {
 		ErrordialogComponent,
 		FlatListComponent,
 		NotificationComponent,
+		TextNotificationComponent,
 		WSChatDmComponent,
 		WSChatChannelComponent,
+		NotifFriendReqSentComponent,
+		NotifFriendReqReceivedComponent,
+		NotifFriendReqAcceptedComponent,
+		NotifFriendReqDeniedFromComponent,
+		NotifFriendReqDeniedToComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -102,7 +115,8 @@ const config: SocketIoConfig = {
 		FormsModule,
 		MatProgressBarModule,
 		SocketIoModule.forRoot(config),
-		CodeInputModule
+		CodeInputModule,
+		MatBadgeModule
 	],
 	providers: [
 		AuthGuardService,

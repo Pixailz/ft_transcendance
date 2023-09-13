@@ -8,6 +8,7 @@ import { UserI } from 'src/app/interfaces/user.interface';
 import { ChatRoomService } from 'src/app/services/websocket/chat/chatroom.service';
 import { ChatChannelService } from 'src/app/services/websocket/chat/channel/service';
 import { ChatDmService } from 'src/app/services/websocket/chat/direct-message/service';
+import { FriendService } from 'src/app/services/websocket/friend/service';
 
 @Component({
 	selector: 'app-chat-channel',
@@ -29,6 +30,7 @@ export class WSChatChannelComponent implements OnInit {
 		public chatDmService: ChatDmService,
 		public chatChannelService: ChatChannelService,
 		public chatRoomService: ChatRoomService,
+		public friendService: FriendService,
 		public userService: UserService,
 		private formBuilder: FormBuilder,
 	) {}
@@ -110,6 +112,22 @@ export class WSChatChannelComponent implements OnInit {
 		this.wsGateway.changeRoomDetails(selected_room.id, this.roomManagementDetails.value);
 	}
 
+	onAddUser()
+	{
+		if (!this.roomManagementUser.value ||
+			!this.roomManagementUser.value.user ||
+			!this.roomManagementUser.value.user.length)
+			return ;
+		const user_id: number[] = [];
+		for (var user of this.roomManagementUser.value.user)
+			user_id.push(user.id);
+		this.wsGateway.addUserToRoom(this.chatChannelService.getSelectedRoom().id, user_id);
+		this.onClearManagementUser();
+	}
+
+	onLeave()
+	{ this.wsGateway.leaveRoom(this.chatChannelService.getSelectedRoom().id, this.userService.user.id); }
+
 	onRoomAction(action: RoomAction, target_id: number)
 	{
 		const selected_room = this.chatChannelService.getSelectedRoom();
@@ -141,10 +159,6 @@ export class WSChatChannelComponent implements OnInit {
 
 	onGiveKrownUser(user: UserI)
 	{ this.onRoomAction(RoomAction.OWNERSHIP, user.id); }
-
-
-	onGetInfo()
-	{ this.chatChannelService.getInfo(); }
 
 	onCreatingRoom()
 	{ this.popupType = "create-join"; }
@@ -192,6 +206,24 @@ export class WSChatChannelComponent implements OnInit {
 	getJoinUser()
 	{ return (this.chatChannelService.getJoinUser(this.joinSelectedRoom)); }
 
+	getManagementAddUser(): UserI[]
+	{
+		const user: UserI[] = this.chatChannelService.getSelectedRoomUser();
+		var friend: UserI[] = this.friendService.getFriends();
+
+		for (var i = 0; i < user.length; i++)
+		{
+			for (var j = 0; j < friend.length; j++)
+			{
+				if (user[i].id === friend[j].id)
+				{
+					friend.splice(j, 1);
+					continue ;
+				}
+			}
+		}
+		return (friend);
+	}
 
 	getCreateFriendUser(): UserI[]
 	{
@@ -205,26 +237,50 @@ export class WSChatChannelComponent implements OnInit {
 		this.message = "";
 	}
 
-	canChangeRoomDetails()
+	canChangeRoomDetails(): boolean
 	{ return (this.chatChannelService.isOwnerSelectedRoom()); }
 
-	canGiveKrownUser()
+	canGiveKrownUser(): boolean
 	{ return (this.chatChannelService.isOwnerSelectedRoom()); }
 
-	canPromoteUser()
+	canPromoteUser(): boolean
 	{ return (this.chatChannelService.isOwnerSelectedRoom()); }
 
-	canKickUser()
-	{ return (this.chatChannelService.isOwnerSelectedRoom() ||
-								this.chatChannelService.isAdminSelectedRoom()); }
+	canKickUser(target: UserI): boolean
+	{
+		var can: boolean = false;
 
-	canBanUser()
-	{ return (this.chatChannelService.isOwnerSelectedRoom() ||
-								this.chatChannelService.isAdminSelectedRoom()); }
+		if (this.chatChannelService.isOwnerSelectedRoom() ||
+								this.chatChannelService.isAdminSelectedRoom())
+			can = true;
+		if (this.chatChannelService.getOwner().id === target.id)
+			can = false;
+		return (can);
+	}
 
-	canMuteUser()
-	{ return (this.chatChannelService.isOwnerSelectedRoom() ||
-								this.chatChannelService.isAdminSelectedRoom()); }
+	canBanUser(target: UserI): boolean
+	{
+		var can: boolean = false;
+
+		if (this.chatChannelService.isOwnerSelectedRoom() ||
+								this.chatChannelService.isAdminSelectedRoom())
+			can = true;
+		if (this.chatChannelService.getOwner().id === target.id)
+			can = false;
+		return (can);
+	}
+
+	canMuteUser(target: UserI): boolean
+	{
+		var can: boolean = false;
+
+		if (this.chatChannelService.isOwnerSelectedRoom() ||
+								this.chatChannelService.isAdminSelectedRoom())
+			can = true;
+		if (this.chatChannelService.getOwner().id === target.id)
+			can = false;
+		return (can);
+	}
 
 
 	isFollowingDay(i: number): boolean {

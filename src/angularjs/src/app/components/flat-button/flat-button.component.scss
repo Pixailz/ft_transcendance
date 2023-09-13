@@ -1,15 +1,24 @@
+:host {
+	--bg-color: 255, 255, 255;
+	--color: white;
+}
+
 button {
 	width: 50px;
 	aspect-ratio: 1;
-	background-color: white;
-	border: 3px solid black;
-	color: black;
-	box-shadow: 3px 3px black;
+	border: 1px solid rgba(255,255,255,0.4);
+	background: rgba(var(--bg-color), 0.3);
+	color: var(--color);
+	border-radius: 10px;
+	backdrop-filter: blur(10px);
 	cursor: pointer;
+	transition: background .2s linear;
 }
 
 button.true, button:hover {
-	transform: translate(3px, 3px);
-	box-shadow: 0 0;
-	filter: brightness(80%);
+	background: rgba(var(--bg-color), 0.6);
+}
+
+button.true {
+	cursor: default;
 }

@@ -11,6 +11,7 @@ import { WSChatDmService } from "./chat/chat-dm.service";
 import { WSFriendService } from "./friend/friend.service";
 import { WSService } from "./ws.service";
 import { Sanitize } from "../sanitize-object";
+import { WSNotificationService } from "./notifications/notifications.service";
 
 @Module({
 	imports: [AuthModule, DBModule],
@@ -24,6 +25,7 @@ import { Sanitize } from "../sanitize-object";
 		WSChatDmService,
 		WSChatChannelService,
 		WSFriendService,
+		WSNotificationService,
 	],
 })
 export class WSModule {}

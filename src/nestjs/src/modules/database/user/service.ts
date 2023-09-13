@@ -3,6 +3,7 @@ import {
 	Injectable,
 	BadRequestException,
 	InternalServerErrorException,
+	ConflictException,
 } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -53,8 +54,15 @@ export class DBUserService {
 
 	async update(userId: number, userPost: DBUserInfoPost) {
 		const user = await this.get_user(userId, null);
-		if (user) return await this.userRepo.update(userId, userPost);
-		else throw new NotFoundException("User not found");
+		if (!user)
+			throw new NotFoundException("User not found");
+		if (userPost.nickname)
+		{
+			const check_name = await this.userRepo.findOneBy({nickname: userPost.nickname});
+			if (check_name)
+				throw new ConflictException("Nickname already taken");
+		}
+		return await this.userRepo.update(userId, userPost);
 	}
 
 	async delete(userId: number) {

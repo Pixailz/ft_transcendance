@@ -10,47 +10,36 @@ import { UserEntity } from "../user/entity";
 export class DBMutedService {
 	constructor(
 		@InjectRepository(MutedEntity)
-		private readonly mutedRepo: Repository<MutedEntity>,
+		private readonly blockedRepo: Repository<MutedEntity>,
 		@InjectRepository(UserEntity)
 		private readonly userRepo: Repository<UserEntity>,
 	) {}
 
 	async create(post: DBMutedPost, meId: number) {
-		const user1 = await this.userRepo.findOneBy({ id: meId });
-		const user2 = await this.userRepo.findOneBy({ id: post.mutedId });
-		if (!user1 || !user2) throw new NotFoundException("User not found");
+		const user1 = await this.userRepo.findOneBy({id: meId});
+		const user2 = await this.userRepo.findOneBy({id: post.blockedId});
+		if (!user1 || !user2)
+			throw new NotFoundException("User not found");
 		let list = new MutedEntity();
 		list.meId = meId;
-		list.mutedId = post.mutedId;
-		await this.mutedRepo.save(list);
+		list.mutedId = post.blockedId;
+		await this.blockedRepo.save(list);
 		return list;
 	}
 
 	async returnAll() {
-		return await this.mutedRepo.find();
+		return await this.blockedRepo.find();
 	}
 
-	async returnOne(me_id: number, Muted_id: number) {
-		const tmp = await this.mutedRepo.findOneBy({
-			meId: me_id,
-			mutedId: Muted_id,
-		});
+	async returnOne(me_id: number, muted_id: number) {
+		const tmp = await this.blockedRepo.findOneBy({ meId: me_id, mutedId: muted_id });
 		if (tmp) return tmp;
-		else throw new NotFoundException("Muted relation not found");
+		else throw new NotFoundException("blocked relation not found");
 	}
 
-	// async update(me_id: number, Muted_id: number, post: DBMutedPost) {
-	// 	const tmp = await this.mutedRepo.findOneBy({ meId: me_id, MutedId: Muted_id });
-	// 	if (tmp) return await this.mutedRepo.update(tmp, post);
-	// 	else throw new NotFoundException("Muted relation not found");
-	// }
-
-	async delete(me_id: number, Muted_id: number) {
-		const tmp = await this.mutedRepo.findOneBy({
-			meId: me_id,
-			mutedId: Muted_id,
-		});
-		if (tmp) return await this.mutedRepo.delete(tmp);
-		else throw new NotFoundException("Muted relation not found");
+	async delete(me_id: number, muted_id: number) {
+		const tmp = await this.blockedRepo.findOneBy({ meId: me_id, mutedId: muted_id });
+		if (tmp) return await this.blockedRepo.delete({ meId: me_id, mutedId: muted_id });
+		else throw new NotFoundException("blocked relation not found");
 	}
 }

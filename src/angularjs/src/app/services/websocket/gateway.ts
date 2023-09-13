@@ -32,9 +32,6 @@ export class WSGateway {
 	listenAllDmRoom(): Observable<ChatRoomI[]>
 	{ return this.socket.fromEvent<ChatRoomI[]>("getAllDmRoom"); }
 
-	listenAllDmMessage(): Observable<any>
-	{ return this.socket.fromEvent<any>("getAllDmMessage"); }
-
 	listenNewDmRoom(): Observable<ChatRoomI>
 	{ return this.socket.fromEvent<ChatRoomI>("getNewDmRoom"); }
 
@@ -45,9 +42,6 @@ export class WSGateway {
 	getAllDmRoom()
 	{ this.socket.emit("getAllDmRoom"); }
 
-	getAllDmMessage()
-	{ this.socket.emit("getAllDmMessage"); }
-
 	createDmRoom(dst_id: number)
 	{ this.socket.emit("createDmRoom", dst_id); }
 
@@ -55,7 +49,7 @@ export class WSGateway {
 	{ this.socket.emit("sendDmMessage", room_id, message); }
 
 
-	// GLOBAL CHAT
+	// CHANNEL CHAT
 
 	// LISTENER
 	listenAllAvailableChannelRoom(): Observable<ChatRoomI[]>
@@ -103,11 +97,19 @@ export class WSGateway {
 	{ this.socket.emit("sendGlobalMessage", room_id, message); }
 
 	changeRoomDetails(room_id: number, data: any)
-	{ this.socket.emit("changeRoomDetails", room_id, {
+	{
+		this.socket.emit("changeRoomDetails", room_id, {
 			name: data.name,
 			password: data.password,
 			remove_pass: data.remove_pass,
-		}); }
+		});
+	}
+
+	addUserToRoom(room_id: number, user_id: number[])
+	{ this.socket.emit("addUserToRoom", room_id, user_id);}
+
+	leaveRoom(room_id: number, user_id: number)
+	{ this.socket.emit("leaveRoom", room_id, user_id); }
 
 	roomAction(room_id: number, action: RoomAction, target_id: number)
 	{ this.socket.emit("roomAction", room_id, action, target_id); }
@@ -151,4 +153,18 @@ export class WSGateway {
 	{ this.socket.emit("rejectFriendRequest", id); }
 
 	// NOTIFICATION
+
+	// LISTENER
+	listenAllNotifications(): Observable<any[]>
+	{ return this.socket.fromEvent<any[]>("getAllNotifications") }
+
+	listenNewNotification(): Observable<any>
+	{ return this.socket.fromEvent<any>("getNewNotification") }
+
+	listenDelNotification(): Observable<number>
+	{ return this.socket.fromEvent<number>("delNotification") }
+
+	// EMITER
+	getAllNotifications()
+	{ this.socket.emit("getAllNotifications"); }
 }

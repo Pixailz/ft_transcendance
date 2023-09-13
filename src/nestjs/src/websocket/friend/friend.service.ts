@@ -5,6 +5,8 @@ import { WSSocket } from "../socket.service";
 import { DBFriendRequestService } from "src/modules/database/friendRequest/service";
 import { DBFriendService } from "src/modules/database/friend/service";
 import { Sanitize } from "../../sanitize-object";
+import { DBNotificationService } from "src/modules/database/notification/service";
+import { WSNotificationService } from "../notifications/notifications.service";
 
 @Injectable()
 export class WSFriendService {
@@ -14,6 +16,7 @@ export class WSFriendService {
 		private dbFriendRequestService: DBFriendRequestService,
 		private dbFriendService: DBFriendService,
 		public wsSocket: WSSocket,
+		public wsNotificationService: WSNotificationService,
 	) {}
 
 	async getAllFriend(socket: Socket) {
@@ -45,18 +48,19 @@ export class WSFriendService {
 		const friend = await this.userService.getInfoById(friend_id);
 		const user = await this.userService.getInfoById(user_id);
 		await this.dbFriendRequestService.acceptReq(friend_id, user_id);
-		this.wsSocket.sendToUsers(
+		this.wsSocket.sendToUser(
 			server,
-			[user_id],
+			user_id,
 			"getNewFriend",
 			this.sanitize.User(friend),
 		);
-		this.wsSocket.sendToUsers(
+		this.wsSocket.sendToUser(
 			server,
-			[friend_id],
+			friend_id,
 			"getNewFriend",
 			this.sanitize.User(user),
 		);
+		await this.wsNotificationService.acceptFriendRequest(server, friend_id, user_id);
 	}
 
 	async rejectFriendRequest(
@@ -65,7 +69,6 @@ export class WSFriendService {
 		friend_id: number,
 	) {
 		const user_id = this.wsSocket.getUserId(socket.id);
-
 		await this.dbFriendRequestService.rejectReq(friend_id, user_id);
 		this.wsSocket.sendToUsers(
 			server,
@@ -76,6 +79,7 @@ export class WSFriendService {
 				target_id: friend_id,
 			},
 		);
+		await this.wsNotificationService.rejectFriendRequest(server, friend_id, user_id);
 	}
 
 	async sendFriendRequest(server: Server, socket: Socket, friend_id: number) {
@@ -83,10 +87,16 @@ export class WSFriendService {
 
 		if (await this.dbFriendService.alreadyFriend(friend_id, user_id))
 			return;
+		if (await this.dbFriendRequestService.alreadySent(friend_id, user_id))
+		{
+			await this.acceptFriendRequest(server, socket, friend_id);
+			return ;
+		}
 		await this.dbFriendRequestService.create(
 			{ friendId: friend_id },
 			user_id,
 		);
+
 		const full_request = await this.dbFriendRequestService.getFullRequest(
 			user_id,
 			friend_id,
@@ -97,5 +107,6 @@ export class WSFriendService {
 			"getNewFriendRequest",
 			this.sanitize.FriendRequest(full_request),
 		);
+		this.wsNotificationService.sendFriendRequest(server, friend_id, user_id);
 	}
 }

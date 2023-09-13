@@ -51,9 +51,9 @@ export class WSChatDmService {
 		for (let i = 0; i < chat_room.roomInfo.length; i++)
 			if (chat_room.roomInfo[i].user.id === user_id && user_id !== dst_id)
 				chat_room.roomInfo.splice(i, 1);
-		this.wsSocket.sendToUsers(
+		this.wsSocket.sendToUser(
 			server,
-			[user_id],
+			user_id,
 			"getNewDmRoom",
 			this.sanitize.ChatRoom(chat_room),
 		);
@@ -62,9 +62,9 @@ export class WSChatDmService {
 		for (let i = 0; i < chat_room.roomInfo.length; i++)
 			if (chat_room.roomInfo[i].user.id === dst_id)
 				chat_room.roomInfo.splice(i, 1);
-		this.wsSocket.sendToUsers(
+		this.wsSocket.sendToUser(
 			server,
-			[dst_id],
+			dst_id,
 			"getNewDmRoom",
 			this.sanitize.ChatRoom(chat_room),
 		);

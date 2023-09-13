@@ -8,19 +8,16 @@ header {
 header h1 {
 	font-family: 'Maven Pro', sans-serif;
 	font-size: 2.0em;
-	color: black;
-	background-color: white;
-	box-shadow: 3px 3px black;
-	border: 3px solid black;
+	color: white;
 	padding: 7px 20px;
 	margin: 0;
+	border-radius: 10px;
 	animation: colorfull 1s infinite;
 	cursor: pointer;
 }
 
 header h1:hover {
-	transform: translate(3px, 3px);
-	box-shadow: 0 0;
+	filter: brightness(80%);
 }
 
 .friend-menu {
@@ -56,7 +53,7 @@ header ul li.logout {
 	}
 
 	60% {
-		background-color: rgb(152, 255, 152)
+		background-color: rgb(152, 255, 152);
 	}
 
 	80% {
@@ -121,4 +118,16 @@ header ul.small-device li {
 header ul.small-device li.logout {
 	margin-bottom: 20px;
 	margin-top: auto;
+}
+
+app-flat-button {
+	--bg-color: 255, 255, 255;
+}
+
+app-flat-button.friend-btn {
+	--bg-color: 167, 220, 163;
+}
+
+app-flat-button.logout-btn {
+	--bg-color: 255, 177, 177;
 }

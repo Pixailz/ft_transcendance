@@ -7,6 +7,7 @@ import { DefFriendListI, FriendRequestI } from "src/app/interfaces/friend.interf
 import { DefUserI, UserI } from "src/app/interfaces/user.interface";
 import { ChatDmService } from "../chat/direct-message/service";
 import { Subscription } from "rxjs";
+import { WSService } from "../service";
 
 @Injectable({
 	providedIn: "root",
@@ -14,15 +15,17 @@ import { Subscription } from "rxjs";
 export class FriendService {
 	friend = DefFriendListI;
 	obsToDestroy: Subscription[] = [];
+
 	constructor(
 		private userService: UserService,
 		private chatDmService: ChatDmService,
 		private wsGateway: WSGateway,
+		private wsService: WSService,
 	) {
 		this.wsGateway.getAllFriend();
 		this.obsToDestroy.push(this.wsGateway.listenAllFriend()
 			.subscribe((friends: UserI[]) => {
-				console.log("event AllFriend received");
+				console.log("[WS:Friend] AllFriend event")
 				this.updateAllFriend(friends);
 			}
 		));
@@ -30,38 +33,46 @@ export class FriendService {
 		this.wsGateway.getAllFriendRequest();
 		this.obsToDestroy.push(this.wsGateway.listenAllFriendRequest()
 			.subscribe((friend_request: FriendRequestI[]) => {
-				console.log("event AllFriendRequest received ");
+				console.log("[WS:Friend] AllFriendRequest event")
 				this.updateAllFriendRequest(friend_request);
+				this.wsGateway.getAllDmRoom();
+				this.wsGateway.getAllNotifications();
 			}
 		));
 
 		this.obsToDestroy.push(this.wsGateway.listenNewFriendRequest()
 			.subscribe((friend_request: FriendRequestI) => {
-				console.log("event NewFriendRequest received");
+				console.log("[WS:Friend] NewFriendRequest event")
 				this.updateNewFriendRequest(friend_request);
 			}
 		));
 
 		this.obsToDestroy.push(this.wsGateway.listenNewFriend()
 			.subscribe((friends: UserI) => {
-				console.log("event NewFriend received");
+				console.log("[WS:Friend] NewFriend event")
 				this.updateNewFriend(friends);
 			}
 		));
 
 		this.obsToDestroy.push(this.wsGateway.listenDeniedFriendReq()
 			.subscribe((friends: UserI) => {
-				console.log("event DeniedFriendReq received");
+				console.log("[WS:Friend] DeniedFriendReq event")
 				this.updateDeniedFriendReq(friends);
 			}
 		));
 
 		this.obsToDestroy.push(this.wsGateway.listenNewStatusFriend()
 			.subscribe((data: any) => {
-				console.log("event NewStatusFriend received")
+				console.log("[WS:Friend] NewStatusFriend event")
 				this.updateNewFriendStatus(data);
 			}
 		));
+	}
+
+	ngOnDestroy()
+	{
+		console.log("[WS:Friend] onDestroy");
+		this.wsService.unsubscribeObservables(this.obsToDestroy);
 	}
 
 	updateAllFriend(friends: UserI[])
@@ -70,7 +81,7 @@ export class FriendService {
 
 		if (friends.length === 0)
 		{
-			this.friend.friends = { "-1": DefUserI };
+			this.friend.friends = { };
 			return ;
 		}
 		for (var i = 0; i < friends.length; i++)
@@ -119,7 +130,11 @@ export class FriendService {
 	}
 
 	updateNewFriendRequest(friend_request: FriendRequestI)
-	{ this.friend.friend_req.push(friend_request); }
+	{
+		if (this.alreadySend(friend_request.meId))
+			return ;
+		this.friend.friend_req.push(friend_request);
+	}
 
 	updateDeniedFriendReq(data: any)
 	{
@@ -135,26 +150,39 @@ export class FriendService {
 		this.friend.friends[friends_status.user_id].status = friends_status.status;
 	}
 
-	getFriendsRequest(): UserI[]
+	getFriendsRequest(): FriendRequestI[]
 	{
-		var user_list: UserI[] = [];
+		var friend_req: FriendRequestI[] = [];
 
 		for (var req of this.friend.friend_req)
-			if (req.meId !== this.userService.user.id)
-				user_list.push(req.me);
+			friend_req.push(req);
+		return (friend_req);
+	}
+
+	getFriends(): UserI[]
+	{
+		var user_list: UserI[] = [];
+		for (var user_id in this.friend.friends)
+			user_list.push(this.friend.friends[user_id]);
 		return (user_list);
 	}
 
 	acceptRequest(friend_id: number)
 	{ this.wsGateway.acceptFriendRequest(friend_id); }
 
-	rejectFriendReq(friend_id: number)
+	rejectRequest(friend_id: number)
 	{ this.wsGateway.rejectFriendRequest(friend_id); }
+
+	isMe(friend_id: number, id: number)
+	{
+		if (friend_id === id)
+			return (true);
+		return (false);
+	}
 
 	alreadyFriend(friend_id: number)
 	{
 		const friend_id_str = friend_id.toString();
-
 		for (var friends_id in this.friend.friends)
 			if (friends_id === friend_id_str)
 				return (true);
@@ -164,14 +192,15 @@ export class FriendService {
 	alreadySend(friend_id: number)
 	{
 		for (var i = 0; i < this.friend.friend_req.length; i++)
-			if (this.friend.friend_req[i].meId === friend_id ||
-				this.friend.friend_req[i].friendId === friend_id)
+			if (this.friend.friend_req[i].friendId === friend_id)
 				return (true);
 		return (false);
 	}
 
+
 	getInfo()
 	{
+		console.log("[FRIEND]");
 		console.log(this.friend);
 	}
 }

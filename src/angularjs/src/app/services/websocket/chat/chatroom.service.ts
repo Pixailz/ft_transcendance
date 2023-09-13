@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
-import { ChatRoomI, MessageI, RoomType } from "src/app/interfaces/chat-room.interface";
+import { ChatRoomI, RoomType } from "src/app/interfaces/chat-room.interface";
 import { UserChatRoomI } from "src/app/interfaces/user-chat-room.interface";
 import { DefUserI, UserI } from "src/app/interfaces/user.interface";
 import { UserService } from "../../user.service";
+import { MessageI } from "src/app/interfaces/message.inteface";
 
 @Injectable({
 	providedIn: "root",
@@ -100,7 +101,6 @@ export class ChatRoomService {
 
 	isGoodRoom(room: ChatRoomI): boolean
 	{ return (room && room.id !== -1); }
-
 
 	isGoodMessage(message: MessageI): boolean
 	{
