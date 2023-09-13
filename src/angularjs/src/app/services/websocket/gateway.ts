@@ -87,8 +87,8 @@ export class WSGateway {
 	getAllJoinedChannelRoom()
 	{ this.socket.emit("getAllJoinedChannelRoom"); }
 
-	createChannelRoom(name: string, password: string, user_id: number[])
-	{ this.socket.emit("createChannelRoom", name, password, user_id); }
+	createChannelRoom(name: string, password: string, is_private: number, user_id: number[])
+	{ this.socket.emit("createChannelRoom", name, password, is_private, user_id); }
 
 	joinChannelRoom(room_id: number, password: string)
 	{ this.socket.emit("joinChannelRoom", room_id, password); }

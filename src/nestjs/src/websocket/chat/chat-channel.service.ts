@@ -68,6 +68,7 @@ export class WSChatChannelService {
 		socket: Socket,
 		name: string,
 		password: string,
+		is_private: boolean,
 		user_ids: number[],
 	) {
 		const user_id = this.wsSocket.getUserId(socket.id);
@@ -75,17 +76,21 @@ export class WSChatChannelService {
 			user_id,
 			name,
 			password,
+			is_private,
 			user_ids,
 		);
-		const available_room =
-			await this.chatRoomService.getAvailableChannelRoom(room_id);
+		if (!is_private)
+		{
+			const available_room =
+				await this.chatRoomService.getAvailableChannelRoom(room_id);
+			this.wsSocket.sendToAllSocket(
+				server,
+				"getNewAvailableChannelRoom",
+				this.sanitize.ChatRoom(available_room),
+			);
+		}
 		const joined_room = await this.chatRoomService.getJoinedChannelRoom(
 			room_id,
-		);
-		this.wsSocket.sendToAllSocket(
-			server,
-			"getNewAvailableChannelRoom",
-			this.sanitize.ChatRoom(available_room),
 		);
 		user_ids.push(user_id);
 		this.wsSocket.sendToUsers(

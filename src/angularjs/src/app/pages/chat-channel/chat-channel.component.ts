@@ -39,6 +39,7 @@ export class WSChatChannelComponent implements OnInit {
 		this.roomCreateForm = this.formBuilder.group({
 			roomName: "",
 			password: "",
+			is_private: false,
 		}, { updateOn: "change" });
 
 		this.roomCreateFriends = this.formBuilder.group({
@@ -83,6 +84,7 @@ export class WSChatChannelComponent implements OnInit {
 		this.wsGateway.createChannelRoom(
 			this.roomCreateForm.value.roomName,
 			this.roomCreateForm.value.password,
+			this.roomCreateForm.value.is_private,
 			user_list
 		);
 		this.onClearCreate();
