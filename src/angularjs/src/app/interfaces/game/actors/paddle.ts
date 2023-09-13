@@ -29,7 +29,7 @@ export class Paddle extends ex.Actor {
             this.pos.x = this.width / 2;
         }
         if (this.pos.x > engine.canvasWidth - (this.width / 2)) {
-            this.pos.x = engine.canvasWidth - (this.width / 2);
+            this.pos.x = engine.canvasWidth - this.width / 2);
         }
         // if (this.pos.x + this.width / 2 > engine.drawHeight) {
         //     this.pos.x = engine.drawHeight - this.width / 2;
