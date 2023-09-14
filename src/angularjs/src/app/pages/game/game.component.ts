@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GameService } from 'src/app/services/game/game.service';
-import { GameRoomState } from 'src/app/services/game/schemas/game-room';
+import { GameRoomState } from 'src/app/interfaces/game/schemas/game-room';
 import { Schema } from '@colyseus/schema';
 import { Room } from 'colyseus.js';
 

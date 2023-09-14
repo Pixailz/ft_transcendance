@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GameService } from 'src/app/services/game/game.service';
 import * as ex from 'excalibur';
-import { GameRoomState, GameRoomStatus } from 'src/app/services/game/schemas/game-room';
+import { GameRoomState, GameRoomStatus } from 'src/app/interfaces/game/schemas/game-room';
 import { Paddle } from 'src/app/interfaces/game/actors/paddle';
 import { Ball } from 'src/app/interfaces/game/actors/ball';
 import { UserService } from 'src/app/services/user.service';
@@ -28,7 +28,7 @@ export class GameRoomComponent implements OnInit {
       canvasElementId: 'pong',
     });
     const localPaddle = new Paddle(engine.drawWidth / 2, engine.drawHeight - 50, 200, 20, ex.Color.Red, ex.Keys.A, ex.Keys.D);
-    const remotePaddle = new Paddle(engine.drawWidth / 2, 50, 200, 20, ex.Color.Green, ex.Keys.Left, ex.Keys.Right);
+    const remotePaddle = new Paddle(engine.drawWidth / 2, 50, 200, 20, ex.Color.Green, undefined, undefined);
     const ball = new Ball(engine.drawWidth / 2, engine.drawHeight / 2, 5, 0, 20, 20, ex.Color.Red);
     const localScore = new ex.Label({
       x: engine.halfDrawWidth / 2,
@@ -59,14 +59,14 @@ export class GameRoomComponent implements OnInit {
     engine.start().then(() => {
       engine.goToScene('game');
       this.gameService.room.onStateChange((state: GameRoomState) => {
-        if (this.meId == state.player1X) {
-          localPaddle.pos.x = state.player1X;
+        if (this.gameService.room.sessionId == state.player1Id) {
+          //localPaddle.pos.x = state.player1X;
           remotePaddle.pos.x = state.player2X;
           localScore.text = state.score1.toString();
           remoteScore.text = state.score2.toString();
         }
         else {
-          localPaddle.pos.x = state.player2X;
+          //localPaddle.pos.x = state.player2X;
           remotePaddle.pos.x = state.player1X;
           localScore.text = state.score2.toString();
           remoteScore.text = state.score1.toString();
@@ -86,6 +86,14 @@ export class GameRoomComponent implements OnInit {
       //paddle1.pos.x = evt.worldPos.x;
       //this.gameService.room?.send('paddle1', paddle1.pos.y);
     });
-    
+
+    engine.input.keyboard.on('hold', (evt) => {
+      if (evt.key === ex.Input.Keys.A) {
+        this.gameService.room.send('move', 'left');
+      }
+      if (evt.key === ex.Input.Keys.D) {
+        this.gameService.room.send('move', 'right');
+      }
+    });
   }
 }
