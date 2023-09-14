@@ -9,6 +9,7 @@ import { NotifFriendReqDeniedFromComponent } from './friend-req-denied-from/frie
 import { NotifFriendReqDeniedToComponent } from './friend-req-denied-to/friend-req-denied-to.component';
 import { Subject } from 'rxjs';
 import { NotificationService } from 'src/app/services/websocket/notification/service';
+import { TextNotificationComponent } from '../text-notification/text-notification.component';
 
 
 @Component({
@@ -53,16 +54,16 @@ export class NotificationComponent{
 				component = this.container.createComponent(NotifFriendReqReceivedComponent);
 				break;
 			case NotificationType.FRIEND_REQ_SENT:
-				component = this.container.createComponent(NotifFriendReqSentComponent);
+				component = this.container.createComponent(TextNotificationComponent);
 				break;
 			case NotificationType.FRIEND_REQ_ACCEPTED:
-				component = this.container.createComponent(NotifFriendReqAcceptedComponent);
+				component = this.container.createComponent(TextNotificationComponent);
 				break;
 			case NotificationType.FRIEND_REQ_DENIED_FROM:
-				component = this.container.createComponent(NotifFriendReqDeniedFromComponent);
+				component = this.container.createComponent(TextNotificationComponent);
 				break;
 			case NotificationType.FRIEND_REQ_DENIED_TO:
-				component = this.container.createComponent(NotifFriendReqDeniedToComponent);
+				component = this.container.createComponent(TextNotificationComponent);
 				break;
 			default:
 				break;

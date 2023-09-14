@@ -81,6 +81,7 @@ export class DBFriendService {
 			meId: me_id,
 			friendId: friend_id,
 		});
-		else throw new NotFoundException("Friend relation not found");
+		else
+			return ;
 	}
 }
