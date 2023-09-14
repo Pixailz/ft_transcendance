@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { GameService } from 'src/app/services/game/game.service';
 import * as ex from 'excalibur';
-import { GameRoomState, GameRoomStatus } from 'src/app/interfaces/game/schemas/game-room';
+import {
+  GameRoomState,
+  GameRoomStatus,
+} from 'src/app/interfaces/game/schemas/game-room';
 import { Paddle } from 'src/app/interfaces/game/actors/paddle';
 import { Ball } from 'src/app/interfaces/game/actors/ball';
 import { UserService } from 'src/app/services/user.service';
@@ -12,88 +15,137 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./game-room.component.css'],
 })
 export class GameRoomComponent implements OnInit {
-  meId: number;
-  constructor(
-    private gameService: GameService,
-    private userService: UserService,
-  ) {
-    this.meId = this.userService.user.id;
+  private meId: string;
+  private engine: ex.Engine;
+  private game: ex.Scene;
+  private localPaddle: Paddle;
+  private remotePaddle: Paddle;
+  private ball: Ball;
+  private localScore: ex.Label;
+  private remoteScore: ex.Label;
+  private gameStatus: ex.Label;
+  private readonly paddleWidth = 75;
+  private readonly paddleHeight = 20;
+
+  constructor(private gameService: GameService) {
+    this.meId = this.gameService.room.sessionId;
   }
 
   ngOnInit() {
-    this.gameService.room?.onMessage("start", (message) => {
-      console.log(message);
-    });
-    const engine = new ex.Engine({
-      canvasElementId: 'pong',
-    });
-    const localPaddle = new Paddle(engine.drawWidth / 2, engine.drawHeight - 50, 200, 20, ex.Color.Red, ex.Keys.A, ex.Keys.D);
-    const remotePaddle = new Paddle(engine.drawWidth / 2, 50, 200, 20, ex.Color.Green, undefined, undefined);
-    const ball = new Ball(engine.drawWidth / 2, engine.drawHeight / 2, 5, 0, 20, 20, ex.Color.Red);
-    const localScore = new ex.Label({
-      x: engine.halfDrawWidth / 2,
-      y: engine.drawHeight - 100,
-      text: '0',
-      color: ex.Color.White,
-    });
-    const remoteScore = new ex.Label({
-      x: engine.halfDrawWidth * 1.5,
-      y: engine.drawHeight - 100,
-      text: '0',
-      color: ex.Color.White,
-    });
-    const gameStatus = new ex.Label({
-      x: engine.halfDrawWidth - 50,
-      y: engine.halfDrawHeight,
-      text: 'Waiting for players',
-      color: ex.Color.White,
-    });
-    const game = new ex.Scene();
-    game.add(localPaddle);
-    game.add(remotePaddle);
-    game.add(ball);
-    game.add(localScore);
-    game.add(remoteScore);
-    game.add(gameStatus);
-    engine.add('game', game);
-    engine.start().then(() => {
-      engine.goToScene('game');
-      this.gameService.room.onStateChange((state: GameRoomState) => {
-        if (this.gameService.room.sessionId == state.player1Id) {
-          //localPaddle.pos.x = state.player1X;
-          remotePaddle.pos.x = state.player2X;
-          localScore.text = state.score1.toString();
-          remoteScore.text = state.score2.toString();
-        }
-        else {
-          //localPaddle.pos.x = state.player2X;
-          remotePaddle.pos.x = state.player1X;
-          localScore.text = state.score2.toString();
-          remoteScore.text = state.score1.toString();
-        }
-        ball.pos.x = state.ballX;
-        ball.pos.y = state.ballY;
-        ball.vx = state.ballVX;
-        ball.vy = state.ballVY;
-        state.gameStatus === GameRoomStatus["WAITING"] ? gameStatus.text = 'Waiting for players' : gameStatus.text = '';
-      });
-      this.gameService.room.onMessage("start", (message) => {
-        console.log(message);
-      });
-    });
-    
-    engine.input.pointers.primary.on('move', (evt) => {
-      //paddle1.pos.x = evt.worldPos.x;
-      //this.gameService.room?.send('paddle1', paddle1.pos.y);
-    });
+    this.initGameEngine();
+    this.initGameObjects();
+    this.listenGameEvents();
+  }
 
-    engine.input.keyboard.on('hold', (evt) => {
-      if (evt.key === ex.Input.Keys.A) {
-        this.gameService.room.send('move', 'left');
-      }
-      if (evt.key === ex.Input.Keys.D) {
-        this.gameService.room.send('move', 'right');
+  private initGameEngine(): void {
+    this.engine = new ex.Engine({ canvasElementId: 'pong', width: 800, height: 600 });
+    this.game = new ex.Scene();
+    this.engine.add('game', this.game);
+    this.engine.fixedUpdateFps = 60;
+  }
+
+  private initGameObjects(): void {
+    this.localPaddle = this.createPaddle(this.calculatePaddlePosY(true), ex.Color.Red, ex.Keys.A, ex.Keys.D);
+    this.remotePaddle = this.createPaddle(this.calculatePaddlePosY(false), ex.Color.Green);
+    this.localScore = this.createScore(this.engine.halfDrawWidth / 2);
+    this.remoteScore = this.createScore(this.engine.halfDrawWidth * 1.5);
+    this.gameStatus = this.createGameStatus();
+    this.ball = this.createBall();
+    this.game.add(this.localPaddle);
+    this.game.add(this.remotePaddle);
+    this.game.add(this.localScore);
+    this.game.add(this.remoteScore);
+    this.game.add(this.gameStatus);
+    this.game.add(this.ball);
+  }
+
+  private listenGameEvents(): void {
+    this.engine.start().then(() => {
+      this.engine.goToScene('game');
+
+      this.gameService.room.onStateChange((state: GameRoomState) => {
+        this.handleStateChange(state);
+      });
+
+      this.gameService.room.onMessage('start', (message) => {
+        this.handleBallStart(message);
+      });
+
+      this.gameService.room.onMessage('game_win', (message) => {
+        this.gameStatus.text = 'Player ' + message + ' wins!';
+      });
+
+      this.engine.input.keyboard.on('hold', (evt) => {
+        this.handleInputHold(evt);
+      });
+    });
+  }
+
+  private createPaddle(y: number, color: ex.Color, leftKey?: ex.Input.Keys, rightKey?: ex.Input.Keys): Paddle {
+    return new Paddle(this.engine.drawWidth / 2, y, this.paddleWidth, this.paddleHeight, color, leftKey, rightKey);
+  }
+
+  private calculatePaddlePosY(isLocal: boolean): number {
+    return isLocal ? this.engine.drawHeight - 50 : 50;
+  }
+
+  private createBall(): Ball {
+    const ball = new Ball(this.engine.drawWidth / 2, this.engine.drawHeight / 2, 20, 20, ex.Color.Red);
+    return ball;
+  }
+
+  private createScore(x: number): ex.Label {
+    return new ex.Label({ x: x, y: this.engine.drawHeight - 100, text: '0', color: ex.Color.White });
+  }
+
+  private createGameStatus(): ex.Label {
+    return new ex.Label({
+      x: this.engine.halfDrawWidth - 50,
+      y: this.engine.halfDrawHeight,
+      text: 'Waiting for players',
+      color: ex.Color.White
+    });
+  }
+
+  private handleStateChange(state: GameRoomState): void {
+    state.players.forEach((player) => {
+      if (player.id === this.meId) {
+        this.localPaddle.pos.x = player.paddle.x;
+        this.localScore.text = String(player.score);
+      } else {
+        this.remotePaddle.pos.x = player.paddle.x;
+        this.remoteScore.text = String(player.score);
       }
     });
+    this.ball.pos.x = state.ball.x;
+    this.ball.pos.y = state.ball.y;
+    this.ball.update(this.engine, 0);
+  }
+
+  private handleBallStart(message): void {
+    const counter = new ex.Timer({
+      interval: 1000,
+      repeats: true,
+      numberOfRepeats: Number(message),
+      fcn: () => {
+        this.gameStatus.text =
+          'Starts in : ' +
+          String(Number(message) - 1 - counter.timesRepeated);
+        if (counter.timesRepeated === Number(message) - 1) {
+          this.gameStatus.text = '';
+        }
+      },
+    });
+    this.game.add(counter);
+    counter.start();
+  }
+
+  private handleInputHold(evt: ex.Input.KeyEvent): void {
+    if (evt.key === ex.Input.Keys.A) {
+      this.gameService.room.send('move', 'left');
+    }
+    if (evt.key === ex.Input.Keys.D) {
+      this.gameService.room.send('move', 'right');
+    }
   }
 }

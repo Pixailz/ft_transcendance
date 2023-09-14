@@ -18,23 +18,6 @@ export class Paddle extends ex.Actor {
             color: color,
         });
     }
-    public override update(engine: ex.Engine, delta: number) {
-        if (engine.input.keyboard.isHeld(this.upKey)) {
-            this.pos.x -= 10;
-        }
-        if (engine.input.keyboard.isHeld(this.downKey)) {
-            this.pos.x += 10;
-        }
-        if (this.pos.x < this.width / 2) {
-            this.pos.x = this.width / 2;
-        }
-        if (this.pos.x > engine.canvasWidth - (this.width / 2)) {
-            this.pos.x = engine.canvasWidth - (this.width / 2);
-        }
-        // if (this.pos.x + this.width / 2 > engine.drawHeight) {
-        //     this.pos.x = engine.drawHeight - this.width / 2;
-        // }
-    }
 
     public draw(ctx: CanvasRenderingContext2D, delta: number) {
         ctx.fillStyle = this.color.toString();
