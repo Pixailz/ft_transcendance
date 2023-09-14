@@ -20,7 +20,7 @@ header h1:hover {
 	filter: brightness(80%);
 }
 
-.friend-menu {
+.notifications-menu {
 	position: relative;
 }
 
@@ -120,11 +120,7 @@ header ul.small-device li.logout {
 	margin-top: auto;
 }
 
-app-flat-button {
-	--bg-color: 255, 255, 255;
-}
-
-app-flat-button.friend-btn {
+app-flat-button.notifications-btn {
 	--bg-color: 167, 220, 163;
 }
 

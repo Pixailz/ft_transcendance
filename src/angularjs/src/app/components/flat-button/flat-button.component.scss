@@ -1,12 +1,12 @@
 :host {
-	--bg-color: 255, 255, 255;
+	--bg-color: 90, 90, 90;
 	--color: white;
 }
 
 button {
 	width: 50px;
 	aspect-ratio: 1;
-	border: 1px solid rgba(255,255,255,0.4);
+	border: 1px solid rgba(90,90,90,0.4);
 	background: rgba(var(--bg-color), 0.3);
 	color: var(--color);
 	border-radius: 10px;
@@ -19,6 +19,6 @@ button.true, button:hover {
 	background: rgba(var(--bg-color), 0.6);
 }
 
-button.true {
+button:disabled {
 	cursor: default;
 }

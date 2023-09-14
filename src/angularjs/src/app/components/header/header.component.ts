@@ -30,7 +30,7 @@ import { NotificationService } from 'src/app/services/websocket/notification/ser
 export class HeaderComponent {
 	userLoggedIn = true;
 	isExpand = false;
-	displayFriendRequest: boolean = false;
+	displayNotifications: boolean = false;
 	notifications: NotificationI[] = [];
 	
 	constructor(
