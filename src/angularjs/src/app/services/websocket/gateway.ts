@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { RoomAction } from 'src/app/interfaces/chat-channel.interface';
 import { ChatRoomI } from 'src/app/interfaces/chat-room.interface';
 import { FriendRequestI } from 'src/app/interfaces/friend.interface';
+import { NotifStatus } from 'src/app/interfaces/notification.interface';
 import { UserChatRoomI } from 'src/app/interfaces/user-chat-room.interface';
 import { UserI } from 'src/app/interfaces/user.interface';
 
@@ -164,7 +165,13 @@ export class WSGateway {
 	listenDelNotification(): Observable<number>
 	{ return this.socket.fromEvent<number>("delNotification") }
 
+	listenSeenNotification(): Observable<number>
+	{ return this.socket.fromEvent<number>("updateSeenNotification")}
+
 	// EMITER
 	getAllNotifications()
 	{ this.socket.emit("getAllNotifications"); }
+
+	updateNotificationStatus(notif_id: number, status: NotifStatus)
+	{ this.socket.emit("updateNotificationStatus", status, notif_id); }
 }

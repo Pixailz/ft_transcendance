@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FriendService } from 'src/app/services/websocket/friend/service';
-import { NotificationI } from 'src/app/interfaces/notification.interface';
+import { NotifStatus, NotificationI } from 'src/app/interfaces/notification.interface';
 import { NotificationType } from 'src/app/interfaces/notification.interface';
 
 @Component({

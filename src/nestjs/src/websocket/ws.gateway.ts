@@ -11,6 +11,7 @@ import { WSChatDmService } from "./chat/chat-dm.service";
 import { WSChatChannelService } from "./chat/chat-channel.service";
 import { WSFriendService } from "./friend/friend.service";
 import { WSNotificationService } from "./notifications/notifications.service";
+import { NotifStatus } from "src/modules/database/notification/entity";
 
 @WebSocketGateway(3001, {
 	path: "/ws",
@@ -187,4 +188,12 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	async getAllNotifications(socket: Socket) {
 		await this.wsNotificationService.getAllNotifications(socket);
 	}
+
+	@SubscribeMessage("updateNotificationStatus")
+	async updateNotificationStatus(socket: Socket, data: any) {
+		const status: NotifStatus = data[0];
+		const notif_id: number = data[1];
+		await this.wsNotificationService.updateNotificationStatus(socket, notif_id, status);
+	}
+
 }

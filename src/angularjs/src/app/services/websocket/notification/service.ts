@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable, Output } from "@angular/core";
-import { DefNotificationI, NotificationI, NotificationType } from "src/app/interfaces/notification.interface";
+import { DefNotificationI, NotifStatus, NotificationI, NotificationType } from "src/app/interfaces/notification.interface";
 import { WSGateway } from "../gateway";
 import { Subscription } from "rxjs";
 import { WSService } from "../service";
@@ -12,6 +12,7 @@ export class NotificationService {
 	notif: NotificationI[] = [];
 	obsToDestroy: Subscription[] = [];
 	createPopup: EventEmitter<NotificationI> = new EventEmitter();
+	notif_not_seen : number = 0;
 
 	constructor (
 		private friendService: FriendService,
@@ -20,6 +21,7 @@ export class NotificationService {
 	){
 		this.obsToDestroy.push(this.wsGateway.listenAllNotifications()
 			.subscribe((notifications: NotificationI[]) => {
+				console.log('all notif = ', notifications);
 				console.log("[WS:Notification] AllNotifications event")
 				this.updateAllNotifications(notifications);
 			}
@@ -27,6 +29,7 @@ export class NotificationService {
 
 		this.obsToDestroy.push(this.wsGateway.listenNewNotification()
 			.subscribe((notification: NotificationI) => {
+				console.log('new notif = ', notification);
 				console.log("[WS:Notification] NewNotification event")
 				this.createPopup.next(this.updateNewNotification(notification));
 			}
@@ -38,13 +41,36 @@ export class NotificationService {
 				this.updateDelNotification(notif_id);
 				}
 			));
+
+		this.obsToDestroy.push(this.wsGateway.listenSeenNotification()
+		.subscribe((notif_id: number) => {
+			console.log("[WS:Notification] SeenNotification event")
+				this.updateSeenNotification(notif_id);
+			}
+		));
+
 	}
+
 
 	ngOnDestroy()
 	{
 		console.log("[WS:Notification] onDestroy");
 		this.wsService.unsubscribeObservables(this.obsToDestroy);
 	}
+
+	updateSeenNotification(id: number)
+	{
+		for (let notif of this.notif)
+		{
+			if (notif.id === id && notif.status === NotifStatus.NOTSEEN)
+			{
+				notif.status = NotifStatus.SEEN;
+				console.log('-- in updateSeenNotidication in service\n');
+				this.notif_not_seen--;
+			}
+		}
+	}
+
 
 	getNotifFriendSent(notification: any): NotificationI
 	{
@@ -123,13 +149,20 @@ export class NotificationService {
 		if (notifications.length === 0)
 			return ;
 		for (var i = 0; i < notifications.length; i++)
-			this.notif.push(this.getNotification(notifications[i]));
+		{
+			if (notifications[i].status !== NotifStatus.DELETED)
+				this.notif.push(this.getNotification(notifications[i]));
+			if (notifications[i].status === NotifStatus.NOTSEEN)
+				this.notif_not_seen++;
+		}
 	}
 
 	updateNewNotification(notification: any)
 	{
 		const notif = this.getNotification(notification);
 		this.notif.push(notif);
+		if (notification.status === NotifStatus.NOTSEEN)
+			this.notif_not_seen++;
 		console.log(notif);
 		return (notif);
 	}
@@ -138,8 +171,10 @@ export class NotificationService {
 	{
 		for (let i = 0; i < this.notif.length ; i++)
 		{
-			if (this.notif[i].id === id)
+			if (this.notif[i].id === id || this.notif[i].status === NotifStatus.DELETED)
 			{
+				if (this.notif[i].status === NotifStatus.NOTSEEN)
+					this.notif_not_seen--;
 				this.notif.splice(i, 1);
 				return ;
 			}
@@ -150,5 +185,27 @@ export class NotificationService {
 	{
 		console.log("[NOTIFICATION]");
 		console.log(this.notif);
+	}
+
+	updateStatus(status: NotifStatus)
+	{
+		for (let i = this.notif.length - 1; i >= 0 ; i--)
+		{
+			if (this.notif[i].status == NotifStatus.NOTSEEN)
+				this.notif_not_seen--;
+			if (this.notif[i].type !== NotificationType.FRIEND_REQ_RECEIVED && this.notif[i].type !== NotificationType.GAME_REQ
+				&& this.notif[i].type !== NotificationType.CHANNEL_REQUEST)
+			{
+				this.wsGateway.updateNotificationStatus(this.notif[i].id, status);
+				this.notif[i].status = status;
+				if (this.notif[i].status === NotifStatus.DELETED)
+					this.notif.splice(i, 1);
+			}
+			else if (status === NotifStatus.SEEN)
+			{
+				this.wsGateway.updateNotificationStatus(this.notif[i].id, status);
+				this.notif[i].status = status;
+			}
+		}
 	}
 }

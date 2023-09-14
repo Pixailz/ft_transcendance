@@ -1,6 +1,6 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, ComponentRef, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
-import { DefNotificationI, NotificationType } from 'src/app/interfaces/notification.interface';
+import { DefNotificationI, NotifStatus, NotificationType } from 'src/app/interfaces/notification.interface';
 import { NotificationI } from 'src/app/interfaces/notification.interface';
 import { NotifFriendReqReceivedComponent } from './friend-req-received/friend-req-received.component';
 import { NotifFriendReqSentComponent } from './friend-req-sent/friend-req-sent.component';
@@ -36,13 +36,6 @@ export class NotificationComponent{
 
 	private eventCallback = new Subject<string>();
 	eventCallback$ = this.eventCallback.asObservable();
-
-	notif: NotificationI = {
-		id: 1,
-		type: NotificationType.FRIEND_REQ_DENIED_FROM,
-		isSeen: false,
-		data: 'rrollin'
-	};
 
 	constructor (
 		private renderer: Renderer2,

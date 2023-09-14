@@ -2,8 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { WSSocket } from "../socket.service";
 import { DBNotificationService } from "src/modules/database/notification/service";
 import { Server, Socket } from "socket.io";
-import { NotificationEntity, NotificationType } from "src/modules/database/notification/entity";
+import { NotifStatus, NotificationEntity, NotificationType } from "src/modules/database/notification/entity";
 import { UserService } from "src/adapter/user/service";
+import { DBNotificationPost } from "src/modules/database/notification/dto";
 
 @Injectable()
 export class WSNotificationService {
@@ -132,5 +133,16 @@ export class WSNotificationService {
 	{
 		await this.dbNotificationService.delete(id);
 		socket.emit("removeNotification", id);
+	}
+
+	async updateNotificationStatus(socket: Socket, id: number, status: NotifStatus)
+	{
+		if (!(await this.dbNotificationService.isExist(id)))
+			return ;
+		await this.dbNotificationService.update(id, {status: status});
+		if (status === NotifStatus.SEEN)
+			socket.emit("updateSeenNotification", id);
+		if (status === NotifStatus.DELETED)
+			socket.emit("removeNotification", id);
 	}
 }

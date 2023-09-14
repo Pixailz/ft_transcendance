@@ -28,8 +28,8 @@
 		routerLinkActive #rla="routerLinkActive">
 			<app-flat-button [isActive]="rla.isActive" fontIcon="account_circle"></app-flat-button>
 		</li>
-		<li class="notifications-menu" matBadge="{{notificationService.notif.length}}" [matBadgeHidden]="!notificationService.notif.length">
-			<app-flat-button [isActive]="displayNotifications" class="notifications-btn" (click)="displayNotifications = !displayNotifications" fontIcon="notifications">Menu</app-flat-button>
+		<li class="notifications-menu" matBadge="{{notificationService.notif_not_seen}}" [matBadgeHidden]="!notificationService.notif_not_seen">
+			<app-flat-button [isActive]="displayNotifications" class="notifications-btn" (click)="OnNotificationClick()" fontIcon="notifications">Menu</app-flat-button>
 			<app-flat-list class="glass" *ngIf="displayNotifications" [notifications]="notificationService.notif"></app-flat-list>
 		</li>
 		<li

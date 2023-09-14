@@ -17,6 +17,7 @@ export class DBNotificationService {
 		notif.type = post.type;
 		notif.userId = post.userId;
 		notif.data = post.data;
+		notif.status = post.status;
 		const ret = await this.NotificationRepo.save(notif);
 		return (ret);
 	}
@@ -31,6 +32,14 @@ export class DBNotificationService {
 
 	async returnAll() {
 		return await this.NotificationRepo.find();
+	}
+
+	async isExist(id: number)
+	{
+		const tmp = await this.NotificationRepo.findOneBy({id: id});
+		if (tmp)
+			return (true)
+		return (false);
 	}
 
 	async returnOne(id: number) {
@@ -75,4 +84,7 @@ export class DBNotificationService {
 			},
 		});
 	}
+
+
+
 }

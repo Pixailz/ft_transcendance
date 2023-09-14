@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { trigger, style, animate, transition, state } from '@angular/animations';
-import { NotificationI } from 'src/app/interfaces/notification.interface';
+import { NotifStatus, NotificationI } from 'src/app/interfaces/notification.interface';
 import { NotificationService } from 'src/app/services/websocket/notification/service';
 @Component({
   selector: 'app-header',
@@ -28,15 +28,25 @@ import { NotificationService } from 'src/app/services/websocket/notification/ser
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
-	userLoggedIn = true;
-	isExpand = false;
+	userLoggedIn: boolean = true;
+	isExpand: boolean = false;
 	displayNotifications: boolean = false;
-	notifications: NotificationI[] = [];
-	
+
+
 	constructor(
 		private userService: UserService,
 		public notificationService: NotificationService
 		) {}
+
+	OnNotificationClick()
+	{
+		this.displayNotifications = !this.displayNotifications;
+		console.log('\ncoucou from click event\n');
+		if (this.displayNotifications)
+			this.notificationService.updateStatus(NotifStatus.SEEN);
+		else
+			this.notificationService.updateStatus(NotifStatus.DELETED);
+	}
 
 	SignOut()
 	{ this.userService.SignOut(); }
