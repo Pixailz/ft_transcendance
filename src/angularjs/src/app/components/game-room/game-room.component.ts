@@ -16,6 +16,7 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class GameRoomComponent implements OnInit {
   private meId: string;
+  private mySide: 'top' | 'bottom';
   private engine: ex.Engine;
   private game: ex.Scene;
   private localPaddle: Paddle;
@@ -28,7 +29,6 @@ export class GameRoomComponent implements OnInit {
   private readonly paddleHeight = 20;
 
   constructor(private gameService: GameService) {
-    this.meId = this.gameService.room.sessionId;
   }
 
   ngOnInit() {
@@ -45,8 +45,8 @@ export class GameRoomComponent implements OnInit {
   }
 
   private initGameObjects(): void {
-    this.localPaddle = this.createPaddle(this.calculatePaddlePosY(true), ex.Color.Red, ex.Keys.A, ex.Keys.D);
-    this.remotePaddle = this.createPaddle(this.calculatePaddlePosY(false), ex.Color.Green);
+    this.localPaddle = this.createPaddle(0, ex.Color.Red, ex.Keys.A, ex.Keys.D);
+    this.remotePaddle = this.createPaddle(0, ex.Color.Green);
     this.localScore = this.createScore(this.engine.halfDrawWidth / 2);
     this.remoteScore = this.createScore(this.engine.halfDrawWidth * 1.5);
     this.gameStatus = this.createGameStatus();
@@ -60,6 +60,14 @@ export class GameRoomComponent implements OnInit {
   }
 
   private listenGameEvents(): void {
+    this.meId = this.gameService.room.sessionId;
+    console.log('meId: ' + this.meId);
+    this.gameService.room.state.players.forEach((player) => {
+      if (player.id === this.meId) {
+        this.mySide = player.side;
+      }
+    })
+    console.log('mySide: ' + this.mySide);
     this.engine.start().then(() => {
       this.engine.goToScene('game');
 
@@ -86,7 +94,18 @@ export class GameRoomComponent implements OnInit {
   }
 
   private calculatePaddlePosY(isLocal: boolean): number {
-    return isLocal ? this.engine.drawHeight - 50 : 50;
+    if (this.mySide === 'bottom' && isLocal) {
+      console.log('bottom && local (red), returned this.paddleHeight * 2');
+      return this.paddleHeight * 2;
+    } else if (this.mySide === 'bottom' && !isLocal) {
+      console.log('bottom && remote (green), returned this.engine.drawHeight - this.paddleHeight * 2');
+      return this.engine.drawHeight - this.paddleHeight * 2;
+    } else if (this.mySide === 'top' && isLocal) {
+      console.log('top && local (red), returned this.engine.drawHeight - this.paddleHeight * 2');
+      return this.engine.drawHeight - this.paddleHeight * 2;
+    }
+    console.log('top && remote (green), returned this.paddleHeight * 2');
+    return this.paddleHeight * 2;
   }
 
   private createBall(): Ball {
@@ -110,10 +129,14 @@ export class GameRoomComponent implements OnInit {
   private handleStateChange(state: GameRoomState): void {
     state.players.forEach((player) => {
       if (player.id === this.meId) {
+        console.log(player);
         this.localPaddle.pos.x = player.paddle.x;
+        this.localPaddle.pos.y = player.paddle.y;
         this.localScore.text = String(player.score);
+        this.mySide = player.side;
       } else {
         this.remotePaddle.pos.x = player.paddle.x;
+        this.remotePaddle.pos.y = player.paddle.y;
         this.remoteScore.text = String(player.score);
       }
     });

@@ -33,6 +33,7 @@ class Player extends Schema {
 	@type("int32") public score = 0;
 	@type(Canvas) public canvas: Canvas = new Canvas();
 	@type(Paddle) public paddle: Paddle = new Paddle();
+	@type("string") public side: "top" | "bottom";
 }
 
 export class GameRoomState extends Schema {
