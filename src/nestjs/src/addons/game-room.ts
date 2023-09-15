@@ -75,8 +75,13 @@ export class GameRoom extends Room<GameRoomState> {
 		}
 	}
 
-	onLeave() {
+	onLeave(client) {
 		this.state.gameStatus = GameRoomStatus.INTERRUPTED;
+		this.state.players.deleteAt(this.getPlayerIdBySessId(client.sessionId));
+	}
+
+	getPlayerIdBySessId(sessId: string) {
+		return this.state.players.findIndex((player) => player.id === sessId);
 	}
 
 	onDispose() {
@@ -116,6 +121,10 @@ export class GameRoom extends Room<GameRoomState> {
 
 			if (ballIsWithinXBounds && ballIsWithinYBounds) {
 				this.state.ball.vy *= -1;
+				this.state.ball.vx +=
+					(this.state.ball.x - player.paddle.x) / 10;
+				this.state.ball.vy +=
+					(this.state.ball.y - player.paddle.y) / 10;
 			}
 		});
 	}

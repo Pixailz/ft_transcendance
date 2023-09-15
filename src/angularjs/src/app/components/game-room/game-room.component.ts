@@ -35,12 +35,13 @@ export class GameRoomComponent implements OnInit {
     this.engine = new ex.Engine({ canvasElementId: 'pong', width: 800, height: 600 });
     this.game = new ex.Scene();
     this.engine.add('game', this.game);
+    this.engine.backgroundColor = ex.Color.Gray;
     this.engine.fixedUpdateFps = 60;
   }
 
   private initGameObjects(): void {
-    this.localPaddle = this.createPaddle(0, ex.Color.Red, ex.Keys.A, ex.Keys.D);
-    this.remotePaddle = this.createPaddle(0, ex.Color.Green);
+    this.localPaddle = this.createPaddle(0, ex.Color.fromHex("#555555"), ex.Keys.A, ex.Keys.D);
+    this.remotePaddle = this.createPaddle(0, ex.Color.fromHex("#999999"));
     this.localScore = this.createScore(0);
     this.remoteScore = this.createScore(0);
     this.gameStatus = this.createGameStatus();
@@ -115,20 +116,21 @@ export class GameRoomComponent implements OnInit {
   }
 
   private createBall(): Ball {
-    return this.createGameObject(Ball, [this.engine.drawWidth / 2, this.engine.drawHeight / 2, 20, 20, ex.Color.Red]);
+    return this.createGameObject(Ball, [this.engine.drawWidth / 2, this.engine.drawHeight / 2, 20, 20, ex.Color.White]);
   }
 
   private createScore(x: number): ex.Label {
-    return this.createGameObject(ex.Label, [{ x: x, y: this.engine.drawHeight - 100, text: '0', color: ex.Color.White }]);
+    return this.createGameObject(ex.Label, [{ x: x, y: this.engine.drawHeight - 100, text: '0', font: new ex.Font({size: 16}), color: ex.Color.White }]);
   }
 
 
   private createGameStatus(): ex.Label {
     return this.createGameObject(ex.Label, [{
       x: this.engine.halfDrawWidth - 50,
-      y: this.engine.halfDrawHeight,
+      y: this.engine.halfDrawHeight - 50,
       text: 'Waiting for players',
-      color: ex.Color.White
+      color: ex.Color.White,
+      font: new ex.Font({size: 16}),
     }]);
   }
 }
