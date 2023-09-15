@@ -21,7 +21,6 @@ export class NotificationService {
 	){
 		this.obsToDestroy.push(this.wsGateway.listenAllNotifications()
 			.subscribe((notifications: NotificationI[]) => {
-				console.log('all notif = ', notifications);
 				console.log("[WS:Notification] AllNotifications event")
 				this.updateAllNotifications(notifications);
 			}
@@ -29,7 +28,6 @@ export class NotificationService {
 
 		this.obsToDestroy.push(this.wsGateway.listenNewNotification()
 			.subscribe((notification: NotificationI) => {
-				console.log('new notif = ', notification);
 				console.log("[WS:Notification] NewNotification event")
 				this.createPopup.next(this.updateNewNotification(notification));
 			}
@@ -186,23 +184,16 @@ export class NotificationService {
 		}
 	}
 
-	updateStatus(status: NotifStatus)
+	deleteNotif()
 	{
 		for (let i = this.notif.length - 1; i >= 0 ; i--)
 		{
-			if (this.notif[i].status == NotifStatus.NOTSEEN)
-				this.notif_not_seen--;
 			if (this.notif[i].type === NotificationType.FRIEND_REQ_RECEIVED || this.notif[i].type === NotificationType.GAME_REQ
-				|| this.notif[i].type === NotificationType.CHANNEL_REQUEST)
-			{
-				this.wsGateway.updateNotificationStatus(this.notif[i].id, NotifStatus.SEEN);
-				this.notif[i].status = NotifStatus.SEEN;
+				|| this.notif[i].type === NotificationType.CHANNEL_REQUEST || this.notif[i].status === NotifStatus.NOTSEEN)
 				continue ;
-			}
-			this.wsGateway.updateNotificationStatus(this.notif[i].id, status);
-			this.notif[i].status = status;
-			if (this.notif[i].status === NotifStatus.DELETED)
-				this.notif.splice(i, 1);
+			this.wsGateway.updateNotificationStatus(this.notif[i].id, NotifStatus.DELETED);
+			this.notif[i].status = NotifStatus.DELETED;
+			this.notif.splice(i, 1);
 		}
 	}
 
@@ -212,20 +203,43 @@ export class NotificationService {
 		console.log(this.notif);
 	}
 
-	// formatData(notif: NotificationI)
-	// {
-	// 	console.log('in format data notif = ', notif);
-	// 	switch(notif.type){
-	// 		case NotificationType.FRIEND_REQ_ACCEPTED :
-	// 			return ("New friend: " + notif.data);
-	// 		case NotificationType.FRIEND_REQ_DENIED_FROM :
-	// 			return ("Friend request from " + notif.data + " denied");
-	// 		case NotificationType.FRIEND_REQ_DENIED_TO :
-	// 			return ("Friend request to " + notif.data + " denied");
-	// 		case NotificationType.FRIEND_REQ_SENT :
-	// 			return ("Friend request sent to " + notif.data.friend.ftLogin + "|");
-	// 		default:
-	// 			return notif.data;
-	// 	}
-	// }
+
+
+	seenNotifCallback(entries: IntersectionObserverEntry[], observer: IntersectionObserver) {
+		console.log("observer :", observer);
+		console.log("this in callback :", this);
+
+	}
+
+	createObserver(scrollArea: Element, items: NodeListOf<Element>) {
+		var options = {
+			root: scrollArea,
+			rootMargin: "0px",
+			threshold: 0.5,
+		};
+		var observer = new IntersectionObserver(
+			(entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
+				entries.forEach((entry: IntersectionObserverEntry) => {
+					if (entry.isIntersecting)
+					{
+						for (let i = 0; i < items.length; i++)
+						{
+							if (items[i] === entry.target)
+							{
+								if (this.notif[i].status === NotifStatus.NOTSEEN)
+								{
+									this.notif_not_seen--;
+									this.wsGateway.updateNotificationStatus(this.notif[i].id, NotifStatus.SEEN);
+									this.notif[i].status = NotifStatus.SEEN;
+								}
+							}
+						}
+					}
+				});
+			}, options);
+		var target = items;
+		target.forEach((t) => {
+			observer.observe(t);
+		});
+	}
 }

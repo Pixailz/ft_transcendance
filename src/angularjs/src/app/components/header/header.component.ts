@@ -41,11 +41,8 @@ export class HeaderComponent {
 	OnNotificationClick()
 	{
 		this.displayNotifications = !this.displayNotifications;
-		console.log('\ncoucou from click event\n');
-		if (this.displayNotifications)
-			this.notificationService.updateStatus(NotifStatus.SEEN);
-		else
-			this.notificationService.updateStatus(NotifStatus.DELETED);
+		if (!this.displayNotifications)
+			this.notificationService.deleteNotif();
 	}
 
 	SignOut()
