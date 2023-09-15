@@ -51,7 +51,6 @@ export class NotificationService {
 
 	}
 
-
 	ngOnDestroy()
 	{
 		console.log("[WS:Notification] onDestroy");
@@ -65,7 +64,6 @@ export class NotificationService {
 			if (notif.id === id && notif.status === NotifStatus.NOTSEEN)
 			{
 				notif.status = NotifStatus.SEEN;
-				console.log('-- in updateSeenNotidication in service\n');
 				this.notif_not_seen--;
 			}
 		}
@@ -126,6 +124,7 @@ export class NotificationService {
 		switch(notification.type) {
 			case (NotificationType.FRIEND_REQ_SENT): {
 				notif = this.getNotifFriendSent(notification);
+				notif.toDisplay = "Friend request sent to " + notif.data2;
 				break ;
 			}
 			case (NotificationType.FRIEND_REQ_RECEIVED): {
@@ -134,11 +133,17 @@ export class NotificationService {
 			}
 			case (NotificationType.FRIEND_REQ_ACCEPTED): {
 				notif = this.getNotifFriendAccepted(notification);
+				notif.toDisplay = "New friend: " + notif.data;
 				break ;
 			}
-			case (NotificationType.FRIEND_REQ_DENIED_FROM):
+			case (NotificationType.FRIEND_REQ_DENIED_FROM): {
+				notif = notification;
+				notif.toDisplay = "Friend request from " + notif.data + " denied";
+				break;
+			}
 			case (NotificationType.FRIEND_REQ_DENIED_TO): {
 				notif = notification;
+				notif.toDisplay = "Friend request to " + notif.data + " denied";
 				break ;
 			}
 		}
@@ -181,31 +186,46 @@ export class NotificationService {
 		}
 	}
 
-	getInfo()
-	{
-		console.log("[NOTIFICATION]");
-		console.log(this.notif);
-	}
-
 	updateStatus(status: NotifStatus)
 	{
 		for (let i = this.notif.length - 1; i >= 0 ; i--)
 		{
 			if (this.notif[i].status == NotifStatus.NOTSEEN)
 				this.notif_not_seen--;
-			if (this.notif[i].type !== NotificationType.FRIEND_REQ_RECEIVED && this.notif[i].type !== NotificationType.GAME_REQ
-				&& this.notif[i].type !== NotificationType.CHANNEL_REQUEST)
+			if (this.notif[i].type === NotificationType.FRIEND_REQ_RECEIVED || this.notif[i].type === NotificationType.GAME_REQ
+				|| this.notif[i].type === NotificationType.CHANNEL_REQUEST)
 			{
-				this.wsGateway.updateNotificationStatus(this.notif[i].id, status);
-				this.notif[i].status = status;
-				if (this.notif[i].status === NotifStatus.DELETED)
-					this.notif.splice(i, 1);
+				this.wsGateway.updateNotificationStatus(this.notif[i].id, NotifStatus.SEEN);
+				this.notif[i].status = NotifStatus.SEEN;
+				continue ;
 			}
-			else if (status === NotifStatus.SEEN)
-			{
-				this.wsGateway.updateNotificationStatus(this.notif[i].id, status);
-				this.notif[i].status = status;
-			}
+			this.wsGateway.updateNotificationStatus(this.notif[i].id, status);
+			this.notif[i].status = status;
+			if (this.notif[i].status === NotifStatus.DELETED)
+				this.notif.splice(i, 1);
 		}
 	}
+
+	getInfo()
+	{
+		console.log("[NOTIFICATION]");
+		console.log(this.notif);
+	}
+
+	// formatData(notif: NotificationI)
+	// {
+	// 	console.log('in format data notif = ', notif);
+	// 	switch(notif.type){
+	// 		case NotificationType.FRIEND_REQ_ACCEPTED :
+	// 			return ("New friend: " + notif.data);
+	// 		case NotificationType.FRIEND_REQ_DENIED_FROM :
+	// 			return ("Friend request from " + notif.data + " denied");
+	// 		case NotificationType.FRIEND_REQ_DENIED_TO :
+	// 			return ("Friend request to " + notif.data + " denied");
+	// 		case NotificationType.FRIEND_REQ_SENT :
+	// 			return ("Friend request sent to " + notif.data.friend.ftLogin + "|");
+	// 		default:
+	// 			return notif.data;
+	// 	}
+	// }
 }

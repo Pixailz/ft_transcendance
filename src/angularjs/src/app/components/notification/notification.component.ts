@@ -3,10 +3,6 @@ import { Component, ComponentRef, Renderer2, ViewChild, ViewContainerRef } from 
 import { DefNotificationI, NotifStatus, NotificationType } from 'src/app/interfaces/notification.interface';
 import { NotificationI } from 'src/app/interfaces/notification.interface';
 import { NotifFriendReqReceivedComponent } from './friend-req-received/friend-req-received.component';
-import { NotifFriendReqSentComponent } from './friend-req-sent/friend-req-sent.component';
-import { NotifFriendReqAcceptedComponent } from './friend-req-accepted/friend-req-accepted.component';
-import { NotifFriendReqDeniedFromComponent } from './friend-req-denied-from/friend-req-denied-from.component';
-import { NotifFriendReqDeniedToComponent } from './friend-req-denied-to/friend-req-denied-to.component';
 import { Subject } from 'rxjs';
 import { NotificationService } from 'src/app/services/websocket/notification/service';
 import { TextNotificationComponent } from '../text-notification/text-notification.component';
@@ -76,4 +72,6 @@ export class NotificationComponent{
 			this.container.remove(0);
 		}, 5000);
 	}
+
+
 }

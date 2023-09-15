@@ -10,4 +10,6 @@ export class DBNotificationPost {
 	status?: NotifStatus;
 	@IsOptional()
 	data?: string;
+	@IsOptional()
+	data2?: string;
 }

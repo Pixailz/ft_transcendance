@@ -28,6 +28,8 @@ export enum NotifStatus {
 export interface NotificationI {
 	id				: number,
 	data			: any,
+	data2			: any,
+	toDisplay		: any,
 	type			: NotificationType,
 	status			: NotifStatus,
 	createdAt?		: Date,
@@ -36,6 +38,8 @@ export interface NotificationI {
 export const DefNotificationI =  {
 	id				: -1,
 	data			: {},
+	data2			: {},
+	toDisplay		: {},
 	type			: NotificationType.UNDEFINED,
 	status			: NotifStatus.NOTSEEN,
 }

@@ -17,6 +17,7 @@ export class DBNotificationService {
 		notif.type = post.type;
 		notif.userId = post.userId;
 		notif.data = post.data;
+		notif.data2 = post.data2;
 		notif.status = post.status;
 		const ret = await this.NotificationRepo.save(notif);
 		return (ret);

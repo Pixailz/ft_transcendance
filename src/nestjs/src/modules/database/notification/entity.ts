@@ -37,6 +37,8 @@ export class NotificationEntity {
 	@Column({ type: "varchar", default: "" })
 	public data: string;
 
+	@Column({ type: "varchar", default: "", nullable: true})
+	public data2: string;
 	//
 	@Column({ type: "integer", default: NotificationType.UNDEFINED })
 	public type: NotificationType;
