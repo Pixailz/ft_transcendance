@@ -6,9 +6,15 @@ export interface UserChatRoomI {
 	user				: UserI;
 	isOwner?			: boolean;
 	isAdmin?			: boolean;
+	isBanned			: boolean;
+	isMuted				: boolean;
+	demuteDate			: Date;
 }
 
 export const DefUserChatRoomI: UserChatRoomI = {
 	roomId				: -1,
 	user				: DefUserI,
+	isBanned			: false,
+	isMuted				: false,
+	demuteDate			: new Date(),
 }

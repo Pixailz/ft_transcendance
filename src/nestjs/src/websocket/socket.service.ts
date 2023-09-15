@@ -51,12 +51,7 @@ export class WSSocket {
 			this.sendToUser(server, user_ids[i], event, data);
 	}
 
-	sendToUserInfo(
-		server: Server,
-		user: UserEntity,
-		event: string,
-		data: any,
-	) {
+	sendToUserInfo(server: Server, user: UserEntity, event: string, data: any) {
 		this.sendToUser(server, user.id, event, data);
 	}
 

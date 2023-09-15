@@ -5,6 +5,7 @@ import { UserEntity } from "../../modules/database/user/entity";
 import { DBFriendService } from "src/modules/database/friend/service";
 import { DBFriendRequestService } from "src/modules/database/friendRequest/service";
 import { FriendRequestEntity } from "src/modules/database/friendRequest/entity";
+import { DBBlockedService } from "src/modules/database/blocked/service";
 
 @Injectable()
 export class UserService {
@@ -13,6 +14,7 @@ export class UserService {
 		private dbUserService: DBUserService,
 		private dbFriendService: DBFriendService,
 		private dbFriendRequestService: DBFriendRequestService,
+		private dbBlockedService: DBBlockedService,
 	) {}
 
 	validateToken(jwt_token: string): boolean {
@@ -36,7 +38,11 @@ export class UserService {
 
 	async getAllFriend(user_id: number): Promise<UserEntity[]> {
 		const all_friend = await this.dbFriendService.returnAllFriend(user_id);
-		return all_friend;
+		const all_friend_without_blocked: UserEntity[] = [];
+
+		for (var i = 0; i < all_friend.length; i++)
+			all_friend_without_blocked.push(all_friend[i])
+		return all_friend_without_blocked;
 	}
 
 	async getAllFriendRequest(user_id: number): Promise<FriendRequestEntity[]> {

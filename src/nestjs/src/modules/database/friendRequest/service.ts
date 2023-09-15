@@ -7,6 +7,7 @@ import { DBFriendRequestPost } from "./dto";
 import { UserEntity } from "../user/entity";
 import { DBFriendService } from "../friend/service";
 import { FriendEntity } from "../friend/entity";
+
 @Injectable()
 export class DBFriendRequestService {
 	constructor(
@@ -54,11 +55,16 @@ export class DBFriendRequestService {
 	}
 
 	async delete(me_id: number, friendId: number) {
-		const tmp = await this.friendRequestRepo.findOneBy({ meId: me_id, friendId: friendId });
+		const tmp = await this.friendRequestRepo.findOneBy({
+			meId: me_id,
+			friendId: friendId,
+		});
 		if (tmp)
-			return await this.friendRequestRepo.delete({ meId: me_id, friendId: friendId });
-		else
-			throw new NotFoundException("FriendRequest relation not found");
+			return await this.friendRequestRepo.delete({
+				meId: me_id,
+				friendId: friendId,
+			});
+		else throw new NotFoundException("FriendRequest relation not found");
 	}
 
 	async getFullRequest(
@@ -107,30 +113,31 @@ export class DBFriendRequestService {
 				me: true,
 				friend: true,
 			},
-			where: [
-				{ friendId: me_id},
-				{ meId: me_id},
-			]
+			where: [{ friendId: me_id }, { meId: me_id }],
 		});
 		return requests;
 	}
 
 	async acceptReq(me_id: number, friendId: number) {
-		const req = await this.friendRequestRepo.findOneBy({ meId: me_id, friendId: friendId });
-		if (req)
-		{
-			await this.friendService.create({friendId: friendId}, me_id);
-			await this.friendRequestRepo.delete({ meId: me_id, friendId: friendId });
-		}
-		else
-			throw new NotFoundException("FriendRequest relation not found");
+		const req = await this.friendRequestRepo.findOneBy({
+			meId: me_id,
+			friendId: friendId,
+		});
+		if (req) {
+			await this.friendService.create({ friendId: friendId }, me_id);
+			await this.friendRequestRepo.delete({
+				meId: me_id,
+				friendId: friendId,
+			});
+		} else throw new NotFoundException("FriendRequest relation not found");
 	}
 
 	async rejectReq(me_id: number, friendId: number) {
-		const req = await this.friendRequestRepo.findOneBy({ meId: me_id, friendId: friendId });
-		if (req)
-			await this.friendRequestRepo.delete(req);
-		else
-			throw new NotFoundException("FriendRequest relation not found");
+		const req = await this.friendRequestRepo.findOneBy({
+			meId: me_id,
+			friendId: friendId,
+		});
+		if (req) await this.friendRequestRepo.delete(req);
+		else throw new NotFoundException("FriendRequest relation not found");
 	}
 }

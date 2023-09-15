@@ -1,9 +1,4 @@
-import {
-	Entity,
-	PrimaryColumn,
-	ManyToOne,
-	JoinColumn,
-} from "typeorm";
+import { Entity, PrimaryColumn, ManyToOne, JoinColumn } from "typeorm";
 
 import { UserEntity } from "../user/entity";
 
@@ -13,7 +8,7 @@ export class BlockedEntity {
 	public meId: number;
 
 	@PrimaryColumn()
-	public blockedId: number;
+	public targetId: number;
 
 	@ManyToOne((type) => UserEntity, (me) => me.meBlocked, {
 		onDelete: "CASCADE",
@@ -21,9 +16,9 @@ export class BlockedEntity {
 	@JoinColumn({ name: "meId" })
 	me: UserEntity;
 
-	@ManyToOne((type) => UserEntity, (blocked) => blocked.blocked, {
+	@ManyToOne((type) => UserEntity, (blocked) => blocked.target, {
 		onDelete: "CASCADE",
 	})
-	@JoinColumn({ name: "blockedId" })
-	blocked: UserEntity;
+	@JoinColumn({ name: "targetId" })
+	target: UserEntity;
 }
