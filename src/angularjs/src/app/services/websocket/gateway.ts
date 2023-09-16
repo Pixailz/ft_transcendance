@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Observable } from 'rxjs';
-import { RoomAction } from 'src/app/interfaces/chats/chat-channel.interface';
-import { ChatRoomI } from 'src/app/interfaces/chats/chat-room.interface';
-import { UserChatRoomI } from 'src/app/interfaces/user/user-chat-room.interface';
-import { NotifStatus } from 'src/app/interfaces/notification.interface';
-import { UserI } from 'src/app/interfaces/user/user.interface';
+import { RoomAction } from 'src/app/interfaces/chat/channel.interface';
+import { ChatRoomI } from 'src/app/interfaces/chat/chat-room.interface';
+import { UserChatRoomI } from 'src/app/interfaces/chat/user-chat-room.interface';
 import { FriendRequestI } from 'src/app/interfaces/user/friend.interface';
+import { UserI } from 'src/app/interfaces/user/user.interface';
 
 @Injectable({
 	providedIn: 'root',
@@ -199,4 +198,34 @@ export class WSGateway {
 
 	updateNotificationStatus(notif_id: number, status: NotifStatus)
 	{ this.socket.emit("updateNotificationStatus", status, notif_id); }
+	// GAME
+
+	// LISTENER
+	listenGameWaiting(): Observable<any>
+	{ return this.socket.fromEvent<any>("gameWaiting"); }
+
+	listenIsInGame(): Observable<any>
+	{ return this.socket.fromEvent<any>("isInGame"); }
+
+	listenGameStarted(): Observable<any>
+	{ return this.socket.fromEvent<any>("gameStarted"); }
+
+	listenGameReconnect(): Observable<UserI>
+	{ return this.socket.fromEvent<UserI>("gameReconnect"); }
+
+	listenGameEnded(): Observable<any>
+	{ return this.socket.fromEvent<any>("gameEnded"); }
+
+	// EMITER
+	searchGame(game_option: any)
+	{ this.socket.emit("gameSearch", game_option); }
+
+	isInGame()
+	{ this.socket.emit("isInGame"); }
+
+	reconnectGame(game_id: string)
+	{ this.socket.emit("gameReconnect", game_id); }
+
+	gameSendStatus(status: any)
+	{ this.socket.emit("gameSendStatus", status); }
 }

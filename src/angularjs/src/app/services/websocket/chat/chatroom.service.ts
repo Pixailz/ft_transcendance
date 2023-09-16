@@ -1,10 +1,9 @@
 import { Injectable } from "@angular/core";
-import { ChatRoomI } from "src/app/interfaces/chats/chat-room.interface";
-import { RoomType } from "src/app/interfaces/chats/chat-room.interface";
-import { UserChatRoomI } from "src/app/interfaces/user/user-chat-room.interface";
 import { DefUserI, UserI } from "src/app/interfaces/user/user.interface";
 import { UserService } from "../../user.service";
-import { MessageI } from "src/app/interfaces/message.inteface";
+import { ChatRoomI, RoomType } from "src/app/interfaces/chat/chat-room.interface";
+import { MessageI } from "src/app/interfaces/chat/message.inteface";
+import { UserChatRoomI } from "src/app/interfaces/chat/user-chat-room.interface";
 
 @Injectable({
 	providedIn: "root",

@@ -12,6 +12,7 @@ import { WSChatChannelService } from "./chat/chat-channel.service";
 import { WSFriendService } from "./friend/friend.service";
 import { WSNotificationService } from "./notifications/notifications.service";
 import { NotifStatus } from "src/modules/database/notification/entity";
+import { WSGameService } from "./game/game.service";
 
 @WebSocketGateway(3001, {
 	path: "/ws",
@@ -24,6 +25,7 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		private wsChatChannelService: WSChatChannelService,
 		private wsFriendService: WSFriendService,
 		private wsNotificationService: WSNotificationService,
+		private wsGameService: WSGameService,
 	) {}
 
 	@WebSocketServer()
@@ -241,8 +243,31 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	// HANDLER
 	@SubscribeMessage("getAllNotifications")
-	async getAllNotifications(socket: Socket) {
-		await this.wsNotificationService.getAllNotifications(socket);
+	async getAllNotifications(socket: Socket)
+	{ await this.wsNotificationService.getAllNotifications(socket); }
+
+	// GAME
+
+	// HANDLER
+	@SubscribeMessage("gameSearch")
+	async handleGameSearch(socket: Socket, game_opt: any) {
+		await this.wsGameService.gameSearch(this.server, socket, game_opt);
+	}
+
+	@SubscribeMessage("isInGame")
+	async handleIsInGame(socket: Socket) {
+		await this.wsGameService.isInGame(this.server, socket);
+	}
+
+	@SubscribeMessage("gameReconnect")
+	async handleGameReconnect(socket: Socket, game_id: string) {
+		await this.wsGameService.gameReconnect(this.server, socket, game_id);
+	}
+
+	@SubscribeMessage("gameSendStatus")
+	async handleSendGameStatus(socket: Socket, status: any)
+	{
+		await this.wsGameService.updateGameStatus(this.server, socket, status);
 	}
 
 	@SubscribeMessage("updateNotificationStatus")
