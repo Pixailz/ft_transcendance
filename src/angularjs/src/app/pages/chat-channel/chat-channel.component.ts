@@ -24,6 +24,7 @@ export class WSChatChannelComponent implements OnInit {
 	roomManagementDetails!: FormGroup;
 	roomManagementUser!: FormGroup;
 	joinSelectedRoom: string = "-1";
+	muted_time: number = 0;
 
 	constructor(
 		private wsGateway: WSGateway,
@@ -39,6 +40,7 @@ export class WSChatChannelComponent implements OnInit {
 		this.roomCreateForm = this.formBuilder.group({
 			roomName: "",
 			password: "",
+			is_private: false,
 		}, { updateOn: "change" });
 
 		this.roomCreateFriends = this.formBuilder.group({
@@ -53,6 +55,8 @@ export class WSChatChannelComponent implements OnInit {
 			name: "",
 			password: "",
 			remove_pass: false,
+			change_private: false,
+			is_private: false,
 		}, { updateOn: "change" });
 
 		this.roomManagementUser = this.formBuilder.group({
@@ -83,6 +87,7 @@ export class WSChatChannelComponent implements OnInit {
 		this.wsGateway.createChannelRoom(
 			this.roomCreateForm.value.roomName,
 			this.roomCreateForm.value.password,
+			this.roomCreateForm.value.is_private,
 			user_list
 		);
 		this.onClearCreate();
@@ -141,24 +146,34 @@ export class WSChatChannelComponent implements OnInit {
 	onKickUser(user: UserI)
 	{ this.onRoomAction(RoomAction.KICK, user.id); }
 
-
 	onBanUser(user: UserI)
-	{
-		console.log(user);
-	}
+	{ this.onRoomAction(RoomAction.BAN, user.id); }
 
-	onMuteUser(user: UserI)
-	{
-		console.log(user);
-	}
-
+	onUnBanUser(user: UserI)
+	{ this.onRoomAction(RoomAction.UNBAN, user.id); }
 
 	onPromoteUser(user: UserI)
 	{ this.onRoomAction(RoomAction.PROMOTE, user.id); }
 
+	onDemoteUser(user: UserI)
+	{ this.onRoomAction(RoomAction.DEMOTE, user.id); }
 
 	onGiveKrownUser(user: UserI)
 	{ this.onRoomAction(RoomAction.OWNERSHIP, user.id); }
+
+	onUnmuteUser(user: UserI)
+	{ this.onRoomAction(RoomAction.UNMUTE, user.id); }
+
+	onMuteUser(user: UserI)
+	{
+		const selected_room = this.chatChannelService.getSelectedRoom();
+
+		if (selected_room.id === -1 ||
+			!this.roomManagementDetails.valid ||
+			!this.roomManagementDetails.value ||
+			!this.muted_time) return ;
+		this.wsGateway.channelMute(selected_room.id, user.id, this.muted_time);
+	}
 
 	onCreatingRoom()
 	{ this.popupType = "create-join"; }

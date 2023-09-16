@@ -15,12 +15,23 @@
 			<span>{{user_info.lastSeen | date: 'dd/MM/YYYY HH:mm:ss'}}</span>
 		</div>
 	</div>
-	<app-flat-button *ngIf="!friendService.alreadyFriend(user_info.id) && !friendService.isMe(user_info.id, user_id)"
+	<app-flat-button *ngIf="!friendService.alreadyFriend(user_info.id)"
 		class="friend-btn" bgColor="#a3d0dc" [fontIcon]="friendService.alreadySend(user_info.id)?'done':'person_add'"
 		color="white" (click)="sendFriendRequest(user_info.id)"
 		[isActive]="friendService.alreadySend(user_info.id)"
 		[isDisabled]="friendService.alreadySend(user_info.id)">
 	</app-flat-button>
+
+	<div *ngIf="userService.user.id !== user_info.id">
+		<app-flat-button *ngIf="!friendService.isBlocked(user_info.id)"
+			class="block-btn" bgColor="red" [fontIcon]="'block'"
+			color="warn" (click)="blockUser(user_info.id)"
+			></app-flat-button>
+		<app-flat-button *ngIf="friendService.isBlocked(user_info.id) && user_info.id !== userService.user.id"
+			class="block-btn" bgColor="red" [fontIcon]="'person_add'"
+			color="primary" (click)="unblockUser(user_info.id)"
+			></app-flat-button>
+	</div>
 </div>
 
 <ng-template #userNotFound>

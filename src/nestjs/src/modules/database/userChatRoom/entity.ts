@@ -28,4 +28,13 @@ export class UserChatRoomEntity {
 
 	@Column({ type: "boolean", default: false })
 	public isAdmin: boolean;
+
+	@Column({ type: "boolean", default: false })
+	public isBanned: boolean;
+
+	@Column({ type: "boolean", default: false })
+	public isMuted: boolean;
+
+	@Column({ type: "timestamp", default: new Date(Date.now()) })
+	public demuteDate: Date;
 }

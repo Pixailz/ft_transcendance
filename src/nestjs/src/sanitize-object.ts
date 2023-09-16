@@ -26,6 +26,9 @@ export class Sanitize {
 		"room",
 		"isOwner",
 		"isAdmin",
+		"isBanned",
+		"isMuted",
+		"demuteDate",
 	];
 
 	object(obj: any, toKeep: string[]): any {

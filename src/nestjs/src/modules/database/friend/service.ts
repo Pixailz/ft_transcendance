@@ -5,6 +5,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { FriendEntity } from "./entity";
 import { DBFriendPost } from "./dto";
 import { UserEntity } from "../user/entity";
+import { Sanitize } from "../../../sanitize-object";
 
 @Injectable()
 export class DBFriendService {
@@ -13,6 +14,7 @@ export class DBFriendService {
 		private readonly friendRepo: Repository<FriendEntity>,
 		@InjectRepository(UserEntity)
 		private readonly userRepo: Repository<UserEntity>,
+		private sanitize: Sanitize,
 	) {}
 
 	async create(post: DBFriendPost, meId: number) {
@@ -63,12 +65,8 @@ export class DBFriendService {
 		});
 		var user_list: UserEntity[] = [];
 
-		for (var i = 0; i < tmp.length; i++) {
-			delete tmp[i].friend.nonce;
-			delete tmp[i].friend.twoAuthFactor;
-			delete tmp[i].friend.twoAuthFactorSecret;
-			user_list.push(tmp[i].friend);
-		}
+		for (var i = 0; i < tmp.length; i++)
+			user_list.push(this.sanitize.User(tmp[i].friend));
 		return user_list;
 	}
 
@@ -83,5 +81,6 @@ export class DBFriendService {
 		});
 		else
 			return ;
+
 	}
 }

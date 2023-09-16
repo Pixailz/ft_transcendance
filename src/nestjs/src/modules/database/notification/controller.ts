@@ -13,8 +13,8 @@ import { DBNotificationService } from "./service";
 @Controller("db/notification")
 export class DBNotificationController {
 	constructor(
-		private readonly dbNotificationService: DBNotificationService)
-	{}
+		private readonly dbNotificationService: DBNotificationService,
+	) {}
 
 	// @Post(":id")
 	// create(
@@ -26,18 +26,16 @@ export class DBNotificationController {
 
 	@Get()
 	async getAll() {
-		return (await this.dbNotificationService.returnAll());
+		return await this.dbNotificationService.returnAll();
 	}
 
 	@Get(":id")
-	async getOne(
-		@Param("id") id: number) {
-		return (await this.dbNotificationService.returnOne(id));
+	async getOne(@Param("id") id: number) {
+		return await this.dbNotificationService.returnOne(id);
 	}
 
 	@Delete(":id")
-	async delete(
-		@Param("id") id: number) {
-		return (await this.dbNotificationService.delete(id));
+	async delete(@Param("id") id: number) {
+		return await this.dbNotificationService.delete(id);
 	}
 }

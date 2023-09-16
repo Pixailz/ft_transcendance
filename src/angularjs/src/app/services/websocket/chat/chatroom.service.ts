@@ -45,7 +45,8 @@ export class ChatRoomService {
 
 		if (!this.isGoodRoomInfo(room)) return [];
 		for (var i = 0; i < room.roomInfo.length; i++)
-			user_list.push(room.roomInfo[i].user);
+			if (!room.roomInfo[i].isBanned)
+				user_list.push(room.roomInfo[i].user);
 		return (user_list);
 	}
 
@@ -118,6 +119,20 @@ export class ChatRoomService {
 		for (var i = 0; i < admin.length; i++)
 			if (admin[i].id === user_id)
 				return (true)
+		return (false);
+	}
+
+	isMuted(room: ChatRoomI, user_id: number): boolean
+	{
+		const date = new Date();
+		if (room.id === -1 || !room.roomInfo) return false;
+		for (let i = 0; i < room.roomInfo.length; i++)
+		{
+			const demuteDate = new Date(room.roomInfo[i].demuteDate);
+			if (room.roomInfo[i].userId === user_id &&
+				room.roomInfo[i].isMuted && date <= demuteDate)
+				return (true);
+		}
 		return (false);
 	}
 

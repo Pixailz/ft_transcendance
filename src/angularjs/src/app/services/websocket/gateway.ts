@@ -80,6 +80,8 @@ export class WSGateway {
 	listenRoomAction(): Observable<any>
 	{ return this.socket.fromEvent<any>("roomAction"); }
 
+	listenChannelMute(): Observable<UserChatRoomI>
+	{ return this.socket.fromEvent<UserChatRoomI>("channelMute"); }
 
 	// EMITER
 	getAllAvailableChannelRoom()
@@ -88,8 +90,8 @@ export class WSGateway {
 	getAllJoinedChannelRoom()
 	{ this.socket.emit("getAllJoinedChannelRoom"); }
 
-	createChannelRoom(name: string, password: string, user_id: number[])
-	{ this.socket.emit("createChannelRoom", name, password, user_id); }
+	createChannelRoom(name: string, password: string, is_private: number, user_id: number[])
+	{ this.socket.emit("createChannelRoom", name, password, is_private, user_id); }
 
 	joinChannelRoom(room_id: number, password: string)
 	{ this.socket.emit("joinChannelRoom", room_id, password); }
@@ -103,6 +105,8 @@ export class WSGateway {
 			name: data.name,
 			password: data.password,
 			remove_pass: data.remove_pass,
+			change_private: data.change_private,
+			is_private: data.is_private,
 		});
 	}
 
@@ -115,6 +119,8 @@ export class WSGateway {
 	roomAction(room_id: number, action: RoomAction, target_id: number)
 	{ this.socket.emit("roomAction", room_id, action, target_id); }
 
+	channelMute(room_id: number, target_id: number, muted_time: number)
+	{ this.socket.emit("channelMute", room_id, target_id, muted_time); }
 
 	// FRIENDS
 
@@ -122,20 +128,30 @@ export class WSGateway {
 	listenAllFriend(): Observable<UserI[]>
 	{ return this.socket.fromEvent<UserI[]>("getAllFriend"); }
 
-	listenAllFriendRequest(): Observable<FriendRequestI[]>
-	{ return this.socket.fromEvent<FriendRequestI[]>("getAllFriendRequest"); }
+	listenNewStatusFriend(): Observable<any>
+	{ return this.socket.fromEvent<any>("getNewStatusFriend"); }
 
 	listenNewFriend(): Observable<UserI>
 	{ return this.socket.fromEvent<UserI>("getNewFriend"); }
 
+	listenAllFriendRequest(): Observable<FriendRequestI[]>
+	{ return this.socket.fromEvent<FriendRequestI[]>("getAllFriendRequest"); }
+
 	listenNewFriendRequest(): Observable<FriendRequestI>
 	{ return this.socket.fromEvent<FriendRequestI>("getNewFriendRequest"); }
 
-	listenNewStatusFriend(): Observable<any>
-	{ return this.socket.fromEvent<any>("getNewStatusFriend"); }
-
 	listenDeniedFriendReq(): Observable<any>
 	{ return this.socket.fromEvent<any>("deniedFriendReq")}
+
+	listenAllBlocked(): Observable<UserI[]>
+	{ return this.socket.fromEvent<UserI[]>("getAllBlocked")}
+
+	listenNewBlocked(): Observable<UserI>
+	{ return this.socket.fromEvent<UserI>("getNewBlocked")}
+
+	listenNewUnblocked(): Observable<number>
+	{ return this.socket.fromEvent<number>("getNewUnblocked")}
+
 
 	// EMITER
 	getAllFriend()
@@ -143,6 +159,9 @@ export class WSGateway {
 
 	getAllFriendRequest()
 	{ this.socket.emit("getAllFriendRequest"); }
+
+	getAllBlocked()
+	{ this.socket.emit("getAllBlocked"); }
 
 	sendFriendRequest(id: number)
 	{ this.socket.emit("sendFriendRequest", id); }
@@ -152,6 +171,12 @@ export class WSGateway {
 
 	rejectFriendRequest(id: number)
 	{ this.socket.emit("rejectFriendRequest", id); }
+
+	blockUser(target_id : number)
+	{ this.socket.emit("blockUser", target_id); }
+
+	unblockUser(target_id : number)
+	{ this.socket.emit("unblockUser", target_id); }
 
 	// NOTIFICATION
 

@@ -1,4 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from "typeorm";
+import {
+	Entity,
+	Column,
+	PrimaryGeneratedColumn,
+	CreateDateColumn,
+} from "typeorm";
 
 export enum NotificationType {
 	UNDEFINED,
@@ -31,15 +36,15 @@ export class NotificationEntity {
 	@PrimaryGeneratedColumn()
 	public id: number;
 
-	@Column({type: "integer", nullable: true})
+	@Column({ type: "integer", nullable: true })
 	public userId: number;
-	//
+
 	@Column({ type: "varchar", default: "" })
 	public data: string;
 
 	@Column({ type: "varchar", default: "", nullable: true})
 	public data2: string;
-	//
+
 	@Column({ type: "integer", default: NotificationType.UNDEFINED })
 	public type: NotificationType;
 

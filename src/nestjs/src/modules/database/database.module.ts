@@ -9,7 +9,6 @@ import { GameInfoEntity } from "./gameInfo/entity";
 import { FriendEntity } from "./friend/entity";
 import { FriendRequestEntity } from "./friendRequest/entity";
 import { BlockedEntity } from "./blocked/entity";
-import { MutedEntity } from "./muted/entity";
 import { NotificationEntity } from "./notification/entity";
 
 import { DBUserService } from "./user/service";
@@ -20,7 +19,6 @@ import { DBGameInfoService } from "./gameInfo/service";
 import { DBFriendService } from "./friend/service";
 import { DBFriendRequestService } from "./friendRequest/service";
 import { DBBlockedService } from "./blocked/service";
-import { DBMutedService } from "./muted/service";
 import { DBNotificationService } from "./notification/service";
 
 import { DBUserController } from "./user/controller";
@@ -32,7 +30,6 @@ import { DBFriendController } from "./friend/controller";
 import { DBFriendRequestController } from "./friendRequest/controller";
 import { Sanitize } from "../../sanitize-object";
 import { DBBlockedController } from "./blocked/controller";
-import { DBMutedController } from "./muted/controller";
 import { DBNotificationController } from "./notification/controller";
 
 @Module({
@@ -54,7 +51,6 @@ import { DBNotificationController } from "./notification/controller";
 				FriendRequestEntity,
 				BlockedEntity,
 				NotificationEntity,
-				MutedEntity,
 			],
 			synchronize: true,
 		}),
@@ -68,7 +64,6 @@ import { DBNotificationController } from "./notification/controller";
 			FriendRequestEntity,
 			BlockedEntity,
 			NotificationEntity,
-			MutedEntity,
 		]),
 	],
 	controllers: [
@@ -81,7 +76,6 @@ import { DBNotificationController } from "./notification/controller";
 		DBFriendRequestController,
 		DBBlockedController,
 		DBNotificationController,
-		DBMutedController,
 	],
 	providers: [
 		Sanitize,
@@ -94,7 +88,6 @@ import { DBNotificationController } from "./notification/controller";
 		DBFriendRequestService,
 		DBBlockedService,
 		DBNotificationService,
-		DBMutedService,
 	],
 	exports: [
 		DBUserService,
@@ -106,7 +99,6 @@ import { DBNotificationController } from "./notification/controller";
 		DBFriendRequestService,
 		DBBlockedService,
 		DBNotificationService,
-		DBMutedService,
 	],
 })
 export class DBModule {}

@@ -20,15 +20,13 @@ export class DBNotificationService {
 		notif.data2 = post.data2;
 		notif.status = post.status;
 		const ret = await this.NotificationRepo.save(notif);
-		return (ret);
+		return ret;
 	}
 
 	async update(id: number, post: DBNotificationPost) {
-		const tmp = await this.NotificationRepo.findOneBy({id: id});
-		if (tmp)
-			await this.NotificationRepo.update(id, post);
-		else
-			throw new NotFoundException("Notification not found");
+		const tmp = await this.NotificationRepo.findOneBy({ id: id });
+		if (tmp) await this.NotificationRepo.update(id, post);
+		else throw new NotFoundException("Notification not found");
 	}
 
 	async returnAll() {
@@ -44,26 +42,21 @@ export class DBNotificationService {
 	}
 
 	async returnOne(id: number) {
-		const tmp = await this.NotificationRepo.findOneBy({id: id});
-		if (tmp)
-			return (tmp);
-		else
-			throw new NotFoundException("Notification not found");
+		const tmp = await this.NotificationRepo.findOneBy({ id: id });
+		if (tmp) return tmp;
+		else throw new NotFoundException("Notification not found");
 	}
 
 	async delete(id: number) {
-		const tmp = await this.NotificationRepo.findOneBy({id: id});
-		if (tmp)
-			return await this.NotificationRepo.delete(tmp.id);
-		else
-			throw new NotFoundException("Notification not found");
+		const tmp = await this.NotificationRepo.findOneBy({ id: id });
+		if (tmp) return await this.NotificationRepo.delete(tmp.id);
+		else throw new NotFoundException("Notification not found");
 	}
 
-	async getNotif(user_id: number, data?: string, type?: NotificationType)
-	{
+	async getNotif(user_id: number, data?: string, type?: NotificationType) {
 		var where_query: any = {
 			userId: user_id,
-		}
+		};
 		if (data) where_query["data"] = data;
 		if (type) where_query["type"] = type;
 		return await this.NotificationRepo.findOne({
@@ -74,8 +67,7 @@ export class DBNotificationService {
 		});
 	}
 
-	async getNotifByUserId(id: number)
-	{
+	async getNotifByUserId(id: number) {
 		return await this.NotificationRepo.find({
 			where: {
 				userId: id,
