@@ -29,7 +29,7 @@ class Paddle extends Schema {
 	@type("float32") vx = 0;
 	@type("float32") keyPressTime = 0;
 	@type("string") color = "";
-	@type("boolean") keyReleased = false;
+	@type("boolean") keyReleased = true;
 }
 
 class Player extends Schema {
@@ -38,6 +38,7 @@ class Player extends Schema {
 	@type(Canvas) public canvas = new Canvas();
 	@type(Paddle) public paddle = new Paddle();
 	@type("string") public side: "top" | "bottom";
+	@type("int32") public lastProcessedInput = 0;
 }
 
 export class GameRoomState extends Schema {
@@ -55,22 +56,27 @@ export class GameRoom extends Room<GameRoomState> {
 
 	onCreate(options: any) {
 		this.setState(new GameRoomState());
-
 		this.setSimulationInterval(() => this.update());
+		this.onMessage("move", this.onMoveMessage.bind(this));
+	}
 
-		this.onMessage("move", (client, message) => {
-			const player = this.getPlayerById(client.sessionId);
-			if (player) {
-				if (message.type === "keydown" && player.paddle.keyReleased) {
-					player.paddle.keyPressTime = Date.now();
-					player.paddle.keyReleased = false;
-					player.paddle.vx = this.determineMovement(message.direction);
-				} else if (message.type === "keyup") {
-					player.paddle.keyReleased = true;
-					// player.paddle.vx = 0;
-				}
+	private onMoveMessage(client, message) {
+		const player = this.getPlayerById(client.sessionId);
+		if (player) {
+			if (message.type === "keydown" && player.paddle.keyReleased) {
+				player.paddle.keyPressTime = Date.now();
+				player.paddle.keyReleased = false;
+				player.paddle.vx = this.determineMovement(message.direction);
+			} else if (message.type === "keyup") {
+				player.paddle.keyReleased = true;
+				player.paddle.vx = 0;
 			}
-		});
+			player.lastProcessedInput = message.inputSequenceNumber;
+		}
+	}
+
+	private determineMovement(direction: string) {
+		return direction === "left" ? -5 : 5;
 	}
 
 	onJoin(client: any) {
@@ -91,10 +97,6 @@ export class GameRoom extends Room<GameRoomState> {
 		this.state.players.deleteAt(this.getPlayerIdBySessId(client.sessionId));
 	}
 
-	getPlayerIdBySessId(sessId: string) {
-		return this.state.players.findIndex((player) => player.id === sessId);
-	}
-
 	onDispose() {
 		console.log("Dispose GameRoom");
 	}
@@ -111,17 +113,16 @@ export class GameRoom extends Room<GameRoomState> {
 
 	private movePaddles() {
 		this.state.players.forEach((player) => {
-			if (player.paddle.keyReleased) {
-				const duration = (Date.now() - player.paddle.keyPressTime) / 1000;
-				const easingFactor = 0.1;
-				player.paddle.vx += easingFactor * -player.paddle.vx * duration;
-				this.correctOverflow(player);
-			} else if (!player.paddle.keyReleased) {
+			if (!player.paddle.keyReleased) {
 				player.paddle.x += player.paddle.vx;
 				this.correctOverflow(player);
 				player.paddle.vx *= 1.02;
 			}
 		});
+	}
+
+	private correctOverflow(player: Player) {
+		player.paddle.x = Math.min(Math.max(player.paddle.x, 0), 800);
 	}
 
 	private moveBall() {
@@ -184,6 +185,9 @@ export class GameRoom extends Room<GameRoomState> {
 				this.state.gameStatus = GameRoomStatus.FINISHED;
 				this.broadcast("game_win", player.id);
 				this.setSimulationInterval();
+				setTimeout(() => {
+					this.disconnect();
+				}, 5000);
 			}
 		});
 	}
@@ -215,18 +219,7 @@ export class GameRoom extends Room<GameRoomState> {
 		return this.state.players.find((player) => player.side === side);
 	}
 
-	private correctOverflow(player: Player) {
-		player.paddle.x = Math.min(Math.max(player.paddle.x, 0), 800);
-	}
-
-	determineMovement(direction: string) {
-		switch (direction) {
-			case "left":
-				return -5;
-			case "right":
-				return 5;
-			default:
-				return 0;
-		}
+	private getPlayerIdBySessId(sessId: string) {
+		return this.state.players.findIndex((player) => player.id === sessId);
 	}
 }
