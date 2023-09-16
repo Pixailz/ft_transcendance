@@ -43,6 +43,8 @@ export class GameRoomState extends Schema {
 	@type([Player]) public players = new ArraySchema<Player>();
 
 	@type(Ball) public ball = new Ball();
+
+	@type("string") public serverUpdateTime = Date.now().toString();
 }
 
 export class GameRoom extends Room<GameRoomState> {
@@ -89,6 +91,7 @@ export class GameRoom extends Room<GameRoomState> {
 	}
 
 	private update() {
+		this.state.serverUpdateTime = Date.now().toString();
 		if (this.state.gameStatus === GameRoomStatus.STARTED) {
 			this.moveBall();
 			this.checkCollisions();

@@ -22,6 +22,10 @@ export class GameRoomComponent implements OnInit {
   private readonly paddleWidth = 75;
   private readonly paddleHeight = 20;
   private playerId: string;
+  private state: GameRoomState;
+  private previousState: GameRoomState;
+  private currentTime: number;
+  private serverUpdateTime: number;
 
   constructor(private gameService: GameService) { }
 
@@ -29,6 +33,9 @@ export class GameRoomComponent implements OnInit {
     this.initGameEngine();
     this.initGameObjects();
     this.listenGameEvents();
+    this.state = this.gameService.room.state;
+    this.currentTime = Date.now();
+    this.serverUpdateTime = this.gameService.room.state.serverUpdateTime;
   }
 
   private initGameEngine(): void {
@@ -59,7 +66,7 @@ export class GameRoomComponent implements OnInit {
 
     this.engine.start().then(() => {
       this.engine.goToScene('game');
-
+      this.engine.onPostUpdate = this.postUpdate.bind(this);
       this.gameService.room.onStateChange((state: GameRoomState) => this.handleStateChange(state));
       this.gameService.room.onMessage('start', (message) => this.handleBallStart(message));
       this.gameService.room.onMessage('game_win', (message) => this.gameStatus.text = 'Player ' + message + ' wins!');
@@ -68,20 +75,34 @@ export class GameRoomComponent implements OnInit {
     });
   }
 
+  private postUpdate(engine: ex.Engine) {
+    this.currentTime = Date.now();
+    this.serverUpdateTime = this.gameService.room.state.serverUpdateTime;
+
+    if (this.previousState) {
+      this.state.players.forEach((player, index) => {
+        const previousPlayer = this.previousState.players[index];
+        const paddle = player.id === this.playerId ? this.localPaddle : this.remotePaddle;
+        const scoreLabel = player.id === this.playerId ? this.localScore : this.remoteScore;
+
+        paddle.pos.x = this.extrapolate(player.paddle.x, previousPlayer.paddle.x);
+        paddle.pos.y = this.extrapolate(player.paddle.y, previousPlayer.paddle.y);
+        scoreLabel.text = player.score.toString();
+        scoreLabel.pos.x = player.side === 'bottom' ? this.engine.drawWidth - 100 : 100;
+        scoreLabel.pos.y = player.side === 'bottom' ? 100 : this.engine.drawHeight - 100;
+      });
+      this.ball.pos.x = this.extrapolate(this.state.ball.x, this.previousState.ball.x);
+      this.ball.pos.y = this.extrapolate(this.state.ball.y, this.previousState.ball.y);
+    }
+  }
+
+  private extrapolate(currentValue: number, previousValue: number): number {
+    return previousValue + (currentValue - previousValue) / (this.serverUpdateTime / this.currentTime);
+  }
+
   private handleStateChange(state: GameRoomState): void {
-    state.players.forEach((player) => {
-      const paddle = player.id === this.playerId ? this.localPaddle : this.remotePaddle;
-      const scoreLabel = player.id === this.playerId ? this.localScore : this.remoteScore;
-
-      paddle.pos.x = player.paddle.x;
-      paddle.pos.y = player.paddle.y;
-      scoreLabel.text = String(player.score);
-      scoreLabel.pos.x = player.side === 'bottom' ? this.engine.drawWidth - 100 : 100;
-      scoreLabel.pos.y = player.side === 'bottom' ? 100 : this.engine.drawHeight - 100;
-    });
-
-    this.ball.pos.x = state.ball.x;
-    this.ball.pos.y = state.ball.y;
+    this.previousState = this.state;
+    this.state = state;
   }
 
   private handleBallStart(message): void {
