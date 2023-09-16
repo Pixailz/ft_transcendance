@@ -166,7 +166,6 @@ export class NotificationService {
 		this.notif.push(notif);
 		if (notification.status === NotifStatus.NOTSEEN)
 			this.notif_not_seen++;
-		console.log(notif);
 		return (notif);
 	}
 
