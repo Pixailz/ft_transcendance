@@ -4,16 +4,14 @@ export class Ball extends ex.Actor {
     constructor(
         public x: number,
         public y: number,
-        width: number,
-        height: number,
         color: ex.Color,
+        radius: number = 20
     ) {
         super({
             x: x,
             y: y,
-            width: width,
-            height: height,
             color: color,
+            radius: radius,
         });
     }
 }

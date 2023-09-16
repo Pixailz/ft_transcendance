@@ -72,6 +72,7 @@ export class GameRoomComponent implements OnInit {
       this.gameService.room.onMessage('game_win', (message) => this.gameStatus.text = 'Player ' + message + ' wins!');
 
       this.engine.input.keyboard.on('hold', (evt) => this.handleInputHold(evt));
+      this.engine.input.keyboard.on('release', (evt) => this.handleInputRelease(evt));
     });
   }
 
@@ -97,8 +98,11 @@ export class GameRoomComponent implements OnInit {
   }
 
   private extrapolate(currentValue: number, previousValue: number): number {
-    return previousValue + (currentValue - previousValue) / (this.serverUpdateTime / this.currentTime);
+    let dt = this.currentTime - this.serverUpdateTime;
+    let velocity = (currentValue - previousValue) / dt;
+    return currentValue + velocity * dt;
   }
+
 
   private handleStateChange(state: GameRoomState): void {
     this.previousState = this.state;
@@ -122,7 +126,13 @@ export class GameRoomComponent implements OnInit {
 
   private handleInputHold(evt: ex.Input.KeyEvent): void {
     if ([ex.Input.Keys.A, ex.Input.Keys.D].includes(evt.key)) {
-      this.gameService.room.send('move', evt.key === ex.Input.Keys.A ? 'left' : 'right');
+      this.gameService.room.send('move', {type: 'keydown', direction: evt.key === ex.Input.Keys.A ? 'left' : 'right'});
+    }
+  }
+
+  private handleInputRelease(evt: ex.Input.KeyEvent): void {
+    if ([ex.Input.Keys.A, ex.Input.Keys.D].includes(evt.key)) {
+      this.gameService.room.send('move', {type: 'keyup', direction: evt.key === ex.Input.Keys.A ? 'left' : 'right'});
     }
   }
 
@@ -137,11 +147,11 @@ export class GameRoomComponent implements OnInit {
   }
 
   private createBall(): Ball {
-    return this.createGameObject(Ball, [this.engine.drawWidth / 2, this.engine.drawHeight / 2, 20, 20, ex.Color.White]);
+    return this.createGameObject(Ball, [this.engine.drawWidth / 2, this.engine.drawHeight / 2, ex.Color.Green, 10]);
   }
 
   private createScore(x: number): ex.Label {
-    return this.createGameObject(ex.Label, [{ x: x, y: this.engine.drawHeight - 100, text: '0', font: new ex.Font({size: 16}), color: ex.Color.White }]);
+    return this.createGameObject(ex.Label, [{ x: x, y: this.engine.drawHeight - 100, text: '0', font: new ex.Font({size: 14}), color: ex.Color.White }]);
   }
 
 
@@ -151,7 +161,7 @@ export class GameRoomComponent implements OnInit {
       y: this.engine.halfDrawHeight - 50,
       text: 'Waiting for players',
       color: ex.Color.White,
-      font: new ex.Font({size: 16}),
+      font: new ex.Font({size: 14}),
     }]);
   }
 }

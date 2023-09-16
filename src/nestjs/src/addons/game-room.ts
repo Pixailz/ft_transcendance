@@ -26,7 +26,10 @@ class Paddle extends Schema {
 	@type("int32") height = 20;
 	@type("int32") x = 400;
 	@type("int32") y = 0;
+	@type("float32") vx = 0;
+	@type("float32") keyPressTime = 0;
 	@type("string") color = "";
+	@type("boolean") keyReleased = false;
 }
 
 class Player extends Schema {
@@ -58,8 +61,14 @@ export class GameRoom extends Room<GameRoomState> {
 		this.onMessage("move", (client, message) => {
 			const player = this.getPlayerById(client.sessionId);
 			if (player) {
-				player.paddle.x += this.determineMovement(message);
-				this.correctOverflow(player);
+				if (message.type === "keydown" && player.paddle.keyReleased) {
+					player.paddle.keyPressTime = Date.now();
+					player.paddle.keyReleased = false;
+					player.paddle.vx = this.determineMovement(message.direction);
+				} else if (message.type === "keyup") {
+					player.paddle.keyReleased = true;
+					// player.paddle.vx = 0;
+				}
 			}
 		});
 	}
@@ -92,11 +101,27 @@ export class GameRoom extends Room<GameRoomState> {
 
 	private update() {
 		this.state.serverUpdateTime = Date.now().toString();
+		this.movePaddles();
 		if (this.state.gameStatus === GameRoomStatus.STARTED) {
 			this.moveBall();
 			this.checkCollisions();
 			this.checkBallLose();
 		}
+	}
+
+	private movePaddles() {
+		this.state.players.forEach((player) => {
+			if (player.paddle.keyReleased) {
+				const duration = (Date.now() - player.paddle.keyPressTime) / 1000;
+				const easingFactor = 0.1;
+				player.paddle.vx += easingFactor * -player.paddle.vx * duration;
+				this.correctOverflow(player);
+			} else if (!player.paddle.keyReleased) {
+				player.paddle.x += player.paddle.vx;
+				this.correctOverflow(player);
+				player.paddle.vx *= 1.02;
+			}
+		});
 	}
 
 	private moveBall() {
@@ -197,9 +222,9 @@ export class GameRoom extends Room<GameRoomState> {
 	determineMovement(direction: string) {
 		switch (direction) {
 			case "left":
-				return -10;
+				return -5;
 			case "right":
-				return 10;
+				return 5;
 			default:
 				return 0;
 		}
