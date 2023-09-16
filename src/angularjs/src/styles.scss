@@ -48,7 +48,7 @@ body {
 
 body {
 	margin: 0;
-	background-color: #0e0e0e;
+	background: linear-gradient(50deg, rgba(2,0,36,1) 0%, rgba(6,6,89,1) 100%);
 }
 
 ul {
@@ -63,4 +63,30 @@ ul {
 		border: 3px solid black;
 		padding: 20px;
 	}
+}
+
+
+.notification > div {
+    background-color: #001509; 
+	color: white;
+    border: 3px solid white;
+	margin-top: 10px;
+	padding: 10px;
+	width: 180px;
+	border: 1px solid rgba(90,90,90,0.4);
+	background: rgba(90, 90, 90, 0.3);
+	border-radius: 10px;
+	backdrop-filter: blur(10px);
+}
+
+.glass {
+	border: 1px solid rgba(90,90,90,0.4);
+	background: rgba(90, 90, 90, 0.3);
+	border-radius: 10px;
+	backdrop-filter: blur(10px);
+}
+
+.solid {
+	background-color: rgba($color: #383838, $alpha: 1.0);
+	border-radius: 10px;
 }

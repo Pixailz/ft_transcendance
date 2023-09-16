@@ -4,13 +4,14 @@ import { AuthModule } from "src/modules/auth/module";
 import { DBModule } from "src/modules/database/database.module";
 import { UserService } from "src/adapter/user/service";
 import { ChatRoomService } from "src/adapter/chatRoom/service";
-import { WSGateway } from "./ws.gateway";
+import { WSGateway } from "./gateway";
 import { WSSocket } from "./socket.service";
 import { WSChatChannelService } from "./chat/chat-channel.service";
 import { WSChatDmService } from "./chat/chat-dm.service";
 import { WSFriendService } from "./friend/friend.service";
-import { WSService } from "./ws.service";
+import { WSService } from "./service";
 import { Sanitize } from "../modules/database/sanitize-object";
+import { WSNotificationService } from "./notifications/notifications.service";
 
 @Module({
 	imports: [AuthModule, DBModule],
@@ -24,6 +25,7 @@ import { Sanitize } from "../modules/database/sanitize-object";
 		WSChatDmService,
 		WSChatChannelService,
 		WSFriendService,
+		WSNotificationService,
 	],
 })
 export class WSModule {}

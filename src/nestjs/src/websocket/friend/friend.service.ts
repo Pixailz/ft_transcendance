@@ -5,6 +5,8 @@ import { WSSocket } from "../socket.service";
 import { DBFriendRequestService } from "src/modules/database/friendRequest/service";
 import { DBFriendService } from "src/modules/database/friend/service";
 import { Sanitize } from "../../modules/database/sanitize-object";
+import { WSNotificationService } from "../notifications/notifications.service";
+import { DBBlockedService } from "src/modules/database/blocked/service";
 
 @Injectable()
 export class WSFriendService {
@@ -13,7 +15,9 @@ export class WSFriendService {
 		private userService: UserService,
 		private dbFriendRequestService: DBFriendRequestService,
 		private dbFriendService: DBFriendService,
+		private dbBlockedService: DBBlockedService,
 		public wsSocket: WSSocket,
+		public wsNotificationService: WSNotificationService,
 	) {}
 
 	async getAllFriend(socket: Socket) {
@@ -34,6 +38,14 @@ export class WSFriendService {
 		);
 	}
 
+	async getAllBlocked(socket: Socket) {
+		const user_id = this.wsSocket.getUserId(socket.id);
+		socket.emit(
+			"getAllBlocked",
+			await this.dbBlockedService.getAllBlocked(user_id),
+		);
+	}
+
 	async acceptFriendRequest(
 		server: Server,
 		socket: Socket,
@@ -45,17 +57,22 @@ export class WSFriendService {
 		const friend = await this.userService.getInfoById(friend_id);
 		const user = await this.userService.getInfoById(user_id);
 		await this.dbFriendRequestService.acceptReq(friend_id, user_id);
-		this.wsSocket.sendToUsers(
+		this.wsSocket.sendToUser(
 			server,
-			[user_id],
+			user_id,
 			"getNewFriend",
 			this.sanitize.User(friend),
 		);
-		this.wsSocket.sendToUsers(
+		this.wsSocket.sendToUser(
 			server,
-			[friend_id],
+			friend_id,
 			"getNewFriend",
 			this.sanitize.User(user),
+		);
+		await this.wsNotificationService.acceptFriendRequest(
+			server,
+			friend_id,
+			user_id,
 		);
 	}
 
@@ -65,7 +82,6 @@ export class WSFriendService {
 		friend_id: number,
 	) {
 		const user_id = this.wsSocket.getUserId(socket.id);
-
 		await this.dbFriendRequestService.rejectReq(friend_id, user_id);
 		this.wsSocket.sendToUsers(
 			server,
@@ -76,6 +92,38 @@ export class WSFriendService {
 				target_id: friend_id,
 			},
 		);
+		await this.wsNotificationService.rejectFriendRequest(
+			server,
+			friend_id,
+			user_id,
+		);
+	}
+
+	async blockUser(
+		server: Server,
+		socket: Socket,
+		target_id: number,
+	) {
+		const user_id = this.wsSocket.getUserId(socket.id);
+
+		if (await this.dbBlockedService.isBlocked(user_id, target_id))
+			return ;
+		await this.dbBlockedService.create({meId: user_id, targetId: target_id});
+		const blocked_data = await this.dbBlockedService.returnOne(user_id, target_id);
+		this.wsSocket.sendToUser(server, user_id, "getNewBlocked", blocked_data.target);
+	}
+
+	async unblockUser(
+		server: Server,
+		socket: Socket,
+		target_id: number,
+	) {
+		const user_id = this.wsSocket.getUserId(socket.id);
+
+		if (!await this.dbBlockedService.isBlocked(user_id, target_id))
+			return ;
+		await this.dbBlockedService.delete(user_id, target_id);
+		this.wsSocket.sendToUser(server, user_id, "getNewUnblocked", target_id);
 	}
 
 	async sendFriendRequest(server: Server, socket: Socket, friend_id: number) {
@@ -83,10 +131,17 @@ export class WSFriendService {
 
 		if (await this.dbFriendService.alreadyFriend(friend_id, user_id))
 			return;
+		if (await this.dbFriendRequestService.alreadySent(user_id, friend_id))
+			return ;
+		if (await this.dbFriendRequestService.alreadySent(friend_id, user_id)) {
+			await this.acceptFriendRequest(server, socket, friend_id);
+			return;
+		}
 		await this.dbFriendRequestService.create(
 			{ friendId: friend_id },
 			user_id,
 		);
+
 		const full_request = await this.dbFriendRequestService.getFullRequest(
 			user_id,
 			friend_id,
@@ -96,6 +151,11 @@ export class WSFriendService {
 			[friend_id, user_id],
 			"getNewFriendRequest",
 			this.sanitize.FriendRequest(full_request),
+		);
+		this.wsNotificationService.sendFriendRequest(
+			server,
+			friend_id,
+			user_id,
 		);
 	}
 }

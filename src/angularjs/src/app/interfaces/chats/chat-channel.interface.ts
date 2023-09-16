@@ -3,7 +3,11 @@ import { ChatRoomI, DefChatRoomI, } from "./chat-room.interface";
 export enum RoomAction {
 	KICK,
 	PROMOTE,
+	DEMOTE,
 	OWNERSHIP,
+	UNBAN,
+	BAN,
+	UNMUTE,
 }
 
 export interface ChatChannelI {

@@ -3,12 +3,14 @@ import { ChatRoomService } from "src/adapter/chatRoom/service";
 import { WSSocket } from "../socket.service";
 import { Server, Socket } from "socket.io";
 import { Sanitize } from "../../modules/database/sanitize-object";
+import { DBBlockedService } from "src/modules/database/blocked/service";
 
 @Injectable()
 export class WSChatDmService {
 	constructor(
 		private sanitize: Sanitize,
 		private chatRoomService: ChatRoomService,
+		private dbBlockedService: DBBlockedService,
 		public wsSocket: WSSocket,
 	) {}
 
@@ -42,6 +44,9 @@ export class WSChatDmService {
 
 	async createDmRoom(server: Server, socket: Socket, dst_id: number) {
 		const user_id = this.wsSocket.getUserId(socket.id);
+
+		if (await this.dbBlockedService.isBlocked(dst_id, user_id))
+			return ;
 		const room_id = await this.chatRoomService.createDmRoom(
 			user_id,
 			dst_id,
@@ -51,9 +56,9 @@ export class WSChatDmService {
 		for (let i = 0; i < chat_room.roomInfo.length; i++)
 			if (chat_room.roomInfo[i].user.id === user_id && user_id !== dst_id)
 				chat_room.roomInfo.splice(i, 1);
-		this.wsSocket.sendToUsers(
+		this.wsSocket.sendToUser(
 			server,
-			[user_id],
+			user_id,
 			"getNewDmRoom",
 			this.sanitize.ChatRoom(chat_room),
 		);
@@ -62,9 +67,9 @@ export class WSChatDmService {
 		for (let i = 0; i < chat_room.roomInfo.length; i++)
 			if (chat_room.roomInfo[i].user.id === dst_id)
 				chat_room.roomInfo.splice(i, 1);
-		this.wsSocket.sendToUsers(
+		this.wsSocket.sendToUser(
 			server,
-			[dst_id],
+			dst_id,
 			"getNewDmRoom",
 			this.sanitize.ChatRoom(chat_room),
 		);
@@ -89,6 +94,8 @@ export class WSChatDmService {
 	) {
 		const user_id = this.wsSocket.getUserId(socket.id);
 
+		if (await this.dbBlockedService.isBlocked(dst_id, user_id))
+			return ;
 		const message_id = await this.chatRoomService.sendMessage(
 			dst_id,
 			user_id,

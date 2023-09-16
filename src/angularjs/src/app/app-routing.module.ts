@@ -38,16 +38,6 @@ const routes: Routes = [
 				data: { animation: 'Play', reuseRoute: true }
 			},
 			{
-				path: 'profile',
-				component: UserProfileComponent,
-				data: { animation: 'Profile', reuseRoute: true }
-			},
-			{
-				path: 'profile/:login',
-				component: ProfileComponent,
-				data: { animation: 'ProfileUser', reuseRoute: true }
-			},
-			{
 				path: 'chat/dm',
 				component: WSChatDmComponent,
 				data: { animation: 'ChatDm', reuseRoute: true }
@@ -56,6 +46,16 @@ const routes: Routes = [
 				path: 'chat/global',
 				component: WSChatChannelComponent,
 				data: { animation: 'ChatChannel', reuseRoute: true }
+			},
+			{
+				path: 'profile',
+				component: UserProfileComponent,
+				data: { animation: 'Profile', reuseRoute: true }
+			},
+			{
+				path: 'profile/:login',
+				component: ProfileComponent,
+				data: { animation: 'ProfileUser', reuseRoute: true }
 			},
 			{
 				// throw a 404 error if the route is not found

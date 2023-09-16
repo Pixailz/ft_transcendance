@@ -39,13 +39,20 @@ export class WSSocket {
 		}
 	}
 
+	sendToUser(server: Server, user_id: number, event: string, data: any) {
+		const socket_ids = this.getSocketId(user_id);
+		if (!socket_ids) return;
+		for (let i = 0; i < socket_ids.length; i++)
+			server.to(socket_ids[i]).emit(event, data);
+	}
+
 	sendToUsers(server: Server, user_ids: number[], event: string, data: any) {
-		for (var i = 0; i < user_ids.length; i++) {
-			const socket_ids = this.getSocketId(user_ids[i]);
-			if (!socket_ids) return;
-			for (let i = 0; i < socket_ids.length; i++)
-				server.to(socket_ids[i]).emit(event, data);
-		}
+		for (var i = 0; i < user_ids.length; i++)
+			this.sendToUser(server, user_ids[i], event, data);
+	}
+
+	sendToUserInfo(server: Server, user: UserEntity, event: string, data: any) {
+		this.sendToUser(server, user.id, event, data);
 	}
 
 	sendToUsersInfo(
@@ -54,9 +61,8 @@ export class WSSocket {
 		event: string,
 		data: any,
 	) {
-		var user_list: number[] = [];
-		for (var i = 0; i < users.length; i++) user_list.push(users[i].id);
-		this.sendToUsers(server, user_list, event, data);
+		for (var i = 0; i < users.length; i++)
+			this.sendToUserInfo(server, users[i], event, data);
 	}
 
 	sendToAllSocket(server: Server, event: string, data: any) {

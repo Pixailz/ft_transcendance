@@ -64,8 +64,24 @@ export class DBUserChatRoomService {
 			userId: user,
 			roomId: room,
 		});
-		if (tmp) return await this.userChatRoomRepo.update(tmp, post);
+		if (tmp)
+			return await this.userChatRoomRepo.update(
+				{ userId: tmp.userId, roomId: tmp.roomId },
+				post,
+			);
 		else throw new NotFoundException("userChatRoom not found");
+	}
+
+	async mute(user: number, room: number, muted_time: number) {
+		const user_chatroom = await this.getUserChatRoom(user, room);
+		var demuteDate: Date = new Date();
+		if (user_chatroom.isMuted && user_chatroom.demuteDate > demuteDate)
+			demuteDate = user_chatroom.demuteDate;
+		demuteDate.setSeconds(demuteDate.getSeconds() + muted_time);
+		await this.update(user, room, {
+			isMuted: true,
+			demuteDate: demuteDate,
+		});
 	}
 
 	async delete(user: number, room: number) {
@@ -73,8 +89,11 @@ export class DBUserChatRoomService {
 			userId: user,
 			roomId: room,
 		});
-		if (tmp) return await this.userChatRoomRepo.delete(tmp);
-		else throw new NotFoundException("userChatRoom not found");
+		if (tmp)
+			return await this.userChatRoomRepo.delete({
+				userId: tmp.userId,
+				roomId: tmp.roomId,
+			});
 	}
 
 	async getUserRoom(room_id: number): Promise<UserChatRoomEntity[]> {
@@ -125,6 +144,12 @@ export class DBUserChatRoomService {
 						type: RoomType.PUBLIC,
 					},
 				},
+				{
+					roomId: room_id,
+					room: {
+						type: RoomType.PRIVATE,
+					},
+				},
 			],
 			order: {
 				room: {
@@ -133,6 +158,38 @@ export class DBUserChatRoomService {
 					},
 				},
 			},
+		});
+	}
+
+	async getUserChatRoom(user_id: number, room_id: number) {
+		return await this.userChatRoomRepo.findOne({
+			relations: {
+				user: true,
+				room: true,
+			},
+			where: [
+				{
+					userId: user_id,
+					roomId: room_id,
+					room: {
+						type: RoomType.PROTECTED,
+					},
+				},
+				{
+					userId: user_id,
+					roomId: room_id,
+					room: {
+						type: RoomType.PUBLIC,
+					},
+				},
+				{
+					userId: user_id,
+					roomId: room_id,
+					room: {
+						type: RoomType.PRIVATE,
+					},
+				},
+			],
 		});
 	}
 }

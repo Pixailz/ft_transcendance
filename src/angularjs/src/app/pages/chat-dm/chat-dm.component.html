@@ -11,7 +11,7 @@
 	</div>
 	<ul class="room-list">
 		<li *ngFor="let friend of chatDmService.getFriendsRoom();">
-			<button (click)="onSelectFriend(friend)">
+			<button *ngIf="!friendService.isBlocked(friend.user_info.id)" (click)="onSelectFriend(friend)">
 				{{userService.getUserInfoFormated(friend.user_info)}}
 			</button>
 		</li>
@@ -41,4 +41,3 @@
 		</button>
 	</div>
 </div>
-<app-flat-button class="refresh" bgColor="#ffb1b1" fontIcon="refresh" (click)="onGetInfo()"></app-flat-button>

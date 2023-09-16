@@ -20,8 +20,7 @@ export enum FriendReqStatus {
 })
 export class ProfileComponent implements OnInit {
 	user_info: UserI = DefUserI;
-	alreadyFriend: boolean = true;
-
+	user_id : number = -1;
 	constructor(
 		private route: ActivatedRoute,
 		private back: BackService,
@@ -37,11 +36,15 @@ export class ProfileComponent implements OnInit {
 			.catch((err) => {
 				console.log("[profile]", err.status);
 			});
+		this.user_id = (await this.userService.getUserInfo()).id;
 	}
-
-	onGetInfo()
-	{ this.friendService.getInfo(); }
 
 	sendFriendRequest(id: number)
 	{ this.wsGateway.sendFriendRequest(id); }
+
+	blockUser(id: number)
+	{ this.wsGateway.blockUser(id); }
+
+	unblockUser(id: number)
+	{ this.wsGateway.unblockUser(id); }
 }

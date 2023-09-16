@@ -5,7 +5,7 @@ import { DefChatDmI } from "src/app/interfaces/chats/chat-dm.interface";
 
 import { WSGateway } from "../../gateway";
 import { ChatRoomService } from "../chatroom.service";
-import { UserI } from "src/app/interfaces/user/user.interface";
+import { DefUserI, UserI } from "src/app/interfaces/user/user.interface";
 import { DefUserChatRoomI } from "src/app/interfaces/user/user-chat-room.interface";
 import { WSService } from "../../service";
 import { Subscription } from "rxjs";
@@ -16,29 +16,30 @@ import { Subscription } from "rxjs";
 export class ChatDmService {
 	chat = DefChatDmI;
 	obsToDestroy: Subscription[] = [];
+
 	constructor(
 		private chatRoomService: ChatRoomService,
 		private wsService: WSService,
 		private wsGateway: WSGateway,
 	) {
-		this.wsGateway.getAllDmRoom();
 		this.obsToDestroy.push(this.wsGateway.listenAllDmRoom()
 			.subscribe((rooms: ChatRoomI[]) => {
-				console.log("event AllChatDm received")
+				console.log("[WS:DM] AllChatDm event")
 				this.updateAllChatDm(rooms);
 			}
 		));
 
 		this.obsToDestroy.push(this.wsGateway.listenNewDmRoom()
 			.subscribe((room: ChatRoomI) => {
-				console.log("event NewDmRoom received")
+				console.log("[WS:DM] NewDmRoom event")
 				this.updateNewChatDm(room);
 			}
 		));
 
 		this.obsToDestroy.push(this.wsGateway.listenNewDmMessage()
 			.subscribe((data: any) => {
-				console.log("event NewDmMessage received")
+				console.log("[WS:DM] NewDmMessage event")
+				console.log("[WS:DM] data ", data);
 				this.updateNewDmMessage(data);
 			}
 		));
@@ -46,22 +47,34 @@ export class ChatDmService {
 
 	ngOnDestroy()
 	{
-		console.log("[DM] destroyer");
+		console.log("[WS:ChatDM] onDestroy")
 		this.wsService.unsubscribeObservables(this.obsToDestroy);
 	}
 
 	updateAllChatDm(chatroom: ChatRoomI[])
 	{
+		var found: boolean;
+
 		for (var i = 0; i < chatroom.length; i++)
 		{
+			found = false;
+			const	array_chat_room = chatroom[i].roomInfo;
+			if (!array_chat_room || !array_chat_room[0])
+				continue ;
+
 			for (const friend_id in this.chat.dm)
 			{
-				const	array_chat_room = chatroom[i].roomInfo;
-				if (!array_chat_room || !array_chat_room[0])
-					continue ;
-				if (Number(friend_id) === array_chat_room[0].user.id)
+				if (Number(friend_id) === array_chat_room[0].userId)
+				{
+					found = true;
 					this.chat.dm[friend_id].room = chatroom[i];
+				}
 			}
+			if (!found)
+				this.chat.dm[array_chat_room[0].user.id.toString()] = {
+					user_info: DefUserI,
+					room: chatroom[i],
+				}
 		}
 	}
 
@@ -176,16 +189,7 @@ export class ChatDmService {
 
 	getInfo()
 	{
-		const	selected_dm = this.getSelectedDm();
-
-		// console.clear();
-
+		console.log("[DM]");
 		console.log(this.chat);
-
-		if (selected_dm.id === -1)
-			console.log("[onGetInfo] selected_dm not found");
-		else
-			console.log("[onGetInfo] selected_dm", selected_dm);
 	}
-
 }

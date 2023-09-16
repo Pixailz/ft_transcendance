@@ -8,7 +8,8 @@ import { MessageEntity } from "./message/entity";
 import { GameInfoEntity } from "./gameInfo/entity";
 import { FriendEntity } from "./friend/entity";
 import { FriendRequestEntity } from "./friendRequest/entity";
-import { MutedEntity } from "./muted/entity";
+import { BlockedEntity } from "./blocked/entity";
+import { NotificationEntity } from "./notification/entity";
 
 import { DBUserService } from "./user/service";
 import { DBChatRoomService } from "./chatRoom/service";
@@ -17,7 +18,8 @@ import { DBMessageService } from "./message/service";
 import { DBGameInfoService } from "./gameInfo/service";
 import { DBFriendService } from "./friend/service";
 import { DBFriendRequestService } from "./friendRequest/service";
-import { DBMutedService } from "./muted/service";
+import { DBBlockedService } from "./blocked/service";
+import { DBNotificationService } from "./notification/service";
 
 import { DBUserController } from "./user/controller";
 import { DBChatRoomController } from "./chatRoom/controller";
@@ -26,8 +28,9 @@ import { DBMessageController } from "./message/controller";
 import { DBGameInfoController } from "./gameInfo/controller";
 import { DBFriendController } from "./friend/controller";
 import { DBFriendRequestController } from "./friendRequest/controller";
-import { DBMutedController } from "./muted/controller";
 import { Sanitize } from "./sanitize-object";
+import { DBBlockedController } from "./blocked/controller";
+import { DBNotificationController } from "./notification/controller";
 
 @Module({
 	imports: [
@@ -46,7 +49,8 @@ import { Sanitize } from "./sanitize-object";
 				GameInfoEntity,
 				FriendEntity,
 				FriendRequestEntity,
-				MutedEntity,
+				BlockedEntity,
+				NotificationEntity,
 			],
 			synchronize: true,
 		}),
@@ -58,7 +62,8 @@ import { Sanitize } from "./sanitize-object";
 			GameInfoEntity,
 			FriendEntity,
 			FriendRequestEntity,
-			MutedEntity,
+			BlockedEntity,
+			NotificationEntity,
 		]),
 	],
 	controllers: [
@@ -69,7 +74,8 @@ import { Sanitize } from "./sanitize-object";
 		DBGameInfoController,
 		DBFriendController,
 		DBFriendRequestController,
-		DBMutedController,
+		DBBlockedController,
+		DBNotificationController,
 	],
 	providers: [
 		Sanitize,
@@ -80,7 +86,8 @@ import { Sanitize } from "./sanitize-object";
 		DBGameInfoService,
 		DBFriendService,
 		DBFriendRequestService,
-		DBMutedService,
+		DBBlockedService,
+		DBNotificationService,
 	],
 	exports: [
 		DBUserService,
@@ -90,7 +97,8 @@ import { Sanitize } from "./sanitize-object";
 		DBGameInfoService,
 		DBFriendService,
 		DBFriendRequestService,
-		DBMutedService,
+		DBBlockedService,
+		DBNotificationService,
 	],
 })
 export class DBModule {}

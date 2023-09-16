@@ -26,6 +26,12 @@
 						/>
 						</mat-form-field>
 						<br>
+						<mat-slide-toggle
+							formControlName="is_private"
+							[disabled]="chatChannelService.getSelectedRoom().type !== 2">
+							Private Room
+						</mat-slide-toggle>
+						<br>
 						<mat-card-actions>
 							<div class="buttoncontainer">
 								<button
@@ -217,18 +223,72 @@
 									Change
 								</button>
 							</mat-card-actions>
+							<br>
 							<mat-slide-toggle
 								formControlName="remove_pass"
 								[disabled]="chatChannelService.getSelectedRoom().type !== 2">
 								Remove pass
 							</mat-slide-toggle>
+
+							<mat-slide-toggle
+								formControlName="change_private">
+								Change Private
+							</mat-slide-toggle>
+
+							<mat-slide-toggle
+								formControlName="is_private"
+								[disabled]="!roomManagementUser.value?.change_private">
+								Make Private
+							</mat-slide-toggle>
 						</div>
 					</mat-card-content>
+				</form>
+				<form [formGroup]="roomManagementUser">
+					<mat-form-field style="width: 80%; margin: 10px;">
+						<mat-label>Selected Friend</mat-label>
+						<mat-select multiple formControlName="user">
+							<mat-option *ngFor="let friend of getManagementAddUser()" [value]="friend">
+							{{userService.getUserInfoFormated(friend)}}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+					<br>
+					<p *ngFor="let user of roomManagementUser.value?.user;">{{user.ftLogin}}</p>
+					<mat-card-actions>
+						<div class="buttoncontainer">
+							<button
+								mat-raised-button
+								color="primary"
+								(click)="onClearManagementUser()"
+								[disabled]="!roomManagementUser.value?.user?.length"
+							>
+								Clear
+							</button>
+						</div>
+					</mat-card-actions>
+					<mat-card-actions>
+						<div class="buttoncontainer">
+							<button
+								mat-raised-button
+								color="primary"
+								(click)="onAddUser()"
+								[disabled]="!roomManagementUser.value?.user?.length"
+							>
+								Add
+							</button>
+						</div>
+					</mat-card-actions>
 				</form>
 			</div>
 			<div class="room-management-user">
 				<div *ngIf="chatChannelService.getSelectedRoom().id !== -1">
 					<h4>ROOM INFO</h4>
+				</div>
+				<button mat-raised-button color="warn"
+					(click)="onLeave()">
+					LEAVE
+				</button>
+				<div>
 					<p>ID    : {{chatChannelService.getSelectedRoom().id}}</p>
 					<p>NAME  : {{chatChannelService.getSelectedRoom().name}}</p>
 					<p>TYPE  : {{chatRoomService .getRoomTypeStr(chatChannelService.getSelectedRoom())}}</p>
@@ -241,22 +301,22 @@
 					<div *ngFor="let user of chatChannelService.getSelectedRoomUser()">
 						{{user.ftLogin}} ({{user.nickname}})
 						<div class="button-row">
-							<button mat-raised-button color="primary"
+							<button mat-raised-button color="warn"
 								(click)="onKickUser(user)"
-								[disabled]="!canKickUser()">
+								[disabled]="!canKickUser(user)">
 								KICK
 							</button>
-							<button mat-raised-button color="primary"
+							<button mat-raised-button color="warn"
 								(click)="onBanUser(user)"
-								[disabled]="!canBanUser()">
+								[disabled]="!canBanUser(user)">
 								BAN
 							</button>
-							<button mat-raised-button color="primary"
-								(click)="onMuteUser(user)"
-								[disabled]="!canMuteUser()">
-								MUTE
+							<button *ngIf="this.chatChannelService.isAdminSelectedRoom(user.id)" mat-raised-button color="primary"
+								(click)="onDemoteUser(user)"
+								[disabled]="!canPromoteUser()">
+								DEMOTE
 							</button>
-							<button mat-raised-button color="primary"
+							<button *ngIf="!this.chatChannelService.isAdminSelectedRoom(user.id)" mat-raised-button color="primary"
 								(click)="onPromoteUser(user)"
 								[disabled]="!canPromoteUser()">
 								PROMOTE
@@ -266,6 +326,38 @@
 								[disabled]="!canGiveKrownUser()">
 								GIVE OWNERSHIP
 							</button>
+							<div *ngIf="chatChannelService.isMutedSelectedRoom(user.id)">
+								<button mat-raised-button color="warn"
+									(click)="onUnmuteUser(user)"
+									[disabled]="!canMuteUser(user)">
+									UNMUTE
+								</button>
+							</div>
+							<button mat-raised-button color="warn"
+								(click)="onMuteUser(user)"
+								[disabled]="!canMuteUser(user)">
+								MUTE
+							</button>
+							<mat-form-field class="example-full-width">
+								<mat-label>Muted Time</mat-label>
+								<input matInput
+									type="number" step="30"
+									[(ngModel)]="muted_time"
+								>
+							</mat-form-field>
+						</div>
+					</div>
+					<div *ngIf="chatChannelService.getSelectedRoomBanned().length">
+						<h4>BANNED ({{chatChannelService.getSelectedRoomBanned().length}})</h4>
+						<div *ngFor="let user of chatChannelService.getSelectedRoomBanned()">
+							{{user.ftLogin}} ({{user.nickname}})
+							<div class="button-row">
+								<button mat-raised-button color="primary"
+									(click)="onUnBanUser(user)"
+									[disabled]="!canBanUser(user)">
+									UNBAN
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -283,21 +375,22 @@
 	<h2 [routerLink]="" (click)="onOpenManagement()">{{chatChannelService.getRoomTitle()}}</h2>
 	<ol class="msg-list">
 		<li *ngFor="let _ of chatChannelService.getSelectedRoom().message; let i=index;" [ngClass]="{'me': chatChannelService.getCurrentMessage(i).userId === userService.user.id, 'same': chatChannelService.isSameUser(i)}">
-			<div class="title-line">
-				<span class="date" *ngIf="!isFollowingDay(i)">{{chatChannelService.getCurrentMessage(i).updateAt | date: 'dd/MM/YYYY'}}</span>
-				<span class="login" *ngIf="!chatChannelService.isSameUser(i)">{{chatChannelService.getCurrentMessageUser(i).ftLogin}}</span>
-			</div>
-			<div class="msg-line">
-				<span class="content">{{chatChannelService.getCurrentMessage(i).content}}</span>
-				<span class="time">{{chatChannelService.getCurrentMessage(i).updateAt | date: 'HH:mm'}}</span>
+			<div class="message" *ngIf="!friendService.isBlocked(chatChannelService.getCurrentMessageUser(i).id)">
+				<div class="title-line">
+					<span class="date" *ngIf="!isFollowingDay(i)">{{chatChannelService.getCurrentMessage(i).updateAt | date: 'dd/MM/YYYY'}}</span>
+					<span class="login" *ngIf="!chatChannelService.isSameUser(i)">{{chatChannelService.getCurrentMessageUser(i).ftLogin}}</span>
+				</div>
+				<div class="msg-line">
+					<span class="content">{{chatChannelService.getCurrentMessage(i).content}}</span>
+					<span class="time">{{chatChannelService.getCurrentMessage(i).updateAt | date: 'HH:mm'}}</span>
+				</div>
 			</div>
 		</li>
 	</ol>
-	<div class="txt-bar">
+	<div class="txt-bar" *ngIf="!chatChannelService.isMutedSelectedRoom(userService.user.id)">
 		<input [(ngModel)]="message" type="text" placeholder="Enter a message..." (keypress)="onPress($event)">
 		<button (click)="sendMessage()">
 			<mat-icon fontIcon="send"></mat-icon>
 		</button>
 	</div>
 </div>
-<app-flat-button class="refresh" bgColor="#ffb1b1" fontIcon="refresh" (click)="onGetInfo()"></app-flat-button>

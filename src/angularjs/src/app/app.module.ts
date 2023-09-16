@@ -39,15 +39,24 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
 import { TwofaformComponent } from './components/twofaform/twofaform.component';
-import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
-import { WSChatDmComponent } from './pages/chat-dm/chat-dm.component';
-import { GlobalErrorHandlerService } from './services/global-error-handler.service';
 import { CustomReuseStrategy } from './reuse-strategy';
+import { MatBadgeModule } from '@angular/material/badge';
+
+// WEBSOCKET
+import { WSChatDmComponent } from './pages/chat-dm/chat-dm.component';
+import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
+import { GlobalErrorHandlerService } from './services/global-error-handler.service';
 import { environment } from './environments/environment';
 import { GameComponent } from './pages/game/game.component';
 import { GameLobbyComponent } from './components/game-lobby/game-lobby.component';
 import { GameRoomComponent } from './components/game-room/game-room.component';
 import { GameOverComponent } from './components/game-over/game-over.component';
+import { TextNotificationComponent } from './components/text-notification/text-notification.component';
+import { NotifFriendReqReceivedComponent } from './components/notification/friend-req-received/friend-req-received.component';
+import { NotifFriendReqSentComponent } from './components/notification/friend-req-sent/friend-req-sent.component';
+import { NotifFriendReqAcceptedComponent } from './components/notification/friend-req-accepted/friend-req-accepted.component';
+import { NotifFriendReqDeniedFromComponent } from './components/notification/friend-req-denied-from/friend-req-denied-from.component';
+import { NotifFriendReqDeniedToComponent } from './components/notification/friend-req-denied-to/friend-req-denied-to.component';
 
 const config: SocketIoConfig = {
     url: environment.socket_url,
@@ -83,8 +92,14 @@ const config: SocketIoConfig = {
         ErrordialogComponent,
         FlatListComponent,
         NotificationComponent,
+		TextNotificationComponent,
         WSChatDmComponent,
         WSChatChannelComponent,
+		NotifFriendReqSentComponent,
+		NotifFriendReqReceivedComponent,
+		NotifFriendReqAcceptedComponent,
+		NotifFriendReqDeniedFromComponent,
+		NotifFriendReqDeniedToComponent,
     ],
     imports: [
         BrowserModule,
@@ -108,6 +123,7 @@ const config: SocketIoConfig = {
         MatProgressBarModule,
         SocketIoModule.forRoot(config),
         CodeInputModule,
+		MatBadgeModule
     ],
     providers: [
         AuthGuardService,

@@ -23,52 +23,50 @@ export class ChatChannelService {
 		private wsService: WSService,
 		private wsGateway: WSGateway,
 	) {
-		this.wsGateway.getAllAvailableChannelRoom();
 		this.obsToDestroy.push(this.wsGateway.listenAllAvailableChannelRoom().subscribe((data: ChatRoomI[]) => {
-			console.log("event AllAvailableChannelRoom received");
+			console.log("[WS:ChatChannel] AllAvailableChannelRoom event")
 			this.updateAllAvailableChannelRoom(data);
 		}))
-
 		this.obsToDestroy.push(this.wsGateway.listenNewGlobalMessage().subscribe((data: any) => {
-			console.log("event getNewGlobalMessage received");
+			console.log("[WS:ChatChannel] getNewGlobalMessage event")
 			this.updateNewGlobalMessage(data);
 		}));
-
 		this.obsToDestroy.push(this.wsGateway.listenNewUserJoinChannelRoom().subscribe((data: UserChatRoomI) => {
-			console.log("event NewUserJoinChannelRoom received");
+			console.log("[WS:ChatChannel] NewUserJoinChannelRoom event")
 			this.updateNewUserJoinChannelRoom(data);
 		}));
-
 		this.obsToDestroy.push(this.wsGateway.listenNewDetailsChannelRoom().subscribe((data: ChatRoomI) => {
-			console.log("event NewDetailsChannelRoom received");
+			console.log("[WS:ChatChannel] NewDetailsChannelRoom event")
 			this.updateNewDetailsChannelRoom(data);
 		}));
-
 		this.obsToDestroy.push(this.wsGateway.listenRoomAction().subscribe((data: any) => {
-			console.log("event RoomAction");
+			console.log("[WS:ChatChannel] RoomAction event")
 			this.updateRoomAction(data);
 		}));
-
 		this.obsToDestroy.push(this.wsGateway.listenNewJoinedChannelRoom().subscribe((data: ChatRoomI) => {
-			console.log("event NewJoinedChannelRoom received");
+			console.log("[WS:ChatChannel] NewJoinedChannelRoom event")
 			this.updateNewJoinedChannelRoom(data);
 		}));
-
 		this.obsToDestroy.push(this.wsGateway.listenNewAvailableChannelRoom().subscribe((data: ChatRoomI) => {
-			console.log("event NewAvailableChannelRoom received");
+			console.log("[WS:ChatChannel] NewAvailableChannelRoom event")
 			this.updateNewAvailableChannelRoom(data);
 		}));
-
-		this.wsGateway.getAllJoinedChannelRoom();
 		this.obsToDestroy.push(this.wsGateway.listenAllJoinedChannelRoom().subscribe((data: ChatRoomI[]) => {
-			console.log("event AllJoinedChannelRoom received");
+			console.log("[WS:ChatChannel] AllJoinedChannelRoom event")
 			this.updateAllJoinedChannelRoom(data);
 		}));
+		this.obsToDestroy.push(this.wsGateway.listenChannelMute().subscribe((data: UserChatRoomI) => {
+			console.log("[WS:ChatChannel] ChannelMute event")
+			this.updateChannelMute(data);
+		}));
+
+		this.wsGateway.getAllAvailableChannelRoom();
+		this.wsGateway.getAllJoinedChannelRoom();
 	}
 
 	ngOnDestroy()
 	{
-		console.log("[CHANNEL] destroyer");
+		console.log("[WS:ChatChannel] onDestroy")
 		this.wsService.unsubscribeObservables(this.obsToDestroy);
 	}
 
@@ -223,6 +221,15 @@ export class ChatChannelService {
 					this.chat.joined_room[room_id].roomInfo[i].isAdmin = true;
 	}
 
+	updateRoomActionDemote(target_id: number, room_id: number)
+	{
+		const room = this.chat.joined_room[room_id];
+		if (room && room.roomInfo)
+			for (var i = 0; i < room.roomInfo.length; i++)
+				if (room.roomInfo[i].userId === target_id)
+					this.chat.joined_room[room_id].roomInfo[i].isAdmin = false;
+	}
+
 	updateRoomActionGiveKrown(target_id: number, user_id: number, room_id: number)
 	{
 		const room = this.chat.joined_room[room_id];
@@ -238,22 +245,110 @@ export class ChatChannelService {
 		}
 	}
 
+	updateRoomActionBan(target_id: number, room_id: number)
+	{
+		if (target_id === this.userService.user.id)
+		{
+			if (this.chat.joined_room[room_id])
+			{
+				delete this.chat.joined_room[room_id];
+				if (Number(this.chat.selected_room_id) === room_id)
+				{
+					this.chat.selected_room = DefChatRoomI;
+					this.chat.selected_room_id = "-1";
+				}
+			}
+		}
+		else
+		{
+			const room = this.chat.joined_room[room_id];
+			if (room && room.roomInfo)
+				for (var i = 0; i < room.roomInfo.length; i++)
+					if (room.roomInfo[i].userId === target_id)
+						this.chat.joined_room[room_id].roomInfo[i].isBanned = true;
+		}
+	}
+
+	updateRoomActionUnban(target_id: number, room_id: number)
+	{
+		const room = this.chat.joined_room[room_id];
+		if (room && room.roomInfo)
+			for (var i = 0; i < room.roomInfo.length; i++)
+				if (room.roomInfo[i].userId === target_id)
+					this.chat.joined_room[room_id].roomInfo[i].isBanned = false;
+	}
+
+	updateRoomActionUnmute(target_id: number, room_id: number)
+	{
+		const room = this.chat.joined_room[room_id];
+		if (room && room.roomInfo)
+		{
+			for (var i = 0; i < room.roomInfo.length; i++)
+			{
+				if (room.roomInfo[i].userId === target_id)
+				{
+					this.chat.joined_room[room_id].roomInfo[i].isMuted = false;
+					this.chat.joined_room[room_id].roomInfo[i].demuteDate = new Date();
+				}
+			}
+		}
+	}
+
 	updateRoomAction(data: any)
 	{
 		switch (data.action) {
-			case RoomAction.KICK: { this.updateRoomActionKick(
+			case RoomAction.KICK:
+			{ this.updateRoomActionKick(
 				data.target_id,
 				data.room_id,
 			); break; }
-			case RoomAction.PROMOTE: { this.updateRoomActionPromote(
+			case RoomAction.DEMOTE:
+			{ this.updateRoomActionDemote(
 				data.target_id,
 				data.room_id,
 			); break; }
-			case RoomAction.OWNERSHIP: { this.updateRoomActionGiveKrown(
+			case RoomAction.PROMOTE:
+			{ this.updateRoomActionPromote(
+				data.target_id,
+				data.room_id,
+			); break; }
+			case RoomAction.OWNERSHIP:
+			{ this.updateRoomActionGiveKrown(
 				data.target_id,
 				data.user_id,
 				data.room_id,
 			); break; }
+			case RoomAction.BAN:
+			{ this.updateRoomActionBan(
+				data.target_id,
+				data.room_id,
+			); break; }
+			case RoomAction.UNBAN:
+			{ this.updateRoomActionUnban(
+				data.target_id,
+				data.room_id,
+			); break; }
+			case RoomAction.UNMUTE:
+			{ this.updateRoomActionUnmute(
+				data.target_id,
+				data.room_id,
+			); break; }
+		}
+	}
+
+	updateChannelMute(user_chatroom: UserChatRoomI)
+	{
+		const room = this.chat.joined_room[user_chatroom.roomId];
+		if (room && room.roomInfo)
+		{
+			for (var i = 0; i < room.roomInfo.length; i++)
+			{
+				if (room.roomInfo[i].userId === user_chatroom.userId)
+				{
+					this.chat.joined_room[user_chatroom.roomId].roomInfo[i].isMuted = true;
+					this.chat.joined_room[user_chatroom.roomId].roomInfo[i].demuteDate = user_chatroom.demuteDate;
+				}
+			}
 		}
 	}
 
@@ -313,20 +408,45 @@ export class ChatChannelService {
 	getSelectedRoomUser(): UserI[]
 	{ return (this.chatRoomService.getUserInRoom(this.getSelectedRoom())); }
 
+	getSelectedRoomBanned(): UserI[]
+	{
+		const room = this.getSelectedRoom();
+		var banned_user: UserI[] = [];
+		for ( var i= 0; i < room.roomInfo.length; i++)
+			if (room.roomInfo[i].isBanned)
+				banned_user.push(room.roomInfo[i].user);
+		return (banned_user);
+	}
+
 	getOwner(): UserI
 	{ return (this.chatRoomService.getOwner(this.getSelectedRoom())); }
 
 	getAdmin(): UserI[]
 	{ return (this.chatRoomService.getAdmin(this.getSelectedRoom())); }
 
-	isOwnerSelectedRoom(): boolean
-	{ return (this.chatRoomService.isOwner(
-						this.getSelectedRoom(), this.userService.user.id)); }
+	isOwnerSelectedRoom(user_id?: number): boolean
+	{
+		var id: number = this.userService.user.id;
+		if (user_id)
+			id = user_id;
+		return (this.chatRoomService.isOwner(this.getSelectedRoom(), id));
+	}
 
+	isAdminSelectedRoom(user_id?: number): boolean
+	{
+		var id: number = this.userService.user.id;
+		if (user_id)
+			id = user_id;
+		return (this.chatRoomService.isAdmin(this.getSelectedRoom(), id));
+	}
 
-	isAdminSelectedRoom(): boolean
-	{ return (this.chatRoomService.isAdmin(
-						this.getSelectedRoom(), this.userService.user.id)); }
+	isMutedSelectedRoom(user_id?: number): boolean
+	{
+		var id: number = this.userService.user.id;
+		if (user_id)
+			id = user_id;
+		return (this.chatRoomService.isMuted(this.getSelectedRoom(), id));
+	}
 
 	isGoodSelectedRoom(): boolean
 	{
@@ -350,24 +470,8 @@ export class ChatChannelService {
 
 	getInfo()
 	{
-		const	selected_room = this.getSelectedRoom();
-
-		// console.clear();
-
+		console.log("[CHANNEL]");
 		console.log(this.chat);
-
-		if (selected_room.id === -1)
-			console.log("[onGetInfo] selected_room not found");
-		else
-			console.log("[onGetInfo] selected_room", selected_room);
-
-		console.log("[onGetinfo] available_room", this.chat.available_room);
-		console.log("[onGetinfo] joined_room", this.chat.joined_room);
-
-		// if (selected_room.id === -1)
-		// 	console.log("[onGetInfo] selected_room not found");
-		// else
-		// 	console.log("[onGetInfo] selected_room", selected_room);
 	}
 }
 

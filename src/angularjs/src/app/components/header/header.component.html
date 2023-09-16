@@ -1,42 +1,42 @@
 <header>
-	<h1 routerLink="/home">Transcendance</h1>
+	<h1 class="solid" routerLink="/home">Transcendance</h1>
 	<button ngClass="{{isExpand}}" (click)="isExpand = !isExpand" *ngIf="isSmallDevice()" class="expand-btn">
 		<mat-icon fontIcon="expand_more"></mat-icon>
 	</button>
 	<ul (window:resize)="onResize()" [ngClass]="{'small-device': isSmallDevice(), 'expand': isExpand}" *ngIf="isExpand || !isSmallDevice()" [@enterAnimation]="isSmallDevice()">
 		<li routerLink="/home"
 			routerLinkActive #rla="routerLinkActive">
-			<app-flat-button [isActive]="rla.isActive" color="white" bgColor="#a3d0dc" fontIcon="home"></app-flat-button>
+			<app-flat-button [isActive]="rla.isActive" fontIcon="home"></app-flat-button>
 		</li>
 		<li *ngIf="userLoggedIn"
 			routerLink="/play"
 			routerLinkActive #rla="routerLinkActive">
-			<app-flat-button [isActive]="rla.isActive" color="white" bgColor="#a3d0dc" fontIcon="games"></app-flat-button>
+			<app-flat-button [isActive]="rla.isActive" fontIcon="games"></app-flat-button>
 		</li>
 		<li *ngIf="userLoggedIn"
 		routerLink="/chat/dm"
 		routerLinkActive #rla="routerLinkActive">
-			<app-flat-button [isActive]="rla.isActive" color="white" bgColor="#a3d0dc" fontIcon="message"></app-flat-button>
+			<app-flat-button [isActive]="rla.isActive" fontIcon="message"></app-flat-button>
 		</li>
 		<li *ngIf="userLoggedIn"
 		routerLink="/chat/global"
 		routerLinkActive #rla="routerLinkActive">
-			<app-flat-button [isActive]="rla.isActive" color="white" bgColor="#a3d0dc" fontIcon="public"></app-flat-button>
+			<app-flat-button [isActive]="rla.isActive" fontIcon="public"></app-flat-button>
 		</li>
 		<li *ngIf="userLoggedIn"
 		routerLink="/profile"
-		routerLinkActive #rla="routerLinkActive">
-			<app-flat-button [isActive]="rla.isActive" color="white" bgColor="#a3d0dc" fontIcon="account_circle"></app-flat-button>
+		routerLinkActive #rla="routerLinkActive" [routerLinkActiveOptions]="{exact: true}">
+			<app-flat-button [isActive]="rla.isActive" fontIcon="account_circle"></app-flat-button>
 		</li>
-		<li class="friend-menu">
-			<app-flat-button (click)="displayFriendRequest = !displayFriendRequest" fontIcon="notifications" color="white" bgColor="#a7dca3">Menu</app-flat-button>
-			<app-flat-list *ngIf="displayFriendRequest" [friends]="friendService.getFriendsRequest()"></app-flat-list>
+		<li class="notifications-menu" matBadge="{{notificationService.notif_not_seen}}" [matBadgeHidden]="!notificationService.notif_not_seen">
+			<app-flat-button [isActive]="displayNotifications" class="notifications-btn" (click)="OnNotificationClick()" fontIcon="notifications">Menu</app-flat-button>
+			<app-flat-list *ngIf="displayNotifications" [notifications]="notificationService.notif"></app-flat-list>
 		</li>
 		<li
 		*ngIf="userLoggedIn"
 		(click)="SignOut()"
 		class="logout">
-			<app-flat-button color="white" bgColor="#ff9999" fontIcon="power_settings_new"></app-flat-button>
+			<app-flat-button class="logout-btn" fontIcon="power_settings_new"></app-flat-button>
 		</li>
 	</ul>
 </header>

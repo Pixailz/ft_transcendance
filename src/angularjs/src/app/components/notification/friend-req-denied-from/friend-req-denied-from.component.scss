@@ -1,0 +1,12 @@
+.container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	p {
+		margin: 0;
+		font-size: 1em;
+		text-shadow: 0 0 5px rgb(83, 83, 83);
+		text-align: center;
+	}
+}

@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
 import { ChatRoomI } from "src/app/interfaces/chats/chat-room.interface";
-import { MessageI } from "src/app/interfaces/chats/chat-room.interface";
 import { RoomType } from "src/app/interfaces/chats/chat-room.interface";
 import { UserChatRoomI } from "src/app/interfaces/user/user-chat-room.interface";
 import { DefUserI, UserI } from "src/app/interfaces/user/user.interface";
 import { UserService } from "../../user.service";
+import { MessageI } from "src/app/interfaces/message.inteface";
 
 @Injectable({
 	providedIn: "root",
@@ -46,7 +46,8 @@ export class ChatRoomService {
 
 		if (!this.isGoodRoomInfo(room)) return [];
 		for (var i = 0; i < room.roomInfo.length; i++)
-			user_list.push(room.roomInfo[i].user);
+			if (!room.roomInfo[i].isBanned)
+				user_list.push(room.roomInfo[i].user);
 		return (user_list);
 	}
 
@@ -103,7 +104,6 @@ export class ChatRoomService {
 	isGoodRoom(room: ChatRoomI): boolean
 	{ return (room && room.id !== -1); }
 
-
 	isGoodMessage(message: MessageI): boolean
 	{
 		if (message.id === -1 || message.userId === -1 ||
@@ -120,6 +120,20 @@ export class ChatRoomService {
 		for (var i = 0; i < admin.length; i++)
 			if (admin[i].id === user_id)
 				return (true)
+		return (false);
+	}
+
+	isMuted(room: ChatRoomI, user_id: number): boolean
+	{
+		const date = new Date();
+		if (room.id === -1 || !room.roomInfo) return false;
+		for (let i = 0; i < room.roomInfo.length; i++)
+		{
+			const demuteDate = new Date(room.roomInfo[i].demuteDate);
+			if (room.roomInfo[i].userId === user_id &&
+				room.roomInfo[i].isMuted && date <= demuteDate)
+				return (true);
+		}
 		return (false);
 	}
 

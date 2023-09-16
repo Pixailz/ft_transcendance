@@ -10,4 +10,5 @@ export class FlatButtonComponent {
 	@Input() bgColor: string = '';
 	@Input() color: string = '';
 	@Input() isActive: boolean = false;
+	@Input() isDisabled: boolean = false;
 }
