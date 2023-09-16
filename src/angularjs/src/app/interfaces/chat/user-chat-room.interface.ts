@@ -1,4 +1,4 @@
-import { DefUserI, UserI } from "./user.interface";
+import { DefUserI, UserI } from "../user.interface";
 
 export interface UserChatRoomI {
 	userId?				: number;

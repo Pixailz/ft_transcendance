@@ -1,0 +1,10 @@
+<div class="container" [ngSwitch]="gameService.room.status">
+	<app-game-lobby *ngSwitchCase="0"></app-game-lobby>
+	<app-game-waiting *ngSwitchCase="1"></app-game-waiting>
+	<app-game-started *ngSwitchCase="2"></app-game-started>
+	<!-- <app-game-room *ngSwitchCase="'game'"></app-game-room>
+	<app-game-over *ngSwitchCase="'over'"></app-game-over> -->
+	<!-- <div *ngSwitchDefault>
+		<button mat-primary (click)="joinLobby()">Join Lobby</button>
+	</div> -->
+</div>

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Observable } from 'rxjs';
-import { RoomAction } from 'src/app/interfaces/chat-channel.interface';
-import { ChatRoomI } from 'src/app/interfaces/chat-room.interface';
+import { RoomAction } from 'src/app/interfaces/chat/channel.interface';
+import { ChatRoomI } from 'src/app/interfaces/chat/chat-room.interface';
+import { UserChatRoomI } from 'src/app/interfaces/chat/user-chat-room.interface';
 import { FriendRequestI } from 'src/app/interfaces/friend.interface';
-import { UserChatRoomI } from 'src/app/interfaces/user-chat-room.interface';
 import { UserI } from 'src/app/interfaces/user.interface';
 
 @Injectable({
@@ -192,4 +192,23 @@ export class WSGateway {
 	// EMITER
 	getAllNotifications()
 	{ this.socket.emit("getAllNotifications"); }
+
+	// GAME
+
+	// LISTENER
+	listenGameWaiting(): Observable<any>
+	{ return this.socket.fromEvent<any>("gameWaiting"); }
+
+	listenGameStarted(): Observable<any>
+	{ return this.socket.fromEvent<any>("gameStarted"); }
+
+	listenGameEnded(): Observable<any>
+	{ return this.socket.fromEvent<any>("gameEnded"); }
+
+	// EMITER
+	searchGame(game_option: any)
+	{ this.socket.emit("gameSearch", game_option); }
+
+	gameSendStatus(status: any)
+	{ this.socket.emit("gameSendStatus", status); }
 }

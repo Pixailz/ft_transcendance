@@ -1,5 +1,5 @@
+import { DefUserI } from "../user.interface";
 import { DefChatRoomI } from "./chat-room.interface";
-import { DefUserI } from "./user.interface";
 
 export interface ChatDmI {
 	dm				: any;

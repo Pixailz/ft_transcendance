@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+
 import { WSGateway } from 'src/app/services/websocket/gateway';
 import { UserService } from 'src/app/services/user.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { RoomAction } from 'src/app/interfaces/chat-channel.interface';
-import { ChatRoomI, RoomType } from 'src/app/interfaces/chat-room.interface';
 import { UserI } from 'src/app/interfaces/user.interface';
 import { ChatRoomService } from 'src/app/services/websocket/chat/chatroom.service';
 import { ChatChannelService } from 'src/app/services/websocket/chat/channel/service';
 import { ChatDmService } from 'src/app/services/websocket/chat/direct-message/service';
 import { FriendService } from 'src/app/services/websocket/friend/service';
+import { ChatRoomI, RoomType } from 'src/app/interfaces/chat/chat-room.interface';
+import { RoomAction } from 'src/app/interfaces/chat/channel.interface';
 
 @Component({
 	selector: 'app-chat-channel',

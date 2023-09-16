@@ -22,7 +22,6 @@ import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { AvatarComponent } from './components/avatar/avatar.component';
 import { HomeDashboardComponent } from './pages/home-dashboard/home-dashboard.component';
-import { PongComponent } from './pages/pong/pong.component';
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import { LoginComponent } from './pages/login/login.component';
@@ -53,6 +52,10 @@ import { NotifFriendReqSentComponent } from './components/notification/friend-re
 import { NotifFriendReqAcceptedComponent } from './components/notification/friend-req-accepted/friend-req-accepted.component';
 import { NotifFriendReqDeniedFromComponent } from './components/notification/friend-req-denied-from/friend-req-denied-from.component';
 import { NotifFriendReqDeniedToComponent } from './components/notification/friend-req-denied-to/friend-req-denied-to.component';
+import { GameComponent } from './pages/game/game.component';
+import { GameLobbyComponent } from './components/game/lobby/lobby.component';
+import { GameWaitingComponent } from './components/game/waiting/waiting.component';
+import { GameStartedComponent } from './components/game/started/started.component';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -71,7 +74,6 @@ const config: SocketIoConfig = {
 		HeaderComponent,
 		FooterComponent,
 		HomeDashboardComponent,
-		PongComponent,
 		PageNotFoundComponent,
 		UserProfileComponent,
 		AvatarComponent,
@@ -93,6 +95,10 @@ const config: SocketIoConfig = {
 		NotifFriendReqAcceptedComponent,
 		NotifFriendReqDeniedFromComponent,
 		NotifFriendReqDeniedToComponent,
+		GameComponent,
+		GameLobbyComponent,
+		GameWaitingComponent,
+		GameStartedComponent,
 	],
 	imports: [
 		BrowserModule,

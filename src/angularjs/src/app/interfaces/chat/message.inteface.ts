@@ -1,5 +1,5 @@
+import { DefUserI, UserI } from "../user.interface";
 import { ChatRoomI } from "./chat-room.interface";
-import { DefUserI, UserI } from "./user.interface";
 
 export interface MessageI {
 	id					: number;
