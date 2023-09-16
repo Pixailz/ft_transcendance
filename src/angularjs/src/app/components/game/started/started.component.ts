@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from 'src/app/environments/environment';
 import { GameStatus } from 'src/app/interfaces/game/game.interface';
+import { UserService } from 'src/app/services/user.service';
 import { GameService } from 'src/app/services/websocket/game/service';
 import { WSGateway } from 'src/app/services/websocket/gateway';
 
@@ -11,19 +12,21 @@ import { WSGateway } from 'src/app/services/websocket/gateway';
 })
 export class GameStartedComponent implements OnInit {
 	constructor(
-		private gameService: GameService,
+		public userService: UserService,
+		public gameService: GameService,
 		private wsGateway: WSGateway,
 	) {}
-
+	i: number = 0;
 	async ngOnInit()
 	{
-		var i = 0;
+		this.i = 0;
 		while (this.gameService.room.status === GameStatus.STARTED)
 		{
-			this.wsGateway.gameSendStatus("oke " + ++i);
-			await sleep(1 / environment.tickrate);
+			this.wsGateway.gameSendStatus("oke " + ++this.i);
+			await sleep(1000 / environment.tickrate);
 		}
+
 	}
 }
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms * 1000));
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));

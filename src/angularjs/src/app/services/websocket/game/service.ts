@@ -1,11 +1,10 @@
 import { Injectable } from "@angular/core";
 import { Subscription } from "rxjs";
 
-import { UserService } from "../../user.service";
 import { WSGateway } from "../gateway";
 import { WSService } from "../service";
 import { DefLobbyI, DefPlayer, GameOptionI, GameStatus, LobbyI } from "src/app/interfaces/game/game.interface";
-import { DefUserI } from "src/app/interfaces/user.interface";
+import { UserI } from "src/app/interfaces/user.interface";
 
 @Injectable({
 	providedIn: "root",
@@ -14,6 +13,7 @@ export class GameService {
 	obsToDestroy: Subscription[] = [];
 
 	room: LobbyI = DefLobbyI;
+	in_game: boolean = false;
 
 	constructor(
 		private wsGateway: WSGateway,
@@ -25,6 +25,14 @@ export class GameService {
 				this.room.status = GameStatus.WAITING;
 			}
 		));
+		this.obsToDestroy.push(this.wsGateway.listenIsInGame()
+			.subscribe((data: any) => {
+				console.log("[WS:game] IsInGame event");
+				console.log(data);
+				this.in_game = true;
+				this.room.id = data;
+			}
+		));
 		this.obsToDestroy.push(this.wsGateway.listenGameStarted()
 			.subscribe((data: any) => {
 				console.log("[WS:game] GameStarted event")
@@ -33,16 +41,25 @@ export class GameService {
 				this.room.opponent.user = data.opponent
 			}
 		));
+		this.obsToDestroy.push(this.wsGateway.listenGameReconnect()
+			.subscribe((data: UserI) => {
+				console.log("[WS:game] GameReconnect event")
+				this.room.status = GameStatus.STARTED;
+				this.room.opponent.user = data;
+			}
+		));
 		this.obsToDestroy.push(this.wsGateway.listenGameEnded()
 			.subscribe((data: any) => {
 				console.log("[WS:game] GameEnded event")
 				this.resetRoom();
 			}
 		));
+		this.wsGateway.isInGame();
 	}
 
 	async resetRoom()
 	{
+		this.in_game = false;
 		this.room.status = GameStatus.LOBBY;
 		this.room.id = "";
 		this.room.opponent.user.id = -1;
@@ -64,6 +81,12 @@ export class GameService {
 
 	searchGame(game_option: GameOptionI)
 	{ this.wsGateway.searchGame(game_option); }
+
+	isInGame()
+	{ this.wsGateway.isInGame(); }
+
+	reconnectGame()
+	{ this.wsGateway.reconnectGame(this.room.id); }
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms * 1000));

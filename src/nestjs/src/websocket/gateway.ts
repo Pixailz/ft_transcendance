@@ -242,17 +242,25 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	// HANDLER
 	@SubscribeMessage("getAllNotifications")
-	async getAllNotifications(socket: Socket) {
-		await this.wsNotificationService.getAllNotifications(socket);
-	}
+	async getAllNotifications(socket: Socket)
+	{ await this.wsNotificationService.getAllNotifications(socket); }
 
 	// GAME
 
 	// HANDLER
 	@SubscribeMessage("gameSearch")
-	async handleGameSearch(socket: Socket, game_opt: any)
-	{
+	async handleGameSearch(socket: Socket, game_opt: any) {
 		await this.wsGameService.gameSearch(this.server, socket, game_opt);
+	}
+
+	@SubscribeMessage("isInGame")
+	async handleIsInGame(socket: Socket) {
+		await this.wsGameService.isInGame(this.server, socket);
+	}
+
+	@SubscribeMessage("gameReconnect")
+	async handleGameReconnect(socket: Socket, game_id: string) {
+		await this.wsGameService.gameReconnect(this.server, socket, game_id);
 	}
 
 	@SubscribeMessage("gameSendStatus")

@@ -8,10 +8,16 @@ import { GameService } from 'src/app/services/websocket/game/service';
 	styleUrls: ['./lobby.component.scss']
 })
 export class GameLobbyComponent {
+	isInGame: boolean = false;
+
 	constructor(
 		public gameService: GameService,
-	) {}
+	) { }
+
 
 	searchGame()
 	{ this.gameService.searchGame(DefGameOptionI); }
+
+	reconnectGame()
+	{ this.gameService.reconnectGame(); }
 }

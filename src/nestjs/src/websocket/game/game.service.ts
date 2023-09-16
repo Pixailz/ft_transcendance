@@ -105,16 +105,72 @@ export class WSGameService {
 			socket.emit("gameWaiting");
 	}
 
+	isInGame(server: Server, socket: Socket)
+	{
+		const user_id = this.wsSocket.getUserId(socket.id);
+		var isInGame: boolean = false;
+
+		for (var game_id in this.room)
+		{
+			if (this.room[game_id].playerA.user.id === user_id ||
+				this.room[game_id].playerB.user.id === user_id)
+			{
+				isInGame = true;
+				break;
+			}
+		}
+		if (isInGame)
+			server.to(socket.id).emit("isInGame", game_id);
+	}
+
+	disconnect(socket_id: string)
+	{
+		for (var game_id in this.room)
+		{
+			if (this.room[game_id].playerA.socket === socket_id)
+				this.room[game_id].playerA.socket = "";
+			if (this.room[game_id].playerB.socket === socket_id)
+				this.room[game_id].playerB.socket = "";
+		}
+	}
+
+	gameReconnect(server: Server, socket: Socket, room_id: string)
+	{
+		const user_id = this.wsSocket.getUserId(socket.id);
+		var user: any = {};
+		var is_started: boolean = false;
+
+		for (var game_id in this.room)
+		{
+			if (this.room[game_id].playerA.user.id === user_id)
+			{
+				this.room[game_id].playerA.socket = socket.id;
+				user = this.room[game_id].playerB.user; break;
+			}
+			if (this.room[game_id].playerB.user.id === user_id)
+			{
+				this.room[game_id].playerB.socket = socket.id;
+				user = this.room[game_id].playerA.user; break;
+			}
+		}
+		if (this.room[game_id].playerA.socket !== "" &&
+			this.room[game_id].playerB.socket !== "")
+			socket.emit("gameReconnect", user);
+		else
+			socket.emit("gameWaiting");
+	}
+
 	async startGame(server: Server, lobby: LobbyI)
 	{
-		console.log("game started", lobby);
+		console.log("game started", this.room);
 		server.to(lobby.playerA.socket).emit("gameStarted", {
 			id: lobby.id, opponent: lobby.playerB.user});
 		server.to(lobby.playerB.socket).emit("gameStarted", {
 			id: lobby.id, opponent: lobby.playerA.user});
-		// await sleep(1);
+		await sleep(25_000);
 		server.to(lobby.playerA.socket).emit("gameEnded");
 		server.to(lobby.playerB.socket).emit("gameEnded");
+		delete this.room[lobby.id];
 	}
 
 	updateGameStatus(server: Server, socket: Socket, status: any)

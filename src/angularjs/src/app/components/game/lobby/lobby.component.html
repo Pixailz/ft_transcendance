@@ -9,6 +9,11 @@
 		</mat-card-content>
 		<mat-card-actions>
 			<button mat-button (click)="searchGame()">Join</button>
+			<button mat-button
+				(click)="reconnectGame()"
+				[disabled]="!gameService.in_game">
+				Reconnect
+			</button>
 			<!-- <button mat-button (click)="onAction2()">LEavE</button>
 			<button mat-button (click)="onAction3()">Action3</button> -->
 		</mat-card-actions>

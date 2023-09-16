@@ -199,8 +199,14 @@ export class WSGateway {
 	listenGameWaiting(): Observable<any>
 	{ return this.socket.fromEvent<any>("gameWaiting"); }
 
+	listenIsInGame(): Observable<any>
+	{ return this.socket.fromEvent<any>("isInGame"); }
+
 	listenGameStarted(): Observable<any>
 	{ return this.socket.fromEvent<any>("gameStarted"); }
+
+	listenGameReconnect(): Observable<UserI>
+	{ return this.socket.fromEvent<UserI>("gameReconnect"); }
 
 	listenGameEnded(): Observable<any>
 	{ return this.socket.fromEvent<any>("gameEnded"); }
@@ -208,6 +214,12 @@ export class WSGateway {
 	// EMITER
 	searchGame(game_option: any)
 	{ this.socket.emit("gameSearch", game_option); }
+
+	isInGame()
+	{ this.socket.emit("isInGame"); }
+
+	reconnectGame(game_id: string)
+	{ this.socket.emit("gameReconnect", game_id); }
 
 	gameSendStatus(status: any)
 	{ this.socket.emit("gameSendStatus", status); }
