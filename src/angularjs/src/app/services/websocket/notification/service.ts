@@ -214,7 +214,7 @@ export class NotificationService {
 		var options = {
 			root: scrollArea,
 			rootMargin: "0px",
-			threshold: 0.5,
+			threshold: 0.8,
 		};
 		var observer = new IntersectionObserver(
 			(entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {

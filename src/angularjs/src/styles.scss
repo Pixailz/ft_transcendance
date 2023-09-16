@@ -85,3 +85,8 @@ ul {
 	border-radius: 10px;
 	backdrop-filter: blur(10px);
 }
+
+.solid {
+	background-color: rgba($color: #383838, $alpha: 1.0);
+	border-radius: 10px;
+}

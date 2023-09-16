@@ -1,36 +1,38 @@
-<div *ngIf="userService.isGoodUser(user_info); else userNotFound" class="ticket">
+<div *ngIf="userService.isGoodUser(user_info); else userNotFound" class="container">
 	<img [src]="user_info.picture || 'assets/img/avatar-placeholder.jpg'" alt="user picture" />
 	<h1 class="login">{{user_info.ftLogin}}</h1>
-	<div class="personal_data">
-		<div class="line">
-			<span>nickname:</span>
-			<span>{{user_info.nickname}}</span>
+	<div class="glass data">
+		<div class="personal_data">
+			<div class="line">
+				<span>nickname:</span>
+				<span>{{user_info.nickname}}</span>
+			</div>
+			<div class="line">
+				<span>email:</span>
+				<span>{{user_info.email ? user_info.email : '/'}}</span>
+			</div>
+			<div class="line">
+				<span>lastSeen:</span>
+				<span>{{user_info.lastSeen | date: 'dd/MM/YYYY HH:mm:ss'}}</span>
+			</div>
 		</div>
-		<div class="line">
-			<span>email:</span>
-			<span>{{user_info.email ? user_info.email : '/'}}</span>
+		<div *ngIf="userService.user.id !== user_info.id">
+			<app-flat-button *ngIf="!friendService.alreadyFriend(user_info.id)"
+				class="friend-btn" bgColor="#a3d0dc" [fontIcon]="friendService.alreadySend(user_info.id)?'done':'person_add'"
+				color="white" (click)="sendFriendRequest(user_info.id)"
+				[isActive]="friendService.alreadySend(user_info.id)"
+				[isDisabled]="friendService.alreadySend(user_info.id)">
+			</app-flat-button>
+			<app-flat-button *ngIf="!friendService.isBlocked(user_info.id)"
+				class="block-btn" bgColor="red" [fontIcon]="'block'"
+				color="warn" (click)="blockUser(user_info.id)"
+				></app-flat-button>
+			<app-flat-button *ngIf="friendService.isBlocked(user_info.id) && user_info.id !== userService.user.id"
+				class="block-btn" bgColor="red" [fontIcon]="'person_add'"
+				color="primary" (click)="unblockUser(user_info.id)"
+				></app-flat-button>
 		</div>
-		<div class="line">
-			<span>lastSeen:</span>
-			<span>{{user_info.lastSeen | date: 'dd/MM/YYYY HH:mm:ss'}}</span>
-		</div>
-	</div>
-	<app-flat-button *ngIf="!friendService.alreadyFriend(user_info.id)"
-		class="friend-btn" bgColor="#a3d0dc" [fontIcon]="friendService.alreadySend(user_info.id)?'done':'person_add'"
-		color="white" (click)="sendFriendRequest(user_info.id)"
-		[isActive]="friendService.alreadySend(user_info.id)"
-		[isDisabled]="friendService.alreadySend(user_info.id)">
-	</app-flat-button>
-
-	<div *ngIf="userService.user.id !== user_info.id">
-		<app-flat-button *ngIf="!friendService.isBlocked(user_info.id)"
-			class="block-btn" bgColor="red" [fontIcon]="'block'"
-			color="warn" (click)="blockUser(user_info.id)"
-			></app-flat-button>
-		<app-flat-button *ngIf="friendService.isBlocked(user_info.id) && user_info.id !== userService.user.id"
-			class="block-btn" bgColor="red" [fontIcon]="'person_add'"
-			color="primary" (click)="unblockUser(user_info.id)"
-			></app-flat-button>
+		
 	</div>
 </div>
 
