@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable, Output } from "@angular/core";
-import { DefNotificationI, NotificationI, NotificationType } from "src/app/interfaces/notification.interface";
+import { DefNotificationI, NotifStatus, NotificationI, NotificationType } from "src/app/interfaces/notification.interface";
 import { WSGateway } from "../gateway";
 import { Subscription } from "rxjs";
 import { WSService } from "../service";
@@ -12,6 +12,7 @@ export class NotificationService {
 	notif: NotificationI[] = [];
 	obsToDestroy: Subscription[] = [];
 	createPopup: EventEmitter<NotificationI> = new EventEmitter();
+	notif_not_seen : number = 0;
 
 	constructor (
 		private friendService: FriendService,
@@ -38,6 +39,14 @@ export class NotificationService {
 				this.updateDelNotification(notif_id);
 				}
 			));
+
+		this.obsToDestroy.push(this.wsGateway.listenSeenNotification()
+		.subscribe((notif_id: number) => {
+			console.log("[WS:Notification] SeenNotification event")
+				this.updateSeenNotification(notif_id);
+			}
+		));
+
 	}
 
 	ngOnDestroy()
@@ -45,6 +54,19 @@ export class NotificationService {
 		console.log("[WS:Notification] onDestroy");
 		this.wsService.unsubscribeObservables(this.obsToDestroy);
 	}
+
+	updateSeenNotification(id: number)
+	{
+		for (let notif of this.notif)
+		{
+			if (notif.id === id && notif.status === NotifStatus.NOTSEEN)
+			{
+				notif.status = NotifStatus.SEEN;
+				this.notif_not_seen--;
+			}
+		}
+	}
+
 
 	getNotifFriendSent(notification: any): NotificationI
 	{
@@ -100,6 +122,7 @@ export class NotificationService {
 		switch(notification.type) {
 			case (NotificationType.FRIEND_REQ_SENT): {
 				notif = this.getNotifFriendSent(notification);
+				notif.toDisplay = "Friend request sent to " + notif.data2;
 				break ;
 			}
 			case (NotificationType.FRIEND_REQ_RECEIVED): {
@@ -108,11 +131,17 @@ export class NotificationService {
 			}
 			case (NotificationType.FRIEND_REQ_ACCEPTED): {
 				notif = this.getNotifFriendAccepted(notification);
+				notif.toDisplay = "New friend: " + notif.data;
 				break ;
 			}
-			case (NotificationType.FRIEND_REQ_DENIED_FROM):
+			case (NotificationType.FRIEND_REQ_DENIED_FROM): {
+				notif = notification;
+				notif.toDisplay = "Friend request from " + notif.data + " denied";
+				break;
+			}
 			case (NotificationType.FRIEND_REQ_DENIED_TO): {
 				notif = notification;
+				notif.toDisplay = "Friend request to " + notif.data + " denied";
 				break ;
 			}
 		}
@@ -123,14 +152,20 @@ export class NotificationService {
 		if (notifications.length === 0)
 			return ;
 		for (var i = 0; i < notifications.length; i++)
-			this.notif.push(this.getNotification(notifications[i]));
+		{
+			if (notifications[i].status !== NotifStatus.DELETED)
+				this.notif.push(this.getNotification(notifications[i]));
+			if (notifications[i].status === NotifStatus.NOTSEEN)
+				this.notif_not_seen++;
+		}
 	}
 
 	updateNewNotification(notification: any)
 	{
 		const notif = this.getNotification(notification);
 		this.notif.push(notif);
-		console.log(notif);
+		if (notification.status === NotifStatus.NOTSEEN)
+			this.notif_not_seen++;
 		return (notif);
 	}
 
@@ -138,11 +173,26 @@ export class NotificationService {
 	{
 		for (let i = 0; i < this.notif.length ; i++)
 		{
-			if (this.notif[i].id === id)
+			if (this.notif[i].id === id || this.notif[i].status === NotifStatus.DELETED)
 			{
+				if (this.notif[i].status === NotifStatus.NOTSEEN)
+					this.notif_not_seen--;
 				this.notif.splice(i, 1);
 				return ;
 			}
+		}
+	}
+
+	deleteNotif()
+	{
+		for (let i = this.notif.length - 1; i >= 0 ; i--)
+		{
+			if (this.notif[i].type === NotificationType.FRIEND_REQ_RECEIVED || this.notif[i].type === NotificationType.GAME_REQ
+				|| this.notif[i].type === NotificationType.CHANNEL_REQUEST || this.notif[i].status === NotifStatus.NOTSEEN)
+				continue ;
+			this.wsGateway.updateNotificationStatus(this.notif[i].id, NotifStatus.DELETED);
+			this.notif[i].status = NotifStatus.DELETED;
+			this.notif.splice(i, 1);
 		}
 	}
 
@@ -150,5 +200,45 @@ export class NotificationService {
 	{
 		console.log("[NOTIFICATION]");
 		console.log(this.notif);
+	}
+
+
+
+	seenNotifCallback(entries: IntersectionObserverEntry[], observer: IntersectionObserver) {
+		console.log("observer :", observer);
+		console.log("this in callback :", this);
+
+	}
+
+	createObserver(scrollArea: Element, items: NodeListOf<Element>) {
+		var options = {
+			root: scrollArea,
+			rootMargin: "0px",
+			threshold: 0.8,
+		};
+		var observer = new IntersectionObserver(
+			(entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
+				entries.forEach((entry: IntersectionObserverEntry) => {
+					if (entry.isIntersecting)
+					{
+						for (let i = 0; i < items.length; i++)
+						{
+							if (items[i] === entry.target)
+							{
+								if (this.notif[i].status === NotifStatus.NOTSEEN)
+								{
+									this.notif_not_seen--;
+									this.wsGateway.updateNotificationStatus(this.notif[i].id, NotifStatus.SEEN);
+									this.notif[i].status = NotifStatus.SEEN;
+								}
+							}
+						}
+					}
+				});
+			}, options);
+		var target = items;
+		target.forEach((t) => {
+			observer.observe(t);
+		});
 	}
 }

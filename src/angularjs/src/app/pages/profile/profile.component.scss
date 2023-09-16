@@ -8,31 +8,29 @@
 	align-items: center;
 }
 
-.ticket {
-	background: white;
+.container {
 	height: 100%;
-	max-width: 600px;
 	width: 100%;
+	max-width: 600px;
 	position: relative;
+	border-radius: 40px;
 
 	span, h1 {
 		font-family: 'Arvo', serif;
+		color: white;
 	}
 
 	img {
 		height: 125px;
-		border: 5px solid white;
 		position: absolute;
-		top: -50px;
-		left: -25px;
+		top: 20px;
+		left: 40px;
 		box-shadow: 10px 10px 100px -30px black;
 		transition: all .2s ease-out;
-		transform: rotate(10deg) translate(50px, 50px);
-		background-color: white;
 		aspect-ratio: 1;
 
 		&:hover {
-			transform: rotate(20deg) translate(50px, 50px);
+			transform: rotate(-5deg) translate(-10px, -20px);
 		}
 	}
 
@@ -41,37 +39,32 @@
 		font-size: 5em;
 		text-align: right;
 		padding: 50px 50px 50px 0;
+		background-color: rgba($color: #383838, $alpha: 1.0);
+		border-radius: 30px 30px 0 0;
 	}
+	.data {
+		border-radius: 0 0 30px 30px;
+		min-height: 50%;
 
-	.personal_data{
-		border-top: 5px solid black;
+		.personal_data{
+			.line {
+				justify-content: space-between;
+				width: calc(100% - 2 * 10px);
+				display: flex;
+				padding: 10px;
+				margin: 0;
 
-		.line {
-			justify-content: space-between;
-			width: calc(100% - 2 * 10px);
-			display: flex;
-			background-color: white;
-			padding: 10px;
-			margin: 0;
+				&:not(:first-child) {
+					border-top: 2px dashed rgba(255,255,255,0.4);
+				}
 
-			&:not(:first-child) {
-				border-top: 2px dotted black;
+				font-size: 1.2em;
 			}
 
-			font-size: 1.2em;
 		}
 
-	}
-
-	.friend-btn{
-		margin: 10px;
-	}
-
-	.friend-btn{
-		margin: 10px;
-	}
-
-	.friend-btn{
-		margin: 10px;
+		.friend-btn{
+			margin: 10px;
+		}
 	}
 }

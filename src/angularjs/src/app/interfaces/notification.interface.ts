@@ -18,17 +18,28 @@ export enum NotificationType {
 	CHANNEL_REQ_DENIED,
 }
 
+export enum NotifStatus {
+	NOTSEEN,
+	SEEN,
+	DELETED,
+}
+
+
 export interface NotificationI {
 	id				: number,
 	data			: any,
+	data2			: any,
+	toDisplay		: any,
 	type			: NotificationType,
-	isSeen			: boolean,
+	status			: NotifStatus,
 	createdAt?		: Date,
 }
 
 export const DefNotificationI =  {
 	id				: -1,
 	data			: {},
+	data2			: {},
+	toDisplay		: {},
 	type			: NotificationType.UNDEFINED,
-	isSeen			: false,
+	status			: NotifStatus.NOTSEEN,
 }

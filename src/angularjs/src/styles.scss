@@ -66,24 +66,27 @@ ul {
 }
 
 
-
 .notification > div {
     background-color: #001509; 
 	color: white;
     border: 3px solid white;
-	padding: 0px;
-	padding: 10px;
 	margin-top: 10px;
-	width: 100%;
-	border: 1px solid rgba(255,255,255,0.4);
-	background: rgba(255, 255, 255, 0.3);
+	padding: 10px;
+	width: 180px;
+	border: 1px solid rgba(90,90,90,0.4);
+	background: rgba(90, 90, 90, 0.3);
 	border-radius: 10px;
 	backdrop-filter: blur(10px);
 }
 
 .glass {
-	border: 1px solid rgba(255,255,255,0.4);
-	background: rgba(255, 255, 255, 0.3);
+	border: 1px solid rgba(90,90,90,0.4);
+	background: rgba(90, 90, 90, 0.3);
 	border-radius: 10px;
 	backdrop-filter: blur(10px);
+}
+
+.solid {
+	background-color: rgba($color: #383838, $alpha: 1.0);
+	border-radius: 10px;
 }

@@ -1,44 +1,12 @@
 .container {
 	display: flex;
+	justify-content: center;
 	align-items: center;
-	
+
 	p {
 		margin: 0;
-		flex: auto;
-		font-size: 1.2em;
-	}
-
-	button {
-		border: none;
-		outline: none;
-		border-radius: 9999px;
-		aspect-ratio: 1;
-		color: white;
-		width: 30px;
-		justify-content: center;
-		align-items: center;
-		display: flex;
-		margin-left: 10px;
-		cursor: pointer;
-
-		mat-icon {
-			font-size: 1.5em;
-			width: 20px;
-			height: 20px;
-		}
-
-		&:hover {
-			filter: brightness(80%);
-		}
-	}
-
-	button.accept-btn {
-		background-color: #a7dca3;
-		
-	}
-
-
-	button.reject-btn {
-		background-color: #ff9999;
+		font-size: 1em;
+		text-shadow: 0 0 5px rgb(83, 83, 83);
+		text-align: center;
 	}
 }

@@ -2,10 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { WSSocket } from "../socket.service";
 import { DBNotificationService } from "src/modules/database/notification/service";
 import { Server, Socket } from "socket.io";
-import {
-	NotificationEntity,
-	NotificationType,
-} from "src/modules/database/notification/entity";
+import { NotifStatus, NotificationEntity, NotificationType } from "src/modules/database/notification/entity";
 import { UserService } from "src/adapter/user/service";
 
 @Injectable()
@@ -14,7 +11,14 @@ export class WSNotificationService {
 		private userService: UserService,
 		public wsSocket: WSSocket,
 		private dbNotificationService: DBNotificationService,
-	) {}
+		) {}
+
+	async getFtLogin(id: number)
+	{
+		const user = await this.userService.getInfoById(id);
+		return (user.ftLogin);
+	}
+
 
 	async getAllNotifications(socket: Socket) {
 		const user_id = this.wsSocket.getUserId(socket.id);
@@ -33,6 +37,7 @@ export class WSNotificationService {
 			type: NotificationType.FRIEND_REQ_SENT,
 			userId: user_id,
 			data: friend_id.toString(),
+			data2: await this.getFtLogin(friend_id),
 		});
 		this.wsSocket.sendToUser(
 			server,
@@ -62,7 +67,7 @@ export class WSNotificationService {
 		const notif_user = await this.dbNotificationService.create({
 			type: NotificationType.FRIEND_REQ_ACCEPTED,
 			userId: user_id,
-			data: friend_id.toString(),
+			data: await this.getFtLogin(friend_id),
 		});
 		this.wsSocket.sendToUser(
 			server,
@@ -74,7 +79,7 @@ export class WSNotificationService {
 		const notif_friend = await this.dbNotificationService.create({
 			type: NotificationType.FRIEND_REQ_ACCEPTED,
 			userId: friend_id,
-			data: user_id.toString(),
+			data: await this.getFtLogin(user_id),
 		});
 		this.wsSocket.sendToUser(
 			server,
@@ -82,7 +87,7 @@ export class WSNotificationService {
 			"getNewNotification",
 			notif_friend,
 		);
-		this.delFriendRequest(server, friend_id, user_id);
+		await this.delFriendRequest(server, friend_id, user_id);
 	}
 
 	async rejectFriendRequest(
@@ -94,7 +99,7 @@ export class WSNotificationService {
 		const notif_user = await this.dbNotificationService.create({
 			type: NotificationType.FRIEND_REQ_DENIED_FROM,
 			userId: user_id,
-			data: user.ftLogin,
+			data: await this.getFtLogin(friend_id),
 		});
 		this.wsSocket.sendToUser(
 			server,
@@ -103,11 +108,10 @@ export class WSNotificationService {
 			notif_user,
 		);
 
-		const friend = await this.userService.getInfoById(user_id);
 		const notif_friend = await this.dbNotificationService.create({
 			type: NotificationType.FRIEND_REQ_DENIED_TO,
 			userId: friend_id,
-			data: friend.ftLogin,
+			data: await this.getFtLogin(user_id),
 		});
 		this.wsSocket.sendToUser(
 			server,
@@ -115,7 +119,7 @@ export class WSNotificationService {
 			"getNewNotification",
 			notif_friend,
 		);
-		this.delFriendRequest(server, friend_id, user_id);
+		await this.delFriendRequest(server, friend_id, user_id);
 	}
 
 	async delFriendRequest(server: Server, friend_id: number, user_id: number) {
@@ -149,5 +153,14 @@ export class WSNotificationService {
 	async removeNotif(socket: Socket, id: number) {
 		await this.dbNotificationService.delete(id);
 		socket.emit("removeNotification", id);
+	}
+
+	async updateNotificationStatus(socket: Socket, id: number, status: NotifStatus)
+	{
+		if (!(await this.dbNotificationService.isExist(id)))
+			return ;
+		await this.dbNotificationService.update(id, {status: status});
+		const new_notif = await this.dbNotificationService.returnOne(id);
+		socket.emit("updateNotificationStatus", id);
 	}
 }

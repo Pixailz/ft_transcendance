@@ -25,6 +25,12 @@ export enum NotificationType {
 	CHANNEL_REQ_DENIED,
 }
 
+export enum NotifStatus {
+	NOTSEEN,
+	SEEN,
+	DELETED,
+}
+
 @Entity()
 export class NotificationEntity {
 	@PrimaryGeneratedColumn()
@@ -32,19 +38,18 @@ export class NotificationEntity {
 
 	@Column({ type: "integer", nullable: true })
 	public userId: number;
-	//
+
 	@Column({ type: "varchar", default: "" })
 	public data: string;
 
-	//
+	@Column({ type: "varchar", default: "", nullable: true})
+	public data2: string;
+
 	@Column({ type: "integer", default: NotificationType.UNDEFINED })
 	public type: NotificationType;
 
-	@Column({ type: "boolean", default: false })
-	public isSeen: boolean;
-
-	@Column({ type: "boolean", default: false })
-	public isDeleted: boolean;
+	@Column({ type: "integer", default: NotifStatus.NOTSEEN })
+	public status: number;
 
 	@CreateDateColumn({ type: "timestamp" })
 	public createdAt!: Date;

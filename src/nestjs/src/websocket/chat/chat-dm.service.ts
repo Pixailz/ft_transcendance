@@ -45,7 +45,7 @@ export class WSChatDmService {
 	async createDmRoom(server: Server, socket: Socket, dst_id: number) {
 		const user_id = this.wsSocket.getUserId(socket.id);
 
-		if (this.dbBlockedService.isBlocked(dst_id, user_id))
+		if (await this.dbBlockedService.isBlocked(dst_id, user_id))
 			return ;
 		const room_id = await this.chatRoomService.createDmRoom(
 			user_id,
@@ -94,7 +94,7 @@ export class WSChatDmService {
 	) {
 		const user_id = this.wsSocket.getUserId(socket.id);
 
-		if (this.dbBlockedService.isBlocked(dst_id, user_id))
+		if (await this.dbBlockedService.isBlocked(dst_id, user_id))
 			return ;
 		const message_id = await this.chatRoomService.sendMessage(
 			dst_id,

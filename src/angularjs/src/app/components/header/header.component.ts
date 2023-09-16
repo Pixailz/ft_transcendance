@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { trigger, style, animate, transition, state } from '@angular/animations';
-import { FriendService } from 'src/app/services/websocket/friend/service';
-import { NotificationI, NotificationType } from 'src/app/interfaces/notification.interface';
+import { NotifStatus, NotificationI } from 'src/app/interfaces/notification.interface';
 import { NotificationService } from 'src/app/services/websocket/notification/service';
 @Component({
   selector: 'app-header',
@@ -29,17 +28,21 @@ import { NotificationService } from 'src/app/services/websocket/notification/ser
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
-	userLoggedIn = true;
-	isExpand = false;
-	displayFriendRequest: boolean = false;
-	notifications: NotificationI[] = [];
-	
+	userLoggedIn: boolean = true;
+	isExpand: boolean = false;
+	displayNotifications: boolean = false;
+
+
 	constructor(
 		private userService: UserService,
 		public notificationService: NotificationService
 		) {}
 
-	async ngOnInit() {
+	OnNotificationClick()
+	{
+		this.displayNotifications = !this.displayNotifications;
+		if (!this.displayNotifications)
+			this.notificationService.deleteNotif();
 	}
 
 	SignOut()

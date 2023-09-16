@@ -1,14 +1,11 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, ComponentRef, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
-import { DefNotificationI, NotificationType } from 'src/app/interfaces/notification.interface';
+import { DefNotificationI, NotifStatus, NotificationType } from 'src/app/interfaces/notification.interface';
 import { NotificationI } from 'src/app/interfaces/notification.interface';
 import { NotifFriendReqReceivedComponent } from './friend-req-received/friend-req-received.component';
-import { NotifFriendReqSentComponent } from './friend-req-sent/friend-req-sent.component';
-import { NotifFriendReqAcceptedComponent } from './friend-req-accepted/friend-req-accepted.component';
-import { NotifFriendReqDeniedFromComponent } from './friend-req-denied-from/friend-req-denied-from.component';
-import { NotifFriendReqDeniedToComponent } from './friend-req-denied-to/friend-req-denied-to.component';
 import { Subject } from 'rxjs';
 import { NotificationService } from 'src/app/services/websocket/notification/service';
+import { TextNotificationComponent } from '../text-notification/text-notification.component';
 
 
 @Component({
@@ -53,16 +50,16 @@ export class NotificationComponent{
 				component = this.container.createComponent(NotifFriendReqReceivedComponent);
 				break;
 			case NotificationType.FRIEND_REQ_SENT:
-				component = this.container.createComponent(NotifFriendReqSentComponent);
+				component = this.container.createComponent(TextNotificationComponent);
 				break;
 			case NotificationType.FRIEND_REQ_ACCEPTED:
-				component = this.container.createComponent(NotifFriendReqAcceptedComponent);
+				component = this.container.createComponent(TextNotificationComponent);
 				break;
 			case NotificationType.FRIEND_REQ_DENIED_FROM:
-				component = this.container.createComponent(NotifFriendReqDeniedFromComponent);
+				component = this.container.createComponent(TextNotificationComponent);
 				break;
 			case NotificationType.FRIEND_REQ_DENIED_TO:
-				component = this.container.createComponent(NotifFriendReqDeniedToComponent);
+				component = this.container.createComponent(TextNotificationComponent);
 				break;
 			default:
 				break;
@@ -77,16 +74,4 @@ export class NotificationComponent{
 	}
 
 
-
-	displayPopup(message: string) {
-		const container = document.getElementById('container');
-		const elem = this.renderer.createElement('div');
-		const text = this.renderer.createText(message);
-		this.renderer.appendChild(elem, text);
-		this.renderer.addClass(elem, 'notification');
-		this.renderer.appendChild(container, elem);
-		setTimeout(() => {
-			this.renderer.removeChild(container, elem);
-		}, 5000);
-	}
 }
