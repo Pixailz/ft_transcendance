@@ -3,7 +3,7 @@ import { Server, Socket } from "socket.io";
 import { WSSocket } from "../socket.service";
 import { randomBytes } from "crypto";
 import { UserService } from "src/adapter/user/service";
-import { Sanitize } from "../../sanitize-object";
+import { Sanitize } from "../../modules/database/sanitize-object";
 
 export interface Pos {
 	x				: number,

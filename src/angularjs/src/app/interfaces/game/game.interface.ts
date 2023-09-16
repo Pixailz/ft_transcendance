@@ -1,4 +1,4 @@
-import { DefUserI, UserI } from "../user.interface"
+import { DefUserI, UserI } from "../user/user.interface"
 
 export interface GameOptionI {
 	type				: string,

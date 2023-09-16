@@ -4,7 +4,7 @@ import { Subscription } from "rxjs";
 import { WSGateway } from "../gateway";
 import { WSService } from "../service";
 import { DefLobbyI, DefPlayer, GameOptionI, GameStatus, LobbyI } from "src/app/interfaces/game/game.interface";
-import { UserI } from "src/app/interfaces/user.interface";
+import { UserI } from "src/app/interfaces/user/user.interface";
 
 @Injectable({
 	providedIn: "root",
