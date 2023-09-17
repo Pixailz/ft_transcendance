@@ -52,31 +52,14 @@ export class GameRoomState extends Schema {
 }
 
 export class GameRoom extends Room<GameRoomState> {
+	//Room locked after 2 clients
 	maxClients = 2;
 
+	/************* Colyseus Hooks *************/
 	onCreate(options: any) {
 		this.setState(new GameRoomState());
 		this.setSimulationInterval(() => this.update());
 		this.onMessage("move", this.onMoveMessage.bind(this));
-	}
-
-	private onMoveMessage(client, message) {
-		const player = this.getPlayerById(client.sessionId);
-		if (player) {
-			if (message.type === "keydown" && player.paddle.keyReleased) {
-				player.paddle.keyPressTime = Date.now();
-				player.paddle.keyReleased = false;
-				player.paddle.vx = this.determineMovement(message.direction);
-			} else if (message.type === "keyup") {
-				player.paddle.keyReleased = true;
-				player.paddle.vx = 0;
-			}
-			player.lastProcessedInput = message.inputSequenceNumber;
-		}
-	}
-
-	private determineMovement(direction: string) {
-		return direction === "left" ? -5 : 5;
 	}
 
 	onJoin(client: any) {
@@ -101,6 +84,7 @@ export class GameRoom extends Room<GameRoomState> {
 		console.log("Dispose GameRoom");
 	}
 
+	/************* Method called at each tick, updates the state *************/
 	private update() {
 		this.state.serverUpdateTime = Date.now().toString();
 		this.movePaddles();
@@ -110,6 +94,28 @@ export class GameRoom extends Room<GameRoomState> {
 			this.checkBallLose();
 		}
 	}
+
+	/************* Method called on 'move' ws message ***************/
+	private onMoveMessage(client, message) {
+		const player = this.getPlayerById(client.sessionId);
+		if (player) {
+			if (message.type === "keydown" && player.paddle.keyReleased) {
+				player.paddle.keyPressTime = Date.now();
+				player.paddle.keyReleased = false;
+				player.paddle.vx = this.determineMovement(message.direction);
+			} else if (message.type === "keyup") {
+				player.paddle.keyReleased = true;
+				player.paddle.vx = 0;
+			}
+			player.lastProcessedInput = message.inputSequenceNumber;
+		}
+	}
+
+	/************** Game methods, called by update() ***************/
+	private determineMovement(direction: string) {
+		return direction === "left" ? -5 : 5;
+	}
+
 
 	private movePaddles() {
 		this.state.players.forEach((player) => {
@@ -211,6 +217,7 @@ export class GameRoom extends Room<GameRoomState> {
 		this.state.ball.y = 300;
 	}
 
+	/********** Helpers ***********/
 	private getPlayerById(id: string) {
 		return this.state.players.find((player) => player.id === id);
 	}

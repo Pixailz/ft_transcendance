@@ -83,6 +83,7 @@ export class GameRoomComponent implements OnInit {
     this.engine.start().then(() => {
       this.engine.goToScene('game');
       this.engine.onPostUpdate = this.postUpdate.bind(this);
+      /*********** Colyseus Hooks */
       this.gameService.room.onStateChange((state: GameRoomState) =>
         this.handleStateChange(state)
       );
@@ -93,7 +94,7 @@ export class GameRoomComponent implements OnInit {
         'game_win',
         (message) => (this.gameStatus.text = 'Player ' + message + ' wins!')
       );
-
+      /****************************/
       this.engine.input.keyboard.on('hold', (evt) => this.handleInputHold(evt));
       this.engine.input.keyboard.on('release', (evt) =>
         this.handleInputRelease(evt)
