@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DefGameOptionI } from 'src/app/interfaces/game/game.interface';
+import { DefGameOptionI } from 'src/app/interfaces/game/game-room.interface';
 import { GameService } from 'src/app/services/websocket/game/service';
 
 @Component({

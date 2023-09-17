@@ -36,7 +36,6 @@ export class WSService {
 			`[WS:connection] User ${user_info.ftLogin} connected (${socket.id})`,
 		);
 		await this.setStatus(server, user_id, Status.CONNECTED);
-		this.wsGameService.disconnect(socket.id);
 	}
 
 	async disconnect(server: Server, socket: Socket) {
@@ -46,6 +45,7 @@ export class WSService {
 			(err) => console.log(err),
 		);
 		this.wsSocket.removeSocket(socket.id);
+		this.wsGameService.disconnect(socket.id);
 	}
 
 	async setStatus(server: Server, user_id: number, status: number) {

@@ -256,19 +256,17 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage("isInGame")
 	async handleIsInGame(socket: Socket) {
-		await this.wsGameService.isInGame(this.server, socket);
+		this.wsGameService.isInGame(this.server, socket);
 	}
 
 	@SubscribeMessage("gameReconnect")
 	async handleGameReconnect(socket: Socket, game_id: string) {
-		await this.wsGameService.gameReconnect(this.server, socket, game_id);
+		this.wsGameService.gameReconnect(socket, game_id);
 	}
 
-	@SubscribeMessage("gameSendStatus")
+	@SubscribeMessage("gameSendInput")
 	async handleSendGameStatus(socket: Socket, status: any)
-	{
-		await this.wsGameService.updateGameStatus(this.server, socket, status);
-	}
+	{ this.wsGameService.onMove(this.server, socket, status); }
 
 	@SubscribeMessage("updateNotificationStatus")
 	async updateNotificationStatus(socket: Socket, data: any) {
@@ -276,5 +274,4 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const notif_id: number = data[1];
 		await this.wsNotificationService.updateNotificationStatus(socket, notif_id, status);
 	}
-
 }

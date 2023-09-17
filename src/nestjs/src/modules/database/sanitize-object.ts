@@ -1,3 +1,4 @@
+import { PlayerI } from "src/websocket/game/game.interface";
 import { ChatRoomEntity } from "./chatRoom/entity";
 import { FriendRequestEntity } from "./friendRequest/entity";
 import { MessageEntity } from "./message/entity";

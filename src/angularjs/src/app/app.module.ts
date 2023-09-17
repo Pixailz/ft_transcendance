@@ -19,7 +19,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { CodeInputModule } from 'angular-code-input';
-import { Client } from 'colyseus.js';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AuthGuardService } from './services/auth-guard.service';
@@ -47,93 +46,93 @@ import { WSChatDmComponent } from './pages/chat-dm/chat-dm.component';
 import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
 import { GlobalErrorHandlerService } from './services/global-error-handler.service';
 import { environment } from './environments/environment';
-import { GameComponent } from './pages/game/game.component';
-import { GameLobbyComponent } from './components/game-lobby/game-lobby.component';
-import { GameRoomComponent } from './components/game-room/game-room.component';
-import { GameOverComponent } from './components/game-over/game-over.component';
 import { TextNotificationComponent } from './components/text-notification/text-notification.component';
 import { NotifFriendReqReceivedComponent } from './components/notification/friend-req-received/friend-req-received.component';
 import { NotifFriendReqSentComponent } from './components/notification/friend-req-sent/friend-req-sent.component';
 import { NotifFriendReqAcceptedComponent } from './components/notification/friend-req-accepted/friend-req-accepted.component';
 import { NotifFriendReqDeniedFromComponent } from './components/notification/friend-req-denied-from/friend-req-denied-from.component';
 import { NotifFriendReqDeniedToComponent } from './components/notification/friend-req-denied-to/friend-req-denied-to.component';
+
 import { GameWaitingComponent } from './components/game/waiting/waiting.component';
 import { GameStartedComponent } from './components/game/started/started.component';
+import { GameComponent } from './pages/game/game.component';
+import { GameLobbyComponent } from './components/game/lobby/lobby.component';
 
 const config: SocketIoConfig = {
-    url: environment.socket_url,
-    options: {
-        path: "/ws",
-        extraHeaders: {
-            Authorization: localStorage.getItem("access_token") as string
-        },
-        autoConnect: false,
-    }
+	url: environment.socket_url,
+	options: {
+		path: "/ws",
+		extraHeaders: {
+			Authorization: localStorage.getItem("access_token") as string
+		},
+		autoConnect: false,
+	}
 };
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        HeaderComponent,
-        FooterComponent,
-        HomeDashboardComponent,
-        PageNotFoundComponent,
-        UserProfileComponent,
-        AvatarComponent,
-		GameComponent,
-        GameLobbyComponent,
-        GameRoomComponent,
-        GameOverComponent,
-        LoginComponent,
-        RegisterComponent,
-        AnonymousLayoutComponent,
-        AuthenticatedLayoutComponent,
-        FlatButtonComponent,
-        TwofaformComponent,
-        ProfileComponent,
-        ErrordialogComponent,
-        FlatListComponent,
-        NotificationComponent,
+	declarations: [
+		AppComponent,
+		HeaderComponent,
+		FooterComponent,
+		HomeDashboardComponent,
+		PageNotFoundComponent,
+		UserProfileComponent,
+		AvatarComponent,
+		LoginComponent,
+		RegisterComponent,
+		AnonymousLayoutComponent,
+		AuthenticatedLayoutComponent,
+		FlatButtonComponent,
+		TwofaformComponent,
+		ProfileComponent,
+		ErrordialogComponent,
+		FlatListComponent,
+		WSChatDmComponent,
+		WSChatChannelComponent,
+
+		NotificationComponent,
 		TextNotificationComponent,
-        WSChatDmComponent,
-        WSChatChannelComponent,
 		NotifFriendReqSentComponent,
 		NotifFriendReqReceivedComponent,
 		NotifFriendReqAcceptedComponent,
 		NotifFriendReqDeniedFromComponent,
 		NotifFriendReqDeniedToComponent,
-    ],
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        MatGridListModule,
-        MatCardModule,
-        MatMenuModule,
-        MatIconModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatToolbarModule,
-        MatTableModule,
-        MatSlideToggleModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        ReactiveFormsModule,
-        AppRoutingModule,
-        HttpClientModule,
-        FormsModule,
-        MatProgressBarModule,
-        SocketIoModule.forRoot(config),
-        CodeInputModule,
+
+		GameComponent,
+		GameWaitingComponent,
+		GameStartedComponent,
+		GameLobbyComponent,
+	],
+	imports: [
+		BrowserModule,
+		BrowserAnimationsModule,
+		MatGridListModule,
+		MatCardModule,
+		MatMenuModule,
+		MatIconModule,
+		MatButtonModule,
+		MatDialogModule,
+		MatToolbarModule,
+		MatTableModule,
+		MatSlideToggleModule,
+		MatFormFieldModule,
+		MatInputModule,
+		MatSelectModule,
+		ReactiveFormsModule,
+		AppRoutingModule,
+		HttpClientModule,
+		FormsModule,
+		MatProgressBarModule,
+		SocketIoModule.forRoot(config),
+		CodeInputModule,
 		MatBadgeModule
-    ],
-    providers: [
-        AuthGuardService,
-        { provide: ErrorHandler, useClass: GlobalErrorHandlerService },
-        { provide: RouteReuseStrategy, useClass: CustomReuseStrategy },
-		Client,
-    ],
-    bootstrap: [AppComponent]
+	],
+	providers: [
+		AuthGuardService,
+		{ provide: ErrorHandler, useClass: GlobalErrorHandlerService },
+		{ provide: RouteReuseStrategy, useClass: CustomReuseStrategy },
+	],
+	bootstrap: [AppComponent]
 })
 export class AppModule { }
 

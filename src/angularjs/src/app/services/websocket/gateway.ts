@@ -7,6 +7,7 @@ import { UserChatRoomI } from 'src/app/interfaces/chat/user-chat-room.interface'
 import { FriendRequestI } from 'src/app/interfaces/user/friend.interface';
 import { UserI } from 'src/app/interfaces/user/user.interface';
 import { NotifStatus } from 'src/app/interfaces/notification.interface';
+import { GameStateI } from 'src/app/interfaces/game/game-room.interface';
 
 @Injectable({
 	providedIn: 'root',
@@ -199,23 +200,28 @@ export class WSGateway {
 
 	updateNotificationStatus(notif_id: number, status: NotifStatus)
 	{ this.socket.emit("updateNotificationStatus", status, notif_id); }
+
+
 	// GAME
 
 	// LISTENER
-	listenGameWaiting(): Observable<any>
-	{ return this.socket.fromEvent<any>("gameWaiting"); }
+	listenGameWaiting(): Observable<null>
+	{ return this.socket.fromEvent<null>("gameWaiting"); }
 
-	listenIsInGame(): Observable<any>
-	{ return this.socket.fromEvent<any>("isInGame"); }
+	listenIsInGame(): Observable<string>
+	{ return this.socket.fromEvent<string>("isInGame"); }
 
-	listenGameStarted(): Observable<any>
-	{ return this.socket.fromEvent<any>("gameStarted"); }
+	listenGameStarting(): Observable<any>
+	{ return this.socket.fromEvent<any>("gameStarting"); }
 
 	listenGameReconnect(): Observable<UserI>
 	{ return this.socket.fromEvent<UserI>("gameReconnect"); }
 
 	listenGameEnded(): Observable<any>
 	{ return this.socket.fromEvent<any>("gameEnded"); }
+
+	listenGameState(): Observable<GameStateI>
+	{ return this.socket.fromEvent<GameStateI>("gameState"); }
 
 	// EMITER
 	searchGame(game_option: any)
@@ -227,6 +233,10 @@ export class WSGateway {
 	reconnectGame(game_id: string)
 	{ this.socket.emit("gameReconnect", game_id); }
 
-	gameSendStatus(status: any)
-	{ this.socket.emit("gameSendStatus", status); }
+	sendInput(direction: string, type: string, pending_input: number)
+	{ this.socket.emit("gameSendInput", direction, type, pending_input); }
+
+	// LISTENER
+
+	// EMITER
 }

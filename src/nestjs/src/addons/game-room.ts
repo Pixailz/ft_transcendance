@@ -55,26 +55,6 @@ export class GameRoom extends Room<GameRoomState> {
 	//Room locked after 2 clients
 	maxClients = 2;
 
-	/************* Colyseus Hooks *************/
-	onCreate(options: any) {
-		this.setState(new GameRoomState());
-		this.setSimulationInterval(() => this.update());
-		this.onMessage("move", this.onMoveMessage.bind(this));
-	}
-
-	onJoin(client: any) {
-		const newPlayer = new Player();
-		newPlayer.id = client.sessionId;
-		newPlayer.side = this.state.players.length == 0 ? "bottom" : "top";
-		newPlayer.paddle.y = newPlayer.side === "bottom" ? 550 : 50;
-		newPlayer.paddle.color = newPlayer.side === "bottom" ? "red" : "green";
-		this.state.players.push(newPlayer);
-
-		if (this.state.players.length === this.maxClients) {
-			this.startGame();
-		}
-	}
-
 	onLeave(client) {
 		this.state.gameStatus = GameRoomStatus.INTERRUPTED;
 		this.state.players.deleteAt(this.getPlayerIdBySessId(client.sessionId));
