@@ -3,7 +3,7 @@ import { UserService } from 'src/app/services/user.service';
 import { DefUserI, UserI } from 'src/app/interfaces/user.interface';
 import { NotificationService } from 'src/app/services/websocket/notification/service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { animate, animateChild, query, style, transition, trigger } from '@angular/animations';
+import { animate, animateChild, query, stagger, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-register',
@@ -11,28 +11,40 @@ import { animate, animateChild, query, style, transition, trigger } from '@angul
   styleUrls: ['./register.component.scss'],
   animations: [
 		trigger('enterAnimation', [
-			transition('void => *', [
+			state('closed', style({transform: 'scale(1)'})),
+			transition(':enter', [
 				style({transform: 'scale(0)'}),
 				animate('300ms ease-in-out',
 					style({transform: 'scale(1)'})
 				),
-				query('@*', animateChild(), {optional: true})]),
-			transition('* => void', [
-				style({transform: 'scale(1)'}),
-				animate('300ms ease-in-out',
-					style({transform: 'scale(0)'})
-				),
-				query('@*', animateChild(), {optional: true})])]),
+				query('@*', animateChild(), {optional: true})
+			]),
+			transition('* => closed', [
+				animate('300ms ease-in-out'),
+				query('@*', animateChild(), {optional: true})
+			])
+		]),
 		trigger('input', [
+			state('closed', style({width: '50px', padding: '4px', color: 'transparent'})),
 			transition('void => *', [
 				style({width: '50px', padding: '4px', color: 'transparent'}),
-				animate('500ms cubic-bezier(.86,1.73,.75,.46)',
+				animate('500ms ease-out',
 					style({width: '300px', padding: '4px 70px 4px 20px', color: 'white'})),
 			]),
-			transition('* => void', [
-				style({width: '300px', padding: '4px 70px 4px 20px', color: 'white'}),
-				animate('500ms cubic-bezier(.86,1.73,.75,.46)',
-				style({width: '50px', padding: '4px', color: 'transparent'})),
+			transition('* => closed', [
+				animate('500ms ease-out'),
+			])
+		]),
+		trigger('button', [
+			state('closed', style({transform: 'rotate(-360deg)'})),
+			transition(':enter', [
+				style({transform: 'none'}),
+				animate('500ms ease-out',
+					style({transform: 'rotate(360deg)'})
+				),
+			]),
+			transition('* => closed', [
+				animate('500ms ease-out'),
 			])
 		])
   ]
@@ -44,6 +56,7 @@ export class RegisterComponent {
 	)
 	{}
 
+	submitted: boolean = false;
 	userForm!: FormGroup;
 
 	async ngOnInit() {
@@ -52,15 +65,16 @@ export class RegisterComponent {
 		this.userForm = this.formBuilder.group({
 			nickname: { value: this.userService.user.nickname }
 		}, { updateOn: "change" });
-		const control = new FormControl('ng', Validators.minLength(3));
-
 	}
 
 	async onSubmit() {
+		this.submitted = true;
 		await this.userService.updateInfo(this.userService.user.nickname)
 			.catch((err) => {
 				console.log(err);
 			});
-		window.location.href = '/home';
+		setTimeout(() => {
+			window.location.href = '/home';
+		}, 800)
 	}
 }
