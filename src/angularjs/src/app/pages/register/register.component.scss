@@ -1,8 +1,55 @@
-mat-card {
-	margin: 20px;
-	padding: 20px;
+input {
+	// max-width: 300px;
+	width: calc(100% - 70px - 20px - 2 * 2px);
+	outline: none;
+	border: none;
+	height: 50px;
+	padding: 4px 70px 4px 20px;
+	border-radius: 9999px;
 
-	input {
-		width: 200px;
+	font-size: large;
+	border: 2px solid rgba($color: #8f8f8f, $alpha: 0.3);
+	color: white;
+	background: rgba($color: #3a3a3a, $alpha: 0.3);
+}
+
+button {
+	top: 6px;
+	right: 6px;
+	padding: 0;
+	height: 50px;
+	width: 50px;
+	border: none;
+	position: absolute;
+	border-radius: 9999px;
+	aspect-ratio: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #00BABC;
+	&:not(button:disabled){
+		cursor: pointer;
 	}
+	transition: background-color 250ms ease-in-out;
+	mat-icon {
+		width: fit-content;
+		height: fit-content;
+		font-size: 1.4em;
+		color: white;
+	}
+}
+
+form {
+	position: relative;
+}
+
+:host {
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+form.ng-invalid > button {
+	background-color: red;
 }

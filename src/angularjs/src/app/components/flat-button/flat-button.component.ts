@@ -11,4 +11,5 @@ export class FlatButtonComponent {
 	@Input() color: string = '';
 	@Input() isActive: boolean = false;
 	@Input() isDisabled: boolean = false;
+	@Input() tabindex: number = -1;
 }
