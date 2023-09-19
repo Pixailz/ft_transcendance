@@ -4,6 +4,7 @@ import { DefUserI, UserI } from 'src/app/interfaces/user.interface';
 import { NotificationService } from 'src/app/services/websocket/notification/service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { animate, animateChild, query, stagger, state, style, transition, trigger } from '@angular/animations';
+import { pairwise } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -20,7 +21,7 @@ import { animate, animateChild, query, stagger, state, style, transition, trigge
 				query('@*', animateChild(), {optional: true})
 			]),
 			transition('* => closed', [
-				animate('300ms ease-in-out'),
+				animate('300ms  ease-in-out'),
 				query('@*', animateChild(), {optional: true})
 			])
 		]),
@@ -58,6 +59,7 @@ export class RegisterComponent {
 
 	submitted: boolean = false;
 	userForm!: FormGroup;
+	invalidNickname: boolean = false;
 
 	async ngOnInit() {
 		this.userService.user = await this.userService.getUserInfo();
@@ -65,16 +67,29 @@ export class RegisterComponent {
 		this.userForm = this.formBuilder.group({
 			nickname: { value: this.userService.user.nickname }
 		}, { updateOn: "change" });
+
+		this.userForm.get('nickname')?.valueChanges
+		.pipe(pairwise())
+		.subscribe(([prev, next]: [any, any]) => {
+			this.invalidNickname = false;
+		});
 	}
 
 	async onSubmit() {
-		this.submitted = true;
 		await this.userService.updateInfo(this.userService.user.nickname)
-			.catch((err) => {
-				console.log(err);
-			});
-		setTimeout(() => {
-			window.location.href = '/home';
-		}, 800)
+		.catch((err) => {
+			console.log('err in catch = ', err);
+		})
+		.then((tmp) => {
+			if (!tmp || tmp.status > 400)
+			{
+				this.invalidNickname = true;
+				return ;
+			}
+			this.submitted = true;
+			setTimeout(() => {
+				window.location.href = '/home';
+			}, 800)
+		})
 	}
 }

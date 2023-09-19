@@ -1,4 +1,4 @@
-<form *ngIf="userForm" [formGroup]="userForm" [@enterAnimation]="!submitted ? 'open' : 'closed'">
+<form [ngClass]="{'invalid-nickname': invalidNickname}" *ngIf="userForm" [formGroup]="userForm" [@enterAnimation]="!submitted ? 'open' : 'closed'">
 	<input [@input]="!submitted ? 'open' : 'closed'"
 		autofocus
 		formControlName="nickname" placeholder="Nickname" [(ngModel)]="userService.user.nickname"
