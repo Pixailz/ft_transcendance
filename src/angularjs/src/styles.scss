@@ -73,9 +73,11 @@ ul {
 
 .custom-dialog {
 	.mat-mdc-dialog-surface.mat-mdc-dialog-surface{
-		border-radius: 0 ;
-		border: 3px solid black;
+		border-radius: 20px ;
 		padding: 20px;
+		background-color: rgba( #000, 0.3);
+		backdrop-filter: blur(30px);
+		color: white;
 	}
 }
 

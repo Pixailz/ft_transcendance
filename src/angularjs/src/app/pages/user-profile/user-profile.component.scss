@@ -1,3 +1,27 @@
+// mat-card {
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     justify-content: center;
+//     margin: 20px;
+//     padding: 20px;
+// }
+
+// mat-card-header{
+// 	display: flex;
+// 	flex-direction: column;
+// 	align-items: center;
+// 	justify-content: center;
+// 	margin: 20px 0px;
+// }
+
+// mat-card-header span{
+// 	display: inline-block;
+// 	transform-origin: center;
+//     animation: rotate-anim 5s infinite linear;
+// }
+
+
 :host {
     display: flex;
     align-items: center;
@@ -7,27 +31,129 @@
     position: absolute;
 }
 
-mat-card {
+form {
+  padding: 20px;
+  max-width: 600px;
+  width: 95%;
+
+  .row {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    margin: 20px;
-    padding: 20px;
+    justify-content: space-evenly;
+    margin-bottom: 60px;
+
+    .avatarcontainer {
+      height: fit-content;
+      width: fit-content;
+      border-radius: 9999px;
+      padding: 10px;
+      border: 0;
+      background-color: rgba($color: #fff, $alpha: .1);
+    }
+
+    span {
+      animation: rotate-anim 5s infinite linear;
+    }
+  }
+
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    grid-template-rows: repeat(3, 1fr);
+    grid-column-gap: 20px;
+    grid-row-gap: 20px;
+    grid-template-areas:
+    "a b b"
+    "c c c"
+    "d . e";
+    position: relative;
+
+    input[type=text], input[type=email] {
+      box-sizing: border-box;
+      background-color: white;
+      border-radius: 9999px;
+      padding: 10px 20px;
+      border: 0;
+
+      &.login {
+        min-width: 30px;
+        grid-area: a;
+      }
+
+      &.nickname {
+        min-width: 50px;
+        grid-area: b;
+      }
+    }
+
+    input[type=email] {
+        min-width: 50px;
+        grid-area: c;
+    }
+  }
+
+  .twofacontainer{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+    grid-area: d;
+
+    label {
+      color: white;
+    }
+  }
+
+  .submit-btn {
+      height: 100%;
+      aspect-ratio: 1;
+      border-radius: 9999px;
+      border: none;
+      background-color: #00BABC;
+      grid-area: e;
+      position: absolute;
+      right: 0;
+
+      mat-icon {
+        font-size: 1.4em;
+        height: fit-content;
+        width: fit-content;
+        color: white;
+      }
+  }
 }
 
-mat-card-header{
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	margin: 20px 0px;
+input[type=checkbox] {
+    appearance: none;
+    width: 40px;
+    height: 20px;
+    margin: 0;
+    cursor: pointer;
+    border: 2px solid white;
+    position: relative;
+    padding: 2px;
+    background-color: #ff9999;
+    border-radius: 9999px;
+    transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
 }
 
-mat-card-header span{
-	display: inline-block;
-	transform-origin: center;
-    animation: rotate-anim 5s infinite linear;
+input[type=checkbox]::before {
+    content: "";
+    height: 12px;
+    aspect-ratio: 1;
+    position: absolute;
+    left: 2px;
+    background-color: white;
+    border-radius: 9999px;
+    transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
+}
+
+input[type=checkbox]:checked {
+    background-color: #a7dca3;
+}
+
+input[type=checkbox]:checked::before {
+    left: 22px;
 }
 
 @keyframes rotate-anim {
@@ -56,63 +182,3 @@ mat-card-header span{
      color: violet;
     }
   }
-
-input[type=text] {
-    width: 200px;
-}
-
-input[type=checkbox] {
-    appearance: none;
-    width: 40px;
-    height: 20px;
-    margin: 0;
-    cursor: pointer;
-    border: 2px solid black;
-    position: relative;
-    padding: 2px;
-    background-color: #ff9999;
-    border-radius: 9999px;
-    transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
-}
-
-input[type=checkbox]::before {
-    content: "";
-    height: 12px;
-    aspect-ratio: 1;
-    position: absolute;
-    left: 2px;
-    background-color: white;
-    border-radius: 9999px;
-    transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
-}
-
-input[type=checkbox]:checked {
-    background-color: #a7dca3;
-}
-
-input[type=checkbox]:checked::before {
-    left: 22px;
-}
-
-.buttoncontainer{
-	width: 100%;
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-}
-
-.twofacontainer{
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-}
-
-.avatarcontainer{
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-	margin: 20px 0px;
-}
