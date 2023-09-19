@@ -4,6 +4,5 @@
 		formControlName="nickname" placeholder="Nickname" [(ngModel)]="userService.user.nickname"
 		name="nickname" minlength="3" maxlength="32" required>
 	<button [@button]="!submitted ? 'open' : 'closed'" [ngClass]="{'check': submitted}" (click)="onSubmit()" [disabled]="!userForm.valid">
-		<!-- <mat-icon fontIcon="arrow_forward_ios"></mat-icon> -->
 	</button>
 </form>

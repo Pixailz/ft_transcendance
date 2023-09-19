@@ -2,7 +2,9 @@ import { Injectable } from "@angular/core";
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { UserService } from "./user.service";
 
-@Injectable()
+@Injectable({
+	providedIn: 'root',
+})
 export class AuthGuardService implements CanActivate {
 	constructor(
 		private router: Router,
@@ -49,5 +51,34 @@ export class AuthGuardService implements CanActivate {
 		if (state.url.indexOf('/register') === -1)
 			return await this.canActivateRegister(returnUrl);
 		return true;
+	}
+}
+
+
+@Injectable({
+	providedIn: 'root',
+})
+export class RegisterGuardService implements CanActivate {
+	constructor(
+		private router: Router,
+		private userService: UserService,
+		) {}
+
+	async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
+		let		returnUrl = route.queryParams['returnUrl'];
+		const	jwt_token = this.userService.getToken();
+
+		if (jwt_token)
+		{
+			if (await this.userService.checkToken())
+			{
+				if (returnUrl)
+					this.router.navigate([returnUrl]);
+				else
+					this.router.navigate(['/home']);
+				return (false);
+			}
+		}
+		return (true);
 	}
 }
