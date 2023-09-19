@@ -77,12 +77,12 @@ const routes: Routes = [
 		children: [
 			{
 				path: 'login',
-				component: LoginComponent
+				component: LoginComponent,
 			},
 			{
 				path: 'register',
+				canActivate: [ AuthGuardService ],
 				component: RegisterComponent,
-				canActivate: [AuthGuardService]
 			}
 		]
 	},

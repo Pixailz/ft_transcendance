@@ -1,8 +1,119 @@
-mat-card {
-	margin: 20px;
-	padding: 20px;
+form {
+	position: relative;
+
+	&.invalid-nickname {
+		animation: 300ms wiggle ease-in-out;
+	}
+
+	&.invalid-nickname::before {
+		content: "Nickname already used";
+		color: rgb(255, 177, 177);
+		position: absolute;
+		bottom: -20px;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
+	&.invalid-nickname > button, & > button:disabled {
+		background-color: rgb(255, 177, 177);
+
+		&::before, &::after {
+			width: 30px;
+		}
+
+		&::before {
+			transform: rotate(45deg);
+		}
+
+		&::after {
+			transform: rotate(-45deg);
+		}
+	}
 
 	input {
-		width: 200px;
+		width: 300px;
+		outline: none;
+		border: none;
+		height: 50px;
+		padding: 4px 70px 4px 20px;
+		border-radius: 9999px;
+
+		font-size: large;
+		border: 2px solid rgba($color: #8f8f8f, $alpha: 0.3);
+		color: white;
+		background: rgba($color: #3a3a3a, $alpha: 0.3);
+	}
+
+	button {
+		top: 6px;
+		right: 6px;
+		padding: 0;
+		height: 50px;
+		width: 50px;
+		border: none;
+		position: absolute;
+		border-radius: 9999px;
+		aspect-ratio: 1;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background-color: #00BABC;
+		transition: background-color 250ms ease-in-out;
+
+		&.check {
+			background-color: rgb(167, 220, 163);
+		}
+
+		&::before, &::after {
+			content: "";
+			position: absolute;
+			width: 20px;
+			height: 5px;
+			border-radius: 9999px;
+			background-color: white;
+			transition: all .25s ease-in-out;
+		}
+
+		&::before {
+			transform: translateX(35%) rotate(45deg) translateX(calc(-50% + 2.5px));
+		}
+
+		&::after {
+			transform: translateX(35%) rotate(-45deg) translateX(calc(-50% + 2.5px));
+		}
+
+		&.check::before {
+			width: 15px;
+			transform: translateY(-2px) rotate(45deg) translateY(calc(12.5px - 2.5px));
+		}
+
+		&.check::after {
+			width: 25px;
+			transform: translateY(-2px) rotate(-45deg) translateY(calc(7.5px - 2.5px));
+		}
+
+		&:not(button:disabled){
+			cursor: pointer;
+		}
+	}
+
+}
+
+:host {
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+@keyframes wiggle {
+	0%, 100% {
+		transform: none;
+	}
+	8.33%, 41.67%, 75% {
+		transform: rotate(5deg);
+	}
+	25%, 58.33%, 91.67% {
+		transform: rotate(-5deg);
 	}
 }

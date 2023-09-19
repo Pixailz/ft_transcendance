@@ -1,17 +1,8 @@
-<mat-card>
-	<form>
-		<mat-form-field>
-			<mat-label>Nickname</mat-label>
-			<input [(ngModel)]="userService.user.nickname" name="nickname" required
-			matInput>
-		</mat-form-field>
-
-		<mat-form-field>
-
-			<mat-label>mail</mat-label>
-			<input [(ngModel)]="userService.user.email" name="email"
-			matInput>
-		</mat-form-field>
-		<button mat-raised-button color="primary" (click)="onSubmit()">Save</button>
-	</form>
-</mat-card>
+<form [ngClass]="{'invalid-nickname': invalidNickname}" *ngIf="userForm" [formGroup]="userForm" [@enterAnimation]="!submitted ? 'open' : 'closed'">
+	<input [@input]="!submitted ? 'open' : 'closed'"
+		autofocus
+		formControlName="nickname" placeholder="Nickname" [(ngModel)]="userService.user.nickname"
+		name="nickname" minlength="3" maxlength="32" required>
+	<button [@button]="!submitted ? 'open' : 'closed'" [ngClass]="{'check': submitted}" (click)="onSubmit()" [disabled]="!userForm.valid">
+	</button>
+</form>
