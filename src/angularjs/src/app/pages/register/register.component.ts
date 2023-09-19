@@ -5,6 +5,7 @@ import { NotificationService } from 'src/app/services/websocket/notification/ser
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { animate, animateChild, query, stagger, state, style, transition, trigger } from '@angular/animations';
 import { pairwise } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -54,6 +55,7 @@ export class RegisterComponent {
 	constructor(
 		public userService: UserService,
 		private formBuilder: FormBuilder,
+		private router: Router,
 	)
 	{}
 
@@ -63,7 +65,8 @@ export class RegisterComponent {
 
 	async ngOnInit() {
 		this.userService.user = await this.userService.getUserInfo();
-
+		if (this.userService.user.nickname.length)
+			this.router.navigate(['/']);
 		this.userForm = this.formBuilder.group({
 			nickname: { value: this.userService.user.nickname }
 		}, { updateOn: "change" });

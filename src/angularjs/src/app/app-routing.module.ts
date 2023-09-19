@@ -6,7 +6,7 @@ import { PongComponent } from './pages/pong/pong.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
 import { LoginComponent } from './pages/login/login.component';
-import { AuthGuardService, RegisterGuardService } from './services/auth-guard.service';
+import { AuthGuardService } from './services/auth-guard.service';
 import { RegisterComponent } from './pages/register/register.component';
 import { AnonymousLayoutComponent } from './layout/anonymous-layout.component';
 import { AuthenticatedLayoutComponent } from './layout/authenticated-layout.component';
@@ -78,12 +78,11 @@ const routes: Routes = [
 			{
 				path: 'login',
 				component: LoginComponent,
-				canActivate: [RegisterGuardService]
 			},
 			{
 				path: 'register',
+				canActivate: [ AuthGuardService ],
 				component: RegisterComponent,
-				canActivate: [AuthGuardService, RegisterGuardService]
 			}
 		]
 	},
