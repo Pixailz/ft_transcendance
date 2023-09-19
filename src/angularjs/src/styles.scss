@@ -39,6 +39,20 @@ $angular-dark-theme: mat.define-dark-theme(
 
 * {
 	font-family: 'Maven Pro', sans-serif;
+
+	&:focus-visible {
+		outline: 3px dashed yellow;
+		outline-offset: 5px;
+	}
+
+}
+
+
+.logout {
+
+	*:focus-visible {
+		outline-color: red;
+	}
 }
 
 html,
@@ -67,7 +81,7 @@ ul {
 
 
 .notification > div {
-    background-color: #001509; 
+    background-color: #001509;
 	color: white;
     border: 3px solid white;
 	margin-top: 10px;

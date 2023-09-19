@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TwofaformComponent } from 'src/app/components/twofaform/twofaform.component';
 
 import { environment } from 'src/app/environments/environment';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
 	selector: 'app-login',
@@ -22,9 +23,12 @@ export class LoginComponent  implements OnInit {
 	constructor(private route: ActivatedRoute,
 				private router: Router,
 				private http: HttpClient,
+				private userService: UserService,
 				public dialog: MatDialog) {}
 
 	async ngOnInit() {
+		if (await this.userService.checkToken())
+			this.router.navigate(['/']);
 		this.code = this.route.snapshot.queryParamMap.get('code');
 		this.state = this.route.snapshot.queryParamMap.get('state');
 
@@ -40,7 +44,7 @@ export class LoginComponent  implements OnInit {
 
 		if (this.code !== null) {
 			await this.getToken();
-			this.state.redirect
+			this.state?.redirect
 			? this.router.navigate([this.state.redirect])
 			: this.router.navigate(['/']);
 		}
