@@ -4,11 +4,21 @@ import { UserService } from '../../services/user.service';
 import { DefUserI, UserI } from 'src/app/interfaces/user.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { TwofaformComponent } from 'src/app/components/twofaform/twofaform.component';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
 	selector: 'app-user-profile',
 	templateUrl: './user-profile.component.html',
 	styleUrls: ['./user-profile.component.scss'],
+	animations: [trigger("enterInvalidNickname", [
+		transition(':enter', [
+			style({transform: 'translateX(-50%) scale(0)'}),
+			animate('500ms ease-out',
+				style({transform: 'translateX(-50%) scale(1)'})
+			),
+		]),
+	])]
+
 })
 export class UserProfileComponent implements OnInit {
 	constructor(

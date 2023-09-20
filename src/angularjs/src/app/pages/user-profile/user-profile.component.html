@@ -29,7 +29,7 @@
 			<label for="a2f" style="margin-right: 10px;">TwoFA</label>
 			<input id="twofa" (click)="setupTwoFa()" type="checkbox" name="a2f" [checked]="userForm.value.twofa">
 		</div>
-		<span class="invalid-nickname" *ngIf="invalidNickname">Nickname already taken</span>
+		<span class="invalid-nickname" @enterInvalidNickname *ngIf="invalidNickname">Nickname already taken</span>
 		<button class="submit-btn"
 			(click)="onSubmit()"
 			[disabled]="!userForm.valid || submitted || invalidNickname"
