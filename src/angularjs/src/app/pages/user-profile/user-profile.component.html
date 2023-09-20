@@ -1,4 +1,4 @@
-<form class="glass" *ngIf="userForm" [formGroup]="userForm">
+<form class="glass" *ngIf="userForm" [formGroup]="userForm" [ngClass]="{'invalid-nickname': invalidNickname}">
 	<div class="row">
 		<div class="avatarcontainer">
 			<app-avatar formControlName="picture"></app-avatar>
@@ -13,6 +13,7 @@
 		<input class="nickname"
 		type="text"
 		maxlength="32"
+		minlength="3"
 		formControlName="nickname"
 		placeholder="Nickname"
 		[required]="true"
@@ -31,10 +32,19 @@
 
 		<button class="submit-btn"
 			(click)="onSubmit()"
-			[disabled]="!userForm.valid"
+			[disabled]="!userForm.valid || submitted || invalidNickname"
+			[ngClass]="{'submitted-class': submitted}"
 			>
 			<!-- style="width:25%" -->
-			<mat-icon fontIcon="save"></mat-icon>
+			<div class="icon-container save">
+				<mat-icon fontIcon="save"></mat-icon>
+			</div>
+			<div class="icon-container close">
+				<mat-icon fontIcon="close"></mat-icon>
+			</div>
+			<div class="icon-container check">
+				<mat-icon fontIcon="check"></mat-icon>
+			</div>
 		</button>
 	</div>
 </form>

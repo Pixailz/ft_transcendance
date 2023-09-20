@@ -105,15 +105,3 @@ form {
 	justify-content: center;
 	align-items: center;
 }
-
-@keyframes wiggle {
-	0%, 100% {
-		transform: none;
-	}
-	8.33%, 41.67%, 75% {
-		transform: rotate(5deg);
-	}
-	25%, 58.33%, 91.67% {
-		transform: rotate(-5deg);
-	}
-}

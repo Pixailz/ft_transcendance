@@ -20,6 +20,9 @@ export class UserProfileComponent implements OnInit {
 
 	user: UserI = DefUserI;
 	userForm!: FormGroup;
+	submitted: boolean = true;
+	invalidNickname: boolean = false;
+
 
 	async ngOnInit() {
 		this.user = await this.userService.getUserInfo();
@@ -30,6 +33,13 @@ export class UserProfileComponent implements OnInit {
 			email: this.user.email,
 			twofa: this.user.twoAuthFactor,
 		}, { updateOn: "change" });
+		this.userForm.valueChanges
+		.subscribe((values) => {
+			if (this.submitted)
+				this.submitted = false;
+			if (this.invalidNickname)
+				this.invalidNickname = false;
+		});
 	}
 
 	async onSubmit() {
@@ -45,8 +55,10 @@ export class UserProfileComponent implements OnInit {
 		await this.userService.updateProfile(this.userForm.value)
 			.then((res) => {
 				console.log(res);
+				this.submitted = true;
 			})
 			.catch((err) => {
+				this.invalidNickname = true;
 				console.log(err);
 			});
 	}

@@ -40,11 +40,13 @@ $angular-dark-theme: mat.define-dark-theme(
 * {
 	font-family: 'Maven Pro', sans-serif;
 
-	&:focus-visible {
+	&:focus-visible:not(input) {
 		outline: 3px dashed yellow;
 		outline-offset: 5px;
 	}
-
+	input:focus-visible {
+		outline: none;
+	}
 }
 
 
@@ -75,8 +77,9 @@ ul {
 	.mat-mdc-dialog-surface.mat-mdc-dialog-surface{
 		border-radius: 20px ;
 		padding: 20px;
-		background-color: rgba( #000, 0.3);
-		backdrop-filter: blur(30px);
+		background: rgba(90, 90, 90, 0.3);
+		backdrop-filter: blur(10px);
+		border: 1px solid rgba(90,90,90,0.4);
 		color: white;
 	}
 }
@@ -105,4 +108,16 @@ ul {
 .solid {
 	background-color: rgba($color: #383838, $alpha: 1.0);
 	border-radius: 10px;
+}
+
+@keyframes wiggle {
+	0%, 100% {
+		transform: none;
+	}
+	8.33%, 41.67%, 75% {
+		transform: rotate(5deg);
+	}
+	25%, 58.33%, 91.67% {
+		transform: rotate(-5deg);
+	}
 }
