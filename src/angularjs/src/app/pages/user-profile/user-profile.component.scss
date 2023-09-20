@@ -36,7 +36,7 @@ form {
 	max-width: 600px;
 	width: 95%;
 	position: relative;
-	overflow: hiddenf;
+	overflow: hidden;
 	&::after {
 		transition: transform 300ms ease-in-out;
 		width: fit-content;
