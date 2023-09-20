@@ -33,31 +33,31 @@
 
 form {
 	padding: 20px;
-	max-width: 600px;
-	width: 95%;
 	position: relative;
-	overflow: hidden;
-	&::after {
-		transition: transform 300ms ease-in-out;
-		width: fit-content;
-		color: #ff9999;
-		position: absolute;
-		bottom: 20px;
-		line-height: 1fr;
-		left: 50%;
-		transform: translateX(-50%) translateY(300%);
-		content: "Nickname already taken";
-	}
+	overflow: scroll;
+	max-width: 400px;
+	max-height: 300px;
+	height: 95%;
+	display: flex;
+	flex-direction: column;
+	// min-width: none;
+	// min-height: none;
 
-	&.invalid-nickname::after {
-		transform: translateX(-50%) translateY(0);
+	span.invalid-nickname {
+		color: #ff9999;
+		height: fit-content;
+		width: fit-content;
+		position: absolute;
+		left: 50%;
+		bottom: 10px;
+		transform: translateX(-50%);
+
 	}
 
 	.row {
 		display: flex;
 		align-items: center;
 		justify-content: space-evenly;
-		margin-bottom: 60px;
 
 		.avatarcontainer {
 			height: fit-content;
@@ -69,7 +69,7 @@ form {
 		}
 
 		span {
-			animation: rotate-anim 5s infinite linear;
+			animation: zoom-rotate 5s infinite linear, color-anim 5s infinite linear;
 		}
 	}
 
@@ -79,25 +79,30 @@ form {
 	}
 
 	.container {
+		margin-top: auto;
+		height: 150px;
+		min-height: 50px;
 		display: grid;
-		grid-template-columns: 1fr 3fr;
+		grid-template-columns: 1fr 2fr 1fr;
 		grid-template-rows: repeat(3, 1fr);
 		grid-column-gap: 20px;
 		grid-row-gap: 20px;
 		grid-template-areas:
 		"a b b"
 		"c c c"
-		"d . e";
+		"d f e";
 		position: relative;
 
 		input[type=text], input[type=email] {
+			position: relative;
 			box-sizing: border-box;
 			background-color: white;
 			border-radius: 9999px;
 			padding: 10px 20px;
+			height: 100%;
 			border: 0;
+			font-size: 85%;
 			transition: color 100ms ease-in-out;
-
 			&.login {
 				min-width: 30px;
 				grid-area: a;
@@ -239,9 +244,8 @@ input[type=checkbox]:checked::before {
 		left: 22px;
 }
 
-@keyframes rotate-anim {
+@keyframes color-anim {
 		0% {
-			transform: rotate(0deg) scale(75%);
 			color: red;
 		}
 		16% {
@@ -251,17 +255,27 @@ input[type=checkbox]:checked::before {
 			color: yellow;
 		}
 		50% {
-		zoom:25%;
 			color: green;
 		}
 		66% {
-			color: blue;
+			color: violet;
 		}
 		83% {
 			color: indigo;
 		}
 		100% {
-	transform: rotate(360deg) scale(125%);
-		 color: violet;
+		 color: red;
 		}
 	}
+
+@keyframes zoom-rotate {
+	0% {
+		transform: rotate(0deg) scale(75%);
+	}
+	50% {
+		transform: rotate(180deg) scale(125%);
+	}
+	100% {
+		transform: rotate(360deg) scale(75%);
+	}
+}
