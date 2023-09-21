@@ -1,18 +1,10 @@
-.invalid-nickname {
-		animation: 300ms wiggle ease-in-out;
-		color: rgb(255, 177, 177);
-		height: fit-content;
-		width: fit-content;
-		position: absolute;
-		bottom: 275px;
-		transform: 50% translateX(-50%);
-	}
+form.invalid-nickname {
+	animation: 300ms wiggle ease-in-out;
+}
+
 
 form {
 	position: relative;
-
-
-
 	& > button:disabled {
 		background-color: rgb(255, 177, 177);
 
@@ -27,6 +19,16 @@ form {
 		&::after {
 			transform: rotate(-45deg);
 		}
+	}
+
+	span.invalid-nickname {
+		color: rgb(255, 177, 177);
+		height: fit-content;
+		width: 100%;
+		text-align: center;
+		position: absolute;
+		bottom: -30px;
+		left: 0;
 	}
 
 	input {

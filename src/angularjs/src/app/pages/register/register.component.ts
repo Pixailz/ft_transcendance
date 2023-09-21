@@ -91,7 +91,6 @@ export class RegisterComponent {
 				this.invalidNickname = "Invalid nickname";
 			else if (err?.status == 409)
 				this.invalidNickname = "Nickname already taken";
-			document.getElementById("form")!.style.animation = "300ms wiggle";
 		})
 	}
 }

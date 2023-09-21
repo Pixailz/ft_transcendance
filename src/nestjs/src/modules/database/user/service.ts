@@ -58,6 +58,8 @@ export class DBUserService {
 		if (userPost.nickname)
 		{
 			let nickname = userPost.nickname.trim();
+			nickname = nickname.replace(/ /g, '');
+			nickname = nickname.replace(/	/g, '');
 			if (nickname.length <= 2)
 				throw new BadRequestException("Invalid nickname");
 			const check_name = await this.userRepo.findOneBy({

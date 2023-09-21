@@ -9,14 +9,19 @@
 		type="text"
 		formControlName="login"
 		/>
-		<input class="nickname"
-		type="text"
-		maxlength="32"
-		minlength="3"
-		formControlName="nickname"
-		placeholder="Nickname"
-		[required]="true"
-		/>
+		<div class="nickname-container">
+			<input
+			(keydown.space)="$event.preventDefault();"
+			class="nickname"
+			type="text"
+			maxlength="32"
+			minlength="3"
+			formControlName="nickname"
+			placeholder="Nickname"
+			[required]="true"
+			/>
+			<span *ngIf="nbMissingChar > 0" class="missing-char">{{nbMissingChar}}</span>
+		</div>
 		<input
 		type="email"
 		formControlName="email"
@@ -48,5 +53,5 @@
 </form>
 
 <div class="bg-container">
-	<span class="color-login" *ngFor="let _ of [].constructor(9)">{{user.nickname}}</span>
+	<span [ngStyle]="{'animation-duration': math.sqrt(user.nickname.length) + 's, 5s'}" *ngFor="let _ of [].constructor(9)">{{user.nickname}}</span>
 </div>

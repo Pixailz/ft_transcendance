@@ -63,6 +63,22 @@ form {
 		"d f e";
 		position: relative;
 
+		.nickname-container {
+			min-width: 50px;
+			grid-area: b;
+			position: relative;
+
+			.missing-char {
+				position: absolute;
+				right: 10px;
+				top: 50%;
+				transform: translateY(-50%);
+				color: #ff9999;
+			}
+		}
+
+
+
 		input[type=text], input[type=email] {
 			position: relative;
 			box-sizing: border-box;
@@ -73,14 +89,15 @@ form {
 			border: 0;
 			font-size: 85%;
 			transition: color 100ms ease-in-out;
+
+			&.nickname {
+				width: 100%;
+				position: relative;
+			}
+
 			&.login {
 				min-width: 30px;
 				grid-area: a;
-			}
-
-			&.nickname {
-				min-width: 50px;
-				grid-area: b;
 			}
 		}
 
@@ -96,7 +113,6 @@ form {
 		align-items: center;
 		justify-content: left;
 		grid-area: d;
-
 		label {
 			color: white;
 		}
@@ -175,9 +191,7 @@ form {
 				width: fit-content;
 				height: fit-content;
 			}
-
 		}
-
 	}
 }
 
@@ -187,7 +201,7 @@ input[type=checkbox] {
 		height: 20px;
 		margin: 0;
 		cursor: pointer;
-		border: 2px solid white;
+		border: 1px solid white;
 		position: relative;
 		padding: 2px;
 		background-color: #ff9999;
@@ -197,7 +211,7 @@ input[type=checkbox] {
 
 input[type=checkbox]::before {
 		content: "";
-		height: 12px;
+		height: 14px;
 		aspect-ratio: 1;
 		position: absolute;
 		left: 2px;
@@ -259,12 +273,16 @@ input[type=checkbox]:checked::before {
 	flex-wrap: wrap;
 	justify-content: space-evenly;
 	align-items: center;
-	span.color-login {
+
+	span {
 		flex: 1 0 33%;
 		font-size: large;
 		height: fit-content;
 		text-align: center;
-		animation: zoom-rotate 5s infinite linear, color-anim 5s infinite linear;
+		animation-name: zoom-rotate, color-anim;
+		animation-timing-function: linear, linear;
+		animation-iteration-count: infinite, infinite;
 	}
+
 }
 
