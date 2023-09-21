@@ -31,7 +31,7 @@ export class UserProfileComponent implements OnInit {
 	user: UserI = DefUserI;
 	userForm!: FormGroup;
 	submitted: boolean = true;
-	invalidNickname: boolean = false;
+	invalidNickname: string = "";
 
 
 	async ngOnInit() {
@@ -48,13 +48,13 @@ export class UserProfileComponent implements OnInit {
 			if (this.submitted)
 				this.submitted = false;
 			if (this.invalidNickname)
-				this.invalidNickname = false;
+				this.invalidNickname = "";
 		});
 	}
 
 	async onSubmit() {
 		this.userForm.patchValue({
-			login: this.user.ftLogin
+			login: this.user.ftLogin,
 		});
 
 		Object.keys(this.userForm.value).forEach(key => {
@@ -65,13 +65,20 @@ export class UserProfileComponent implements OnInit {
 		await this.userService.updateProfile(this.userForm.value)
 			.then((res) => {
 				console.log(res);
+				this.userForm.patchValue({
+					nickname: this.userForm.value.nickname.trim(),
+				})
 				this.submitted = true;
+				this.user.nickname = this.userForm.value.nickname;
 			})
 			.catch((err) => {
-				this.invalidNickname = true;
+				if (err.status == 409)
+					this.invalidNickname = "Nickname already taken";
+				else if (err.status == 400)
+					this.invalidNickname = "Invalid nickname";
 				console.log(err);
 			});
-	}
+		}
 
 	async setupTwoFa() {
 		if (this.userForm.value.twofa)

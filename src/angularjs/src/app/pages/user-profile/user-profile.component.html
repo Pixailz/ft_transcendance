@@ -3,7 +3,6 @@
 		<div class="avatarcontainer">
 			<app-avatar formControlName="picture"></app-avatar>
 		</div>
-		<span>{{userForm.value.nickname}}</span>
 	</div>
 	<div class="container">
 		<input class="login"
@@ -29,7 +28,7 @@
 			<label for="a2f" style="margin-right: 10px;">TwoFA</label>
 			<input id="twofa" (click)="setupTwoFa()" type="checkbox" name="a2f" [checked]="userForm.value.twofa">
 		</div>
-		<span class="invalid-nickname" @enterInvalidNickname *ngIf="invalidNickname">Nickname already taken</span>
+		<span class="invalid-nickname" @enterInvalidNickname *ngIf="invalidNickname.length">{{invalidNickname}}</span>
 		<button class="submit-btn"
 			(click)="onSubmit()"
 			[disabled]="!userForm.valid || submitted || invalidNickname"
@@ -47,3 +46,7 @@
 		</button>
 	</div>
 </form>
+
+<div class="bg-container">
+	<span class="color-login" *ngFor="let _ of [].constructor(9)">{{user.nickname}}</span>
+</div>

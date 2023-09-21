@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
-import { DefUserI, UserI } from 'src/app/interfaces/user.interface';
-import { NotificationService } from 'src/app/services/websocket/notification/service';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { animate, animateChild, query, stagger, state, style, transition, trigger } from '@angular/animations';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { animate, animateChild, query, state, style, transition, trigger } from '@angular/animations';
 import { pairwise } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -61,7 +59,8 @@ export class RegisterComponent {
 
 	submitted: boolean = false;
 	userForm!: FormGroup;
-	invalidNickname: boolean = false;
+	invalidNickname: string = "";
+	error: boolean = false;
 
 	async ngOnInit() {
 		this.userService.user = await this.userService.getUserInfo();
@@ -74,25 +73,25 @@ export class RegisterComponent {
 		this.userForm.get('nickname')?.valueChanges
 		.pipe(pairwise())
 		.subscribe(([prev, next]: [any, any]) => {
-			this.invalidNickname = false;
+			this.error = false;
 		});
 	}
 
 	async onSubmit() {
-		await this.userService.updateInfo(this.userService.user.nickname)
-		.catch((err) => {
-			console.log('err in catch = ', err);
-		})
-		.then((tmp) => {
-			if (!tmp || tmp.status > 400)
-			{
-				this.invalidNickname = true;
-				return ;
-			}
+		this.userService.updateInfo(this.userService.user.nickname)
+		.then(() => {
 			this.submitted = true;
 			setTimeout(() => {
 				window.location.href = '/home';
-			}, 800)
+			}, 800);
+		})
+		.catch((err) => {
+			this.error = true;
+			if (err?.status == 400)
+				this.invalidNickname = "Invalid nickname";
+			else if (err?.status == 409)
+				this.invalidNickname = "Nickname already taken";
+			document.getElementById("form")!.style.animation = "300ms wiggle";
 		})
 	}
 }

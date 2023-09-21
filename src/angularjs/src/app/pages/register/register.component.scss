@@ -1,20 +1,19 @@
+.invalid-nickname {
+		animation: 300ms wiggle ease-in-out;
+		color: rgb(255, 177, 177);
+		height: fit-content;
+		width: fit-content;
+		position: absolute;
+		bottom: 275px;
+		transform: 50% translateX(-50%);
+	}
+
 form {
 	position: relative;
 
-	&.invalid-nickname {
-		animation: 300ms wiggle ease-in-out;
-	}
 
-	&.invalid-nickname::before {
-		content: "Nickname already used";
-		color: rgb(255, 177, 177);
-		position: absolute;
-		bottom: -20px;
-		left: 50%;
-		transform: translateX(-50%);
-	}
 
-	&.invalid-nickname > button, & > button:disabled {
+	& > button:disabled {
 		background-color: rgb(255, 177, 177);
 
 		&::before, &::after {

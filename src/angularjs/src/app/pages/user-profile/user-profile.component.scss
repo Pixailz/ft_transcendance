@@ -1,27 +1,3 @@
-// mat-card {
-//     display: flex;
-//     flex-direction: column;
-//     align-items: center;
-//     justify-content: center;
-//     margin: 20px;
-//     padding: 20px;
-// }
-
-// mat-card-header{
-// 	display: flex;
-// 	flex-direction: column;
-// 	align-items: center;
-// 	justify-content: center;
-// 	margin: 20px 0px;
-// }
-
-// mat-card-header span{
-// 	display: inline-block;
-// 	transform-origin: center;
-//     animation: rotate-anim 5s infinite linear;
-// }
-
-
 :host {
 	display: flex;
 	align-items: center;
@@ -38,10 +14,9 @@ form {
 	max-width: 400px;
 	max-height: 300px;
 	height: 95%;
+	z-index: 10;
 	display: flex;
 	flex-direction: column;
-	// min-width: none;
-	// min-height: none;
 
 	span.invalid-nickname {
 		color: #ff9999;
@@ -65,10 +40,6 @@ form {
 			padding: 10px;
 			border: 0;
 			background-color: rgba($color: #fff, $alpha: .1);
-		}
-
-		span {
-			animation: zoom-rotate 5s infinite linear, color-anim 5s infinite linear;
 		}
 	}
 
@@ -278,3 +249,22 @@ input[type=checkbox]:checked::before {
 		transform: rotate(360deg) scale(75%);
 	}
 }
+
+
+.bg-container {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+	align-items: center;
+	span.color-login {
+		flex: 1 0 33%;
+		font-size: large;
+		height: fit-content;
+		text-align: center;
+		animation: zoom-rotate 5s infinite linear, color-anim 5s infinite linear;
+	}
+}
+

@@ -1,8 +1,10 @@
-<form [ngClass]="{'invalid-nickname': invalidNickname}" *ngIf="userForm" [formGroup]="userForm" [@enterAnimation]="!submitted ? 'open' : 'closed'">
+<form id="form" *ngIf="userForm" [formGroup]="userForm" [@enterAnimation]="!submitted ? 'open' : 'closed'">
 	<input [@input]="!submitted ? 'open' : 'closed'"
 		autofocus
 		formControlName="nickname" placeholder="Nickname" [(ngModel)]="userService.user.nickname"
 		name="nickname" minlength="3" maxlength="32" required>
-	<button [@button]="!submitted ? 'open' : 'closed'" [ngClass]="{'check': submitted}" (click)="onSubmit()" [disabled]="!userForm.valid">
+	<button [@button]="!submitted ? 'open' : 'closed'" [ngClass]="{'check': submitted}" (click)="onSubmit()" [disabled]="!userForm.valid || error ">
 	</button>
 </form>
+
+<span class="invalid-nickname" *ngIf="error">{{invalidNickname}}</span>
