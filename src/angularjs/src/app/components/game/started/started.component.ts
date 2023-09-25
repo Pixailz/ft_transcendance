@@ -26,8 +26,8 @@ export class GameStartedComponent implements OnInit {
 	private pendingInputs: Array<any>;
 	private previousRenderTimestamp = Date.now();
 	private previousServerReceivedTime: number;
-	private readonly paddleHeight = 20;
-	private readonly paddleWidth = 75;
+	private readonly paddleHeight = 75;
+	private readonly paddleWidth = 20;
 	private receivedStates = [];
 	private remotePaddle: Paddle;
 	private remoteScore: ex.Label;
@@ -97,7 +97,7 @@ export class GameStartedComponent implements OnInit {
 			this.obsToDestroy.push(this.wsGateway.listenGameStarting()
 				.subscribe((data: any) => {
 					console.log("[WS:game] GameStarting event")
-					this.handleBallStart(3);
+					this.handleBallStart("3");
 				}
 			));
 			this.obsToDestroy.push(this.wsGateway.listenGameState()
@@ -136,9 +136,9 @@ export class GameStartedComponent implements OnInit {
 				);
 				scoreLabel.text = player.score.toString();
 				scoreLabel.pos.x =
-				player.side_id === 'bottom' ? this.engine.drawWidth - 100 : 100;
+				player.side_id === 'left' ? this.engine.drawWidth - 100 : 100;
 				scoreLabel.pos.y =
-				player.side_id === 'bottom' ? 100 : this.engine.drawHeight - 100;
+				player.side_id === 'left' ? 100 : this.engine.drawHeight - 100;
 			});
 			this.ball.pos.x = this.extrapolate(
 				this.gameService.room.state.ball.x,
@@ -194,10 +194,10 @@ export class GameStartedComponent implements OnInit {
 				interpolation;
 
 			for (let i = 0; i < this.gameService.room.state.players.length; i++) {
-				this.gameService.room.state.players[i].paddle.x =
-				latestState.state.players[i].paddle.x +
-				(latestState.next.state.players[i].paddle.x -
-					latestState.state.players[i].paddle.x) *
+				this.gameService.room.state.players[i].paddle.y =
+				latestState.state.players[i].paddle.y +
+				(latestState.next.state.players[i].paddle.y -
+					latestState.state.players[i].paddle.y) *
 					interpolation;
 			}
 		}
@@ -227,36 +227,40 @@ export class GameStartedComponent implements OnInit {
 		let latestState = this.receivedStates[this.receivedStates.length - 1];
 		if (!latestState) return;
 
-		let realPosition = new Vector(latestState.state.ball.x, 0);
-		let direction = realPosition.sub(new Vector(this.gameService.room.state.ball.x, 0));
+		let realPosition = new Vector(latestState.state.ball.x, latestState.state.ball.y);
+		let direction = realPosition.sub(new Vector(this.gameService.room.state.ball.x, this.gameService.room.state.ball.y));
 
 		if (direction.distance() > 1) {
 			this.gameService.room.state.ball.x = realPosition.x;
+			this.gameService.room.state.ball.y = realPosition.y;
 		} else if (direction.distance() > 0.001) {
-			const newVector = new Vector(this.gameService.room.state.ball.x, 0).add(
+			const newVector = new Vector(this.gameService.room.state.ball.x, this.gameService.room.state.ball.y).add(
 				direction
 				.normalize()
 				.cross(this.gameService.room.state.ball.vx * direction.distance() * 0.1)
+				.cross(this.gameService.room.state.ball.vy * direction.distance() * 0.1)
 			);
 			this.gameService.room.state.ball.x = newVector.x;
+			this.gameService.room.state.ball.y = newVector.y;
 		}
 
 		for (let i = 0; i < this.gameService.room.state.players.length; i++) {
 			let player = this.gameService.room.state.players[i];
 
 			if (player.side_id == this.side_id) {
-				let realPosition = new Vector(latestState.state.players[i].paddle.x, 0);
-				let direction = realPosition.sub(new Vector(player.paddle.x, 0));
+				let realPosition = new Vector(latestState.state.players[i].paddle.x, latestState.state.players[i].paddle.y);
+				let direction = realPosition.sub(new Vector(player.paddle.x, player.paddle.y));
 
 				if (direction.distance() > 1) {
 					player.paddle.x = realPosition.x;
+					player.paddle.y = realPosition.y;
 				} else if (direction.distance() > 0.001) {
-					const newVector = new Vector(player.paddle.x, 0).add(
+					const newVector = new Vector(player.paddle.x, player.paddle.y).add(
 						direction
 						.normalize()
-						.cross(player.paddle.vx * direction.distance() * 0.1)
+						.cross(player.paddle.vy * direction.distance() * 0.1)
 					);
-					player.paddle.x = newVector.x;
+					player.paddle.y = newVector.y;
 				}
 			}
 		}
@@ -279,16 +283,16 @@ export class GameStartedComponent implements OnInit {
 	}
 
 	private handleInputHold(evt: ex.Input.KeyEvent): void {
-		if ([ex.Input.Keys.A, ex.Input.Keys.D].includes(evt.key)) {
-			this.sendInput(evt.key === ex.Input.Keys.A ? 'left' : 'right', 'keydown');
+		if ([ex.Input.Keys.S, ex.Input.Keys.W].includes(evt.key)) {
+			this.sendInput(evt.key === ex.Input.Keys.S ? 'bottom' : 'up', 'keydown');
 			const input = this.pendingInputs[this.pendingInputs.length - 1];
 			this.paddleUpdate(input);
 		}
 	}
 
 	private handleInputRelease(evt: ex.Input.KeyEvent): void {
-		if ([ex.Input.Keys.A, ex.Input.Keys.D].includes(evt.key)) {
-			this.sendInput(evt.key === ex.Input.Keys.A ? 'left' : 'right', 'keyup');
+		if ([ex.Input.Keys.S, ex.Input.Keys.W].includes(evt.key)) {
+			this.sendInput(evt.key === ex.Input.Keys.S ? 'bottom' : 'up', 'keyup');
 			const input = this.pendingInputs[this.pendingInputs.length - 1];
 			this.paddleUpdate(input);
 		}
@@ -299,14 +303,15 @@ export class GameStartedComponent implements OnInit {
 			(player) => player.side_id === this.side_id
 		);
 		if (player) {
-			if (input.type === 'keydown') {
-				if (player.paddle.keyReleased) {
-				player.paddle.keyReleased = false;
-				player.paddle.vx = input.direction === 'left' ? -5 : 5;
-				}
-			} else if (input.type === 'keyup') {
+			// if (input.type === 'keydown') {
+			// 	if (player.paddle.keyReleased) {
+			// 	player.paddle.keyReleased = false;
+			// 	player.paddle.vy = input.direction === 'bottom' ? -5 : 5;
+			// 	}
+			// } else 
+			if (input.type === 'keyup') {
 				player.paddle.keyReleased = true;
-				player.paddle.vx = 0;
+				player.paddle.vy = 0;
 			}
 			this.paddleMove(player.paddle);
 		}
@@ -344,10 +349,10 @@ export class GameStartedComponent implements OnInit {
 		if (paddle.keyReleased) {
 			const duration = (Date.now() - paddle.keyPressTime) / 1000;
 			const easingFactor = 0.1;
-			paddle.vx += easingFactor * -paddle.vx * duration;
+			paddle.vy += easingFactor * -paddle.vy * duration;
 		} else if (!paddle.keyReleased) {
-			paddle.x += paddle.vx;
-			paddle.vx *= 1.02;
+			paddle.y += paddle.vy;
+			paddle.vy *= 1.01;
 		}
 	}
 
@@ -361,14 +366,14 @@ export class GameStartedComponent implements OnInit {
 	}
 
 	private createPaddle(
-		y: number,
+		x: number,
 		color: ex.Color,
 		leftKey?: ex.Input.Keys,
 		rightKey?: ex.Input.Keys
 	): Paddle {
 		return this.createGameObject(Paddle, [
-			this.engine.drawWidth / 2,
-			y,
+			x,
+			this.engine.drawHeight / 2,
 			this.paddleWidth,
 			this.paddleHeight,
 			color,
