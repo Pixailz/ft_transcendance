@@ -5,6 +5,7 @@ import {
 	style,
 	animate,
 	group,
+	state,
 } from '@angular/animations';
  
  export const slideInAnimation =
@@ -38,3 +39,32 @@ function slideTo(direction: string)
 		])
 	])
 }
+
+
+export const enterAnimation = trigger(
+	'enterAnimation', [
+	  state('true', style({})),
+	  state('false', style({})),
+
+	  transition('void <=> false', animate(0)),
+
+	  transition(':enter', [
+		style({transform: 'translateX(100%)'}),
+		animate('300ms', style({transform: 'translateX(0)'}))
+	  ]),
+	  transition(':leave', [
+		style({transform: 'translateX(0)'}),
+		animate('300ms', style({transform: 'translateX(100%)'}))
+	  ])
+	]
+  );
+
+export const fadeInOut = trigger('fadeInOut', [
+	transition(':enter', [
+		style({ 'transform': 'translate(50%, -50%) scale(0) translate(-50%, 50%)' }),
+		animate('200ms ease-out', style({ 'transform': 'translate(50%, -50%) scale(1) translate(-50%, 50%)' })),
+	]),
+	transition(':leave', [
+	  animate('200ms ease-in', style({ 'transform': 'translate(50%, -50%) scale(0)' })),
+	]),
+  ]);
