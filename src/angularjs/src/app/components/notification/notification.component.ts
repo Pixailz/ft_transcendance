@@ -8,6 +8,13 @@ import { NotificationService } from 'src/app/services/websocket/notification/ser
 import { TextNotificationComponent } from '../text-notification/text-notification.component';
 
 
+
+
+export interface timeoutI {
+	notifId: number;
+	component: ComponentRef<any>;
+}
+
 @Component({
 	animations: [
 		trigger( 'enterAnimation', [
@@ -30,9 +37,10 @@ import { TextNotificationComponent } from '../text-notification/text-notificatio
 export class NotificationComponent{
 	@ViewChild('container', { static: true, read: ViewContainerRef })
 		container!: ViewContainerRef;
-
+		
 	private eventCallback = new Subject<string>();
 	eventCallback$ = this.eventCallback.asObservable();
+	popupArray : timeoutI[] = [];
 
 	constructor (
 		private renderer: Renderer2,
@@ -40,6 +48,10 @@ export class NotificationComponent{
 	) {
 		notificationService.createPopup.subscribe((data: NotificationI) => {
 			this.displayNotifications(data);
+		});
+		notificationService.deletePopup.subscribe((id: number) => {
+			console.log('in deletePopup event');
+			this.deleteNotif(id)
 		});
 	}
 
@@ -69,9 +81,41 @@ export class NotificationComponent{
 		component.instance.notif = notification;
 		this.renderer.addClass(component.location.nativeElement, 'notification');
 		setTimeout(() => {
-			this.container.remove(0);
+			const index = this.container.indexOf(component?.hostView!);
+			if (index !== -1)
+			{
+				const nb = this.searchPopup(notification.id);
+				if (nb === -1)
+					return ;
+				this.popupArray.splice(nb, 1);
+				this.container.remove(index);
+			}
 		}, 5000);
+		this.popupArray.push({notifId: notification.id, component: component});
 	}
 
-
+	
+	deleteNotif(id: number)
+	{
+		const nb = this.searchPopup(id);
+		if (nb === -1)
+			return ;
+		const index = this.container.indexOf(this.popupArray[nb].component.hostView!);
+		this.container.remove(index);
+		this.popupArray.splice(nb, 1);
+	}
+	
+	searchPopup(id: number)
+	{
+		let nb = -1;
+		for (let i = 0; i < this.popupArray.length; i++)
+		{
+			if (this.popupArray[i].notifId === id)
+			{
+				nb = i;
+				break;
+			}
+		}
+		return (nb);
+	}		
 }

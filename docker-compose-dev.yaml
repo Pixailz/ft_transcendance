@@ -4,7 +4,7 @@ version: "3.9"
 # DEFAULT CONF https://stackoverflow.com/a/65522511
 
 x-healthcheck_conf: &healthcheck_conf
-      interval: 5s
+      interval: 15s
       retries: 30
 
 x-restart: &restart
