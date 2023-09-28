@@ -40,7 +40,7 @@ $angular-dark-theme: mat.define-dark-theme(
 * {
 	font-family: 'Maven Pro', sans-serif;
 
-	&:focus-visible {
+	&:focus-visible:not(input) {
 		outline: 3px dashed yellow;
 		outline-offset: 5px;
 	}
@@ -59,10 +59,14 @@ html,
 body {
 	height: 100%;
 }
-
+//
 body {
 	margin: 0;
-	background: linear-gradient(50deg, rgba(2,0,36,1) 0%, rgba(6,6,89,1) 100%);
+	background-image:
+	linear-gradient(50deg, #00000080 100%, #00000080 100%),
+		url("~/src/assets/img/background.png");
+	background-repeat: no-repeat;
+	background-size: cover;
 }
 
 ul {

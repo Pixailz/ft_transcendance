@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { HomeDashboardComponent } from './pages/home-dashboard/home-dashboard.component';
@@ -14,6 +14,7 @@ import { ProfileComponent } from './pages/profile/profile.component';
 
 import { WSChatDmComponent } from './pages/chat-dm/chat-dm.component';
 import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
+import { ChatViewComponent } from './components/chat-view/chat-view.component';
 
 const routes: Routes = [
 	{
@@ -56,6 +57,10 @@ const routes: Routes = [
 				path: 'profile/:login',
 				component: ProfileComponent,
 				data: { animation: 'ProfileUser', reuseRoute: true }
+			},
+			{
+				path: 'chat/rub',
+				component: ChatViewComponent,
 			},
 			{
 				// throw a 404 error if the route is not found
