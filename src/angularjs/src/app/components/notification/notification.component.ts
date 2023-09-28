@@ -7,7 +7,6 @@ import { Subject } from 'rxjs';
 import { NotificationService } from 'src/app/services/websocket/notification/service';
 import { TextNotificationComponent } from '../text-notification/text-notification.component';
 
-
 @Component({
 	animations: [
 		trigger( 'enterAnimation', [
