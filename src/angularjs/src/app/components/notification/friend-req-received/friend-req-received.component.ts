@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { DefNotificationI, NotificationI } from 'src/app/interfaces/notification.interface';
 import { FriendService } from 'src/app/services/websocket/friend/service';
 
@@ -12,6 +12,6 @@ export class NotifFriendReqReceivedComponent {
 
 	constructor(
 		public friendService: FriendService,
-		) 
+		)
 	{}
 }
