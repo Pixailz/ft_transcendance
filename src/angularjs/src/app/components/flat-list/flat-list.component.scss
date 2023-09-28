@@ -9,6 +9,7 @@
 	overflow: hidden;
 	border: 1px solid rgba(90,90,90,0.4);
 	backdrop-filter: blur(10px);
+	transform-origin: top right;
 }
 
 ul {
@@ -19,7 +20,7 @@ ul {
 
 	li {
 		transition: background-color .3s ease-in;
-		
+
 		&:not(:last-child) {
 			border-bottom: 1px dashed rgba(255,255,255,0.4);
 		}
