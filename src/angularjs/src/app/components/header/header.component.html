@@ -30,7 +30,7 @@
 		</li>
 		<li tabindex="-1" class="notifications-menu" matBadge="{{notificationService.notif_not_seen}}" [matBadgeHidden]="!notificationService.notif_not_seen">
 			<app-flat-button data-toggle="tab" [tabindex]="6" [isActive]="displayNotifications" class="notifications-btn" (click)="OnNotificationClick()" fontIcon="notifications">Menu</app-flat-button>
-			<app-flat-list *ngIf="displayNotifications" [notifications]="notificationService.notif"></app-flat-list>
+		<app-flat-list *ngIf="displayNotifications" [notifications]="notificationService.notif"></app-flat-list>
 		</li>
 		<li tabindex="-1"
 		*ngIf="userLoggedIn"
