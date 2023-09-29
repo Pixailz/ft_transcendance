@@ -44,7 +44,7 @@ export class BackService {
 			"mode": "cors"
 		});
 		const log_header = `[${res.status}:${route}] ${method}`;
-		if (res.status > 400)
+		if (res.status >= 400)
 			return Promise.reject({
 				status: res.status,
 				message: `${log_header} request failed`
