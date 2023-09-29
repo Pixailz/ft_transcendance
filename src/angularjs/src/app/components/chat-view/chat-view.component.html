@@ -22,11 +22,9 @@
         </div>
     </li>
 </ol>
-<span class="char-left">2/144</span>
-<!-- <form [formGroup]="messageForm"> -->
-    <form>
-    <!-- <input formControlName="content" type="text" placeholder="Type something ... " maxlength="144"> -->
-    <input type="text" placeholder="Type something ... " maxlength="144">
+<span class="char-left">{{messageLength}}/144</span>
+<form [formGroup]="messageForm">
+    <input formControlName="message" type="text" placeholder="Type something ... " maxlength="144">
     <button></button>
 </form>
 

@@ -1,29 +1,10 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../services/user.service';
-import { trigger, style, animate, transition, state } from '@angular/animations';
-import { NotifStatus, NotificationI } from 'src/app/interfaces/notification.interface';
 import { NotificationService } from 'src/app/services/websocket/notification/service';
+import { enterAnimation, fadeInOut } from 'src/app/animations';
 @Component({
   selector: 'app-header',
-  animations: [
-    trigger(
-      'enterAnimation', [
-		state('true', style({})),
-		state('false', style({})),
-
-		transition('void <=> false', animate(0)),
-
-        transition(':enter', [
-          style({transform: 'translateX(100%)'}),
-          animate('300ms', style({transform: 'translateX(0)'}))
-        ]),
-        transition(':leave', [
-          style({transform: 'translateX(0)'}),
-          animate('300ms', style({transform: 'translateX(100%)'}))
-        ])
-      ]
-    )
-  ],
+  animations: [ enterAnimation, fadeInOut ],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
@@ -31,7 +12,6 @@ export class HeaderComponent {
 	userLoggedIn: boolean = true;
 	isExpand: boolean = false;
 	displayNotifications: boolean = false;
-
 
 	constructor(
 		private userService: UserService,

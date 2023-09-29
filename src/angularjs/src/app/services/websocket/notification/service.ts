@@ -12,6 +12,7 @@ export class NotificationService {
 	notif: NotificationI[] = [];
 	obsToDestroy: Subscription[] = [];
 	createPopup: EventEmitter<NotificationI> = new EventEmitter();
+	deletePopup: EventEmitter<number> = new EventEmitter();
 	notif_not_seen : number = 0;
 
 	constructor (
@@ -37,6 +38,7 @@ export class NotificationService {
 			.subscribe((notif_id: number) => {
 				console.log("[WS:Notification] DelNotification event")
 				this.updateDelNotification(notif_id);
+				this.deletePopup.emit(notif_id);
 				}
 			));
 

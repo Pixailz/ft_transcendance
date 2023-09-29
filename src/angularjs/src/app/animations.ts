@@ -5,8 +5,9 @@ import {
 	style,
 	animate,
 	group,
+	state,
 } from '@angular/animations';
- 
+
  export const slideInAnimation =
 	trigger('routeAnimations', [
 		transition('Profile => Home, Play => Home, ChatDm => Home, ChatChannel => Home', slideTo('left')),
@@ -22,7 +23,7 @@ import {
 	]);
 
 function slideTo(direction: string)
-{	
+{
 	return group([
 		query(':enter', [
 			style({ [direction]: '-110%'}),
@@ -38,3 +39,32 @@ function slideTo(direction: string)
 		])
 	])
 }
+
+
+export const enterAnimation = trigger(
+	'enterAnimation', [
+	  state('true', style({})),
+	  state('false', style({})),
+
+	  transition('void <=> false', animate(0)),
+
+	  transition(':enter', [
+		style({transform: 'translateX(100%)'}),
+		animate('300ms', style({transform: 'translateX(0)'}))
+	  ]),
+	  transition(':leave', [
+		style({transform: 'translateX(0)'}),
+		animate('300ms', style({transform: 'translateX(100%)'}))
+	  ])
+	]
+  );
+
+export const fadeInOut = trigger('fadeInOut', [
+	transition(':enter', [
+		style({ 'transform': 'scale(0.01)' }),
+		animate('200ms ease-out', style({ 'transform': 'scale(1)' })),
+	]),
+	transition(':leave', [
+	  animate('200ms ease-in', style({ 'transform': 'scale(0.01)' })),
+	]),
+  ]);

@@ -53,6 +53,7 @@ import { NotifFriendReqSentComponent } from './components/notification/friend-re
 import { NotifFriendReqAcceptedComponent } from './components/notification/friend-req-accepted/friend-req-accepted.component';
 import { NotifFriendReqDeniedFromComponent } from './components/notification/friend-req-denied-from/friend-req-denied-from.component';
 import { NotifFriendReqDeniedToComponent } from './components/notification/friend-req-denied-to/friend-req-denied-to.component';
+import { ClickOutDirective } from './directives/click-out.directive';
 import { ChatViewComponent } from './components/chat-view/chat-view.component';
 
 const config: SocketIoConfig = {
@@ -94,6 +95,7 @@ const config: SocketIoConfig = {
 		NotifFriendReqAcceptedComponent,
 		NotifFriendReqDeniedFromComponent,
 		NotifFriendReqDeniedToComponent,
+  ClickOutDirective,
   ChatViewComponent,
 	],
 	imports: [

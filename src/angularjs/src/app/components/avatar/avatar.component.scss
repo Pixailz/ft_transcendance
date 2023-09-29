@@ -20,10 +20,10 @@
 
 .icon-wrapper {
 	position: absolute;
-	height: 20px;
-	width: 20px;
+	height: 15px;
+	width: 15px;
 	padding: .35rem;
-	background-color: #2962FF;
+	background-color: #00BABC;
 	border-radius: 50%;
 	display: flex;
 	align-items: center;
@@ -35,10 +35,13 @@
 
 	&:hover {
 		transition: all .25s;
-		background-color: darken(#2962FF, 15%);
+		background-color: darken(#00BABC, 15%);
 	}
 
 	.icon {
+		font-size: 1.20em;
+		width: fit-content;
+		height: fit-content;
 		color: white;
 	}
 

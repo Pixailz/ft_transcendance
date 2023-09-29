@@ -10,5 +10,8 @@ import { FriendService } from 'src/app/services/websocket/friend/service';
 export class NotifFriendReqReceivedComponent {
 	@Input() notif: NotificationI = DefNotificationI;
 
-	constructor(public friendService: FriendService) {}
+	constructor(
+		public friendService: FriendService,
+		)
+	{}
 }

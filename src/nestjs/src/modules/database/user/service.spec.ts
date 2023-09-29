@@ -11,6 +11,7 @@ import { Sanitize } from "../../../sanitize-object";
 describe("DBUserService", () => {
 	let service: DBUserService;
 	let repo: Repository<UserEntity>;
+
 	let unit_user: string = "UNIT_USER";
 	let unit_user_bis = unit_user + "_BIS";
 

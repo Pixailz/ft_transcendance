@@ -14,15 +14,14 @@ export class ChatViewComponent {
 		private formBuilder: FormBuilder
 	) {}
 
-	// async ngOnInit() {
-	// 	this.messageForm = this.formBuilder.group({
-	// 		message: content
-	// 	}, { updateOn: "change" });
+	async ngOnInit() {
+		this.messageForm = this.formBuilder.group({
+			message: ""
+		}, { updateOn: "change" });
 
-	// 	this.messageForm.get('content')?.valueChanges
-	// 	.pipe(pairwise())
-	// 	.subscribe(([prev, next]: [any, any]) => {
-	// 		this.invalidNickname = false;
-	// 	});
-	// }
+		this.messageForm.get('message')!.valueChanges
+		.subscribe((value: any) => {
+			this.messageLength = value.length;
+		});
+	}
 }
