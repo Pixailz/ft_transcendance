@@ -19,13 +19,23 @@ jobs:
           chmod 700 ~/.ssh/
           chmod 600 ~/.ssh/*
 
-      - name: 🤖 Connect to HOME
+      - name: 🤖 Connect to HOST
         run: |+
           ssh ${{ secrets.SSH_USER }}@${{ secrets.HOST_IP }} -i ~/.ssh/id_rsa.pem -p ${{ secrets.SSH_PORT }} <<-EOFDEPLOY
             cd Documents/ft_transcendence
             docker compose down
             git reset --hard HEAD && git pull
-            printf "${{ secrets.SETUP_STR }}\n" | SOCKET_URL="https://${{ secrets.HOST_IP }}" ./setup deploy
+            {
+              cat <<-EOFSETUP
+                ${{ secrets.SETUP_USER_NAME }}
+                ${{ secrets.SETUP_USER_PASS }}
+                ${{ secrets.SETUP_USER_API_ID }}
+                ${{ secrets.SETUP_USER_API_SECRET }}
+                ${{ secrets.SETUP_URL_PROD }}
+                ${{ secrets.SETUP_URL_DEV }}
+                ${{ secrets.SETUP_NGINX_PORT }}
+              EOFSETUP
+            } | SOCKET_URL="https://${{ secrets.HOST_IP }}" ./setup deploy
             docker compose up --build -d --wait
           EOFDEPLOY
 
