@@ -7,7 +7,7 @@ import { ForbiddenException } from "@nestjs/common";
 import { DBModule } from "../database.module";
 import { DBUserService } from "../user/service";
 import { DBUserChatRoomService } from "../userChatRoom/service";
-import { Sanitize } from "../../../sanitize-object";
+import { Sanitize } from "../sanitize-object";
 
 describe("DBChatRoomService", () => {
 	let service: DBChatRoomService;

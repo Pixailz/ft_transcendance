@@ -10,7 +10,7 @@ import { ChatRoomEntity } from "../chatRoom/entity";
 import { UserEntity } from "../user/entity";
 import { DBUserService } from "../user/service";
 import { DBChatRoomService } from "../chatRoom/service";
-import { Sanitize } from "../../../sanitize-object";
+import { Sanitize } from "../sanitize-object";
 
 describe("DBUserChatRoomService", () => {
 	let service: DBUserChatRoomService;

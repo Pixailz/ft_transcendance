@@ -3,10 +3,15 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { WSSocket } from "./socket.service";
 import { Status } from "src/modules/database/user/entity";
 import { UserService } from "src/adapter/user/service";
+import { WSGameService } from "./game/game.service";
 
 @Injectable()
 export class WSService {
-	constructor(private userService: UserService, private wsSocket: WSSocket) {}
+	constructor(
+		private userService: UserService,
+		private wsSocket: WSSocket,
+		private wsGameService: WSGameService,
+	) {}
 
 	async connection(server: Server, socket: Socket) {
 		const user_id = this.userService.decodeToken(
@@ -40,6 +45,7 @@ export class WSService {
 			(err) => console.log(err),
 		);
 		this.wsSocket.removeSocket(socket.id);
+		this.wsGameService.disconnect(socket.id);
 	}
 
 	async setStatus(server: Server, user_id: number, status: number) {

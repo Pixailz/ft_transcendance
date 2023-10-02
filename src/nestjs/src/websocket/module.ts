@@ -10,8 +10,9 @@ import { WSChatChannelService } from "./chat/chat-channel.service";
 import { WSChatDmService } from "./chat/chat-dm.service";
 import { WSFriendService } from "./friend/friend.service";
 import { WSService } from "./service";
-import { Sanitize } from "../sanitize-object";
+import { Sanitize } from "../modules/database/sanitize-object";
 import { WSNotificationService } from "./notifications/notifications.service";
+import { WSGameService } from "./game/game.service";
 
 @Module({
 	imports: [AuthModule, DBModule],
@@ -26,6 +27,7 @@ import { WSNotificationService } from "./notifications/notifications.service";
 		WSChatChannelService,
 		WSFriendService,
 		WSNotificationService,
+		WSGameService,
 	],
 })
 export class WSModule {}

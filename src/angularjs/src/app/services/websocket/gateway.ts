@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Observable } from 'rxjs';
-import { RoomAction } from 'src/app/interfaces/chat-channel.interface';
-import { ChatRoomI } from 'src/app/interfaces/chat-room.interface';
-import { FriendRequestI } from 'src/app/interfaces/friend.interface';
+import { RoomAction } from 'src/app/interfaces/chat/channel.interface';
+import { ChatRoomI } from 'src/app/interfaces/chat/chat-room.interface';
+import { UserChatRoomI } from 'src/app/interfaces/chat/user-chat-room.interface';
+import { FriendRequestI } from 'src/app/interfaces/user/friend.interface';
+import { UserI } from 'src/app/interfaces/user/user.interface';
 import { NotifStatus } from 'src/app/interfaces/notification.interface';
-import { UserChatRoomI } from 'src/app/interfaces/user-chat-room.interface';
-import { UserI } from 'src/app/interfaces/user.interface';
+import { GameStateI } from 'src/app/interfaces/game/game-room.interface';
 
 @Injectable({
 	providedIn: 'root',
@@ -199,4 +200,43 @@ export class WSGateway {
 
 	updateNotificationStatus(notif_id: number, status: NotifStatus)
 	{ this.socket.emit("updateNotificationStatus", status, notif_id); }
+
+
+	// GAME
+
+	// LISTENER
+	listenGameWaiting(): Observable<null>
+	{ return this.socket.fromEvent<null>("gameWaiting"); }
+
+	listenIsInGame(): Observable<string>
+	{ return this.socket.fromEvent<string>("isInGame"); }
+
+	listenGameStarting(): Observable<any>
+	{ return this.socket.fromEvent<any>("gameStarting"); }
+
+	listenGameReconnect(): Observable<UserI>
+	{ return this.socket.fromEvent<UserI>("gameReconnect"); }
+
+	listenGameEnded(): Observable<any>
+	{ return this.socket.fromEvent<any>("gameEnded"); }
+
+	listenGameState(): Observable<GameStateI>
+	{ return this.socket.fromEvent<GameStateI>("gameState"); }
+
+	// EMITER
+	searchGame(game_option: any)
+	{ this.socket.emit("gameSearch", game_option); }
+
+	isInGame()
+	{ this.socket.emit("isInGame"); }
+
+	reconnectGame(game_id: string)
+	{ this.socket.emit("gameReconnect", game_id); }
+
+	sendInput(direction: string, type: string, pending_input: number)
+	{ this.socket.emit("gameSendInput", direction, type, pending_input); }
+
+	// LISTENER
+
+	// EMITER
 }

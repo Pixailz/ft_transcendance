@@ -3,8 +3,8 @@ import { Injectable } from "@angular/core";
 import { WSGateway } from "../gateway";
 import { UserService } from "../../user.service";
 
-import { DefFriendListI, FriendRequestI } from "src/app/interfaces/friend.interface";
-import { DefUserI, UserI } from "src/app/interfaces/user.interface";
+import { DefFriendListI, FriendRequestI } from "src/app/interfaces/user/friend.interface";
+import { DefUserI, UserI } from "src/app/interfaces/user/user.interface";
 import { ChatDmService } from "../chat/direct-message/service";
 import { Subscription } from "rxjs";
 import { WSService } from "../service";

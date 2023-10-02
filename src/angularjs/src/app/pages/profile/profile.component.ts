@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { DefUserI, UserI } from 'src/app/interfaces/user.interface';
+import { DefUserI, UserI } from 'src/app/interfaces/user/user.interface';
 import { BackService } from 'src/app/services/back.service';
 import { WSGateway } from 'src/app/services/websocket/gateway';
 import { FriendService } from 'src/app/services/websocket/friend/service';

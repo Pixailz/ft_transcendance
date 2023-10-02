@@ -30,4 +30,4 @@ import { LeaderboardController } from "./adapter/leaderboard.controller";
 		},
 	],
 })
-export class AppModule {}
+export class AppModule{ }

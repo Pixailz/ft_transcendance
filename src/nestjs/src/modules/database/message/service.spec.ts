@@ -12,7 +12,7 @@ import { DBUserService } from "../user/service";
 import { DBChatRoomService } from "../chatRoom/service";
 import { DBMessageService } from "./service";
 import { MessageEntity } from "./entity";
-import { Sanitize } from "../../../sanitize-object";
+import { Sanitize } from "../sanitize-object";
 
 describe("DBmessageService", () => {
 	let userChatRoomservice: DBUserChatRoomService;

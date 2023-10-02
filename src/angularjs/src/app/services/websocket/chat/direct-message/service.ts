@@ -1,14 +1,14 @@
 import { Injectable } from "@angular/core";
+import { Subscription } from "rxjs";
 
-import { ChatRoomI, DefChatRoomI } from "src/app/interfaces/chat-room.interface";
-import { DefChatDmI } from "src/app/interfaces/chat-dm.interface";
 
 import { WSGateway } from "../../gateway";
 import { ChatRoomService } from "../chatroom.service";
-import { DefUserI, UserI } from "src/app/interfaces/user.interface";
-import { DefUserChatRoomI } from "src/app/interfaces/user-chat-room.interface";
+import { DefUserI, UserI } from "src/app/interfaces/user/user.interface";
 import { WSService } from "../../service";
-import { Subscription } from "rxjs";
+import { DefUserChatRoomI } from "src/app/interfaces/chat/user-chat-room.interface";
+import { DefChatDmI } from "src/app/interfaces/chat/dm.interface";
+import { ChatRoomI, DefChatRoomI } from "src/app/interfaces/chat/chat-room.interface";
 
 @Injectable({
 	providedIn: "root",

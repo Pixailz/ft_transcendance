@@ -7,7 +7,7 @@ import { ForbiddenException } from "@nestjs/common";
 import { DBModule } from "../database.module";
 import { DBUserService } from "../user/service";
 import { UserEntity } from "../user/entity";
-import { Sanitize } from "../../../sanitize-object";
+import { Sanitize } from "../sanitize-object";
 
 describe("DBMutedService", () => {
 	let service: DBMutedService;

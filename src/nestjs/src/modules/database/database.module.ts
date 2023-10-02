@@ -28,7 +28,7 @@ import { DBMessageController } from "./message/controller";
 import { DBGameInfoController } from "./gameInfo/controller";
 import { DBFriendController } from "./friend/controller";
 import { DBFriendRequestController } from "./friendRequest/controller";
-import { Sanitize } from "../../sanitize-object";
+import { Sanitize } from "./sanitize-object";
 import { DBBlockedController } from "./blocked/controller";
 import { DBNotificationController } from "./notification/controller";
 

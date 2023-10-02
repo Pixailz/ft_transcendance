@@ -1,6 +1,6 @@
-import { Controller, Get, Request, Query, Post, Body } from "@nestjs/common";
+import { Controller, Get, Request, Query } from "@nestjs/common";
 import { AuthService } from "./service";
-import { Public } from "src/public.decorator";
+import { Public } from "src/decorators/public";
 
 @Controller("auth")
 export class AuthController {

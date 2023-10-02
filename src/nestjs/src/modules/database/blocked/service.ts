@@ -5,7 +5,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { BlockedEntity } from "./entity";
 import { DBBlockedPost } from "./dto";
 import { UserEntity } from "../user/entity";
-import { Sanitize } from "../../../sanitize-object";
+import { Sanitize } from "../sanitize-object";
 
 @Injectable()
 export class DBBlockedService {

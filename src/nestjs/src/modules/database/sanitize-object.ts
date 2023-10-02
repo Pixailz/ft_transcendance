@@ -1,8 +1,9 @@
-import { ChatRoomEntity } from "./modules/database/chatRoom/entity";
-import { FriendRequestEntity } from "./modules/database/friendRequest/entity";
-import { MessageEntity } from "./modules/database/message/entity";
-import { UserEntity } from "./modules/database/user/entity";
-import { UserChatRoomEntity } from "./modules/database/userChatRoom/entity";
+import { PlayerI } from "src/websocket/game/game.interface";
+import { ChatRoomEntity } from "./chatRoom/entity";
+import { FriendRequestEntity } from "./friendRequest/entity";
+import { MessageEntity } from "./message/entity";
+import { UserEntity } from "./user/entity";
+import { UserChatRoomEntity } from "./userChatRoom/entity";
 
 export class Sanitize {
 	toKeepUser = ["id", "ftLogin", "nickname", "email", "status", "lastSeen"];
