@@ -93,9 +93,7 @@ export class TwofaService {
 			token: code,
 			secret: user.twoAuthFactorSecret,
 		});
-
 		if (!isCodeValid) throw new ForbiddenException("Invalid code");
-
 		await this.dbUserService
 			.update(user.id, {
 				twoAuthFactor: true,

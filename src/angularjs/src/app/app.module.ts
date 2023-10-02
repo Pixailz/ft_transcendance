@@ -52,6 +52,7 @@ import { NotifFriendReqSentComponent } from './components/notification/friend-re
 import { NotifFriendReqAcceptedComponent } from './components/notification/friend-req-accepted/friend-req-accepted.component';
 import { NotifFriendReqDeniedFromComponent } from './components/notification/friend-req-denied-from/friend-req-denied-from.component';
 import { NotifFriendReqDeniedToComponent } from './components/notification/friend-req-denied-to/friend-req-denied-to.component';
+import { ClickOutDirective } from './directives/click-out.directive';
 
 import { GameWaitingComponent } from './components/game/waiting/waiting.component';
 import { GameStartedComponent } from './components/game/started/started.component';
@@ -97,11 +98,11 @@ const config: SocketIoConfig = {
 		NotifFriendReqAcceptedComponent,
 		NotifFriendReqDeniedFromComponent,
 		NotifFriendReqDeniedToComponent,
-
 		GameComponent,
 		GameWaitingComponent,
 		GameStartedComponent,
 		GameLobbyComponent,
+    ClickOutDirective,
 	],
 	imports: [
 		BrowserModule,

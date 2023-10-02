@@ -55,12 +55,19 @@ export class DBUserService {
 	async update(userId: number, userPost: DBUserInfoPost) {
 		const user = await this.get_user(userId, null);
 		if (!user) throw new NotFoundException("User not found");
-		if (userPost.nickname) {
+		if (userPost.nickname)
+		{
+			let nickname = userPost.nickname.trim();
+			nickname = nickname.replace(/ /g, '');
+			nickname = nickname.replace(/	/g, '');
+			if (nickname.length <= 2)
+				throw new BadRequestException("Invalid nickname");
 			const check_name = await this.userRepo.findOneBy({
-				nickname: userPost.nickname,
+				nickname: nickname,
 			});
 			if (check_name)
 				throw new ConflictException("Nickname already taken");
+			userPost.nickname = nickname;
 		}
 		return await this.userRepo.update(userId, userPost);
 	}

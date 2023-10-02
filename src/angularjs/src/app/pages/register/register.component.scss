@@ -1,20 +1,11 @@
+form.invalid-nickname {
+	animation: 300ms wiggle ease-in-out;
+}
+
+
 form {
 	position: relative;
-
-	&.invalid-nickname {
-		animation: 300ms wiggle ease-in-out;
-	}
-
-	&.invalid-nickname::before {
-		content: "Nickname already used";
-		color: rgb(255, 177, 177);
-		position: absolute;
-		bottom: -20px;
-		left: 50%;
-		transform: translateX(-50%);
-	}
-
-	&.invalid-nickname > button, & > button:disabled {
+	& > button:disabled {
 		background-color: rgb(255, 177, 177);
 
 		&::before, &::after {
@@ -28,6 +19,16 @@ form {
 		&::after {
 			transform: rotate(-45deg);
 		}
+	}
+
+	span.invalid-nickname {
+		color: rgb(255, 177, 177);
+		height: fit-content;
+		width: 100%;
+		text-align: center;
+		position: absolute;
+		bottom: -30px;
+		left: 0;
 	}
 
 	input {
@@ -104,16 +105,4 @@ form {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-}
-
-@keyframes wiggle {
-	0%, 100% {
-		transform: none;
-	}
-	8.33%, 41.67%, 75% {
-		transform: rotate(5deg);
-	}
-	25%, 58.33%, 91.67% {
-		transform: rotate(-5deg);
-	}
 }
