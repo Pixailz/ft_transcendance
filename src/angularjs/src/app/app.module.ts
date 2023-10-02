@@ -55,6 +55,8 @@ import { NotifFriendReqDeniedFromComponent } from './components/notification/fri
 import { NotifFriendReqDeniedToComponent } from './components/notification/friend-req-denied-to/friend-req-denied-to.component';
 import { ClickOutDirective } from './directives/click-out.directive';
 import { ChatViewComponent } from './components/chat-view/chat-view.component';
+import { PrivChatPageComponent } from './pages/priv-chat-page/priv-chat-page.component';
+import { ResizableDirective } from './directives/resizable.directive';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -97,6 +99,8 @@ const config: SocketIoConfig = {
 		NotifFriendReqDeniedToComponent,
   ClickOutDirective,
   ChatViewComponent,
+  PrivChatPageComponent,
+  ResizableDirective,
 	],
 	imports: [
 		BrowserModule,

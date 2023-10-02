@@ -1,0 +1,45 @@
+:host {
+	display: flex;
+	height: 100%;
+	gap: 1.5em;
+}
+
+ul {
+	height: 100%;
+	max-width: 50%;
+	min-width: fit-content;
+	position: relative;
+
+
+	li {
+		width: 100%;
+
+		button {
+			width: 100%;
+			font-size: 1em;
+			color: white;
+			cursor: pointer;
+			padding: .6em 1em;
+			text-align: left;
+			
+			&:active {
+				color: rgb(186, 186, 186);
+			}
+		}
+	}
+
+	&:after {
+		content: '';
+		width: 1px;
+		height: 100%;
+		right: -.5em;
+		top: 0;
+		background-color: rgb(158, 158, 158);
+		position: absolute;
+	}
+}
+
+app-chat-view {
+	flex-shrink: 2;
+	min-width: 20%;
+}

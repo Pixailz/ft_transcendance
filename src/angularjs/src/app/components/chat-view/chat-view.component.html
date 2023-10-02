@@ -1,30 +1,18 @@
 <ol>
-    <!-- <li *ngFor="let i = 0; chatChannelService.getSelectedRoom().message.length; let i = index"
-
-    ></li> -->
-    <li class="me">
-        <div class="msg-line">
-            <div class="msg">
-                <span class="login">ftLogin</span>
-                <span class="content">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sint, minus deleniti incidunt in eos fuga, dignissimos doloribus quae, officia libero animi dicta quaerat necessitatibus? Deserunt asperiores ipsa unde ex culpa!</span>
-            </div>
-            <span class="time">HH:mm</span>
-        </div>
-    </li>
-    <li >
-        <span class="date">dd/MM/YYYY</span>
-        <div class="msg-line">
-            <div class="msg">
-                <span class="login">ftLogin</span>
-                <span class="content">Lorem ipsum dolor sit amet consectetur adipisicing elit.</span>
-            </div>
-            <span class="time">HH:mm</span>
-        </div>
-    </li>
+	<li *ngFor="let _ of room.message; let i=index;" [ngClass]="{'me': getCurrentMessage(i).userId === userService.user.id}">
+		<span class="date" *ngIf="!isFollowingDay(i)">{{getCurrentMessage(i).updateAt | date: 'dd/MM/YYYY'}}</span>
+		<div class="msg-line">
+			<div class="msg">
+				<span class="login" *ngIf="!isSameUser(i)">{{getCurrentMessageUser(i).ftLogin}}</span>
+				<span class="content">{{getCurrentMessage(i).content}}</span>
+			</div>
+			<span class="time">{{getCurrentMessage(i).updateAt | date: 'HH:mm'}}</span>
+		</div>
+	</li>
 </ol>
-<span class="char-left">{{messageLength}}/144</span>
+<span class="char-left">{{messageLength}}/120</span>
 <form [formGroup]="messageForm">
-    <input formControlName="message" type="text" placeholder="Type something ... " maxlength="144">
-    <button></button>
+    <input formControlName="message" type="text" placeholder="Type something ... " maxlength="120">
+    <button (click)="sendMessage()"></button>
 </form>
 
