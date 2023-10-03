@@ -21,7 +21,7 @@ jobs:
 
       - name: 🔧 Prepare SETUP_STR
         run: |+
-          printf "SETUP_STR=${{ secrets.SETUP_USER_NAME }}\n${{ secrets.SETUP_USER_PASS }}\n${{ secrets.SETUP_API_ID }}\n${{ secrets.SETUP_API_SECRET }}\n${{ secrets.SETUP_URL_PROD }}\n${{ secrets.SETUP_URL_DEV }}\n${{ secrets.SETUP_NGINX_PORT }}" >> $GITHUB_ENV
+          printf "SETUP_STR=${{ secrets.SETUP_USER_NAME }}\n${{ secrets.SETUP_USER_PASS }}\n${{ secrets.SETUP_API_ID }}\n${{ secrets.SETUP_API_SECRET }}\n${{ secrets.SETUP_URL_PROD }}\n${{ secrets.SETUP_URL_DEV }}\n${{ secrets.SETUP_NGINX_PORT }}\n" >> $GITHUB_ENV
 
       - name: 🤖 Connect to HOST
         run: |+
