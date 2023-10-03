@@ -35,7 +35,7 @@ export class GameStartedComponent implements OnInit {
 	private serverUpdateTime: number;
 	private side_id: string;
 
-	// TODO: OPTIMISE DEBUG MENU
+	// TODO: DEBUG MENU
 	// // DEBUG MENU
 	// private is_debug_menu_activate = false;
 	// private nb_state_change = 0;
@@ -93,18 +93,19 @@ export class GameStartedComponent implements OnInit {
 		this.game.add(this.remoteScore);
 		this.game.add(this.gameStatus);
 		this.game.add(this.ball);
-		// TODO: OPTIMISE DEBUG MENU
+		// TODO: DEBUG MENU
 		// this.createDebugMenu();
 	}
 
-	private createDebugMenu()
-	{
-		this.update_sec_prompt = this.createUpdateSec();
-		this.update_sec = this.createUpdateSecN(NaN);
-		this.update_ms_prompt = this.createMsSec();
-		this.update_ms = this.createMsSecN(NaN);
-		this.handleUpdateSec();
-	}
+	// TODO: DEBUG MENU
+	// private createDebugMenu()
+	// {
+	// 	this.update_sec_prompt = this.createUpdateSec();
+	// 	this.update_sec = this.createUpdateSecN(NaN);
+	// 	this.update_ms_prompt = this.createMsSec();
+	// 	this.update_ms = this.createMsSecN(NaN);
+	// 	this.handleUpdateSec();
+	// }
 
 	private listenGameEvents(): void {
 		this.gameService.room.state.players.forEach((player) => {
@@ -226,7 +227,8 @@ export class GameStartedComponent implements OnInit {
 	}
 
 	private handleStateChange(state: GameStateI): void {
-		this.nb_state_change++;
+		// TODO: DEBUG MENU
+		// this.nb_state_change++;
 		this.reconcileState(state);
 		this.previousServerReceivedTime = this.serverReceivedTime;
 		this.gameService.room.previousState = this.gameService.room.state;
@@ -303,22 +305,23 @@ export class GameStartedComponent implements OnInit {
 		counter.start();
 	}
 
-	private handleUpdateSec(): void {
-		const counter = new ex.Timer({
-			interval: 500,
-			repeats: true,
-			fcn: () => {
-				if (this.is_debug_menu_activate)
-				{
-					this.update_sec.text = `${(this.nb_state_change * 1000) / 500}`
-					this.update_ms.text = `${this.serverReceivedTime - this.previousServerReceivedTime}`
-					this.nb_state_change = 0;
-				}
-			},
-		});
-		this.game.add(counter);
-		counter.start();
-	}
+	// TODO: DEBUG MENU
+	// private handleUpdateSec(): void {
+	// 	const counter = new ex.Timer({
+	// 		interval: 500,
+	// 		repeats: true,
+	// 		fcn: () => {
+	// 			if (this.is_debug_menu_activate)
+	// 			{
+	// 				this.update_sec.text = `${(this.nb_state_change * 1000) / 500}`
+	// 				this.update_ms.text = `${this.serverReceivedTime - this.previousServerReceivedTime}`
+	// 				this.nb_state_change = 0;
+	// 			}
+	// 		},
+	// 	});
+	// 	this.game.add(counter);
+	// 	counter.start();
+	// }
 
 	private handleInputHold(evt: ex.Input.KeyEvent): void {
 		if ([ex.Input.Keys.S, ex.Input.Keys.W].includes(evt.key)) {
