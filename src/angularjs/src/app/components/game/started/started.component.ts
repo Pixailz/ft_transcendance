@@ -3,6 +3,7 @@ import * as ex from 'excalibur';
 import { Paddle } from 'src/app/interfaces/game/actors/paddle';
 import { Ball } from 'src/app/interfaces/game/actors/ball';
 import { Vector } from 'excalibur';
+import { DevTool } from '@excaliburjs/dev-tools';
 import { GameService } from 'src/app/services/websocket/game/service';
 import { GameStateI, GameStatus } from 'src/app/interfaces/game/game-room.interface';
 import { WSGateway } from 'src/app/services/websocket/gateway';
@@ -21,6 +22,8 @@ export class GameStartedComponent implements OnInit {
 	private engine: ex.Engine;
 	private game: ex.Scene;
 	private gameStatus: ex.Label;
+	private isDevToolsEnabled: boolean = false;
+	private isFPSToolsEnabled: boolean = false;
 	private localPaddle: Paddle;
 	private localScore: ex.Label;
 	private pendingInputs: Array<any>;
@@ -34,14 +37,10 @@ export class GameStartedComponent implements OnInit {
 	private serverReceivedTime: number;
 	private serverUpdateTime: number;
 	private side_id: string;
-
-	// DEBUG MENU
-	private is_debug_menu_activate = false;
-	private nb_state_change = 0;
-	private update_sec_prompt: ex.Label;
-	private update_sec: ex.Label;
-	private update_ms_prompt: ex.Label;
-	private update_ms: ex.Label;
+	private graphic_sec_prompt: ex.Label;
+	private graphic_ms_prompt: ex.Label;
+	private server_sec_prompt: ex.Label;
+	private server_ms_prompt: ex.Label;
 
 	obsToDestroy: Subscription[] = [];
 
@@ -86,22 +85,10 @@ export class GameStartedComponent implements OnInit {
 		this.remoteScore = this.createScore(0);
 		this.gameStatus = this.createGameStatus();
 		this.ball = this.createBall();
-		this.game.add(this.localPaddle);
-		this.game.add(this.remotePaddle);
-		this.game.add(this.localScore);
-		this.game.add(this.remoteScore);
-		this.game.add(this.gameStatus);
-		this.game.add(this.ball);
-		this.createDebugMenu();
-	}
-
-	private createDebugMenu()
-	{
-		this.update_sec_prompt = this.createUpdateSec();
-		this.update_sec = this.createUpdateSecN(NaN);
-		this.update_ms_prompt = this.createMsSec();
-		this.update_ms = this.createMsSecN(NaN);
-		this.handleUpdateSec();
+		this.graphic_sec_prompt = this.createDebugLabel('graphic_ms');
+		this.graphic_ms_prompt = this.createDebugLabel('graphic_sec');
+		this.server_sec_prompt = this.createDebugLabel('server_ms');
+		this.server_ms_prompt = this.createDebugLabel('server_sec');
 	}
 
 	private listenGameEvents(): void {
@@ -112,6 +99,7 @@ export class GameStartedComponent implements OnInit {
 		this.engine.start().then(() => {
 			this.engine.goToScene('game');
 			this.engine.onPostUpdate = this.postUpdate.bind(this);
+			this.engine.onPreUpdate = this.preUpdate.bind(this);
 			this.obsToDestroy.push(this.wsGateway.listenGameStarting()
 				.subscribe((data: any) => {
 					console.log("[WS:game] GameStarting event")
@@ -129,6 +117,21 @@ export class GameStartedComponent implements OnInit {
 				this.handleInputRelease(evt)
 			);
 		});
+	}
+
+	private preUpdate(){
+		if (!this.isFPSToolsEnabled)
+		{
+			this.graphic_sec_prompt.text = '';
+			this.graphic_ms_prompt.text = '';
+			this.server_ms_prompt.text = '';
+			this.server_sec_prompt.text = '';
+			return ;
+		}
+		this.graphic_sec_prompt.text = `graphic fps:${this.engine.stats.currFrame.fps.toFixed(2)}`;
+		this.graphic_ms_prompt.text = `graphic update time (ms):${this.engine.stats.currFrame.delta}`;
+		this.server_ms_prompt.text = `server update time (ms):${(this.serverReceivedTime - this.previousServerReceivedTime)}`;
+		this.server_sec_prompt.text = `server fps:${(1000 / (this.serverReceivedTime - this.previousServerReceivedTime)).toFixed(2)}`;
 	}
 
 	private postUpdate() {
@@ -224,7 +227,6 @@ export class GameStartedComponent implements OnInit {
 	}
 
 	private handleStateChange(state: GameStateI): void {
-		this.nb_state_change++;
 		this.reconcileState(state);
 		this.previousServerReceivedTime = this.serverReceivedTime;
 		this.gameService.room.previousState = this.gameService.room.state;
@@ -301,23 +303,6 @@ export class GameStartedComponent implements OnInit {
 		counter.start();
 	}
 
-	private handleUpdateSec(): void {
-		const counter = new ex.Timer({
-			interval: 500,
-			repeats: true,
-			fcn: () => {
-				if (this.is_debug_menu_activate)
-				{
-					this.update_sec.text = `${(this.nb_state_change * 1000) / 500}`
-					this.update_ms.text = `${this.serverReceivedTime - this.previousServerReceivedTime}`
-					this.nb_state_change = 0;
-				}
-			},
-		});
-		this.game.add(counter);
-		counter.start();
-	}
-
 	private handleInputHold(evt: ex.Input.KeyEvent): void {
 		if ([ex.Input.Keys.S, ex.Input.Keys.W].includes(evt.key)) {
 			this.sendInput(evt.key === ex.Input.Keys.S ? 'bottom' : 'up', 'keydown');
@@ -332,25 +317,15 @@ export class GameStartedComponent implements OnInit {
 			const input = this.pendingInputs[this.pendingInputs.length - 1];
 			this.paddleUpdate(input);
 		}
-		if (ex.Input.Keys.F8 === evt.key)
+		if (ex.Input.Keys.F9 === evt.key)
 		{
-			console.log("toggling debug menu");
-			console.log(this.is_debug_menu_activate);
-			if (this.is_debug_menu_activate)
-			{
-				this.is_debug_menu_activate = false;
-				this.update_sec_prompt.text = "";
-				this.update_sec.text = "";
-				this.update_ms_prompt.text = "";
-				this.update_ms.text = "";
-			}
-			else
-			{
-				this.is_debug_menu_activate = true;
-				this.update_sec_prompt.text = "update/sec ";
-				this.update_ms_prompt.text = "ms";
+			if (!this.isDevToolsEnabled){
+				const devTool = new DevTool(this.engine);
+				this.isDevToolsEnabled = true;
 			}
 		}
+		if (ex.Input.Keys.F8 === evt.key)
+			this.isFPSToolsEnabled = !this.isFPSToolsEnabled;
 	}
 
 	private paddleUpdate(input: { type: string; direction: string }) {
@@ -446,50 +421,33 @@ export class GameStartedComponent implements OnInit {
 		]);
 	}
 
-	private createUpdateSec(): ex.Label {
+	private createDebugLabel(model: string) {
+		let x, y;
+		switch (model) {
+			case 'graphic_sec':
+				x = this.engine.drawWidth - 250;
+				y = this.engine.drawHeight - 24;
+				break;
+			case 'graphic_ms':
+				x = this.engine.drawWidth - 250;
+				y = this.engine.drawHeight - 12;
+				break;
+			case 'server_sec':
+				x = this.engine.drawWidth - 250;
+				y = this.engine.drawHeight - 36;
+				break;
+			case 'server_ms':
+				x = this.engine.drawWidth - 250;
+				y = this.engine.drawHeight - 48;
+				break;
+		}
 		return this.createGameObject(ex.Label, [
 			{
-				x: this.engine.drawWidth - 200,
-				y: this.engine.drawHeight - 12,
+				x: x,
+				y: y,
 				text: "",
 				font: new ex.Font({ size: 14 }),
 				color: ex.Color.White,
-			},
-		]);
-	}
-
-	private createUpdateSecN(n: number): ex.Label {
-		return this.createGameObject(ex.Label, [
-			{
-				x: this.engine.drawWidth - 120,
-				y: this.engine.drawHeight - 12,
-				text: "",
-				font: new ex.Font({ size: 14 }),
-				color: ex.Color.Green,
-			},
-		]);
-	}
-
-	private createMsSec(): ex.Label {
-		return this.createGameObject(ex.Label, [
-			{
-				x: this.engine.drawWidth - 200,
-				y: this.engine.drawHeight - 24,
-				text: "",
-				font: new ex.Font({ size: 14 }),
-				color: ex.Color.White,
-			},
-		]);
-	}
-
-	private createMsSecN(n: number): ex.Label {
-		return this.createGameObject(ex.Label, [
-			{
-				x: this.engine.drawWidth - 120,
-				y: this.engine.drawHeight - 24,
-				text: "",
-				font: new ex.Font({ size: 14 }),
-				color: ex.Color.Green,
 			},
 		]);
 	}

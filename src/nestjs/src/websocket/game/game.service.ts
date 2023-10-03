@@ -194,7 +194,7 @@ export class WSGameService {
 		this.resetBall(server, this.room[room_id]);
 		while (this.room[room_id].state.gameStatus === GameStatus.STARTED) {
 			this.update(server, this.room[room_id]);
-			await sleep(1000 / 128);
+			await sleep(1000 / 64);
 		}
 		await sleep(5000);
 		this.room[room_id].state.gameStatus = GameStatus.LOBBY;
