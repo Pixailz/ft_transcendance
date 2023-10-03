@@ -3,6 +3,7 @@ import * as ex from 'excalibur';
 import { Paddle } from 'src/app/interfaces/game/actors/paddle';
 import { Ball } from 'src/app/interfaces/game/actors/ball';
 import { Vector } from 'excalibur';
+import { DevTool } from '@excaliburjs/dev-tools';
 import { GameService } from 'src/app/services/websocket/game/service';
 import { GameStateI, GameStatus } from 'src/app/interfaces/game/game-room.interface';
 import { WSGateway } from 'src/app/services/websocket/gateway';
@@ -34,6 +35,16 @@ export class GameStartedComponent implements OnInit {
 	private serverReceivedTime: number;
 	private serverUpdateTime: number;
 	private side_id: string;
+	
+	// Debug Elements
+	private devTool: DevTool | null = null;
+	private FPSToolsTimer: ex.Timer;
+	private isDevToolsEnabled: boolean = false;
+	private isFPSToolsEnabled: boolean = false;
+	private graphic_sec_prompt: ex.Label;
+	private graphic_ms_prompt: ex.Label;
+	private server_sec_prompt: ex.Label;
+	private server_ms_prompt: ex.Label;
 
 	obsToDestroy: Subscription[] = [];
 
@@ -78,12 +89,16 @@ export class GameStartedComponent implements OnInit {
 		this.remoteScore = this.createScore(0);
 		this.gameStatus = this.createGameStatus();
 		this.ball = this.createBall();
-		this.game.add(this.localPaddle);
-		this.game.add(this.remotePaddle);
-		this.game.add(this.localScore);
-		this.game.add(this.remoteScore);
-		this.game.add(this.gameStatus);
-		this.game.add(this.ball);
+		this.graphic_sec_prompt = this.createDebugLabel('graphic_ms');
+		this.graphic_ms_prompt = this.createDebugLabel('graphic_sec');
+		this.server_sec_prompt = this.createDebugLabel('server_ms');
+		this.server_ms_prompt = this.createDebugLabel('server_sec');
+		this.FPSToolsTimer = new ex.Timer({
+			interval: 200,
+			repeats: true,
+			fcn: this.FPSToolsHelper.bind(this),
+		});
+		this.game.add(this.FPSToolsTimer);
 	}
 
 	private listenGameEvents(): void {
@@ -102,7 +117,7 @@ export class GameStartedComponent implements OnInit {
 			));
 			this.obsToDestroy.push(this.wsGateway.listenGameState()
 				.subscribe((state: GameStateI) => {
-					console.log("[WS:game] GameState event")
+					// console.log("[WS:game] GameState event")
 					this.handleStateChange(state);
 				}
 			));
@@ -111,6 +126,21 @@ export class GameStartedComponent implements OnInit {
 				this.handleInputRelease(evt)
 			);
 		});
+	}
+
+	FPSToolsHelper(){
+		if (!this.isFPSToolsEnabled)
+		{
+			this.graphic_sec_prompt.text = '';
+			this.graphic_ms_prompt.text = '';
+			this.server_ms_prompt.text = '';
+			this.server_sec_prompt.text = '';
+			return ;
+		}
+		this.graphic_sec_prompt.text = `graphic fps:${this.engine.stats.currFrame.fps.toFixed(2)}`;
+		this.graphic_ms_prompt.text = `graphic update time (ms):${this.engine.stats.currFrame.delta}`;
+		this.server_ms_prompt.text = `server update time (ms):${(this.serverReceivedTime - this.previousServerReceivedTime)}`;
+		this.server_sec_prompt.text = `server fps:${(1000 / (this.serverReceivedTime - this.previousServerReceivedTime)).toFixed(2)}`;
 	}
 
 	private postUpdate() {
@@ -296,6 +326,19 @@ export class GameStartedComponent implements OnInit {
 			const input = this.pendingInputs[this.pendingInputs.length - 1];
 			this.paddleUpdate(input);
 		}
+		if (ex.Input.Keys.F9 === evt.key && !this.isDevToolsEnabled)
+		{
+			this.devTool = new DevTool(this.engine);
+			this.isDevToolsEnabled = true;
+		}
+		if (ex.Input.Keys.F8 === evt.key && this.isFPSToolsEnabled) {
+			this.isFPSToolsEnabled = !this.isFPSToolsEnabled;
+			this.FPSToolsTimer.stop();
+			this.FPSToolsHelper();
+		} else if (ex.Input.Keys.F8 === evt.key && !this.isFPSToolsEnabled) {
+			this.isFPSToolsEnabled = !this.isFPSToolsEnabled;
+			this.FPSToolsTimer.start();
+		}
 	}
 
 	private paddleUpdate(input: { type: string; direction: string }) {
@@ -308,7 +351,7 @@ export class GameStartedComponent implements OnInit {
 			// 	player.paddle.keyReleased = false;
 			// 	player.paddle.vy = input.direction === 'bottom' ? -5 : 5;
 			// 	}
-			// } else 
+			// } else
 			if (input.type === 'keyup') {
 				player.paddle.keyReleased = true;
 				player.paddle.vy = 0;
@@ -391,6 +434,37 @@ export class GameStartedComponent implements OnInit {
 		]);
 	}
 
+	private createDebugLabel(model: string) {
+		let x, y;
+		switch (model) {
+			case 'graphic_sec':
+				x = this.engine.drawWidth - 250;
+				y = this.engine.drawHeight - 24;
+				break;
+			case 'graphic_ms':
+				x = this.engine.drawWidth - 250;
+				y = this.engine.drawHeight - 12;
+				break;
+			case 'server_sec':
+				x = this.engine.drawWidth - 250;
+				y = this.engine.drawHeight - 36;
+				break;
+			case 'server_ms':
+				x = this.engine.drawWidth - 250;
+				y = this.engine.drawHeight - 48;
+				break;
+		}
+		return this.createGameObject(ex.Label, [
+			{
+				x: x,
+				y: y,
+				text: "",
+				font: new ex.Font({ size: 14 }),
+				color: ex.Color.White,
+			},
+		]);
+	}
+
 	private createScore(x: number): ex.Label {
 		return this.createGameObject(ex.Label, [
 			{
@@ -413,5 +487,11 @@ export class GameStartedComponent implements OnInit {
 				font: new ex.Font({ size: 14 }),
 			},
 		]);
+	}
+
+	ngOnDestroy(): void {
+		this.obsToDestroy.forEach((obs) => obs.unsubscribe());
+		if (this.devTool) delete this.devTool;
+		this.engine.stop();
 	}
 }

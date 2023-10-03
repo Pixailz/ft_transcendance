@@ -131,5 +131,3 @@ export const DefLobbyI: LobbyI = {
 	previousState	: DefGameStateI,
 	winner_id		: -1,
 }
-
-

@@ -3,8 +3,7 @@ import { Subscription } from "rxjs";
 
 import { WSGateway } from "../gateway";
 import { WSService } from "../service";
-import { UserI } from "src/app/interfaces/user/user.interface";
-import { DefLobbyI, GameOptionI, GameStatus, LobbyI } from "src/app/interfaces/game/game-room.interface";
+import { DefLobbyI, GameOptionI, GameStateI, GameStatus, LobbyI } from "src/app/interfaces/game/game-room.interface";
 
 @Injectable({
 	providedIn: "root",
@@ -42,9 +41,10 @@ export class GameService {
 			}
 		));
 		this.obsToDestroy.push(this.wsGateway.listenGameReconnect()
-			.subscribe((data: UserI) => {
+			.subscribe((data: GameStateI) => {
 				console.log("[WS:game] GameReconnect event")
 				this.room.status = GameStatus.STARTED;
+				this.room.state = data;
 			}
 		));
 		this.obsToDestroy.push(this.wsGateway.listenGameEnded()
