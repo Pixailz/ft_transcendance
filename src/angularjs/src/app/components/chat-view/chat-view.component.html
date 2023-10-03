@@ -4,7 +4,7 @@
 		<div class="msg-line">
 			<div class="msg">
 				<span class="login" *ngIf="!isSameUser(i)">{{getCurrentMessageUser(i).ftLogin}}</span>
-				<span class="content">{{getCurrentMessage(i).content}}</span>
+				<span class="content">{{getCurrentMessage(i).content?.replace(' ', '&nbsp;')}}</span>
 			</div>
 			<span class="time">{{getCurrentMessage(i).updateAt | date: 'HH:mm'}}</span>
 		</div>

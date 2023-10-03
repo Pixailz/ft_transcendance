@@ -13,7 +13,7 @@ export class PrivChatPageComponent {
 	constructor(public chatDmService: ChatDmService,
 				public friendService: FriendService,
 				public userService: UserService,
-				private wsGateway: WSGateway) {		
+				private wsGateway: WSGateway) {
 	}
 
 	onSelectFriend(friend: any)
