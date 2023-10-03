@@ -214,8 +214,8 @@ export class WSGateway {
 	listenGameStarting(): Observable<any>
 	{ return this.socket.fromEvent<any>("gameStarting"); }
 
-	listenGameReconnect(): Observable<UserI>
-	{ return this.socket.fromEvent<UserI>("gameReconnect"); }
+	listenGameReconnect(): Observable<GameStateI>
+	{ return this.socket.fromEvent<GameStateI>("gameReconnect"); }
 
 	listenGameEnded(): Observable<any>
 	{ return this.socket.fromEvent<any>("gameEnded"); }
