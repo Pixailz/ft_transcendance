@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Observable, Observer } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
 import { ChatDmService } from 'src/app/services/websocket/chat/direct-message/service';
 import { FriendService } from 'src/app/services/websocket/friend/service';

@@ -73,7 +73,8 @@ export class ChatViewComponent {
 	}
 
 	sendMessage() {
-		console.log(this.messageForm.value.message);
+		if (!this.messageForm.value.message.length)
+			return ;
 		this.sendMessageEmitter.emit(this.messageForm.value.message);
 		this.messageForm.patchValue({
 			message: "",

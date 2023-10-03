@@ -40,6 +40,6 @@ ul {
 }
 
 app-chat-view {
-	flex-shrink: 2;
+	flex: auto;
 	min-width: 20%;
 }

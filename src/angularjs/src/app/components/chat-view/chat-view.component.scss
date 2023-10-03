@@ -12,7 +12,7 @@ ol {
     padding: 0;
     margin: 0;
     height: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
     display: flex;
     flex-direction: column-reverse;
 
@@ -120,6 +120,8 @@ form {
         padding: 0;
         --pseudo-width: 1.3em;
         --pseudo-hegiht: 0.3em;
+		transition: all .2s linear;
+		cursor: pointer;
 
 		&::before, &::after {
 			content: "";
@@ -137,6 +139,11 @@ form {
 
 		&::after {
 			transform: translate(-10%, calc(var(--pseudo-hegiht) / -2)) rotate(-45deg) translate(calc(-50% + var(--pseudo-hegiht) / 2));
+		}
+
+		&:disabled {
+			cursor: default;
+			filter: brightness(80%);
 		}
     }
 }
