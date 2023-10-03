@@ -90,6 +90,6 @@ export class WSSocket {
 				server.to(room.players[user_id].socket).emit(event, data);
 	}
 
-	sendStatusToGame(server: Server, room: LobbyI, state: GameStateI)
-	{ this.sendToUserInGame(server, room, "gameState", state); }
+	sendStatusToGame(server: Server, room: LobbyI)
+	{ this.sendToUserInGame(server, room, "gameState", room.state); }
 }

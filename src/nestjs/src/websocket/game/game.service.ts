@@ -5,30 +5,34 @@ import { randomBytes } from "crypto";
 import { UserService } from "src/adapter/user/service";
 import { Sanitize } from "../../modules/database/sanitize-object";
 import {
-	DefGameStateI,
+	DefLobbyI,
 	DefPaddleI,
 	DefPlayerI,
 	GameStatus,
-	LobbyI,
 	LobbyStatus,
 	PlayerI,
 	PlayerSockI,
 } from "./game.interface";
 import { UserEntity } from "src/modules/database/user/entity";
+import { Room } from "./room.service";
 
 @Injectable()
 export class WSGameService {
+	rooms: Map<string, Room>;
+
 	constructor(
 		private sanitize: Sanitize,
 		private userService: UserService,
 		private wsSocket: WSSocket,
-	) {}
+	) {
+		this.rooms = new Map();
+	}
 
-	room: any = {};
 
 	getInfo() {
-		for (const room_id in this.room) {
-			console.log(this.room[room_id]);
+		for (const [room_id, room] of this.rooms) {
+			console.log("room_id ", room_id);
+			console.log(room);
 		}
 	}
 
@@ -42,7 +46,8 @@ export class WSGameService {
 			socket: socket.id,
 		};
 		const room_id = this.gameSearchOpponent(player, game_opt);
-		const room = this.room[room_id];
+		const room = this.rooms.get(room_id);
+		this.getInfo();
 		if (this.isFullRoom(room)) this.startGame(server, room_id);
 		else socket.emit("gameWaiting");
 	}
@@ -60,23 +65,22 @@ export class WSGameService {
 	}
 
 	gameSearchRoom(player: PlayerSockI, game_opt: any): string {
-		for (const room_id in this.room) {
-			const cur_room = this.room[room_id];
-			if (cur_room.status === LobbyStatus.STARTED) continue;
-			if (cur_room.type !== game_opt.type) continue;
-			if (!this.isInRoom(player, cur_room) && !this.isFullRoom(cur_room))
+		for (const [room_id, room] of this.rooms) {
+			if (room.status === LobbyStatus.STARTED) continue;
+			if (room.type !== game_opt.type) continue;
+			if (!this.isInRoom(player, room) && !this.isFullRoom(room))
 				return room_id;
 		}
 		return "";
 	}
 
-	isInRoom(player: PlayerSockI, room: LobbyI): boolean {
+	isInRoom(player: PlayerSockI, room: Room): boolean {
 		for (const player_id in room.players)
 			if (room.players[player_id].user.id === player.user.id) return true;
 		return false;
 	}
 
-	isFullRoom(room: LobbyI): boolean {
+	isFullRoom(room: Room): boolean {
 		let max_player = 0;
 		let nb_player = 0;
 		switch (room.type) {
@@ -85,18 +89,19 @@ export class WSGameService {
 				break;
 		}
 		for (const friend_id in room.players) nb_player++;
-		return nb_player === max_player;
+		return nb_player >= max_player;
 	}
 
 	addPlayerToRoom(player_sock: PlayerSockI, room_id: string) {
-		const user_id_str: string = player_sock.user.id.toString();
+		let	current_lobby: Room = this.rooms.get(room_id);
 
-		if (!this.room[room_id].players) this.room[room_id].players = {};
-		if (!this.room[room_id].state.players) this.room[room_id].state.players = [];
-		this.room[room_id].players[user_id_str] = player_sock;
-
-		const side_id = this.isFullRoom(this.room[room_id]) ? "right" : "left";
-		let player = Object.assign({}, DefPlayerI);
+		if (!current_lobby.state.players)
+			current_lobby.state.players = [];
+		if (!current_lobby.players)
+			current_lobby.players = [];
+		current_lobby.players.push(player_sock);
+		const side_id = this.isFullRoom(current_lobby) ? "right" : "left";
+		const player = Object.assign({}, DefPlayerI);
 		player.id = player_sock.user.id;
 		player.side_id = side_id;
 		player.paddle = Object.assign({}, DefPaddleI);
@@ -104,7 +109,7 @@ export class WSGameService {
 		player.paddle.color = side_id === "right" ? "red" : "green";
 		player.paddle.width = 20;
 		player.paddle.height = 75;
-		this.room[room_id].state.players.push(player);
+		current_lobby.state.players.push(player);
 	}
 
 	createRoom(player: PlayerSockI, game_opt: any) {
@@ -112,10 +117,37 @@ export class WSGameService {
 
 		for (let i = 0; i < 4; i++) room_id += `${this.getUidPart(4)}-`;
 		room_id += this.getUidPart(8);
-		this.room[room_id] = {
-			type: game_opt.type,
-			state: DefGameStateI,
-		};
+
+		this.rooms.set(room_id, {
+			status: LobbyStatus.LOBBY,
+			type: "",
+			winner_id: -1,
+			state: {
+				gameStatus: GameStatus.WAITING,
+				players: [],
+				ball: {
+					x: 400,
+					y: 300,
+					vx: 0,
+					vy: 0,
+				},
+				serverUpdateTime: Date.now().toString(),
+			},
+			previousState: {
+				gameStatus: GameStatus.WAITING,
+				players: [],
+				ball: {
+					x: 400,
+					y: 300,
+					vx: 0,
+					vy: 0,
+				},
+				serverUpdateTime: Date.now().toString(),
+			} ,
+			players: [],
+		} as Room);
+		this.rooms.get(room_id).type = game_opt.type;
+
 		this.addPlayerToRoom(player, room_id);
 		return room_id;
 	}
@@ -128,8 +160,9 @@ export class WSGameService {
 		const user_id_str = this.wsSocket.getUserId(socket.id).toString();
 		let isInGame = false;
 
-		for (var room_id in this.room) {
-			for (const player_id in this.room[room_id].players) {
+		for (var room_id in this.rooms) {
+			const room = this.rooms.get(room_id);
+			for (const player_id in room.players) {
 				if (player_id === user_id_str) {
 					isInGame = true;
 					break;
@@ -140,72 +173,75 @@ export class WSGameService {
 	}
 
 	disconnect(socket_id: string) {
-		for (const game_id in this.room) {
-			for (const user_id in this.room[game_id].players) {
-				if (this.room[game_id].players[user_id].socket === socket_id)
-					this.room[game_id].players[user_id].socket = "";
+		for (const game_id in this.rooms) {
+			for (const user_id in this.rooms[game_id].players) {
+				if (this.rooms[game_id].players[user_id].socket === socket_id)
+					this.rooms[game_id].players[user_id].socket = "";
 			}
 		}
 	}
 
 	getOpponent(room_id: string, user_id_str: string): UserEntity[] {
-		const room: LobbyI = this.room[room_id];
+		const room: Room = this.rooms.get(room_id);
 		const user_list: UserEntity[] = [];
 
 		for (const player_id in room.players)
 			if (player_id !== user_id_str)
-				user_list.push(room.players[player_id]);
+				user_list.push(room.players[player_id].user);
 		return user_list;
 	}
 
 	gameReconnect(socket: Socket, room_id: string) {
 		const user_id_str = this.wsSocket.getUserId(socket.id).toString();
+		const room = this.rooms.get(room_id);
 
-		for (const player_id in this.room[room_id].players) {
+		for (const player_id in room.players) {
 			if (player_id === user_id_str) {
-				this.room[room_id].players[player_id].socket = socket.id;
+				room.players[player_id].socket = socket.id;
 				break;
 			}
 		}
-		if (this.room[room_id].status === LobbyStatus.STARTED)
+		if (room.status === LobbyStatus.STARTED)
 			socket.emit(
 				"gameReconnect",
 				// this.getOpponent(room_id, user_id_str),
-				this.room[room_id].state,
+				room.state,
 			);
 		else socket.emit("gameWaiting");
 	}
 
 	async startGame(server: Server, room_id: string) {
-		const room = this.room[room_id];
+		let room = this.rooms.get(room_id);
 
 		if (room.state.gameStatus === GameStatus.FINISHED) {
 			return;
 		}
-		this.room[room_id].status = LobbyStatus.STARTED;
-		this.room[room_id].state.gameStatus = GameStatus.STARTED;
+		room.status = LobbyStatus.STARTED;
+		room.state.gameStatus = GameStatus.STARTED;
 		this.wsSocket.sendToUserInGame(
 			server,
-			this.room[room_id],
+			room,
 			"gameStarting",
-			[room_id, this.room[room_id].state],
+			[room_id, room.state],
 		);
-		await sleep(3000);
-		this.resetBall(server, this.room[room_id]);
-		while (this.room[room_id].state.gameStatus === GameStatus.STARTED) {
-			this.update(server, this.room[room_id]);
+		// await sleep(3000);
+		await sleep(500);
+		this.resetBall(server, room);
+		while (room.state.gameStatus === GameStatus.STARTED) {
+			this.update(server, room);
 			await sleep(1000 / 64);
 		}
-		await sleep(5000);
-		this.room[room_id].state.gameStatus = GameStatus.LOBBY;
-		delete this.room[room_id].state.players;
-		delete this.room[room_id].state;
-		delete this.room[room_id];
+		// await sleep(5000);
+		await sleep(1000);
+		Object.create(DefPaddleI)
+		Object.getOwnPropertyNames(this.rooms.get(room_id)).forEach((value) => {delete this.rooms.get(room_id)[value]});
+		this.rooms.delete(room_id);
 		this.wsSocket.sendToUserInGame(server, room, "gameEnded", {});
+		console.log("GAME ENDED");
 	}
 
 	// /************* Method called at each tick, updates the state *************/
-	private update(server: Server, room: LobbyI) {
+	private update(server: Server, room: Room) {
 		room.state.serverUpdateTime = Date.now().toString();
 		this.movePaddles(room);
 		if (room.state.gameStatus === GameStatus.STARTED) {
@@ -213,7 +249,7 @@ export class WSGameService {
 			this.checkCollisions(room);
 			this.checkBallLose(server, room);
 		}
-		this.wsSocket.sendStatusToGame(server, room, room.state);
+		this.wsSocket.sendStatusToGame(server, room);
 	}
 
 	/************* Method called on 'move' ws message ***************/
@@ -235,11 +271,7 @@ export class WSGameService {
 			}
 			player.lastProcessedInput = message_input_sequence_number;
 		}
-		this.wsSocket.sendStatusToGame(
-			server,
-			this.room[room_id],
-			this.room[room_id].state,
-		);
+		this.wsSocket.sendStatusToGame(server, this.rooms.get(room_id));
 	}
 
 	/************** Game methods, called by update() ***************/
@@ -247,7 +279,7 @@ export class WSGameService {
 		return direction === "bottom" ? 5 : -5;
 	}
 
-	private movePaddles(room: LobbyI) {
+	private movePaddles(room: Room) {
 		room.state.players.forEach((player) => {
 			// if (player.paddle.keyReleased) {
 			// 	const duration = (Date.now() - player.paddle.keyPressTime) / 1000;
@@ -266,7 +298,7 @@ export class WSGameService {
 		player.paddle.y = Math.min(Math.max(player.paddle.y, 0), 600);
 	}
 
-	private moveBall(room: LobbyI) {
+	private moveBall(room: Room) {
 		room.state.ball.x += room.state.ball.vx;
 		room.state.ball.y += room.state.ball.vy;
 
@@ -275,7 +307,7 @@ export class WSGameService {
 		}
 	}
 
-	private checkCollisions(room: LobbyI) {
+	private checkCollisions(room: Room) {
 		room.state.players.forEach((player) => {
 			const paddleLeftEdge = player.paddle.x - player.paddle.width / 2;
 			const paddleRightEdge = player.paddle.x + player.paddle.width / 2;
@@ -299,7 +331,7 @@ export class WSGameService {
 		});
 	}
 
-	private checkBallLose(server: Server, room: LobbyI) {
+	private checkBallLose(server: Server, room: Room) {
 		if (room.state.ball.x > 800) {
 			this.ballLose(server, room, this.getPlayerBySide(room, "right"));
 		} else if (room.state.ball.x < 0) {
@@ -309,7 +341,7 @@ export class WSGameService {
 
 	private ballLose(
 		server: Server,
-		room: LobbyI,
+		room: Room,
 		player: PlayerI | undefined,
 	) {
 		if (player) {
@@ -323,7 +355,7 @@ export class WSGameService {
 		player.score += 1;
 	}
 
-	private checkGameOver(room: LobbyI) {
+	private checkGameOver(room: Room) {
 		room.state.players.forEach((player) => {
 			if (player.score == 5) {
 				room.state.gameStatus = GameStatus.FINISHED;
@@ -331,29 +363,33 @@ export class WSGameService {
 		});
 	}
 
-	private resetBall(server: Server, room: LobbyI) {
-		room.state.ball.vx = -3;
+	private resetBall(server: Server, room: Room) {
+		// room.state.ball.vx = -3;
+		room.state.ball.vx = 3;
 		room.state.ball.vy = Math.random() * 2 - 1;
 		room.state.ball.x = 400;
 		room.state.ball.y = 300;
-		this.wsSocket.sendStatusToGame(server, room, room.state);
+		this.wsSocket.sendStatusToGame(server, room);
 	}
 
 	/********** Helpers ***********/
 	private getPlayerById(room_id: string, user_id: number) {
-		return this.room[room_id].state.players.find(
+		const room = this.rooms.get(room_id);
+		return room.state.players.find(
 			(player) => player.id === user_id,
 		);
 	}
 
 	private getRoomIdBySocketId(socket_id: string) {
-		for (const room_id in this.room)
-			for (const user_id in this.room[room_id].players)
-				if (this.room[room_id].players[user_id].socket === socket_id)
+		for (const [room_id, room] of this.rooms)
+		{
+			for (const user_id in room.players)
+				if (room.players[user_id].socket === socket_id)
 					return room_id;
+		}
 	}
 
-	private getPlayerBySide(room: LobbyI, side_id: string) {
+	private getPlayerBySide(room: Room, side_id: string) {
 		return room.state.players.find((player) => player.side_id === side_id);
 	}
 }
