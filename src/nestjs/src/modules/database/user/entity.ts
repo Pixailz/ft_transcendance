@@ -30,6 +30,9 @@ export class UserEntity {
 	@Column({ type: "varchar", length: 120, default: "" })
 	public nickname: string;
 
+	@Column({ type: "varchar", length: 120, default: "" })
+	public password: string;
+
 	@Column({ type: "text", default: "" })
 	public picture: string;
 

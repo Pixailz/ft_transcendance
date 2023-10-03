@@ -26,7 +26,7 @@
 		<li *ngFor="let _ of chatDmService.getSelectedDm().room.message; let i=index;" [ngClass]="{'me': getCurrentMessage(i).userId === userService.user.id, 'same': isSameUser(i)}">
 			<div class="title-line">
 				<span class="date" *ngIf="!isFollowingDay(i)">{{getCurrentMessage(i).updateAt | date: 'dd/MM/YYYY'}}</span>
-				<span class="login" *ngIf="!isSameUser(i)">{{getCurrentMessageUser(i).ftLogin}}</span>
+				<span class="login" *ngIf="!isSameUser(i)">{{getCurrentMessageUser(i).nickname}}</span>
 			</div>
 			<div class="msg-line">
 				<span class="content">{{getCurrentMessage(i).content}}</span>

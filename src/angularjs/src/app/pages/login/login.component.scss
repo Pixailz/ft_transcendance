@@ -3,26 +3,22 @@ button {
 	border: none;
 	min-width: 150px;
 	min-height: 60px;
-	position: absolute;
+	position: relative;
 	top: 50%;
 	left: 50%;
+	height: 30px;
 	padding: 10px 15px;
 	transform: translate(-50%, -50%);
 	border-radius: 5px;
-	overflow: hidden;
-	
-	.btn-content {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		position: relative;
-	}
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 
 	span {
 		font-size: 1.3em;
 		color: white;
 	}
-	
+
 	&:hover:not(:disabled) {
 		cursor: pointer;
 		filter: brightness(80%);
@@ -31,7 +27,4 @@ button {
 
 button img {
 	height: 30px;
-}
-
-#message {
 }

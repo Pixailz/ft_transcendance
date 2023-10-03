@@ -1,7 +1,56 @@
+<form [formGroup]="loginForm">
+	<mat-card-content>
+		<mat-form-field>
+			<input
+			type="text"
+			matInput
+			formControlName="nickname"
+			placeholder="User name"
+			[required]="true"
+		/>
+		</mat-form-field>
+		<br>
+		<mat-form-field>
+			<input
+			type="password"
+			matInput
+			formControlName="pass"
+			placeholder="User password"
+			[required]="true"
+		/>
+		</mat-form-field>
+		<br>
+		<mat-card-actions>
+			<div class="buttoncontainer">
+				<button
+					mat-raised-button
+					color="primary"
+					(click)="SignInExt()"
+					[disabled]="!loginForm.valid"
+				>
+					Login Extern
+				</button>
+			</div>
+		</mat-card-actions>
+		<mat-card-actions>
+			<div class="buttoncontainer">
+				<button
+					mat-raised-button
+					color="primary"
+					(click)="RegisterExt()"
+					[disabled]="!loginForm.valid"
+				>
+					Register Extern
+				</button>
+			</div>
+		</mat-card-actions>
+	</mat-card-content>
+</form>
+
 <button (click)="SignIn()" [disabled]="!isButtonClickable">
 	<div class="btn-content" *ngIf="isButtonClickable">
 		<img src="./assets/img/42-logo.png" alt="42 logo">
-		<span>Log In</span>
+		<span>Log In 42</span>
 	</div>
 	<span *ngIf="!isButtonClickable" id="message">Please wait...</span>
 </button>

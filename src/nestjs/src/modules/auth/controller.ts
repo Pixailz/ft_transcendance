@@ -1,4 +1,4 @@
-import { Controller, Get, Request, Query } from "@nestjs/common";
+import { Controller, Get, Request, Query, Body } from "@nestjs/common";
 import { AuthService } from "./service";
 import { Public } from "src/decorators/public";
 
@@ -13,6 +13,22 @@ export class AuthController {
 			return this.authService.ftSignInTest();
 		else return this.authService.ftSignIn(code);
 	}
+
+	@Public()
+	@Get("ft_callback_ext")
+	async login_ext(
+		@Query("nickname") nickname: string,
+		@Query("pass") pass: string
+	)
+	{ return this.authService.ftSignInExt(nickname, pass); }
+
+	@Public()
+	@Get("ft_register_ext")
+	async register_ext(
+		@Query("nickname") nickname: string,
+		@Query("pass") pass: string
+	)
+	{ return this.authService.ftRegisterExt(nickname, pass); }
 
 	@Get("profile")
 	getProfile(@Request() req) {

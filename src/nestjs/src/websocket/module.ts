@@ -13,6 +13,7 @@ import { WSService } from "./service";
 import { Sanitize } from "../modules/database/sanitize-object";
 import { WSNotificationService } from "./notifications/notifications.service";
 import { WSGameService } from "./game/game.service";
+import { BrcyptWrap } from "src/addons/bcrypt.wrapper";
 
 @Module({
 	imports: [AuthModule, DBModule],
@@ -20,6 +21,7 @@ import { WSGameService } from "./game/game.service";
 		Sanitize,
 		UserService,
 		ChatRoomService,
+		BrcyptWrap,
 		WSSocket,
 		WSGateway,
 		WSService,
