@@ -29,8 +29,8 @@ jobs:
               cat <<-EOFSETUP
                 ${{ secrets.SETUP_USER_NAME }}
                 ${{ secrets.SETUP_USER_PASS }}
-                ${{ secrets.SETUP_USER_API_ID }}
-                ${{ secrets.SETUP_USER_API_SECRET }}
+                ${{ secrets.SETUP_API_ID }}
+                ${{ secrets.SETUP_API_SECRET }}
                 ${{ secrets.SETUP_URL_PROD }}
                 ${{ secrets.SETUP_URL_DEV }}
                 ${{ secrets.SETUP_NGINX_PORT }}
