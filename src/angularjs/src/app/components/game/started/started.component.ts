@@ -35,13 +35,14 @@ export class GameStartedComponent implements OnInit {
 	private serverUpdateTime: number;
 	private side_id: string;
 
-	// DEBUG MENU
-	private is_debug_menu_activate = false;
-	private nb_state_change = 0;
-	private update_sec_prompt: ex.Label;
-	private update_sec: ex.Label;
-	private update_ms_prompt: ex.Label;
-	private update_ms: ex.Label;
+	// TODO: OPTIMISE DEBUG MENU
+	// // DEBUG MENU
+	// private is_debug_menu_activate = false;
+	// private nb_state_change = 0;
+	// private update_sec_prompt: ex.Label;
+	// private update_sec: ex.Label;
+	// private update_ms_prompt: ex.Label;
+	// private update_ms: ex.Label;
 
 	obsToDestroy: Subscription[] = [];
 
@@ -92,7 +93,8 @@ export class GameStartedComponent implements OnInit {
 		this.game.add(this.remoteScore);
 		this.game.add(this.gameStatus);
 		this.game.add(this.ball);
-		this.createDebugMenu();
+		// TODO: OPTIMISE DEBUG MENU
+		// this.createDebugMenu();
 	}
 
 	private createDebugMenu()
@@ -332,25 +334,26 @@ export class GameStartedComponent implements OnInit {
 			const input = this.pendingInputs[this.pendingInputs.length - 1];
 			this.paddleUpdate(input);
 		}
-		if (ex.Input.Keys.F8 === evt.key)
-		{
-			console.log("toggling debug menu");
-			console.log(this.is_debug_menu_activate);
-			if (this.is_debug_menu_activate)
-			{
-				this.is_debug_menu_activate = false;
-				this.update_sec_prompt.text = "";
-				this.update_sec.text = "";
-				this.update_ms_prompt.text = "";
-				this.update_ms.text = "";
-			}
-			else
-			{
-				this.is_debug_menu_activate = true;
-				this.update_sec_prompt.text = "update/sec ";
-				this.update_ms_prompt.text = "ms";
-			}
-		}
+		// TODO: OPTIMISE DEBUG MENU
+		// if (ex.Input.Keys.F8 === evt.key)
+		// {
+		// 	console.log("toggling debug menu");
+		// 	console.log(this.is_debug_menu_activate);
+		// 	if (this.is_debug_menu_activate)
+		// 	{
+		// 		this.is_debug_menu_activate = false;
+		// 		this.update_sec_prompt.text = "";
+		// 		this.update_sec.text = "";
+		// 		this.update_ms_prompt.text = "";
+		// 		this.update_ms.text = "";
+		// 	}
+		// 	else
+		// 	{
+		// 		this.is_debug_menu_activate = true;
+		// 		this.update_sec_prompt.text = "update/sec ";
+		// 		this.update_ms_prompt.text = "ms";
+		// 	}
+		// }
 	}
 
 	private paddleUpdate(input: { type: string; direction: string }) {
