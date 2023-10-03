@@ -22,8 +22,6 @@ export class GameStartedComponent implements OnInit {
 	private engine: ex.Engine;
 	private game: ex.Scene;
 	private gameStatus: ex.Label;
-	private isDevToolsEnabled: boolean = false;
-	private isFPSToolsEnabled: boolean = false;
 	private localPaddle: Paddle;
 	private localScore: ex.Label;
 	private pendingInputs: Array<any>;
@@ -37,6 +35,11 @@ export class GameStartedComponent implements OnInit {
 	private serverReceivedTime: number;
 	private serverUpdateTime: number;
 	private side_id: string;
+	
+	// Debug Elements
+	private FPSToolsTimer: ex.Timer;
+	private isDevToolsEnabled: boolean = false;
+	private isFPSToolsEnabled: boolean = false;
 	private graphic_sec_prompt: ex.Label;
 	private graphic_ms_prompt: ex.Label;
 	private server_sec_prompt: ex.Label;
@@ -89,6 +92,12 @@ export class GameStartedComponent implements OnInit {
 		this.graphic_ms_prompt = this.createDebugLabel('graphic_sec');
 		this.server_sec_prompt = this.createDebugLabel('server_ms');
 		this.server_ms_prompt = this.createDebugLabel('server_sec');
+		this.FPSToolsTimer = new ex.Timer({
+			interval: 200,
+			repeats: true,
+			fcn: this.FPSToolsHelper.bind(this),
+		});
+		this.game.add(this.FPSToolsTimer);
 	}
 
 	private listenGameEvents(): void {
@@ -99,7 +108,6 @@ export class GameStartedComponent implements OnInit {
 		this.engine.start().then(() => {
 			this.engine.goToScene('game');
 			this.engine.onPostUpdate = this.postUpdate.bind(this);
-			this.engine.onPreUpdate = this.preUpdate.bind(this);
 			this.obsToDestroy.push(this.wsGateway.listenGameStarting()
 				.subscribe((data: any) => {
 					console.log("[WS:game] GameStarting event")
@@ -119,7 +127,7 @@ export class GameStartedComponent implements OnInit {
 		});
 	}
 
-	private preUpdate(){
+	FPSToolsHelper(){
 		if (!this.isFPSToolsEnabled)
 		{
 			this.graphic_sec_prompt.text = '';
@@ -317,15 +325,19 @@ export class GameStartedComponent implements OnInit {
 			const input = this.pendingInputs[this.pendingInputs.length - 1];
 			this.paddleUpdate(input);
 		}
-		if (ex.Input.Keys.F9 === evt.key)
+		if (ex.Input.Keys.F9 === evt.key && !this.isDevToolsEnabled)
 		{
-			if (!this.isDevToolsEnabled){
-				const devTool = new DevTool(this.engine);
-				this.isDevToolsEnabled = true;
-			}
+			const devTool = new DevTool(this.engine);
+			this.isDevToolsEnabled = true;
 		}
-		if (ex.Input.Keys.F8 === evt.key)
+		if (ex.Input.Keys.F8 === evt.key && this.isFPSToolsEnabled) {
 			this.isFPSToolsEnabled = !this.isFPSToolsEnabled;
+			this.FPSToolsTimer.stop();
+			this.FPSToolsHelper();
+		} else if (ex.Input.Keys.F8 === evt.key && !this.isFPSToolsEnabled) {
+			this.isFPSToolsEnabled = !this.isFPSToolsEnabled;
+			this.FPSToolsTimer.start();
+		}
 	}
 
 	private paddleUpdate(input: { type: string; direction: string }) {
