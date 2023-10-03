@@ -37,6 +37,7 @@ export class GameStartedComponent implements OnInit {
 	private side_id: string;
 	
 	// Debug Elements
+	private devTool: DevTool | null = null;
 	private FPSToolsTimer: ex.Timer;
 	private isDevToolsEnabled: boolean = false;
 	private isFPSToolsEnabled: boolean = false;
@@ -327,7 +328,7 @@ export class GameStartedComponent implements OnInit {
 		}
 		if (ex.Input.Keys.F9 === evt.key && !this.isDevToolsEnabled)
 		{
-			const devTool = new DevTool(this.engine);
+			this.devTool = new DevTool(this.engine);
 			this.isDevToolsEnabled = true;
 		}
 		if (ex.Input.Keys.F8 === evt.key && this.isFPSToolsEnabled) {
@@ -486,5 +487,11 @@ export class GameStartedComponent implements OnInit {
 				font: new ex.Font({ size: 14 }),
 			},
 		]);
+	}
+
+	ngOnDestroy(): void {
+		this.obsToDestroy.forEach((obs) => obs.unsubscribe());
+		if (this.devTool) delete this.devTool;
+		this.engine.stop();
 	}
 }
