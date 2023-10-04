@@ -1,15 +1,12 @@
-import {
-	Injectable,
-	ForbiddenException,
-	NotFoundException,
-} from "@nestjs/common";
-import { Repository } from "typeorm";
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { In, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import { GameInfoEntity } from "./entity";
 import { DBGameInfoPost } from "./dto";
 
-import { UserEntity } from "../user/entity";
+import { UserEntity } from "../../user/entity";
+import { PlayerScoreEntity } from "../player-score/entity";
 
 @Injectable()
 export class DBGameInfoService {
@@ -20,14 +17,27 @@ export class DBGameInfoService {
 		private readonly userRepo: Repository<UserEntity>,
 	) {}
 
-	async create(post: DBGameInfoPost, userA: number, userB: number) {
+	async create(post: DBGameInfoPost) {
 		const gameInfo = new GameInfoEntity();
-		const user1 = await this.userRepo.findOneBy({ id: userA });
-		const user2 = await this.userRepo.findOneBy({ id: userB });
-		if (!user1 || !user2) throw new NotFoundException("User not found");
-		gameInfo.userA = userA;
-		gameInfo.userB = userB;
 		gameInfo.type = post.type;
+		const users = await this.userRepo.find({
+			where: { id: In(post.users) },
+		});
+		gameInfo.usersArray = users;
+		gameInfo.users = post.users;
+
+		const playerScores = [];
+		for (const user of post.users) {
+			const tmp = await this.userRepo.findOneBy({ id: user });
+			if (!tmp) throw new NotFoundException("User not found");
+
+			const playerScore = new PlayerScoreEntity();
+			playerScore.playerId = tmp.id;
+			playerScore.score = 0;
+			playerScores.push(playerScore);
+		}
+
+		gameInfo.playersScores = playerScores;
 		return await this.gameInfoRepo.save(gameInfo);
 	}
 
@@ -36,8 +46,11 @@ export class DBGameInfoService {
 	}
 
 	async returnOne(gameId: number) {
-		const tmp = await this.gameInfoRepo.findOneBy({ id: gameId });
-		if (tmp) return await this.gameInfoRepo.findOneBy({ id: gameId });
+		const tmp = await this.gameInfoRepo.findOne({ 
+			where: { id: gameId },
+			relations: ["playersScores", "usersArray"],
+		});
+		if (tmp) return tmp;
 		else throw new NotFoundException("GameInfo not found");
 	}
 

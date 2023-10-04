@@ -166,9 +166,9 @@ export class GameStartedComponent implements OnInit {
 				);
 				scoreLabel.text = player.score.toString();
 				scoreLabel.pos.x =
-				player.side_id === 'left' ? this.engine.drawWidth - 100 : 100;
+				player.side_id === 'right' ? this.engine.drawWidth - 100 : 100;
 				scoreLabel.pos.y =
-				player.side_id === 'left' ? 100 : this.engine.drawHeight - 100;
+				player.side_id === 'right' ? 100 : this.engine.drawHeight - 100;
 			});
 			this.ball.pos.x = this.extrapolate(
 				this.gameService.room.state.ball.x,

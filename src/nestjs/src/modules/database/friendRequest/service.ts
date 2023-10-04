@@ -25,16 +25,16 @@ export class DBFriendRequestService {
 		const user1 = await this.userRepo.findOneBy({ id: meId });
 		const user2 = await this.userRepo.findOneBy({ id: post.friendId });
 		if (!user1 || !user2) throw new NotFoundException("User not found");
-		let tmp = await this.friendRequestRepo.findOneBy({
+		const tmp = await this.friendRequestRepo.findOneBy({
 			meId: meId,
 			friendId: post.friendId,
 		});
-		let tmp2 = await this.friendRepo.findOneBy({
+		const tmp2 = await this.friendRepo.findOneBy({
 			meId: meId,
 			friendId: post.friendId,
 		});
 		if (tmp || tmp2) return tmp;
-		let request = new FriendRequestEntity();
+		const request = new FriendRequestEntity();
 		request.meId = meId;
 		request.friendId = post.friendId;
 		await this.friendRequestRepo.save(request);
@@ -133,11 +133,16 @@ export class DBFriendRequestService {
 	}
 
 	async rejectReq(me_id: number, friendId: number) {
-		const req = await this.friendRequestRepo.findOneBy({
-			meId: me_id,
-			friendId: friendId,
+		const req = await this.friendRequestRepo.findOne({
+			where: {
+				meId: me_id,
+				friendId: friendId,
+			},
 		});
-		if (req) await this.friendRequestRepo.delete(req);
-		else throw new NotFoundException("FriendRequest relation not found");
+		if (req) {
+			await this.friendRequestRepo.remove(req);
+		} else {
+			throw new NotFoundException("FriendRequest relation not found");
+		}
 	}
 }

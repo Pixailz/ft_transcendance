@@ -5,7 +5,6 @@ import { randomBytes } from "crypto";
 import { UserService } from "src/adapter/user/service";
 import { Sanitize } from "../../modules/database/sanitize-object";
 import {
-	DefLobbyI,
 	DefPaddleI,
 	DefPlayerI,
 	GameStatus,
@@ -15,6 +14,9 @@ import {
 	PlayerSockI,
 } from "./game.interface";
 import { UserEntity } from "src/modules/database/user/entity";
+import { DBGameInfoService } from "src/modules/database/game/gameInfo/service";
+import { GameInfoEntity } from "src/modules/database/game/gameInfo/entity";
+import { DBPlayerScoreService } from "src/modules/database/game/player-score/service";
 
 @Injectable()
 export class WSGameService {
@@ -24,6 +26,8 @@ export class WSGameService {
 		private sanitize: Sanitize,
 		private userService: UserService,
 		private wsSocket: WSSocket,
+		private gameDBService: DBGameInfoService,
+		private scoreDBService: DBPlayerScoreService,
 	) {
 		this.rooms = new Map();
 	}
@@ -46,7 +50,6 @@ export class WSGameService {
 		};
 		const room_id = this.gameSearchOpponent(player, game_opt, socket);
 		const room = this.rooms.get(room_id);
-		this.getInfo();
 		if (this.isFullRoom(room) && room.status !== LobbyStatus.STARTED)
 			this.startGame(server, room_id);
 		else if (room.status === LobbyStatus.LOBBY) socket.emit("gameWaiting");
@@ -228,6 +231,20 @@ export class WSGameService {
 		if (room.state.gameStatus === GameStatus.FINISHED) {
 			return;
 		}
+		this.gameDBService
+			.create({
+				type: room.type,
+				users: room.players.map((player) => player.user.id),
+			})
+			.then((gameInfo: GameInfoEntity) => {
+				room.db_room_id = gameInfo.id;
+			})
+			.catch((err) => {
+				console.error(err);
+				this.wsSocket.sendToUserInGame(server, room, "gameEnded", {});
+				return;
+			});
+
 		room.status = LobbyStatus.STARTED;
 		room.state.gameStatus = GameStatus.STARTED;
 		this.wsSocket.sendToUserInGame(server, room, "gameStarting", [
@@ -243,12 +260,12 @@ export class WSGameService {
 		}
 		// await sleep(5000);
 		await sleep(1000);
-		Object.create(DefPaddleI);
+		console.log(await this.gameDBService.returnOne(room.db_room_id));
+		this.wsSocket.sendToUserInGame(server, room, "gameEnded", {});
 		Object.getOwnPropertyNames(this.rooms.get(room_id)).forEach((value) => {
 			delete this.rooms.get(room_id)[value];
 		});
 		this.rooms.delete(room_id);
-		this.wsSocket.sendToUserInGame(server, room, "gameEnded", {});
 		console.log("GAME ENDED");
 	}
 
@@ -345,26 +362,38 @@ export class WSGameService {
 
 	private checkBallLose(server: Server, room: LobbyI) {
 		if (room.state.ball.x > 800) {
-			this.ballLose(server, room, this.getPlayerBySide(room, "right"));
+			this.ballWon(server, room, this.getPlayerBySide(room, "left"));
 		} else if (room.state.ball.x < 0) {
-			this.ballLose(server, room, this.getPlayerBySide(room, "left"));
+			this.ballWon(server, room, this.getPlayerBySide(room, "right"));
 		}
 	}
 
-	private ballLose(
-		server: Server,
-		room: LobbyI,
-		player: PlayerI | undefined,
-	) {
+	private ballWon(server: Server, room: LobbyI, player: PlayerI | undefined) {
 		if (player) {
-			this.playerScoreUpdate(player);
+			this.playerScoreUpdate(player, room);
 			this.checkGameOver(room);
 			this.resetBall(server, room);
 		}
 	}
 
-	private playerScoreUpdate(player: PlayerI) {
+	private playerScoreUpdate(player: PlayerI, room: LobbyI) {
 		player.score += 1;
+		this.scoreDBService
+			.update(room.db_room_id, {
+				playerId: player.id,
+				score: player.score,
+			})
+			.then(async (score) => {
+				console.log("playerScore updated, new scores: ");
+				console.log(
+					await this.scoreDBService.find({
+						where: { gameInfo: { id: room.db_room_id } },
+					}),
+				);
+			})
+			.catch((err) => {
+				console.error(err);
+			});
 	}
 
 	private checkGameOver(room: LobbyI) {
