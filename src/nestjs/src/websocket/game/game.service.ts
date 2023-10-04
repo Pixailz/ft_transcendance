@@ -18,9 +18,28 @@ import { DBGameInfoService } from "src/modules/database/game/gameInfo/service";
 import { GameInfoEntity } from "src/modules/database/game/gameInfo/entity";
 import { DBPlayerScoreService } from "src/modules/database/game/player-score/service";
 
+interface GameConfig {
+	ballSpeed: number;
+	paddleSpeed: number;
+	winningScore: number;
+	ballSize: number;
+	paddleWidth: number;
+	paddleHeight: number;
+}
+
+const DEFAULT_CONFIG: GameConfig = {
+	ballSpeed: 1,
+	paddleSpeed: 5,
+	winningScore: 5,
+	ballSize: 10,
+	paddleWidth: 25,
+	paddleHeight: 75,
+};
+
 @Injectable()
 export class WSGameService {
 	rooms: Map<string, LobbyI>;
+	config: GameConfig = DEFAULT_CONFIG;
 
 	constructor(
 		private sanitize: Sanitize,
@@ -120,6 +139,7 @@ export class WSGameService {
 		player.side_id = side_id;
 		player.paddle = Object.assign({}, DefPaddleI);
 		player.paddle.x = side_id === "right" ? 750 : 50;
+		player.paddle.y = 300;
 		player.paddle.color = side_id === "right" ? "red" : "green";
 		player.paddle.width = 20;
 		player.paddle.height = 75;
@@ -186,7 +206,7 @@ export class WSGameService {
 	}
 
 	disconnect(socket_id: string) {
-		for (const [roomid, room] of this.rooms) {
+		for (const [, room] of this.rooms) {
 			for (const player_id in room.players) {
 				if (room.players[player_id].socket === socket_id) {
 					room.players[player_id].socket = "";
@@ -305,7 +325,9 @@ export class WSGameService {
 
 	/************** Game methods, called by update() ***************/
 	private determineMovement(direction: string) {
-		return direction === "bottom" ? 5 : -5;
+		return direction === "bottom"
+			? this.config.paddleSpeed
+			: -this.config.paddleSpeed;
 	}
 
 	private movePaddles(room: LobbyI) {
@@ -328,8 +350,8 @@ export class WSGameService {
 	}
 
 	private moveBall(room: LobbyI) {
-		room.state.ball.x += room.state.ball.vx;
-		room.state.ball.y += room.state.ball.vy;
+		room.state.ball.x += this.config.ballSpeed * room.state.ball.vx;
+		room.state.ball.y += this.config.ballSpeed * room.state.ball.vy;
 
 		if (room.state.ball.y < 0 || room.state.ball.y > 600) {
 			room.state.ball.vy *= -1;
@@ -338,10 +360,14 @@ export class WSGameService {
 
 	private checkCollisions(room: LobbyI) {
 		room.state.players.forEach((player) => {
-			const paddleLeftEdge = player.paddle.x - player.paddle.width / 2;
-			const paddleRightEdge = player.paddle.x + player.paddle.width / 2;
-			const paddleTopEdge = player.paddle.y - player.paddle.height / 2;
-			const paddleBottomEdge = player.paddle.y + player.paddle.height / 2;
+			const paddleLeftEdge =
+				player.paddle.x - this.config.paddleWidth / 2;
+			const paddleRightEdge =
+				player.paddle.x + this.config.paddleWidth / 2;
+			const paddleTopEdge =
+				player.paddle.y - this.config.paddleHeight / 2;
+			const paddleBottomEdge =
+				player.paddle.y + this.config.paddleHeight / 2;
 
 			const ballIsWithinXBounds =
 				room.state.ball.x >= paddleLeftEdge &&
@@ -377,6 +403,7 @@ export class WSGameService {
 	}
 
 	private playerScoreUpdate(player: PlayerI, room: LobbyI) {
+		player.paddle.height += 15;
 		player.score += 1;
 		this.scoreDBService
 			.update(room.db_room_id, {
@@ -398,15 +425,14 @@ export class WSGameService {
 
 	private checkGameOver(room: LobbyI) {
 		room.state.players.forEach((player) => {
-			if (player.score == 5) {
+			if (player.score == this.config.winningScore) {
 				room.state.gameStatus = GameStatus.FINISHED;
 			}
 		});
 	}
 
 	private resetBall(server: Server, room: LobbyI) {
-		// room.state.ball.vx = -3;
-		room.state.ball.vx = 3;
+		room.state.ball.vx = this.config.ballSpeed;
 		room.state.ball.vy = Math.random() * 2 - 1;
 		room.state.ball.x = 400;
 		room.state.ball.y = 300;
@@ -416,7 +442,7 @@ export class WSGameService {
 	/********** Helpers ***********/
 	private getPlayerById(room_id: string, user_id: number) {
 		const room = this.rooms.get(room_id);
-		return room.state.players.find((player) => player.id === user_id);
+		return room.state?.players.find((player) => player.id === user_id);
 	}
 
 	private getRoomIdBySocketId(socket_id: string) {

@@ -169,6 +169,7 @@ export class GameStartedComponent implements OnInit {
 				player.side_id === 'right' ? this.engine.drawWidth - 100 : 100;
 				scoreLabel.pos.y =
 				player.side_id === 'right' ? 100 : this.engine.drawHeight - 100;
+
 			});
 			this.ball.pos.x = this.extrapolate(
 				this.gameService.room.state.ball.x,
@@ -237,9 +238,14 @@ export class GameStartedComponent implements OnInit {
 
 	private handleStateChange(state: GameStateI): void {
 		this.reconcileState(state);
+		for (const player of this.gameService.room.state.players) {
+			const paddle =
+			player.side_id === this.side_id ? this.localPaddle : this.remotePaddle;
+			const scaleY = player.paddle.height / this.paddleHeight;
+			if (scaleY !== 1)
+				paddle.scale = new Vector(1, scaleY);
+		}
 		this.previousServerReceivedTime = this.serverReceivedTime;
-		this.gameService.room.previousState = this.gameService.room.state;
-		this.gameService.room.state = state;
 		this.receivedStates.push({
 			state: this.gameService.room.state,
 			timestamp: Date.now(),
@@ -384,7 +390,7 @@ export class GameStartedComponent implements OnInit {
 				break;
 			}
 		}
-
+		this.gameService.room.previousState = this.gameService.room.state;
 		this.gameService.room.state = gameState;
 	}
 
