@@ -7,14 +7,12 @@ import { Component, ElementRef, Input, Renderer2 } from '@angular/core';
 })
 export class ResizableHandleComponent {
   constructor(
-    private elRef: ElementRef,
+    public elRef: ElementRef,
 		private renderer: Renderer2,
   ) {}
     @Input() height: number = 0;
-    @Input() width: number = 0;
 
   ngOnInit() {
     this.renderer.setStyle(this.elRef.nativeElement, 'height', this.height + 'px');
-    this.renderer.setStyle(this.elRef.nativeElement, 'width', this.width + 'px');
   }
 }

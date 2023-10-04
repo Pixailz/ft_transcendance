@@ -1,14 +1,15 @@
-import { ComponentFactoryResolver, Directive, ElementRef, HostListener, Renderer2, ViewContainerRef } from '@angular/core';
+import { ComponentFactoryResolver, ComponentRef, Directive, ElementRef, HostListener, Renderer2, ViewContainerRef } from '@angular/core';
 import { ResizableHandleComponent } from '../components/resizable-handle/resizable-handle.component';
 
 @Directive({
   selector: '[appResizable]'
 })
 export class ResizableDirective {
-	private isResizing: boolean = false;
-	private initialX: number = 0;
-	private initialWidth: number = 0;
-	private resizeHandleWidth: number = 10;
+	isResizing: boolean = false;
+	initialX: number = 0;
+	initialWidth: number = 0;
+	resizeHandleWidth: number = 10;
+	handle!: ComponentRef<ResizableHandleComponent>;
 	constructor(
 		private viewContainerRef: ViewContainerRef,
 		private el: ElementRef,
@@ -18,16 +19,13 @@ export class ResizableDirective {
 
 	ngOnInit() {
 		let factory = this.resolver.resolveComponentFactory(ResizableHandleComponent);
-		let handle = this.viewContainerRef.createComponent(factory);
-		handle.instance.height = this.el.nativeElement.height;
-		handle.instance.width = this.resizeHandleWidth;
+		this.handle = this.viewContainerRef.createComponent(factory);
+		this.handle.instance.height = this.el.nativeElement.height;
 	}
 
 	@HostListener('document:mousedown', ['$event'])
 	onMouseDown(event: MouseEvent) {
-		console.log(event.offsetX);
-
-		if (event.offsetX >= this.el.nativeElement.offsetWidth - this.resizeHandleWidth) {
+		if (this.handle.instance.elRef.nativeElement === event.target) {
 			this.isResizing = true;
 			this.initialX = event.clientX;
 			this.initialWidth = this.el.nativeElement.offsetWidth;

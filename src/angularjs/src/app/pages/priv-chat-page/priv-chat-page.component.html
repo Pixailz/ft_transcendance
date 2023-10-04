@@ -1,9 +1,11 @@
 <ul appResizable>
-	<li *ngFor="let friend of chatDmService.getFriendsRoom();">
-		<button class="glass" *ngIf="!friendService.isBlocked(friend.user_info.id)" (click)="onSelectFriend(friend)">
-			{{userService.getUserInfoFormated(friend.user_info)}}
-		</button>
-	</li>
+	<ng-container *ngFor="let friend of chatDmService.getFriendsRoom();">
+		<li *ngIf="!friendService.isBlocked(friend.user_info.id)" >
+			<button class="glass" (click)="onSelectFriend(friend)">
+				{{userService.getUserInfoFormated(friend.user_info)}}
+			</button>
+		</li>
+	</ng-container>
 </ul>
 
 <app-chat-view *ngIf="chatDmService.isGoodSelectedRoom()" [room]="chatDmService.getSelectedDm().room" (sendMessageEmitter)="sendMessage($event)">

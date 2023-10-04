@@ -73,10 +73,10 @@ form {
 		.numbers {
 			$numSize: 33px;
 
-			$check: 70;
-			$checkJoin: 140;
-			$arrow: 62;
-			$arrowJoin: 174;
+			$check: 75.044;
+			$checkJoin: 139.82;
+			$arrow: 62.482;
+			$arrowJoin: 102.033;
 			$num1Len: 72.1554946899414;
 			$num2Len: 136.02162170410156;
 			$num3Len: 144.4256591796875;
@@ -84,7 +84,6 @@ form {
 			$numJoin2-3: 42.81303787231445;
 			$numJoin3-0: 40;
 			$totalLen: $check + $checkJoin + $arrow + $num1Len + $num2Len + $num3Len + $arrowJoin + $numJoin1-2 + $numJoin2-3 + $numJoin3-0;
-
 			overflow: visible;
 			position: absolute;
 			left: 50%;
@@ -125,13 +124,13 @@ form {
 
 			  &.arrow  {
 				stroke-dasharray: $arrow, $totalLen;
-				stroke-dashoffset: -$arrowJoin -$num3Len - $numJoin2-3 - $num2Len - $numJoin1-2 -$numJoin3-0;
+				stroke-dashoffset: -$arrowJoin -$num1Len -$num3Len - $numJoin2-3 - $num2Len - $numJoin1-2 -$numJoin3-0;
 				opacity: 1;
 				}
 
 				&.check  {
 				stroke-dasharray: $check, $totalLen;
-				stroke-dashoffset: -$arrow -$checkJoin -$arrowJoin -$num3Len - $numJoin2-3 - $num2Len - $numJoin1-2 -$numJoin3-0;
+				stroke-dashoffset: -$arrow -$checkJoin -$arrowJoin -$num1Len -$num3Len - $numJoin2-3 - $num2Len - $numJoin1-2 -$numJoin3-0;
 				opacity: 1;
 				}
 			}
