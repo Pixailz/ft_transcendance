@@ -362,17 +362,13 @@ export class WSGameService {
 
 	private checkBallLose(server: Server, room: LobbyI) {
 		if (room.state.ball.x > 800) {
-			this.ballLose(server, room, this.getPlayerBySide(room, "right"));
+			this.ballWon(server, room, this.getPlayerBySide(room, "left"));
 		} else if (room.state.ball.x < 0) {
-			this.ballLose(server, room, this.getPlayerBySide(room, "left"));
+			this.ballWon(server, room, this.getPlayerBySide(room, "right"));
 		}
 	}
 
-	private ballLose(
-		server: Server,
-		room: LobbyI,
-		player: PlayerI | undefined,
-	) {
+	private ballWon(server: Server, room: LobbyI, player: PlayerI | undefined) {
 		if (player) {
 			this.playerScoreUpdate(player, room);
 			this.checkGameOver(room);
