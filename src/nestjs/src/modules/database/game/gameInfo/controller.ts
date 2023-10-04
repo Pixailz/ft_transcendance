@@ -16,12 +16,8 @@ export class DBGameInfoController {
 	constructor(private readonly dbGameInfoService: DBGameInfoService) {}
 
 	@Post(":userA/:userB")
-	create(
-		@Param("userA") userAA: number,
-		@Param("userB") userBB: number,
-		@Body() post: DBGameInfoPost,
-	) {
-		return this.dbGameInfoService.create(post, userAA, userBB);
+	create(@Body() post: DBGameInfoPost) {
+		return this.dbGameInfoService.create(post);
 	}
 
 	@Get()

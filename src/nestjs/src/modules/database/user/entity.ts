@@ -4,14 +4,16 @@ import {
 	CreateDateColumn,
 	PrimaryGeneratedColumn,
 	OneToMany,
+	ManyToMany,
 } from "typeorm";
 
 import { UserChatRoomEntity } from "../userChatRoom/entity";
-import { GameInfoEntity } from "../gameInfo/entity";
+import { GameInfoEntity } from "../game/gameInfo/entity";
 import { MessageEntity } from "../message/entity";
 import { FriendEntity } from "../friend/entity";
 import { BlockedEntity } from "../blocked/entity";
 import { Exclude } from "class-transformer";
+import { PlayerScoreEntity } from "../game/player-score/entity";
 
 export enum Status {
 	DISCONNECTED,
@@ -62,11 +64,14 @@ export class UserEntity {
 	@OneToMany((type) => UserChatRoomEntity, (roomInfo) => roomInfo.user)
 	roomInfo: UserChatRoomEntity[];
 
-	@OneToMany((type) => GameInfoEntity, (gameInfo) => gameInfo.firstUser)
-	gameUserA: GameInfoEntity[];
+	@OneToMany(
+		(type) => PlayerScoreEntity,
+		(playerScore) => playerScore.playerId,
+	)
+	playerScores: PlayerScoreEntity[];
 
-	@OneToMany((type) => GameInfoEntity, (gameInfo) => gameInfo.secondUser)
-	gameUserB: GameInfoEntity[];
+	@ManyToMany((type) => GameInfoEntity, (gameInfo) => gameInfo.usersArray)
+	gameInfos: GameInfoEntity[];
 
 	@OneToMany((type) => MessageEntity, (message) => message.user)
 	message: MessageEntity[];
