@@ -1,0 +1,26 @@
+ul {
+    padding: 0;
+    max-height: 30vh;
+    overflow-y: auto;
+    li {
+        background: rgba(90, 90, 90, 0.3);
+		backdrop-filter: blur(10px);
+        transition: all 0.1s linear;
+        &:not(:last-child){
+			border-bottom: 1px dashed rgba(255,255,255,0.4);
+        }
+
+        &:hover {
+        	background-color: rgba(79, 135, 255, 0.3);
+        }
+
+        button {
+            padding: 1em 1.2em;
+            cursor: pointer;
+            color: white;
+            border: none;
+            background: transparent;
+        }
+
+    }
+}

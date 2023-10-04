@@ -6,6 +6,9 @@
 			</button>
 		</li>
 	</ng-container>
+	<li class="newRoomBtn">
+		<app-flat-button *ngIf="chatDmService.getFriends().length" fontIcon="add" (click)="onNewRoom()"></app-flat-button>
+	</li>
 </ul>
 
 <app-chat-view *ngIf="chatDmService.isGoodSelectedRoom()" [room]="chatDmService.getSelectedDm().room" (sendMessageEmitter)="sendMessage($event)">

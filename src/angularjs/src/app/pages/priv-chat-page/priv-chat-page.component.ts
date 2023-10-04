@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { NewDmComponent } from 'src/app/components/new-dm/new-dm.component';
 import { UserService } from 'src/app/services/user.service';
 import { ChatDmService } from 'src/app/services/websocket/chat/direct-message/service';
 import { FriendService } from 'src/app/services/websocket/friend/service';
@@ -13,8 +15,9 @@ export class PrivChatPageComponent {
 	constructor(public chatDmService: ChatDmService,
 				public friendService: FriendService,
 				public userService: UserService,
-				private wsGateway: WSGateway) {
-	}
+				private wsGateway: WSGateway,
+				private dialog: MatDialog,
+	){}
 
 	onSelectFriend(friend: any)
 	{
@@ -28,5 +31,13 @@ export class PrivChatPageComponent {
 
 	sendMessage(message: string) {
 		this.wsGateway.sendDmMessage(this.chatDmService.getSelectedDm().room.id, message);
+	}
+
+	onNewRoom()
+	{
+		this.dialog.open(NewDmComponent, {
+			panelClass: ['custom-dialog', 'dm-popup'],
+			data: {friends: this.chatDmService.getFriends()},
+		});
 	}
 }

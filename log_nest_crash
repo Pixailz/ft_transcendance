@@ -1,0 +1,177 @@
+postgresql  | PostgreSQL not found, initialize it
+postgresql  | The files belonging to this database system will be owned by user "postgres".
+postgresql  | This user must also own the server process.
+postgresql  | 
+postgresql  | The database cluster will be initialized with this locale configuration:
+postgresql  |   provider:    libc
+postgresql  |   LC_COLLATE:  C
+postgresql  |   LC_CTYPE:    C.UTF-8
+postgresql  |   LC_MESSAGES: C
+postgresql  |   LC_MONETARY: C
+postgresql  |   LC_NUMERIC:  C
+postgresql  |   LC_TIME:     C
+postgresql  | The default database encoding has accordingly been set to "UTF8".
+postgresql  | The default text search configuration will be set to "english".
+postgresql  | 
+postgresql  | Data page checksums are disabled.
+postgresql  | 
+postgresql  | fixing permissions on existing directory /usr/local/pgsql/data ... ok
+postgresql  | creating subdirectories ... ok
+postgresql  | selecting dynamic shared memory implementation ... posix
+postgresql  | selecting default max_connections ... 100
+postgresql  | selecting default shared_buffers ... 128MB
+postgresql  | selecting default time zone ... UTC
+postgresql  | creating configuration files ... ok
+postgresql  | running bootstrap script ... ok
+postgresql  | performing post-bootstrap initialization ... ok
+angularjs   | 
+angularjs   | up to date in 750ms
+angularjs   | 
+angularjs   | up to date in 225ms
+postgresql  | initdb: warning: enabling "trust" authentication for local connections
+postgresql  | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+postgresql  | syncing data to disk ... ok
+postgresql  | 
+postgresql  | 
+postgresql  | Success.
+postgresql  | 
+postgresql  | hba pos: host all all 13.37.42.11/0 md5
+postgresql  | waiting for server to start....2023-10-04 10:18:36.217 UTC [50] LOG:  redirecting log output to logging collector process
+postgresql  | 2023-10-04 10:18:36.217 UTC [50] HINT:  Future log output will appear in directory "/var/log/postgresql".
+postgresql  |  done
+postgresql  | server started
+postgresql  | CREATE DATABASE
+postgresql  | CREATE ROLE
+postgresql  | GRANT
+postgresql  | ALTER DATABASE
+postgresql  | waiting for server to shut down.... done
+postgresql  | server stopped
+postgresql  | PostgreSQL launched
+postgresql  | 2023-10-04 10:18:36.847 UTC [67] LOG:  redirecting log output to logging collector process
+postgresql  | 2023-10-04 10:18:36.847 UTC [67] HINT:  Future log output will appear in directory "/var/log/postgresql".
+nestjs      | 
+nestjs      | up to date in 188ms
+nestjs      | 
+nestjs      | up to date in 176ms
+angularjs   | 
+angularjs   | added 244 packages in 9s
+angularjs   | 
+angularjs   | 37 packages are looking for funding
+angularjs   |   run `npm fund` for details
+nestjs      | 
+nestjs      | added 262 packages in 9s
+nestjs      | 
+nestjs      | 44 packages are looking for funding
+nestjs      |   run `npm fund` for details
+angularjs   | 
+angularjs   | added 982 packages, and audited 983 packages in 11s
+angularjs   | 
+angularjs   | 107 packages are looking for funding
+angularjs   |   run `npm fund` for details
+angularjs   | 
+angularjs   | 2 moderate severity vulnerabilities
+angularjs   | 
+angularjs   | Some issues need review, and may require choosing
+angularjs   | a different dependency.
+angularjs   | 
+angularjs   | Run `npm audit` for details.
+angularjs   | angularjs launched
+angularjs   | 
+angularjs   | > app@0.0.0 dev
+angularjs   | > ng serve --host 0.0.0.0 --configuration=development
+angularjs   | 
+angularjs   | 
+angularjs   | Warning: This is a simple server for use in testing or debugging Angular applications
+angularjs   | locally. It hasn't been reviewed for security issues.
+angularjs   | 
+angularjs   | Binding this server to an open connection can result in compromising your application or
+angularjs   | computer. Using a different host than the one passed to the "--host" flag might result in
+angularjs   | websocket connection issues. You might need to use "--disable-host-check" if that's the
+angularjs   | case.
+angularjs   |     
+angularjs   | - Generating browser application bundles (phase: setup)...
+nestjs      | npm ERR! code 1
+nestjs      | npm ERR! path /shared/transcendence/node_modules/bcrypt
+nestjs      | npm ERR! command failed
+nestjs      | npm ERR! command sh -c node-pre-gyp install --fallback-to-build
+nestjs      | npm ERR! Failed to execute '/usr/bin/node /usr/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js configure --fallback-to-build --module=/shared/transcendence/node_modules/bcrypt/lib/binding/napi-v3/bcrypt_lib.node --module_name=bcrypt_lib --module_path=/shared/transcendence/node_modules/bcrypt/lib/binding/napi-v3 --napi_version=9 --node_abi_napi=napi --napi_build_version=3 --node_napi_label=napi-v3 --python=/usr/bin/python3' (1)
+nestjs      | npm ERR! node-pre-gyp info it worked if it ends with ok
+nestjs      | npm ERR! node-pre-gyp info using node-pre-gyp@1.0.11
+nestjs      | npm ERR! node-pre-gyp info using node@18.17.1 | linux | x64
+nestjs      | npm ERR! node-pre-gyp info check checked for "/shared/transcendence/node_modules/bcrypt/lib/binding/napi-v3/bcrypt_lib.node" (not found)
+nestjs      | npm ERR! node-pre-gyp http GET https://github.com/kelektiv/node.bcrypt.js/releases/download/v5.1.1/bcrypt_lib-v5.1.1-napi-v3-linux-x64-musl.tar.gz
+nestjs      | npm ERR! node-pre-gyp ERR! install request to https://objects.githubusercontent.com/github-production-release-asset-2e65be/611333/bd2eb533-1998-4f7b-a3d9-d94c2515555b?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20231004%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20231004T101742Z&X-Amz-Expires=300&X-Amz-Signature=940e6434f52a69ab2ee0540d50ae60883cf8fe55b16fe79265834c0de3cd7ca9&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=611333&response-content-disposition=attachment%3B%20filename%3Dbcrypt_lib-v5.1.1-napi-v3-linux-x64-musl.tar.gz&response-content-type=application%2Foctet-stream failed, reason: connect ECONNREFUSED 185.199.109.133:443 
+nestjs      | npm ERR! node-pre-gyp WARN Pre-built binaries not installable for bcrypt@5.1.1 and node@18.17.1 (node-v108 ABI, musl) (falling back to source compile with node-gyp) 
+nestjs      | npm ERR! node-pre-gyp WARN Hit error request to https://objects.githubusercontent.com/github-production-release-asset-2e65be/611333/bd2eb533-1998-4f7b-a3d9-d94c2515555b?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20231004%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20231004T101742Z&X-Amz-Expires=300&X-Amz-Signature=940e6434f52a69ab2ee0540d50ae60883cf8fe55b16fe79265834c0de3cd7ca9&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=611333&response-content-disposition=attachment%3B%20filename%3Dbcrypt_lib-v5.1.1-napi-v3-linux-x64-musl.tar.gz&response-content-type=application%2Foctet-stream failed, reason: connect ECONNREFUSED 185.199.109.133:443 
+nestjs      | npm ERR! gyp info it worked if it ends with ok
+nestjs      | npm ERR! gyp info using node-gyp@9.3.1
+nestjs      | npm ERR! gyp info using node@18.17.1 | linux | x64
+nestjs      | npm ERR! gyp info ok 
+nestjs      | npm ERR! gyp info it worked if it ends with ok
+nestjs      | npm ERR! gyp info using node-gyp@9.3.1
+nestjs      | npm ERR! gyp info using node@18.17.1 | linux | x64
+nestjs      | npm ERR! gyp ERR! find Python 
+nestjs      | npm ERR! gyp ERR! find Python checking Python explicitly set from command line or npm configuration
+nestjs      | npm ERR! gyp ERR! find Python - "--python=" or "npm config get python" is "/usr/bin/python3"
+nestjs      | npm ERR! gyp ERR! find Python - "/usr/bin/python3" is not in PATH or produced an error
+nestjs      | npm ERR! gyp ERR! find Python Python is not set from environment variable PYTHON
+nestjs      | npm ERR! gyp ERR! find Python checking if "python3" can be used
+nestjs      | npm ERR! gyp ERR! find Python - "python3" is not in PATH or produced an error
+nestjs      | npm ERR! gyp ERR! find Python checking if "python" can be used
+nestjs      | npm ERR! gyp ERR! find Python - "python" is not in PATH or produced an error
+nestjs      | npm ERR! gyp ERR! find Python 
+nestjs      | npm ERR! gyp ERR! find Python **********************************************************
+nestjs      | npm ERR! gyp ERR! find Python You need to install the latest version of Python.
+nestjs      | npm ERR! gyp ERR! find Python Node-gyp should be able to find and use Python. If not,
+nestjs      | npm ERR! gyp ERR! find Python you can try one of the following options:
+nestjs      | npm ERR! gyp ERR! find Python - Use the switch --python="/path/to/pythonexecutable"
+nestjs      | npm ERR! gyp ERR! find Python   (accepted by both node-gyp and npm)
+nestjs      | npm ERR! gyp ERR! find Python - Set the environment variable PYTHON
+nestjs      | npm ERR! gyp ERR! find Python - Set the npm configuration variable python:
+nestjs      | npm ERR! gyp ERR! find Python   npm config set python "/path/to/pythonexecutable"
+nestjs      | npm ERR! gyp ERR! find Python For more information consult the documentation at:
+nestjs      | npm ERR! gyp ERR! find Python https://github.com/nodejs/node-gyp#installation
+nestjs      | npm ERR! gyp ERR! find Python **********************************************************
+nestjs      | npm ERR! gyp ERR! find Python 
+nestjs      | npm ERR! gyp ERR! configure error 
+nestjs      | npm ERR! gyp ERR! stack Error: Could not find any Python installation to use
+nestjs      | npm ERR! gyp ERR! stack     at PythonFinder.fail (/usr/lib/node_modules/npm/node_modules/node-gyp/lib/find-python.js:330:47)
+nestjs      | npm ERR! gyp ERR! stack     at PythonFinder.runChecks (/usr/lib/node_modules/npm/node_modules/node-gyp/lib/find-python.js:159:21)
+nestjs      | npm ERR! gyp ERR! stack     at PythonFinder.<anonymous> (/usr/lib/node_modules/npm/node_modules/node-gyp/lib/find-python.js:202:16)
+nestjs      | npm ERR! gyp ERR! stack     at PythonFinder.execFileCallback (/usr/lib/node_modules/npm/node_modules/node-gyp/lib/find-python.js:294:16)
+nestjs      | npm ERR! gyp ERR! stack     at exithandler (node:child_process:427:5)
+nestjs      | npm ERR! gyp ERR! stack     at ChildProcess.errorhandler (node:child_process:439:5)
+nestjs      | npm ERR! gyp ERR! stack     at ChildProcess.emit (node:events:514:28)
+nestjs      | npm ERR! gyp ERR! stack     at ChildProcess._handle.onexit (node:internal/child_process:289:12)
+nestjs      | npm ERR! gyp ERR! stack     at onErrorNT (node:internal/child_process:476:16)
+nestjs      | npm ERR! gyp ERR! stack     at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+nestjs      | npm ERR! gyp ERR! System Linux 5.10.0-25-amd64
+nestjs      | npm ERR! gyp ERR! command "/usr/bin/node" "/usr/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js" "configure" "--fallback-to-build" "--module=/shared/transcendence/node_modules/bcrypt/lib/binding/napi-v3/bcrypt_lib.node" "--module_name=bcrypt_lib" "--module_path=/shared/transcendence/node_modules/bcrypt/lib/binding/napi-v3" "--napi_version=9" "--node_abi_napi=napi" "--napi_build_version=3" "--node_napi_label=napi-v3" "--python=/usr/bin/python3"
+nestjs      | npm ERR! gyp ERR! cwd /shared/transcendence/node_modules/bcrypt
+nestjs      | npm ERR! gyp ERR! node -v v18.17.1
+nestjs      | npm ERR! gyp ERR! node-gyp -v v9.3.1
+nestjs      | npm ERR! gyp ERR! not ok 
+nestjs      | npm ERR! node-pre-gyp ERR! build error 
+nestjs      | npm ERR! node-pre-gyp ERR! stack Error: Failed to execute '/usr/bin/node /usr/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js configure --fallback-to-build --module=/shared/transcendence/node_modules/bcrypt/lib/binding/napi-v3/bcrypt_lib.node --module_name=bcrypt_lib --module_path=/shared/transcendence/node_modules/bcrypt/lib/binding/napi-v3 --napi_version=9 --node_abi_napi=napi --napi_build_version=3 --node_napi_label=napi-v3 --python=/usr/bin/python3' (1)
+nestjs      | npm ERR! node-pre-gyp ERR! stack     at ChildProcess.<anonymous> (/shared/transcendence/node_modules/@mapbox/node-pre-gyp/lib/util/compile.js:89:23)
+nestjs      | npm ERR! node-pre-gyp ERR! stack     at ChildProcess.emit (node:events:514:28)
+nestjs      | npm ERR! node-pre-gyp ERR! stack     at maybeClose (node:internal/child_process:1091:16)
+nestjs      | npm ERR! node-pre-gyp ERR! stack     at ChildProcess._handle.onexit (node:internal/child_process:302:5)
+nestjs      | npm ERR! node-pre-gyp ERR! System Linux 5.10.0-25-amd64
+nestjs      | npm ERR! node-pre-gyp ERR! command "/usr/bin/node" "/shared/transcendence/node_modules/.bin/node-pre-gyp" "install" "--fallback-to-build"
+nestjs      | npm ERR! node-pre-gyp ERR! cwd /shared/transcendence/node_modules/bcrypt
+nestjs      | npm ERR! node-pre-gyp ERR! node -v v18.17.1
+nestjs      | npm ERR! node-pre-gyp ERR! node-pre-gyp -v v1.0.11
+nestjs      | npm ERR! node-pre-gyp ERR! not ok
+nestjs      | 
+nestjs      | npm ERR! A complete log of this run can be found in: /root/.npm/_logs/2023-10-04T10_18_49_849Z-debug-0.log
+nestjs      | nestjs launched
+nestjs      | 
+nestjs      | > pongpong@0.0.2 dev
+nestjs      | > nest start --watch
+nestjs      | 
+nestjs      | 
+nestjs      |  Error  "@nestjs/swagger" plugin is not installed.
+nestjs      | 
+nestjs exited with code 0
+

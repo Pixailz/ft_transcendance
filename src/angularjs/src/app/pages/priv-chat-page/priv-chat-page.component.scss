@@ -9,25 +9,41 @@ ul {
 	max-width: 50%;
 	min-width: fit-content;
 	position: relative;
-    min-width: 10em;
 
 	li {
 		width: 100%;
-
+		margin-bottom: 0.8em;
 		button {
 			width: 100%;
 			font-size: 1em;
 			color: white;
 			cursor: pointer;
-			padding: .6em 1em;
+			padding: 0 1em;
 			text-align: left;
-
+			height: 3em;
 			&:active {
 				color: rgb(186, 186, 186);
 			}
 		}
-	}
 
+		&:nth-last-child(2) {
+			margin-bottom: 2em;
+		}
+
+		&.newRoomBtn {
+			width: 100%;
+
+			& app-flat-button {
+				display: block;
+				position: relative;
+				text-align: center;
+				font-size: 1em;
+				padding: 0;
+				--bg-color: 167, 220, 163;
+				width: 100%;
+			}
+		}
+	}
 }
 
 app-chat-view {

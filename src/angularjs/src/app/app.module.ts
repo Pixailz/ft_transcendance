@@ -58,6 +58,7 @@ import { ChatViewComponent } from './components/chat-view/chat-view.component';
 import { PrivChatPageComponent } from './pages/priv-chat-page/priv-chat-page.component';
 import { ResizableDirective } from './directives/resizable.directive';
 import { ResizableHandleComponent } from './components/resizable-handle/resizable-handle.component';
+import { NewDmComponent } from './components/new-dm/new-dm.component';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -103,6 +104,7 @@ const config: SocketIoConfig = {
   PrivChatPageComponent,
   ResizableDirective,
   ResizableHandleComponent,
+  NewDmComponent,
 	],
 	imports: [
 		BrowserModule,
