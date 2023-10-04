@@ -1,8 +1,6 @@
 import {
 	Entity,
-	ManyToOne,
 	Column,
-	JoinColumn,
 	PrimaryGeneratedColumn,
 	JoinTable,
 	ManyToMany,
@@ -41,5 +39,5 @@ export class GameInfoEntity {
 			cascade: true,
 		},
 	)
-	public playerScores: PlayerScoreEntity[];
+	public playersScores: PlayerScoreEntity[];
 }

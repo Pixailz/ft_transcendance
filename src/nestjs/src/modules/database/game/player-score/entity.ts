@@ -13,6 +13,6 @@ export class PlayerScoreEntity {
 	@Column({ type: "int" })
 	public score: number;
 
-	@ManyToOne((type) => GameInfoEntity, (gameInfo) => gameInfo.playerScores)
+	@ManyToOne((type) => GameInfoEntity, (gameInfo) => gameInfo.playersScores)
 	public gameInfo: GameInfoEntity;
 }

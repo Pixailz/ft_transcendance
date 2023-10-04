@@ -5,7 +5,6 @@ import { randomBytes } from "crypto";
 import { UserService } from "src/adapter/user/service";
 import { Sanitize } from "../../modules/database/sanitize-object";
 import {
-	DefLobbyI,
 	DefPaddleI,
 	DefPlayerI,
 	GameStatus,
@@ -51,7 +50,6 @@ export class WSGameService {
 		};
 		const room_id = this.gameSearchOpponent(player, game_opt, socket);
 		const room = this.rooms.get(room_id);
-		this.getInfo();
 		if (this.isFullRoom(room) && room.status !== LobbyStatus.STARTED)
 			this.startGame(server, room_id);
 		else if (room.status === LobbyStatus.LOBBY) socket.emit("gameWaiting");
@@ -247,24 +245,6 @@ export class WSGameService {
 				return;
 			});
 
-		room.players.forEach(async (player) => {
-			await this.scoreDBService
-				.create({
-					gameId: room.db_room_id,
-					playerId: player.user.id,
-					score: 0,
-				})
-				.catch((err) => {
-					console.error(err);
-					this.wsSocket.sendToUserInGame(
-						server,
-						room,
-						"gameEnded",
-						{},
-					);
-					return;
-				});
-		});
 		room.status = LobbyStatus.STARTED;
 		room.state.gameStatus = GameStatus.STARTED;
 		this.wsSocket.sendToUserInGame(server, room, "gameStarting", [
@@ -280,12 +260,12 @@ export class WSGameService {
 		}
 		// await sleep(5000);
 		await sleep(1000);
-		Object.create(DefPaddleI);
+		console.log(await this.gameDBService.returnOne(room.db_room_id));
+		this.wsSocket.sendToUserInGame(server, room, "gameEnded", {});
 		Object.getOwnPropertyNames(this.rooms.get(room_id)).forEach((value) => {
 			delete this.rooms.get(room_id)[value];
 		});
 		this.rooms.delete(room_id);
-		this.wsSocket.sendToUserInGame(server, room, "gameEnded", {});
 		console.log("GAME ENDED");
 	}
 
@@ -407,8 +387,13 @@ export class WSGameService {
 				playerId: player.id,
 				score: player.score,
 			})
-			.then(() => {
-				console.log("playerScore updated");
+			.then(async (score) => {
+				console.log("playerScore updated, new scores: ");
+				console.log(
+					await this.scoreDBService.find({
+						where: { gameInfo: { id: room.db_room_id } },
+					}),
+				);
 			})
 			.catch((err) => {
 				console.error(err);

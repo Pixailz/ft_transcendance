@@ -1,9 +1,5 @@
-import {
-	Injectable,
-	ForbiddenException,
-	NotFoundException,
-} from "@nestjs/common";
-import { In, Repository } from "typeorm";
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { FindManyOptions, FindOneOptions, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import { PlayerScoreEntity } from "./entity";
@@ -24,18 +20,18 @@ export class DBPlayerScoreService {
 	) {}
 
 	async create(post: DBPlayerScorePost) {
-		const gameInfo = await this.gameInfoRepo.findOneBy({ id: post.gameId });
-		gameInfo.playerScores.forEach((element) => {
-			if (element.playerId == post.playerId)
-				throw new ForbiddenException("Player Score already exists");
-		});
-		const playerScore = new PlayerScoreEntity();
-		playerScore.playerId = post.playerId;
-		playerScore.score = post.score;
-		playerScore.gameInfo = gameInfo;
-		gameInfo.playerScores.push(playerScore);
-		await this.gameInfoRepo.save(gameInfo);
-		return await this.playerScoreRepo.save(playerScore);
+		// const gameInfo = await this.gameInfoRepo.findOneBy({ id: post.gameId });
+		// gameInfo.playerScores?.forEach((element) => {
+		// 	if (element.playerId == post.playerId)
+		// 		throw new ForbiddenException("Player Score already exists");
+		// });
+		// const playerScore = new PlayerScoreEntity();
+		// playerScore.playerId = post.playerId;
+		// playerScore.score = post.score;
+		// playerScore.gameInfo = gameInfo;
+		// gameInfo.playerScores.push(playerScore);
+		// await this.gameInfoRepo.save(gameInfo);
+		// return await this.playerScoreRepo.save(playerScore);
 	}
 
 	async returnAll() {
@@ -48,9 +44,20 @@ export class DBPlayerScoreService {
 		else throw new NotFoundException("GameInfo not found");
 	}
 
+	async find(parameters: FindManyOptions<PlayerScoreEntity>) {
+		return await this.playerScoreRepo.find(parameters);
+	}
+
+	async findOne(parameters: FindOneOptions<PlayerScoreEntity>) {
+		return await this.playerScoreRepo.findOne(parameters);
+	}
+
 	async update(gameId: number, post: DBPlayerScorePost) {
-		const gameInfo = await this.gameInfoRepo.findOneBy({ id: gameId });
-		const playerScore = gameInfo.playerScores.find(
+		const gameInfo = await this.gameInfoRepo.findOne({
+			where: { id: gameId },
+			relations: ["playersScores"],
+		});
+		const playerScore = gameInfo.playersScores.find(
 			(element) => element.playerId == post.playerId,
 		);
 		if (playerScore) {

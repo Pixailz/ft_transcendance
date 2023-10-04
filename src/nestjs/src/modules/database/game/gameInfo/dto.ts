@@ -1,5 +1,5 @@
-import { IsString, IsNotEmpty, IsArray } from "class-validator";
-import { isUint8Array } from "util/types";
+import { IsString, IsNotEmpty, IsArray, IsOptional } from "class-validator";
+import { PlayerScoreEntity } from "../player-score/entity";
 
 export class DBGameInfoPost {
 	@IsNotEmpty()
@@ -9,4 +9,7 @@ export class DBGameInfoPost {
 	@IsNotEmpty()
 	@IsArray()
 	users?: number[];
+
+	@IsOptional()
+	playersScores?: PlayerScoreEntity[];
 }

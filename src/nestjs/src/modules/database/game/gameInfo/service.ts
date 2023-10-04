@@ -1,9 +1,5 @@
-import {
-	Injectable,
-	ForbiddenException,
-	NotFoundException,
-} from "@nestjs/common";
-import { Repository } from "typeorm";
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { In, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import { GameInfoEntity } from "./entity";
@@ -23,12 +19,25 @@ export class DBGameInfoService {
 
 	async create(post: DBGameInfoPost) {
 		const gameInfo = new GameInfoEntity();
+		gameInfo.type = post.type;
+		const users = await this.userRepo.find({
+			where: { id: In(post.users) },
+		});
+		gameInfo.usersArray = users;
+		gameInfo.users = post.users;
+
+		const playerScores = [];
 		for (const user of post.users) {
 			const tmp = await this.userRepo.findOneBy({ id: user });
 			if (!tmp) throw new NotFoundException("User not found");
+
+			const playerScore = new PlayerScoreEntity();
+			playerScore.playerId = tmp.id;
+			playerScore.score = 0;
+			playerScores.push(playerScore);
 		}
-		gameInfo.type = post.type;
-		gameInfo.users = post.users;
+
+		gameInfo.playersScores = playerScores;
 		return await this.gameInfoRepo.save(gameInfo);
 	}
 
@@ -37,8 +46,11 @@ export class DBGameInfoService {
 	}
 
 	async returnOne(gameId: number) {
-		const tmp = await this.gameInfoRepo.findOneBy({ id: gameId });
-		if (tmp) return await this.gameInfoRepo.findOneBy({ id: gameId });
+		const tmp = await this.gameInfoRepo.findOne({ 
+			where: { id: gameId },
+			relations: ["playersScores", "usersArray"],
+		});
+		if (tmp) return tmp;
 		else throw new NotFoundException("GameInfo not found");
 	}
 
@@ -52,17 +64,5 @@ export class DBGameInfoService {
 		const tmp = await this.gameInfoRepo.findOneBy({ id: gameId });
 		if (tmp) return await this.gameInfoRepo.delete({ id: gameId });
 		else throw new NotFoundException("GameInfo not found");
-	}
-
-	//Scores Updates
-	async updateScore(gameId: number, post: PlayerScoreEntity) {
-		const game = await this.gameInfoRepo.findOneBy({ id: gameId });
-		if (game) {
-			const playerScore = new PlayerScoreEntity();
-			playerScore.playerId = post.playerId;
-			playerScore.score = post.score;
-			playerScore.gameInfo = game;
-			return await this.gameInfoRepo.save(playerScore);
-		} else throw new NotFoundException("GameInfo not found");
 	}
 }
