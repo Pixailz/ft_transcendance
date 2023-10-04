@@ -117,7 +117,7 @@ export const DefPlayerSockI: PlayerSockI = {
 export interface LobbyI {
 	status			: LobbyStatus,
 	type			: string,
-	players			: any,
+	players			: PlayerSockI[],
 	state			: GameStateI,
 	previousState	: GameStateI,
 	winner_id		: number,
@@ -126,7 +126,7 @@ export interface LobbyI {
 export const DefLobbyI: LobbyI = {
 	status			: LobbyStatus.LOBBY,
 	type			: "",
-	players			: {},
+	players			: [],
 	state			: DefGameStateI,
 	previousState	: DefGameStateI,
 	winner_id		: -1,

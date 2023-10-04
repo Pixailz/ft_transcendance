@@ -85,8 +85,8 @@ export class GameService {
 	isInGame()
 	{ this.wsGateway.isInGame(); }
 
-	reconnectGame()
-	{ this.wsGateway.reconnectGame(this.room.id); }
+	// reconnectGame()
+	// { this.wsGateway.reconnectGame(this.room.id); }
 
 	getInfo()
 	{

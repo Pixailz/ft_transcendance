@@ -18,6 +18,6 @@ export class GameLobbyComponent {
 	searchGame()
 	{ this.gameService.searchGame(DefGameOptionI); }
 
-	reconnectGame()
-	{ this.gameService.reconnectGame(); }
+	// reconnectGame()
+	// { this.gameService.reconnectGame(); }
 }
