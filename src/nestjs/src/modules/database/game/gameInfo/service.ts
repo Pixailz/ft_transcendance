@@ -9,7 +9,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { GameInfoEntity } from "./entity";
 import { DBGameInfoPost } from "./dto";
 
-import { UserEntity } from "../user/entity";
+import { UserEntity } from "../../user/entity";
+import { PlayerScoreEntity } from "../player-score/entity";
 
 @Injectable()
 export class DBGameInfoService {
@@ -20,14 +21,14 @@ export class DBGameInfoService {
 		private readonly userRepo: Repository<UserEntity>,
 	) {}
 
-	async create(post: DBGameInfoPost, userA: number, userB: number) {
+	async create(post: DBGameInfoPost) {
 		const gameInfo = new GameInfoEntity();
-		const user1 = await this.userRepo.findOneBy({ id: userA });
-		const user2 = await this.userRepo.findOneBy({ id: userB });
-		if (!user1 || !user2) throw new NotFoundException("User not found");
-		gameInfo.userA = userA;
-		gameInfo.userB = userB;
+		for (const user of post.users) {
+			const tmp = await this.userRepo.findOneBy({ id: user });
+			if (!tmp) throw new NotFoundException("User not found");
+		}
 		gameInfo.type = post.type;
+		gameInfo.users = post.users;
 		return await this.gameInfoRepo.save(gameInfo);
 	}
 
@@ -51,5 +52,17 @@ export class DBGameInfoService {
 		const tmp = await this.gameInfoRepo.findOneBy({ id: gameId });
 		if (tmp) return await this.gameInfoRepo.delete({ id: gameId });
 		else throw new NotFoundException("GameInfo not found");
+	}
+
+	//Scores Updates
+	async updateScore(gameId: number, post: PlayerScoreEntity) {
+		const game = await this.gameInfoRepo.findOneBy({ id: gameId });
+		if (game) {
+			const playerScore = new PlayerScoreEntity();
+			playerScore.playerId = post.playerId;
+			playerScore.score = post.score;
+			playerScore.gameInfo = game;
+			return await this.gameInfoRepo.save(playerScore);
+		} else throw new NotFoundException("GameInfo not found");
 	}
 }

@@ -1,5 +1,5 @@
 import { Controller, Get } from "@nestjs/common";
-import { DBGameInfoService } from "src/modules/database/gameInfo/service";
+import { DBGameInfoService } from "src/modules/database/game/gameInfo/service";
 import { DBUserService } from "src/modules/database/user/service";
 
 export interface LeaderBoardEntry {
@@ -22,32 +22,32 @@ export class LeaderboardController {
 
 		if (games.length === 0)
 			return [{ nickname: "No users", score: 69420, rank: 1 }];
-		let leaderboard = users.map((user) => {
-			const userGames = games.filter(
-				(game) => game.userA === user.id || game.userB === user.id,
-			);
-			const score = userGames.reduce((acc, game) => {
-				if (game.userA === user.id) {
-					acc.scoreA += game.scoreA;
-				} else {
-					acc.scoreA += game.scoreB;
-				}
-				return acc;
-			});
-			return {
-				nickname: user.nickname,
-				score: score.scoreA,
-			};
-		});
+		// let leaderboard = users.map((user) => {
+		// 	const userGames = games.filter(
+		// 		(game) => game.userA === user.id || game.userB === user.id,
+		// 	);
+		// 	const score = userGames.reduce((acc, game) => {
+		// 		if (game.userA === user.id) {
+		// 			acc.scoreA += game.scoreA;
+		// 		} else {
+		// 			acc.scoreA += game.scoreB;
+		// 		}
+		// 		return acc;
+		// 	});
+		// 	return {
+		// 		nickname: user.nickname,
+		// 		score: score.scoreA,
+		// 	};
+		// });
 
-		leaderboard = leaderboard.sort((a, b) => b.score - a.score);
-		leaderboard = leaderboard.map((entry, index) => {
-			return {
-				...entry,
-				rank: index + 1,
-			};
-		});
+		// leaderboard = leaderboard.sort((a, b) => b.score - a.score);
+		// leaderboard = leaderboard.map((entry, index) => {
+		// 	return {
+		// 		...entry,
+		// 		rank: index + 1,
+		// 	};
+		// });
 
-		return leaderboard;
+		// return leaderboard;
 	}
 }

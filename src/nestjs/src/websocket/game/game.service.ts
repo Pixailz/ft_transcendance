@@ -15,6 +15,9 @@ import {
 	PlayerSockI,
 } from "./game.interface";
 import { UserEntity } from "src/modules/database/user/entity";
+import { DBGameInfoService } from "src/modules/database/game/gameInfo/service";
+import { GameInfoEntity } from "src/modules/database/game/gameInfo/entity";
+import { DBPlayerScoreService } from "src/modules/database/game/player-score/service";
 
 @Injectable()
 export class WSGameService {
@@ -24,6 +27,8 @@ export class WSGameService {
 		private sanitize: Sanitize,
 		private userService: UserService,
 		private wsSocket: WSSocket,
+		private gameDBService: DBGameInfoService,
+		private scoreDBService: DBPlayerScoreService,
 	) {
 		this.rooms = new Map();
 	}
@@ -228,6 +233,38 @@ export class WSGameService {
 		if (room.state.gameStatus === GameStatus.FINISHED) {
 			return;
 		}
+		this.gameDBService
+			.create({
+				type: room.type,
+				users: room.players.map((player) => player.user.id),
+			})
+			.then((gameInfo: GameInfoEntity) => {
+				room.db_room_id = gameInfo.id;
+			})
+			.catch((err) => {
+				console.error(err);
+				this.wsSocket.sendToUserInGame(server, room, "gameEnded", {});
+				return;
+			});
+
+		room.players.forEach(async (player) => {
+			await this.scoreDBService
+				.create({
+					gameId: room.db_room_id,
+					playerId: player.user.id,
+					score: 0,
+				})
+				.catch((err) => {
+					console.error(err);
+					this.wsSocket.sendToUserInGame(
+						server,
+						room,
+						"gameEnded",
+						{},
+					);
+					return;
+				});
+		});
 		room.status = LobbyStatus.STARTED;
 		room.state.gameStatus = GameStatus.STARTED;
 		this.wsSocket.sendToUserInGame(server, room, "gameStarting", [
@@ -357,14 +394,25 @@ export class WSGameService {
 		player: PlayerI | undefined,
 	) {
 		if (player) {
-			this.playerScoreUpdate(player);
+			this.playerScoreUpdate(player, room);
 			this.checkGameOver(room);
 			this.resetBall(server, room);
 		}
 	}
 
-	private playerScoreUpdate(player: PlayerI) {
+	private playerScoreUpdate(player: PlayerI, room: LobbyI) {
 		player.score += 1;
+		this.scoreDBService
+			.update(room.db_room_id, {
+				playerId: player.id,
+				score: player.score,
+			})
+			.then(() => {
+				console.log("playerScore updated");
+			})
+			.catch((err) => {
+				console.error(err);
+			});
 	}
 
 	private checkGameOver(room: LobbyI) {
