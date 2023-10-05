@@ -42,10 +42,9 @@ import { FlatListComponent } from './components/flat-list/flat-list.component';
 import { NotificationComponent } from './components/notification/notification.component';
 import { RouteReuseStrategy } from '@angular/router';
 import { CustomReuseStrategy } from './reuse-strategy';
-import {MatBadgeModule} from '@angular/material/badge';
+import { MatBadgeModule } from '@angular/material/badge';
 
 // WEBSOCKET
-import { WSChatDmComponent } from './pages/chat-dm/chat-dm.component';
 import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
 import { TextNotificationComponent } from './components/text-notification/text-notification.component';
 import { NotifFriendReqReceivedComponent } from './components/notification/friend-req-received/friend-req-received.component';
@@ -59,6 +58,7 @@ import { PrivChatPageComponent } from './pages/priv-chat-page/priv-chat-page.com
 import { ResizableDirective } from './directives/resizable.directive';
 import { ResizableHandleComponent } from './components/resizable-handle/resizable-handle.component';
 import { NewDmComponent } from './components/new-dm/new-dm.component';
+import { UserTooltipComponent } from './components/user-tooltip/user-tooltip.component';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -92,7 +92,6 @@ const config: SocketIoConfig = {
 		FlatListComponent,
 		NotificationComponent,
 		TextNotificationComponent,
-		WSChatDmComponent,
 		WSChatChannelComponent,
 		NotifFriendReqSentComponent,
 		NotifFriendReqReceivedComponent,
@@ -105,6 +104,7 @@ const config: SocketIoConfig = {
   ResizableDirective,
   ResizableHandleComponent,
   NewDmComponent,
+  UserTooltipComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -128,7 +128,7 @@ const config: SocketIoConfig = {
 		MatProgressBarModule,
 		SocketIoModule.forRoot(config),
 		CodeInputModule,
-		MatBadgeModule
+		MatBadgeModule,
 	],
 	providers: [
 		AuthGuardService,

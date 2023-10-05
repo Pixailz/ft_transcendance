@@ -23,16 +23,16 @@
 				[isActive]="friendService.alreadySend(user_info.id)"
 				[isDisabled]="friendService.alreadySend(user_info.id)">
 			</app-flat-button>
-			<app-flat-button *ngIf="!friendService.isBlocked(user_info.id)"
+			<app-flat-button *ngIf="!friendService.isTargetBlocked(user_info.id)"
 				class="block-btn" bgColor="red" [fontIcon]="'block'"
 				color="warn" (click)="blockUser(user_info.id)"
 				></app-flat-button>
-			<app-flat-button *ngIf="friendService.isBlocked(user_info.id) && user_info.id !== userService.user.id"
+			<app-flat-button *ngIf="friendService.isTargetBlocked(user_info.id) && user_info.id !== userService.user.id"
 				class="block-btn" bgColor="red" [fontIcon]="'person_add'"
 				color="primary" (click)="unblockUser(user_info.id)"
 				></app-flat-button>
 		</div>
-		
+
 	</div>
 </div>
 

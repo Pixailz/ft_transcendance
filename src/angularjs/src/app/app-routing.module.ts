@@ -1,4 +1,4 @@
-import { Component, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { HomeDashboardComponent } from './pages/home-dashboard/home-dashboard.component';
@@ -12,9 +12,7 @@ import { AnonymousLayoutComponent } from './layout/anonymous-layout.component';
 import { AuthenticatedLayoutComponent } from './layout/authenticated-layout.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 
-import { WSChatDmComponent } from './pages/chat-dm/chat-dm.component';
 import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
-import { ChatViewComponent } from './components/chat-view/chat-view.component';
 import { PrivChatPageComponent } from './pages/priv-chat-page/priv-chat-page.component';
 
 const routes: Routes = [
@@ -41,7 +39,7 @@ const routes: Routes = [
 			},
 			{
 				path: 'chat/dm',
-				component: WSChatDmComponent,
+				component: PrivChatPageComponent,
 				data: { animation: 'ChatDm', reuseRoute: true }
 			},
 			{

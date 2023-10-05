@@ -143,14 +143,14 @@ export class WSGateway {
 	listenDeniedFriendReq(): Observable<any>
 	{ return this.socket.fromEvent<any>("deniedFriendReq")}
 
-	listenAllBlocked(): Observable<UserI[]>
-	{ return this.socket.fromEvent<UserI[]>("getAllBlocked")}
+	listenAllBlocked(): Observable<any[]>
+	{ return this.socket.fromEvent<any[]>("getAllBlocked")}
 
-	listenNewBlocked(): Observable<UserI>
-	{ return this.socket.fromEvent<UserI>("getNewBlocked")}
+	listenNewBlocked(): Observable<any>
+	{ return this.socket.fromEvent<any>("getNewBlocked")}
 
-	listenNewUnblocked(): Observable<number>
-	{ return this.socket.fromEvent<number>("getNewUnblocked")}
+	listenNewUnblocked(): Observable<any>
+	{ return this.socket.fromEvent<any>("getNewUnblocked")}
 
 
 	// EMITER

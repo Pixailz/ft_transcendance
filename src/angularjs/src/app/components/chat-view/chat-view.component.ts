@@ -16,6 +16,7 @@ export class ChatViewComponent {
 	messageLength: number = 0;
 	messageForm!: FormGroup;
 
+	@Input() blocked: boolean = false;
 	@Input() room!: ChatRoomI;
     @Output() sendMessageEmitter = new EventEmitter<string>();
 
@@ -73,6 +74,8 @@ export class ChatViewComponent {
 	}
 
 	sendMessage() {
+		if (this.blocked)
+			return ;
 		if (!this.messageForm.value.message.length)
 			return ;
 		this.sendMessageEmitter.emit(this.messageForm.value.message);

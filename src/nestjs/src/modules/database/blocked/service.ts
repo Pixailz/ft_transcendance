@@ -75,19 +75,26 @@ export class DBBlockedService {
 		return target ? true : false;
 	}
 
-	async getAllBlocked(user_id: number): Promise<UserEntity[]>
+	async getAllBlocked(user_id: number): Promise<any[]>
 	{
 		const tmp = await this.blockedRepo.find({
 			relations: {
 				target: true,
+				me: true,
 			},
-			where: {
-				meId: user_id,
-			},
+			where: [
+				{ meId: user_id },
+				{ targetId: user_id},
+			],
 		})
-		var sanitized: UserEntity[] = [];
+		var sanitized: any[] = [];
 		for (var i = 0; i < tmp.length; i++)
-			sanitized.push(this.sanitize.User(tmp[i].target))
+		{
+			sanitized.push({
+				me: this.sanitize.User(tmp[i].me),
+				target: this.sanitize.User(tmp[i].target),
+			});
+		}
 		return (sanitized);
 	}
 }

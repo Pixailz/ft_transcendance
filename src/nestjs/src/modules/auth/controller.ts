@@ -6,11 +6,12 @@ import { Public } from "src/public.decorator";
 export class AuthController {
 	constructor(private authService: AuthService) {}
 
+
 	@Public()
 	@Get("ft_callback")
 	async login(@Query("code") code: string) {
 		if (!Number(process.env.PRODUCTION) && code === "test")
-			return this.authService.ftSignInTest();
+			return this.authService.ftSignInTest(0);
 		else return this.authService.ftSignIn(code);
 	}
 

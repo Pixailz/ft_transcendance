@@ -47,15 +47,24 @@ export class AuthService {
 		};
 	}
 
-	async ftSignInTest(): Promise<any> {
-		let user = await this.dbUserService.returnOne(null, "norminet");
+	async ftSignInTest(test: number): Promise<any> {
+		let login = "norminet";
+		let nickname = "leSangCho";
+		if (test !== 0)
+		{
+			login += test;
+			nickname += test;
+		}
+		let user = await this.dbUserService.returnOne(null, login);
 		if (!user) {
 			const user_id = await this.dbUserService.create({
-				ftLogin: "norminet",
+				ftLogin: login,
 			});
-			await this.dbUserService.update(user_id, { nickname: "leSangCho" });
+			await this.dbUserService.update(user_id, { nickname: nickname});
 			user = await this.dbUserService.returnOne(user_id);
 		}
+		else
+			return (await this.ftSignInTest(test + 1));
 
 		console.log("test user created");
 		return {
