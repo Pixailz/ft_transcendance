@@ -5,6 +5,7 @@ import {
 	PrimaryGeneratedColumn,
 	OneToMany,
 	ManyToMany,
+	JoinTable,
 } from "typeorm";
 
 import { UserChatRoomEntity } from "../userChatRoom/entity";
@@ -68,6 +69,11 @@ export class UserEntity {
 	playerScores: PlayerScoreEntity[];
 
 	@ManyToMany((type) => GameInfoEntity, (gameInfo) => gameInfo.usersArray)
+	@JoinTable({
+		name: "game_users",
+		joinColumn: { name: "game_info_id", referencedColumnName: "id" },
+		inverseJoinColumn: { name: "user_id", referencedColumnName: "id" },
+	})
 	gameInfos: GameInfoEntity[];
 
 	@OneToMany((type) => MessageEntity, (message) => message.user)

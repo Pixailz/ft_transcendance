@@ -58,6 +58,7 @@ import { GameWaitingComponent } from './components/game/waiting/waiting.componen
 import { GameStartedComponent } from './components/game/started/started.component';
 import { GameComponent } from './pages/game/game.component';
 import { GameLobbyComponent } from './components/game/lobby/lobby.component';
+import { UserStatsComponent } from './components/user-stats/user-stats.component';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -78,6 +79,7 @@ const config: SocketIoConfig = {
 		HomeDashboardComponent,
 		PageNotFoundComponent,
 		UserProfileComponent,
+		UserStatsComponent,
 		AvatarComponent,
 		LoginComponent,
 		RegisterComponent,

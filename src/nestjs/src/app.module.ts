@@ -11,6 +11,7 @@ import { ChatRoomModule } from "./adapter/chatRoom/module";
 import { TwofaModule } from "./modules/twofa/twofa.module";
 import { ErrorLogController } from "./adapter/errorlog.controller";
 import { LeaderboardController } from "./adapter/leaderboard.controller";
+import { GameAdapterModule } from "./adapter/game/module";
 
 @Module({
 	imports: [
@@ -21,6 +22,7 @@ import { LeaderboardController } from "./adapter/leaderboard.controller";
 		ChatRoomModule,
 		WSModule,
 		TwofaModule,
+		GameAdapterModule,
 	],
 	controllers: [ErrorLogController, LeaderboardController],
 	providers: [

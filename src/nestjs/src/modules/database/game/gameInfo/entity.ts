@@ -22,11 +22,6 @@ export class GameInfoEntity {
 		onDelete: "SET NULL",
 		nullable: true,
 	})
-	@JoinTable({
-		name: "game_users",
-		joinColumn: { name: "game_info_id", referencedColumnName: "id" },
-		inverseJoinColumn: { name: "user_id", referencedColumnName: "id" },
-	})
 	usersArray: UserEntity[];
 
 	@Column({ type: "varchar", length: 120, default: false })
@@ -40,4 +35,7 @@ export class GameInfoEntity {
 		},
 	)
 	public playersScores: PlayerScoreEntity[];
+
+	@Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+	public createdAt: Date;
 }

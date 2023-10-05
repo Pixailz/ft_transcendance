@@ -19,29 +19,8 @@ export class DBPlayerScoreService {
 		private readonly gameInfoRepo: Repository<GameInfoEntity>,
 	) {}
 
-	async create(post: DBPlayerScorePost) {
-		// const gameInfo = await this.gameInfoRepo.findOneBy({ id: post.gameId });
-		// gameInfo.playerScores?.forEach((element) => {
-		// 	if (element.playerId == post.playerId)
-		// 		throw new ForbiddenException("Player Score already exists");
-		// });
-		// const playerScore = new PlayerScoreEntity();
-		// playerScore.playerId = post.playerId;
-		// playerScore.score = post.score;
-		// playerScore.gameInfo = gameInfo;
-		// gameInfo.playerScores.push(playerScore);
-		// await this.gameInfoRepo.save(gameInfo);
-		// return await this.playerScoreRepo.save(playerScore);
-	}
-
-	async returnAll() {
+	async returnAll(): Promise<PlayerScoreEntity[]> {
 		return await this.playerScoreRepo.find();
-	}
-
-	async returnOne(gameId: number) {
-		const tmp = await this.playerScoreRepo.findOneBy({ id: gameId });
-		if (tmp) return await this.playerScoreRepo.findOneBy({ id: gameId });
-		else throw new NotFoundException("GameInfo not found");
 	}
 
 	async find(parameters: FindManyOptions<PlayerScoreEntity>) {
@@ -69,9 +48,36 @@ export class DBPlayerScoreService {
 		}
 	}
 
-	async delete(gameId: number) {
-		const tmp = await this.playerScoreRepo.findOneBy({ id: gameId });
-		if (tmp) return await this.playerScoreRepo.delete({ id: gameId });
-		else throw new NotFoundException("GameInfo not found");
+	async getUserStats(userId: number): Promise<any> {
+		const user = await this.userRepo.findOne({
+			where: { id: userId },
+			relations: [
+				"gameInfos",
+				"gameInfos.playersScores",
+				"gameInfos.usersArray",
+			],
+		});
+		if (!user) {
+			throw new NotFoundException("User not found");
+		}
+		console.log(user);
+		const gameInfos = user.gameInfos;
+		const userStats = {};
+		gameInfos.forEach((gameInfo) => {
+			const playerScore = gameInfo.playersScores.find(
+				(element) => element.playerId == userId,
+			);
+			userStats[gameInfo.id] = {
+				score: playerScore.score,
+				opponent: gameInfo.users.filter(
+					(element) => element != userId,
+				)[0],
+				opponentScore: gameInfo.playersScores.find(
+					(element) => element.playerId != userId,
+				).score,
+				createdAt: gameInfo.createdAt,
+			};
+		});
+		return userStats;
 	}
 }
