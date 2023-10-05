@@ -59,6 +59,7 @@ import { ResizableDirective } from './directives/resizable.directive';
 import { ResizableHandleComponent } from './components/resizable-handle/resizable-handle.component';
 import { NewDmComponent } from './components/new-dm/new-dm.component';
 import { UserTooltipComponent } from './components/user-tooltip/user-tooltip.component';
+import { TooltipDirective } from './directives/tooltip.directive';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -105,6 +106,7 @@ const config: SocketIoConfig = {
   ResizableHandleComponent,
   NewDmComponent,
   UserTooltipComponent,
+  TooltipDirective,
 	],
 	imports: [
 		BrowserModule,

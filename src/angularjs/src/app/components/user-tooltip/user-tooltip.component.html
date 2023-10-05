@@ -1,1 +1,7 @@
-<p>user-tooltip works!</p>
+<a [href]="'/profile/' + user.ftLogin">
+    <img [src]="user.picture || 'assets/img/avatar-placeholder.jpg'" alt="avatar">
+    <span>{{user.nickname}}</span>
+</a>
+<button (click)="doAction()">
+    <mat-icon [fontIcon]="this.friendService.isTargetBlocked(this.user.id) ? 'person_add' : 'block'"></mat-icon>
+</button>
