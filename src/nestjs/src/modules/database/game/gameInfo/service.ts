@@ -38,6 +38,7 @@ export class DBGameInfoService {
 		}
 
 		gameInfo.playersScores = playerScores;
+		console.log(gameInfo);
 		return await this.gameInfoRepo.save(gameInfo);
 	}
 
@@ -46,7 +47,7 @@ export class DBGameInfoService {
 	}
 
 	async returnOne(gameId: number) {
-		const tmp = await this.gameInfoRepo.findOne({ 
+		const tmp = await this.gameInfoRepo.findOne({
 			where: { id: gameId },
 			relations: ["playersScores", "usersArray"],
 		});
