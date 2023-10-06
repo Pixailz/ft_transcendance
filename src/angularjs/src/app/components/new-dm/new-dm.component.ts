@@ -1,6 +1,5 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { UserI } from 'src/app/interfaces/user.interface';
 import { UserService } from 'src/app/services/user.service';
 import { ChatRoomService } from 'src/app/services/websocket/chat/chatroom.service';
 import { ChatDmService } from 'src/app/services/websocket/chat/direct-message/service';

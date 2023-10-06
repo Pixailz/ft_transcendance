@@ -1,6 +1,6 @@
 import { ComponentFactoryResolver, ComponentRef, Directive, ElementRef, Input, Renderer2, ViewContainerRef } from '@angular/core';
 import { UserTooltipComponent } from '../components/user-tooltip/user-tooltip.component';
-import { UserI } from '../interfaces/user.interface';
+import { UserI } from '../interfaces/user/user.interface';
 
 @Directive({
   selector: '[appTooltip]'

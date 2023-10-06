@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ChatRoomI } from 'src/app/interfaces/chat-room.interface';
-import { MessageI } from 'src/app/interfaces/message.inteface';
-import { UserI } from 'src/app/interfaces/user.interface';
+import { ChatRoomI } from 'src/app/interfaces/chat/chat-room.interface';
+import { MessageI } from 'src/app/interfaces/chat/message.inteface';
+import { UserI } from 'src/app/interfaces/user/user.interface';
 import { UserService } from 'src/app/services/user.service';
 import { ChatRoomService } from 'src/app/services/websocket/chat/chatroom.service';
 import { WSGateway } from 'src/app/services/websocket/gateway';

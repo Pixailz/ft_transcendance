@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, Renderer2 } from '@angular/core';
-import { Status, UserI } from 'src/app/interfaces/user.interface';
+import { Status, UserI } from 'src/app/interfaces/user/user.interface';
 import { FriendService } from 'src/app/services/websocket/friend/service';
 import { WSGateway } from 'src/app/services/websocket/gateway';
 
