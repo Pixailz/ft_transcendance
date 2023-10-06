@@ -66,7 +66,7 @@ export class UserEntity {
 		(type) => PlayerScoreEntity,
 		(playerScore) => playerScore.playerId,
 	)
-	playerScores: PlayerScoreEntity[];
+	public playerScores: PlayerScoreEntity[];
 
 	@ManyToMany((type) => GameInfoEntity, (gameInfo) => gameInfo.usersArray)
 	@JoinTable({
@@ -74,7 +74,7 @@ export class UserEntity {
 		joinColumn: { name: "game_info_id", referencedColumnName: "id" },
 		inverseJoinColumn: { name: "user_id", referencedColumnName: "id" },
 	})
-	gameInfos: GameInfoEntity[];
+	public gameInfos: GameInfoEntity[];
 
 	@OneToMany((type) => MessageEntity, (message) => message.user)
 	message: MessageEntity[];

@@ -8,17 +8,18 @@ import { BackService } from 'src/app/services/back.service';
   styleUrls: ['./user-stats.component.css']
 })
 export class UserStatsComponent implements OnInit {
-  @Input() user: UserI;
+  @Input() userId: number;
   userInfos: any = null;
   constructor(
     private backService: BackService,
   ) {}
 
   ngOnInit() {
-    if (!this.user){
-      this.user = DefUserI;
+    if (!this.userId){
+      this.userInfos = null;
+      return;
     }
-    this.backService.req("GET", "game/user-stats/" + this.user.id)
+    this.backService.req("GET", "/game/user-stats/" + this.userId)
     .then((res) => {
       this.userInfos = res;
     })
@@ -26,5 +27,4 @@ export class UserStatsComponent implements OnInit {
       this.userInfos = null;
     });
   }
-
 }

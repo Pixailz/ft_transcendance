@@ -18,7 +18,7 @@ export class GameInfoEntity {
 	@Column({ type: "simple-array", nullable: true })
 	public users: number[];
 
-	@ManyToMany((type) => UserEntity, {
+	@ManyToMany((type) => UserEntity, (user) => user.gameInfos, {
 		onDelete: "SET NULL",
 		nullable: true,
 	})

@@ -62,12 +62,12 @@ export class DBPlayerScoreService {
 		}
 		console.log(user);
 		const gameInfos = user.gameInfos;
-		const userStats = {};
+		const userStats = [];
 		gameInfos.forEach((gameInfo) => {
 			const playerScore = gameInfo.playersScores.find(
 				(element) => element.playerId == userId,
 			);
-			userStats[gameInfo.id] = {
+			userStats.push({
 				score: playerScore.score,
 				opponent: gameInfo.users.filter(
 					(element) => element != userId,
@@ -76,7 +76,7 @@ export class DBPlayerScoreService {
 					(element) => element.playerId != userId,
 				).score,
 				createdAt: gameInfo.createdAt,
-			};
+			});
 		});
 		return userStats;
 	}

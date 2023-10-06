@@ -2,13 +2,15 @@
   <p> No games found </p>
 </div>
 <div *ngIf="userInfos">
+  {{ userInfos | json }}
 <mat-table [dataSource]="userInfos">
-  <ng-container matColumnDef="game">
+<!--  <ng-container matColumnDef="game">
     <mat-header-cell *matHeaderCellDef> Game </mat-header-cell>
     <mat-cell *matCellDef="let element">
       <a [routerLink]="['/game', element.gameId]">{{element.gameId}}</a>
     </mat-cell>
   </ng-container>
+-->
   <ng-container>
     <mat-header-cell *matHeaderCellDef> Score </mat-header-cell>
     <mat-cell *matCellDef="let element"> {{element.score}} </mat-cell>
@@ -21,7 +23,7 @@
     <mat-header-cell *matHeaderCellDef> Date </mat-header-cell>
     <mat-cell *matCellDef="let element"> {{element.date}} </mat-cell>
   </ng-container>
-  <mat-header-row *matHeaderRowDef="['game', 'score', 'opponent', 'date']"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: ['game', 'score', 'opponent', 'date'];"></mat-row>
+  <mat-header-row *matHeaderRowDef="['score', 'opponent', 'date']"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: ['score', 'opponent', 'date'];"></mat-row>
 </mat-table>
 </div>
