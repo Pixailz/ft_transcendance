@@ -39,10 +39,9 @@ import { RegisterComponent } from './pages/register/register.component';
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
 import { TwofaformComponent } from './components/twofaform/twofaform.component';
 import { CustomReuseStrategy } from './reuse-strategy';
-import { MatBadgeModule } from '@angular/material/badge';
+import {  MatBadgeModule  } from '@angular/material/badge';
 
 // WEBSOCKET
-import { WSChatDmComponent } from './pages/chat-dm/chat-dm.component';
 import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
 import { GlobalErrorHandlerService } from './services/global-error-handler.service';
 import { environment } from './environments/environment';
@@ -53,6 +52,13 @@ import { NotifFriendReqAcceptedComponent } from './components/notification/frien
 import { NotifFriendReqDeniedFromComponent } from './components/notification/friend-req-denied-from/friend-req-denied-from.component';
 import { NotifFriendReqDeniedToComponent } from './components/notification/friend-req-denied-to/friend-req-denied-to.component';
 import { ClickOutDirective } from './directives/click-out.directive';
+import { ChatViewComponent } from './components/chat-view/chat-view.component';
+import { PrivChatPageComponent } from './pages/priv-chat-page/priv-chat-page.component';
+import { ResizableDirective } from './directives/resizable.directive';
+import { ResizableHandleComponent } from './components/resizable-handle/resizable-handle.component';
+import { NewDmComponent } from './components/new-dm/new-dm.component';
+import { UserTooltipComponent } from './components/user-tooltip/user-tooltip.component';
+import { TooltipDirective } from './directives/tooltip.directive';
 
 import { GameWaitingComponent } from './components/game/waiting/waiting.component';
 import { GameStartedComponent } from './components/game/started/started.component';
@@ -88,11 +94,10 @@ const config: SocketIoConfig = {
 		ProfileComponent,
 		ErrordialogComponent,
 		FlatListComponent,
-		WSChatDmComponent,
 		WSChatChannelComponent,
-
 		NotificationComponent,
 		TextNotificationComponent,
+		WSChatChannelComponent,
 		NotifFriendReqSentComponent,
 		NotifFriendReqReceivedComponent,
 		NotifFriendReqAcceptedComponent,
@@ -102,7 +107,14 @@ const config: SocketIoConfig = {
 		GameWaitingComponent,
 		GameStartedComponent,
 		GameLobbyComponent,
-    ClickOutDirective,
+	    ClickOutDirective,
+		ChatViewComponent,
+		PrivChatPageComponent,
+		ResizableDirective,
+		ResizableHandleComponent,
+		NewDmComponent,
+		UserTooltipComponent,
+		TooltipDirective,
 	],
 	imports: [
 		BrowserModule,
@@ -126,7 +138,7 @@ const config: SocketIoConfig = {
 		MatProgressBarModule,
 		SocketIoModule.forRoot(config),
 		CodeInputModule,
-		MatBadgeModule
+		MatBadgeModule,
 	],
 	providers: [
 		AuthGuardService,

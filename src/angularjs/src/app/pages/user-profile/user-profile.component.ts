@@ -47,7 +47,6 @@ export class UserProfileComponent implements OnInit {
 		}, { updateOn: "change" });
 		this.userForm.valueChanges
 		.subscribe((value: any) => {
-			const old = value.nickname;
 			value.nickname = value.nickname.replace(/ /g, '');
 			value.nickname = value.nickname.replace(/	/g, '');
 			this.userForm.patchValue({

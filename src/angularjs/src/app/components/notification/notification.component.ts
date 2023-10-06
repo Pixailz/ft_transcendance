@@ -8,8 +8,6 @@ import { NotificationService } from 'src/app/services/websocket/notification/ser
 import { TextNotificationComponent } from '../text-notification/text-notification.component';
 
 
-
-
 export interface timeoutI {
 	notifId: number;
 	component: ComponentRef<any>;
@@ -37,7 +35,7 @@ export interface timeoutI {
 export class NotificationComponent{
 	@ViewChild('container', { static: true, read: ViewContainerRef })
 		container!: ViewContainerRef;
-		
+
 	private eventCallback = new Subject<string>();
 	eventCallback$ = this.eventCallback.asObservable();
 	popupArray : timeoutI[] = [];
@@ -94,7 +92,7 @@ export class NotificationComponent{
 		this.popupArray.push({notifId: notification.id, component: component});
 	}
 
-	
+
 	deleteNotif(id: number)
 	{
 		const nb = this.searchPopup(id);
@@ -104,7 +102,7 @@ export class NotificationComponent{
 		this.container.remove(index);
 		this.popupArray.splice(nb, 1);
 	}
-	
+
 	searchPopup(id: number)
 	{
 		let nb = -1;
@@ -117,5 +115,5 @@ export class NotificationComponent{
 			}
 		}
 		return (nb);
-	}		
+	}
 }

@@ -11,9 +11,9 @@ import { AnonymousLayoutComponent } from './layout/anonymous-layout.component';
 import { AuthenticatedLayoutComponent } from './layout/authenticated-layout.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 
-import { WSChatDmComponent } from './pages/chat-dm/chat-dm.component';
 import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
 import { GameComponent } from './pages/game/game.component';
+import { PrivChatPageComponent } from './pages/priv-chat-page/priv-chat-page.component';
 
 const routes: Routes = [
 	{
@@ -39,7 +39,7 @@ const routes: Routes = [
 			},
 			{
 				path: 'chat/dm',
-				component: WSChatDmComponent,
+				component: PrivChatPageComponent,
 				data: { animation: 'ChatDm', reuseRoute: true }
 			},
 			{
@@ -56,6 +56,10 @@ const routes: Routes = [
 				path: 'profile/:login',
 				component: ProfileComponent,
 				data: { animation: 'ProfileUser', reuseRoute: true }
+			},
+			{
+				path: 'chat/rub',
+				component: PrivChatPageComponent,
 			},
 			{
 				// throw a 404 error if the route is not found
