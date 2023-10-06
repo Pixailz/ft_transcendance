@@ -13,6 +13,8 @@
 <span class="char-left" *ngIf="!blocked" >{{messageLength}}/120</span>
 <form [formGroup]="messageForm" *ngIf="!blocked">
     <input formControlName="message" type="text" placeholder="Type something ... " maxlength="120">
-    <button (click)="sendMessage()" [disabled]="!messageLength"></button>
+    <button (click)="sendMessage()" [disabled]="!messageLength">
+		<mat-icon fontIcon="send"></mat-icon>
+	</button>
 </form>
 

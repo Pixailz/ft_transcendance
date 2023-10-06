@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    font-size: 1rem;
+    font-size: 1em;
     color: white;
 }
 
@@ -118,32 +118,16 @@ form {
         border-radius: 9999px;
         background-color: white;
         padding: 0;
-        --pseudo-width: 1.3em;
-        --pseudo-hegiht: 0.3em;
+        --pseudo-width: 50%;
+        --pseudo-hegiht: 15%;
 		transition: all .2s linear;
 		cursor: pointer;
+		font-size: 1em;
 
-		&::before, &::after {
-			content: "";
-			position: absolute;
-			width: var(--pseudo-width);
-			height: var(--pseudo-hegiht);
-			border-radius: 9999px;
-			background-color: black;
-			transition: all .25s ease-in-out;
-		}
-
-		&::before {
-			transform: translate(-10%, calc(var(--pseudo-hegiht) / -2)) rotate(45deg) translate(calc(-50% + var(--pseudo-hegiht) / 2));
-		}
-
-		&::after {
-			transform: translate(-10%, calc(var(--pseudo-hegiht) / -2)) rotate(-45deg) translate(calc(-50% + var(--pseudo-hegiht) / 2));
-		}
-
-		&:disabled {
-			cursor: default;
-			filter: brightness(80%);
+		mat-icon {
+			font-size: 1.2em;
+			width: fit-content;
+			height: fit-content;
 		}
     }
 }
