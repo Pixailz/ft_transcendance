@@ -204,8 +204,6 @@ export class NotificationService {
 		console.log(this.notif);
 	}
 
-
-
 	seenNotifCallback(entries: IntersectionObserverEntry[], observer: IntersectionObserver) {
 		console.log("observer :", observer);
 		console.log("this in callback :", this);

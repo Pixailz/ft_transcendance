@@ -1,5 +1,9 @@
+import { DefUserI } from "../user.interface";
 import { DefChatRoomI } from "./chat-room.interface";
-import { DefUserI } from "./user.interface";
+<<<<<<<< HEAD:src/angularjs/src/app/interfaces/chats/chat-dm.interface.ts
+import { DefUserI } from "../user/user.interface";
+========
+>>>>>>>> origin/153-ws-matchmaking:src/angularjs/src/app/interfaces/chat/dm.interface.ts
 
 export interface ChatDmI {
 	dm				: any;

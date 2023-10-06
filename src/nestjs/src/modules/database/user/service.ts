@@ -12,7 +12,7 @@ import { Status, UserEntity } from "./entity";
 
 import { DBUserPost, DBUserInfoPost } from "./dto";
 import { Api42Service } from "../../api42/service";
-import { Sanitize } from "../../../sanitize-object";
+import { Sanitize } from "../sanitize-object";
 
 @Injectable()
 export class DBUserService {

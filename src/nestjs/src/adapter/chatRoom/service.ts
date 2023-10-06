@@ -10,7 +10,7 @@ import { Server } from "socket.io";
 import { DBUserService } from "src/modules/database/user/service";
 import { WSSocket } from "src/websocket/socket.service";
 import { UserService } from "../user/service";
-import { Sanitize } from "../../sanitize-object";
+import { Sanitize } from "../../modules/database/sanitize-object";
 
 @Injectable()
 export class ChatRoomService {

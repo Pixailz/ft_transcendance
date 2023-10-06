@@ -5,7 +5,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { FriendEntity } from "./entity";
 import { DBFriendPost } from "./dto";
 import { UserEntity } from "../user/entity";
-import { Sanitize } from "../../../sanitize-object";
+import { Sanitize } from "../sanitize-object";
 
 @Injectable()
 export class DBFriendService {

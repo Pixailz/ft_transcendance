@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ChatChannelService } from 'src/app/services/websocket/chat/channel/service';
 import { ChatDmService } from 'src/app/services/websocket/chat/direct-message/service';
 import { FriendService } from 'src/app/services/websocket/friend/service';
+import { GameService } from 'src/app/services/websocket/game/service';
 import { NotificationService } from 'src/app/services/websocket/notification/service';
 
 @Component({
@@ -15,6 +16,7 @@ export class FooterComponent {
 		private chatDmService : ChatDmService,
 		private chatChannelService : ChatChannelService,
 		private notificationService : NotificationService,
+		private gameService: GameService,
 	)
 	{ }
 
@@ -24,5 +26,6 @@ export class FooterComponent {
 		this.chatDmService.getInfo();
 		this.chatChannelService.getInfo();
 		this.notificationService.getInfo();
+		this.gameService.getInfo();
 	}
 }

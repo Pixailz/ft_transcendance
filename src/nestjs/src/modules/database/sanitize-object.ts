@@ -1,8 +1,9 @@
-import { ChatRoomEntity } from "./modules/database/chatRoom/entity";
-import { FriendRequestEntity } from "./modules/database/friendRequest/entity";
-import { MessageEntity } from "./modules/database/message/entity";
-import { UserEntity } from "./modules/database/user/entity";
-import { UserChatRoomEntity } from "./modules/database/userChatRoom/entity";
+import { PlayerI } from "src/websocket/game/game.interface";
+import { ChatRoomEntity } from "./chatRoom/entity";
+import { FriendRequestEntity } from "./friendRequest/entity";
+import { MessageEntity } from "./message/entity";
+import { UserEntity } from "./user/entity";
+import { UserChatRoomEntity } from "./userChatRoom/entity";
 
 export class Sanitize {
 	toKeepUser = ["id", "ftLogin", "nickname", "email", "status", "lastSeen"];
@@ -44,9 +45,9 @@ export class Sanitize {
 	}
 
 	Users(users: UserEntity[]): UserEntity[] {
-		var new_users: UserEntity[] = [];
+		const new_users: UserEntity[] = [];
 		if (!users) return [];
-		for (var i = 0; i < users.length; i++)
+		for (let i = 0; i < users.length; i++)
 			new_users.push(this.User(users[i]));
 		return new_users;
 	}
@@ -63,17 +64,17 @@ export class Sanitize {
 	}
 
 	FriendRequests(reqs: FriendRequestEntity[]): FriendRequestEntity[] {
-		var new_reqs: FriendRequestEntity[] = [];
+		const new_reqs: FriendRequestEntity[] = [];
 
 		if (!reqs) return [];
-		for (var i = 0; i < reqs.length; i++)
+		for (let i = 0; i < reqs.length; i++)
 			new_reqs.push(this.FriendRequest(reqs[i]));
 		return new_reqs;
 	}
 
 	Message(message: MessageEntity): MessageEntity {
 		if (message) {
-			var new_message: MessageEntity = this.object(
+			const new_message: MessageEntity = this.object(
 				message,
 				this.toKeepMessage,
 			);
@@ -84,17 +85,17 @@ export class Sanitize {
 	}
 
 	Messages(messages: MessageEntity[]): MessageEntity[] {
-		var new_messages: MessageEntity[] = [];
+		const new_messages: MessageEntity[] = [];
 
 		if (!messages) return [];
-		for (var i = 0; i < messages.length; i++)
+		for (let i = 0; i < messages.length; i++)
 			new_messages.push(this.Message(messages[i]));
 		return new_messages;
 	}
 
 	ChatRoom(room: ChatRoomEntity): ChatRoomEntity {
 		if (room) {
-			var new_room: ChatRoomEntity = this.object(
+			const new_room: ChatRoomEntity = this.object(
 				room,
 				this.toKeepChatRoom,
 			);
@@ -105,15 +106,15 @@ export class Sanitize {
 	}
 
 	ChatRooms(rooms: ChatRoomEntity[]): ChatRoomEntity[] {
-		var new_rooms: ChatRoomEntity[] = [];
-		for (var i = 0; i < rooms.length; i++)
+		const new_rooms: ChatRoomEntity[] = [];
+		for (let i = 0; i < rooms.length; i++)
 			new_rooms.push(this.ChatRoom(rooms[i]));
 		return new_rooms;
 	}
 
 	UserChatRoom(user_room: UserChatRoomEntity): UserChatRoomEntity {
 		if (user_room) {
-			var new_user_room: UserChatRoomEntity = this.object(
+			const new_user_room: UserChatRoomEntity = this.object(
 				user_room,
 				this.toKeepUserChatRoom,
 			);
@@ -124,10 +125,10 @@ export class Sanitize {
 	}
 
 	UserChatRooms(user_rooms: UserChatRoomEntity[]): UserChatRoomEntity[] {
-		var new_user_rooms: UserChatRoomEntity[] = [];
+		const new_user_rooms: UserChatRoomEntity[] = [];
 
 		if (!user_rooms) return [];
-		for (var i = 0; i < user_rooms.length; i++)
+		for (let i = 0; i < user_rooms.length; i++)
 			new_user_rooms.push(this.UserChatRoom(user_rooms[i]));
 		return new_user_rooms;
 	}

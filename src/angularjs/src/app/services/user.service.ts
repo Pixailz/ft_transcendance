@@ -1,6 +1,6 @@
 import { Injectable, OnInit } from "@angular/core";
 import { BackService } from "./back.service";
-import { DefUserI, Status, UserI } from "../interfaces/user.interface";
+import { DefUserI, Status, UserI } from "../interfaces/user/user.interface";
 
 @Injectable({
 	providedIn: "root",

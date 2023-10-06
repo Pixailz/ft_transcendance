@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { HomeDashboardComponent } from './pages/home-dashboard/home-dashboard.component';
-import { PongComponent } from './pages/pong/pong.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
 import { LoginComponent } from './pages/login/login.component';
@@ -13,6 +12,7 @@ import { AuthenticatedLayoutComponent } from './layout/authenticated-layout.comp
 import { ProfileComponent } from './pages/profile/profile.component';
 
 import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
+import { GameComponent } from './pages/game/game.component';
 import { PrivChatPageComponent } from './pages/priv-chat-page/priv-chat-page.component';
 
 const routes: Routes = [
@@ -34,7 +34,7 @@ const routes: Routes = [
 			},
 			{
 				path: 'play',
-				component: PongComponent,
+				component: GameComponent,
 				data: { animation: 'Play', reuseRoute: true }
 			},
 			{

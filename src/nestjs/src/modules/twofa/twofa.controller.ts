@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, Post, Request } from "@nestjs/common";
-import { Public } from "src/public.decorator";
+import { Controller, Get, Param, Post, Request } from "@nestjs/common";
+import { Public } from "src/decorators/public";
 import { TwofaService } from "./twofa.service";
 
 @Controller("2fa")

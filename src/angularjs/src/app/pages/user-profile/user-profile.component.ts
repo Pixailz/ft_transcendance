@@ -1,7 +1,7 @@
 import { Component, Directive, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserService } from '../../services/user.service';
-import { DefUserI, UserI } from 'src/app/interfaces/user.interface';
+import { DefUserI, UserI } from 'src/app/interfaces/user/user.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { TwofaformComponent } from 'src/app/components/twofaform/twofaform.component';
 import { animate, style, transition, trigger } from '@angular/animations';

@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { Server } from "socket.io";
 import { ChatRoomEntity } from "src/modules/database/chatRoom/entity";
 import { UserEntity } from "src/modules/database/user/entity";
+import { GameStateI, LobbyI } from "./game/game.interface";
 
 @Injectable()
 export class WSSocket {
@@ -82,4 +83,13 @@ export class WSSocket {
 			user_list.push(room.roomInfo[i].userId);
 		this.sendToUsers(server, user_list, event, data);
 	}
+
+	sendToUserInGame(server: Server, room: LobbyI, event: string, data: any) {
+		for (var user_id in room.players)
+			if (room.players[user_id].socket !== "")
+				server.to(room.players[user_id].socket).emit(event, data);
+	}
+
+	sendStatusToGame(server: Server, room: LobbyI)
+	{ this.sendToUserInGame(server, room, "gameState", room.state); }
 }

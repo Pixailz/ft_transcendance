@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { animate, animateChild, query, state, style, transition, trigger } from '@angular/animations';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { animate, animateChild, query, stagger, state, style, transition, trigger } from '@angular/animations';
 import { pairwise } from 'rxjs';
 import { Router } from '@angular/router';
 import { registerPopInput, registerSlideInput, resgisterRotateBtn } from 'src/app/animations';

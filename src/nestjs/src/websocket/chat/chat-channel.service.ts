@@ -4,9 +4,9 @@ import { WSSocket } from "../socket.service";
 import { Server, Socket } from "socket.io";
 import { ChatRoomEntity, RoomType } from "src/modules/database/chatRoom/entity";
 import * as bcrypt from "bcrypt";
-import { Sanitize } from "../../sanitize-object";
 import { UserService } from "src/adapter/user/service";
 import { DBUserChatRoomService } from "src/modules/database/userChatRoom/service";
+import { Sanitize } from "../../modules/database/sanitize-object";
 
 export enum RoomAction {
 	KICK,
