@@ -35,7 +35,7 @@ export class TwofaformComponent implements OnInit {
       uri = '/2fa/setup/' + nonce + '/' + code;
 
     const response = await this.back.req(
-      'POST', 
+      'POST',
       uri)
     .then((res: any) => {
       this.dialogRef.close(res);

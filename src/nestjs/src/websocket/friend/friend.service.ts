@@ -110,7 +110,8 @@ export class WSFriendService {
 			return ;
 		await this.dbBlockedService.create({meId: user_id, targetId: target_id});
 		const blocked_data = await this.dbBlockedService.returnOne(user_id, target_id);
-		this.wsSocket.sendToUser(server, user_id, "getNewBlocked", blocked_data.target);
+		this.wsSocket.sendToUser(server, user_id, "getNewBlocked", blocked_data);
+		this.wsSocket.sendToUser(server, target_id, "getNewBlocked", blocked_data);
 	}
 
 	async unblockUser(
@@ -123,7 +124,12 @@ export class WSFriendService {
 		if (!await this.dbBlockedService.isBlocked(user_id, target_id))
 			return ;
 		await this.dbBlockedService.delete(user_id, target_id);
-		this.wsSocket.sendToUser(server, user_id, "getNewUnblocked", target_id);
+		const data = {
+			me: user_id,
+			target: target_id,
+		}
+		this.wsSocket.sendToUser(server, user_id, "getNewUnblocked", data);
+		this.wsSocket.sendToUser(server, target_id, "getNewUnblocked", data);
 	}
 
 	async sendFriendRequest(server: Server, socket: Socket, friend_id: number) {

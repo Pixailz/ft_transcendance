@@ -6,6 +6,7 @@ import {
 	animate,
 	group,
 	state,
+	animateChild,
 } from '@angular/animations';
 
  export const slideInAnimation =
@@ -68,3 +69,43 @@ export const fadeInOut = trigger('fadeInOut', [
 	  animate('200ms ease-in', style({ 'transform': 'scale(0.01)' })),
 	]),
   ]);
+
+export const registerPopInput = trigger('enterAnimation', [
+	state('closed', style({transform: 'scale(1)'})),
+	transition(':enter', [
+		style({transform: 'scale(0)'}),
+		animate('300ms ease-in-out',
+			style({transform: 'scale(1)'})
+		),
+		query('@*', animateChild(), {optional: true})
+	]),
+	transition('* => closed', [
+		animate('300ms  ease-in-out'),
+		query('@*', animateChild(), {optional: true})
+	])
+]);
+
+export const registerSlideInput = trigger('input', [
+	state('closed', style({width: '50px', padding: '4px', color: 'transparent'})),
+	transition('void => *', [
+		style({width: '50px', padding: '4px', color: 'transparent'}),
+		animate('500ms ease-out',
+			style({width: '300px', padding: '4px 70px 4px 20px', color: 'white'})),
+	]),
+	transition('* => closed', [
+		animate('500ms ease-out'),
+	])
+]);
+
+export const resgisterRotateBtn = trigger('button', [
+	state('closed', style({transform: 'rotate(-360deg)'})),
+	transition(':enter', [
+		style({transform: 'none'}),
+		animate('500ms ease-out',
+			style({transform: 'rotate(360deg)'})
+		),
+	]),
+	transition('* => closed', [
+		animate('500ms ease-out'),
+	])
+]);

@@ -1,0 +1,7 @@
+<ul>
+    <ng-container *ngFor="let friend of friends;">
+        <li *ngIf="friend.room.id !== -1">
+            <button (click)="onCreateDm(friend)">{{userService.getUserInfoFormated(friend.user_info)}}</button>
+        </li>
+    </ng-container>
+</ul>
