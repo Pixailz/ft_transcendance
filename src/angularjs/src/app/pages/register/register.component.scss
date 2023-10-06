@@ -90,8 +90,8 @@ form {
 			top: 50%;
 			width: $numSize;
 			height: $numSize;
-			margin-left: $numSize/-2;
-			margin-top: $numSize/-2;
+			margin-left: calc($numSize / -2);
+			margin-top: calc($numSize / -2);
 
 			&-path {
 			  fill: none;
