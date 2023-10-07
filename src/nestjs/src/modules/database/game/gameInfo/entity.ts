@@ -18,14 +18,9 @@ export class GameInfoEntity {
 	@Column({ type: "simple-array", nullable: true })
 	public users: number[];
 
-	@ManyToMany((type) => UserEntity, {
+	@ManyToMany((type) => UserEntity, (user) => user.gameInfos, {
 		onDelete: "SET NULL",
 		nullable: true,
-	})
-	@JoinTable({
-		name: "game_users",
-		joinColumn: { name: "game_info_id", referencedColumnName: "id" },
-		inverseJoinColumn: { name: "user_id", referencedColumnName: "id" },
 	})
 	usersArray: UserEntity[];
 
@@ -40,4 +35,7 @@ export class GameInfoEntity {
 		},
 	)
 	public playersScores: PlayerScoreEntity[];
+
+	@Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+	public createdAt: Date;
 }
