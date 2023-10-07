@@ -32,16 +32,29 @@ export class UserProfileComponent implements OnInit {
 	math: Math = Math;
 	user: UserI = DefUserI;
 	userForm!: FormGroup;
+	pictureForm!: FormGroup;
 	submitted: boolean = true;
 	invalidNickname: string = "";
 	nbMissingChar!: number;
 
 	async ngOnInit() {
 		this.user = await this.userService.getUserInfo();
+		this.pictureForm = this.formBuilder.group({
+			picture: this.user.picture,
+		});
+		this.pictureForm.valueChanges
+		.subscribe( async (value:any) => {
+			await this.userService.updateProfile(this.pictureForm.value)
+			.then((res) => {
+				console.log('oke');
+			})
+			.catch((err) => {
+				console.log('put picture faillure code : ', err.status);
+			});
+		});
 		this.userForm = this.formBuilder.group({
 			login: { value: this.user.ftLogin, disabled: true },
 			nickname: this.user.nickname,
-			picture: this.user.picture,
 			email: this.user.email,
 			twofa: this.user.twoAuthFactor,
 		}, { updateOn: "change" });

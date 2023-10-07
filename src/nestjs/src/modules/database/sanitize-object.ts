@@ -6,7 +6,7 @@ import { UserEntity } from "./user/entity";
 import { UserChatRoomEntity } from "./userChatRoom/entity";
 
 export class Sanitize {
-	toKeepUser = ["id", "ftLogin", "nickname", "email", "status", "lastSeen"];
+	toKeepUser = ["id", "ftLogin", "nickname", "email", "status", "lastSeen", "picture"];
 
 	toKeepMessage = [
 		"id",
