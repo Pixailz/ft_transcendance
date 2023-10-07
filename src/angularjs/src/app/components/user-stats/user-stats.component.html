@@ -6,7 +6,9 @@
     <ng-container matColumnDef="game">
       <mat-header-cell *matHeaderCellDef> Game # </mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <a [routerLink]="['/game', element.gameId]">{{element.id}}</a>
+        <!-- <a [routerLink]="['/game', element.id]"> -->
+          {{element.id}}
+        <!-- </a> -->
       </mat-cell>
     </ng-container>
     <ng-container matColumnDef="score">
