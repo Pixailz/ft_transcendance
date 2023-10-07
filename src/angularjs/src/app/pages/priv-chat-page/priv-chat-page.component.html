@@ -1,15 +1,15 @@
 <ul appResizable>
 	<ng-container *ngFor="let friend of chatDmService.getFriendsRoom();">
 		<li class="glass" *ngIf="!friendService.isTargetBlocked(friend.user_info.id)" >
-			<button  (click)="onSelectFriend(friend)">
-				<span appTooltip [user]="friend.user_info">{{userService.getUserInfoFormated(friend.user_info)}}</span>
+			<button appTooltip [user]="friend.user_info"  (click)="onSelectFriend(friend)">
+				<span>{{userService.getUserInfoFormated(friend.user_info)}}</span>
 			</button>
 		</li>
 	</ng-container>
 	<ng-container *ngFor="let friend of chatDmService.getFriendsRoom();">
 		<li class="glass blocked" *ngIf="friendService.isTargetBlocked(friend.user_info.id)" >
-			<button (click)="onSelectFriend(friend)">
-				<span appTooltip [user]="friend.user_info">{{userService.getUserInfoFormated(friend.user_info)}}</span>
+			<button appTooltip [user]="friend.user_info" (click)="onSelectFriend(friend)">
+				<span>{{userService.getUserInfoFormated(friend.user_info)}}</span>
 			</button>
 		</li>
 	</ng-container>

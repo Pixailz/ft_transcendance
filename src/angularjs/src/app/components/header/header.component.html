@@ -24,6 +24,11 @@
 			<app-flat-button data-toggle="tab" [tabindex]="4" class="chat-global" [isActive]="rla.isActive" fontIcon="public"></app-flat-button>
 		</li>
 		<li tabindex="-1" *ngIf="userLoggedIn"
+		routerLink="/chat/rub"
+		routerLinkActive #rla="routerLinkActive">
+			<app-flat-button data-toggle="tab" [tabindex]="8" class="new-chat-glob" [isActive]="rla.isActive" fontIcon="search"></app-flat-button>
+		</li>
+		<li tabindex="-1" *ngIf="userLoggedIn"
 		routerLink="/profile"
 		routerLinkActive #rla="routerLinkActive" [routerLinkActiveOptions]="{exact: true}">
 			<app-flat-button data-toggle="tab" [tabindex]="5" class="profile" [isActive]="rla.isActive" fontIcon="account_circle"></app-flat-button>

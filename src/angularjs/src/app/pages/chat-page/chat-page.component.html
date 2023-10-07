@@ -1,0 +1,14 @@
+<ul appResizable>
+    <li class="glass" *ngFor="let room of chatChannelService.getJoinedChannelRoom();">
+        <button  (click)="onSelectRoom(room)">
+            <span>{{chatRoomService.getRoomTitle(room)}}</span>
+            <!-- <span appTooltip [user]="friend.user_info">{{chatRoomService.getRoomTitle(room)}}</span> -->
+        </button>
+    </li>
+	<li class="newRoomBtn">
+		<app-flat-button fontIcon="add" (click)="onNewRoom()"></app-flat-button>
+	</li>
+</ul>
+
+<app-chat-view *ngIf="chatChannelService.isGoodSelectedRoom()" [room]="chatChannelService.getSelectedRoom()" (sendMessageEmitter)="chatChannelService.sendMessage($event)">
+</app-chat-view>

@@ -14,6 +14,7 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
 import { GameComponent } from './pages/game/game.component';
 import { PrivChatPageComponent } from './pages/priv-chat-page/priv-chat-page.component';
+import { ChatPageComponent } from './pages/chat-page/chat-page.component';
 
 const routes: Routes = [
 	{
@@ -59,7 +60,7 @@ const routes: Routes = [
 			},
 			{
 				path: 'chat/rub',
-				component: PrivChatPageComponent,
+				component: ChatPageComponent,
 			},
 			{
 				// throw a 404 error if the route is not found

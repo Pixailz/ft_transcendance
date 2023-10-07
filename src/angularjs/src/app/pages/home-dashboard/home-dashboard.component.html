@@ -42,7 +42,7 @@
 					<ng-container matColumnDef="avatar">
 						<mat-header-cell *matHeaderCellDef> Avatar </mat-header-cell>
 						<mat-cell *matCellDef="let element">
-							<img [src]="element.picture || '/assets/img/avatar-placeholder.jpg'" alt="avatar" class="avatar">
+							<img appTooltip [user]="element" [src]="element.picture || '/assets/img/avatar-placeholder.jpg'" alt="avatar" class="avatar">
 						</mat-cell>
 					</ng-container>
 					<ng-container matColumnDef="nickname">

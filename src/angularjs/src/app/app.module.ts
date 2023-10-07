@@ -64,6 +64,8 @@ import { GameWaitingComponent } from './components/game/waiting/waiting.componen
 import { GameStartedComponent } from './components/game/started/started.component';
 import { GameComponent } from './pages/game/game.component';
 import { GameLobbyComponent } from './components/game/lobby/lobby.component';
+import { ChatPageComponent } from './pages/chat-page/chat-page.component';
+import { NewChatRoomComponent } from './components/new-chat-room/new-chat-room.component';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -115,6 +117,8 @@ const config: SocketIoConfig = {
 		NewDmComponent,
 		UserTooltipComponent,
 		TooltipDirective,
+  ChatPageComponent,
+  NewChatRoomComponent,
 	],
 	imports: [
 		BrowserModule,

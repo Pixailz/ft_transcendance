@@ -14,8 +14,6 @@ ul {
 		width: 100%;
 		margin-bottom: 0.8em;
 		transition: all 0.2s linear;
-		position: relative;
-		z-index: 1;
 
 		button {
 			width: 100%;
@@ -32,24 +30,18 @@ ul {
 			border: none;
 		}
 
-		&.glass:hover
+		&:not(.newRoomBtn) &:hover
 		{
 			background-color: rgba(90, 90, 90, 0.6);
 		}
 
-		&.blocked {
-			background-color: rgba(255, 177, 177, 0.3);
-			&:hover {
-				background-color: rgba(255, 177, 177, 0.6);
-			}
-
-		}
 		&:nth-last-child(2) {
 			margin-bottom: 2em;
 		}
 
 		&.newRoomBtn {
 			width: 100%;
+            z-index: 1;
 
 			& app-flat-button {
 				display: block;
