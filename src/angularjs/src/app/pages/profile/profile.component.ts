@@ -21,6 +21,7 @@ export enum FriendReqStatus {
 export class ProfileComponent implements OnInit {
 	user_info: UserI = DefUserI;
 	user_id : number = -1;
+	subscription: any = null;
 	constructor(
 		private route: ActivatedRoute,
 		private back: BackService,
@@ -37,6 +38,16 @@ export class ProfileComponent implements OnInit {
 				console.log("[profile]", err.status);
 			});
 		this.user_id = (await this.userService.getUserInfo()).id;
+		if (this.subscription) return;
+		this.subscription = this.route.params.subscribe(params => {
+			if (params['login'] != this.user_info.ftLogin && this.user_id != -1){
+				this.ngOnInit();
+			}
+		});
+	}
+
+	ngOnDestroy() {
+		this.subscription.unsubscribe();
 	}
 
 	sendFriendRequest(id: number)

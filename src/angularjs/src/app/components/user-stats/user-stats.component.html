@@ -1,0 +1,35 @@
+<div *ngIf="!userInfos">
+  <p> No games found </p>
+</div>
+<div *ngIf="userInfos">
+  <mat-table [dataSource]="userInfos">
+    <ng-container matColumnDef="game">
+      <mat-header-cell *matHeaderCellDef> Game # </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <!-- <a [routerLink]="['/game', element.id]"> -->
+          {{element.id}}
+        <!-- </a> -->
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="score">
+      <mat-header-cell *matHeaderCellDef> Score </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.score}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="opponent">
+      <mat-header-cell *matHeaderCellDef> Opponent </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <div class="opponent">
+          <img [src]="element.opponent.picture || 'assets/img/avatar-placeholder.jpg'" [width]="30"
+            alt="opponent picture" />
+          <a [routerLink]="['/profile', element.opponent.ftLogin]">{{element.opponent.nickname}}</a>
+        </div>
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="date">
+      <mat-header-cell *matHeaderCellDef> Date </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.createdAt | date:'short' }} </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="['game', 'score', 'opponent', 'date']"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: ['game', 'score', 'opponent', 'date'];"></mat-row>
+  </mat-table>
+</div>
