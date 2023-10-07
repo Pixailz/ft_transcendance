@@ -45,6 +45,15 @@ form {
 		background: rgba($color: #3a3a3a, $alpha: 0.3);
 	}
 
+	.missing-char {
+		font-size: 1.5em;
+		position: absolute;
+		right: 70px;
+		top: 50%;
+		transform: translateY(-50%);
+		color: #ff9999;
+	}
+
 	button {
 		top: 6px;
 		right: 6px;
@@ -61,37 +70,94 @@ form {
 		background-color: #00BABC;
 		transition: background-color 250ms ease-in-out;
 
+		.numbers {
+			$numSize: 33px;
+
+			$check: 75.044;
+			$checkJoin: 139.82;
+			$arrow: 62.482;
+			$arrowJoin: 102.033;
+			$num1Len: 72.1554946899414;
+			$num2Len: 136.02162170410156;
+			$num3Len: 144.4256591796875;
+			$numJoin1-2: 82.63925170898438;
+			$numJoin2-3: 42.81303787231445;
+			$numJoin3-0: 40;
+			$totalLen: $check + $checkJoin + $arrow + $num1Len + $num2Len + $num3Len + $arrowJoin + $numJoin1-2 + $numJoin2-3 + $numJoin3-0;
+			overflow: visible;
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			width: $numSize;
+			height: $numSize;
+			margin-left: calc($numSize / -2);
+			margin-top: calc($numSize / -2);
+
+			&-path {
+			  fill: none;
+			  stroke-width: 10px;
+			  stroke: #fff;
+			  stroke-linecap: round;
+			  stroke-linejoin: round;
+			  stroke-dasharray: 0, $totalLen;
+			  stroke-dashoffset: 0;
+			  opacity: 0;
+			  transition: all .4s linear;
+
+			  &.three  {
+				  stroke-dasharray: $num3Len, $totalLen;
+				  stroke-dashoffset: -$numJoin3-0;
+				  opacity: 1;
+			  }
+
+			  &.two  {
+				  stroke-dasharray: $num2Len, $totalLen;
+				  stroke-dashoffset: -$num3Len - $numJoin2-3 -$numJoin3-0;
+				  opacity: 1;
+			  }
+
+			  &.one  {
+				  stroke-dasharray: $num1Len, $totalLen;
+				  stroke-dashoffset: -$num3Len - $numJoin2-3 - $num2Len - $numJoin1-2 -$numJoin3-0;
+				  opacity: 1;
+			  }
+
+			  &.arrow  {
+				stroke-dasharray: $arrow, $totalLen;
+				stroke-dashoffset: -$arrowJoin -$num1Len -$num3Len - $numJoin2-3 - $num2Len - $numJoin1-2 -$numJoin3-0;
+				opacity: 1;
+				}
+
+				&.check  {
+				stroke-dasharray: $check, $totalLen;
+				stroke-dashoffset: -$arrow -$checkJoin -$arrowJoin -$num1Len -$num3Len - $numJoin2-3 - $num2Len - $numJoin1-2 -$numJoin3-0;
+				opacity: 1;
+				}
+			}
+		}
 		&.check {
 			background-color: rgb(167, 220, 163);
 		}
 
-		&::before, &::after {
-			content: "";
-			position: absolute;
-			width: 20px;
-			height: 5px;
-			border-radius: 9999px;
-			background-color: white;
-			transition: all .25s ease-in-out;
-		}
+		// &.check::before, &.check::after {
+		// 	content: "";
+		// 	position: absolute;
+		// 	width: 20px;
+		// 	height: 5px;
+		// 	border-radius: 9999px;
+		// 	background-color: white;
+		// 	transition: all .33s ease-in-out;
+		// }
 
-		&::before {
-			transform: translateX(35%) rotate(45deg) translateX(calc(-50% + 2.5px));
-		}
+		// &.check::before {
+		// 	width: 15px;
+		// 	transform: translateY(-2px) rotate(45deg) translateY(calc(12.5px - 2.5px));
+		// }
 
-		&::after {
-			transform: translateX(35%) rotate(-45deg) translateX(calc(-50% + 2.5px));
-		}
-
-		&.check::before {
-			width: 15px;
-			transform: translateY(-2px) rotate(45deg) translateY(calc(12.5px - 2.5px));
-		}
-
-		&.check::after {
-			width: 25px;
-			transform: translateY(-2px) rotate(-45deg) translateY(calc(7.5px - 2.5px));
-		}
+		// &.check::after {
+		// 	width: 25px;
+		// 	transform: translateY(-2px) rotate(-45deg) translateY(calc(7.5px - 2.5px));
+		// }
 
 		&:not(button:disabled){
 			cursor: pointer;

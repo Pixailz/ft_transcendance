@@ -1,0 +1,20 @@
+<ol>
+	<li *ngFor="let _ of room.message; let i=index;" [ngClass]="{'me': getCurrentMessage(i).userId === userService.user.id}">
+		<span class="date" *ngIf="!isFollowingDay(i)">{{getCurrentMessage(i).updateAt | date: 'dd/MM/YYYY'}}</span>
+		<div class="msg-line">
+			<div class="msg">
+				<span class="login" *ngIf="!isSameUser(i)">{{getCurrentMessageUser(i).ftLogin}}</span>
+				<span class="content">{{getCurrentMessage(i).content?.replace(' ', '&nbsp;')}}</span>
+			</div>
+			<span class="time">{{getCurrentMessage(i).updateAt | date: 'HH:mm'}}</span>
+		</div>
+	</li>
+</ol>
+<span class="char-left" *ngIf="!blocked" >{{messageLength}}/120</span>
+<form [formGroup]="messageForm" *ngIf="!blocked">
+    <input formControlName="message" type="text" placeholder="Type something ... " maxlength="120">
+    <button (click)="sendMessage()" [disabled]="!messageLength">
+		<mat-icon fontIcon="send"></mat-icon>
+	</button>
+</form>
+

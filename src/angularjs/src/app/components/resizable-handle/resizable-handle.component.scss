@@ -1,0 +1,13 @@
+:host {
+    background-color: rgba(128, 128, 128, 0.466);
+    border-radius: 9999px;
+    cursor:col-resize;
+    width: .4em;
+    transition: all .1s linear;
+}
+
+:host:hover {
+    background-color: rgba(124, 115, 255, 0.466);
+    border-radius: 9999px;
+    transform: scaleX(2);
+}

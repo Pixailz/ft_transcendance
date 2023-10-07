@@ -5,8 +5,13 @@
 		autofocus
 		formControlName="nickname" placeholder="Nickname" [(ngModel)]="userService.user.nickname"
 		name="nickname" minlength="3" maxlength="32" required>
-	<button [@button]="!submitted ? 'open' : 'closed'" [ngClass]="{'check': submitted}" (click)="onSubmit()" [disabled]="!userForm.valid || error ">
+		<button [@button]="!submitted ? 'open' : 'closed'" [ngClass]="{'check': submitted}" (click)="onSubmit()" [disabled]="!userForm.valid || error || submitted ">
+		<svg class="numbers" viewBox="0 0 100 100">
+			<path class="numbers-path " [ngClass]="{'check':submitted, 'arrow': nbMissingChar <= 0, 'three': nbMissingChar === 3, 'two': nbMissingChar === 2, 'one': nbMissingChar === 1}"
+					d="
+					m -10 20 l 70 0 l -20 30 a 18 15 0 1 1 -12 19 q -3 -25 6.4 -41.6 l 7 -7 a 16 16 90 0 1 22.6 22.6 l -30 30 l 35 0 l 0 0 a 20 10 0 0 1 20 10 a 17 17 90 0 1 -34 0 l 0 0 l 0 -61 l -15 6 c -37 19 -45 -15 -30 -20 c 9 -3 15 4 19 9 c 4 6 9 10 13 14 l 24 20 l -24 20 c -10 10 -34 21 -31 1 c 4 -23 37 -45 14 -46 c -24 -1 -6 18 1 26 l 16 19 l 35 -34
+					" />
+		</svg>
 	</button>
 	<span class="invalid-nickname" *ngIf="error">{{invalidNickname}}</span>
 </form>
-

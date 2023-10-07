@@ -375,7 +375,7 @@
 	<h2 [routerLink]="" (click)="onOpenManagement()">{{chatChannelService.getRoomTitle()}}</h2>
 	<ol class="msg-list">
 		<li *ngFor="let _ of chatChannelService.getSelectedRoom().message; let i=index;" [ngClass]="{'me': chatChannelService.getCurrentMessage(i).userId === userService.user.id, 'same': chatChannelService.isSameUser(i)}">
-			<div class="message" *ngIf="!friendService.isBlocked(chatChannelService.getCurrentMessageUser(i).id)">
+			<div class="message" *ngIf="!friendService.isMeBlocked(chatChannelService.getCurrentMessageUser(i).id)">
 				<div class="title-line">
 					<span class="date" *ngIf="!isFollowingDay(i)">{{chatChannelService.getCurrentMessage(i).updateAt | date: 'dd/MM/YYYY'}}</span>
 					<span class="login" *ngIf="!chatChannelService.isSameUser(i)">{{chatChannelService.getCurrentMessageUser(i).ftLogin}}</span>
