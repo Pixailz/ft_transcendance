@@ -21,10 +21,16 @@ export class UserStatsComponent implements OnInit {
     }
     this.backService.req("GET", "/game/user-stats/" + this.userId)
     .then((res) => {
-      this.userInfos = res;
+      if (!res.length) this.userInfos = null;
+      else this.userInfos = res;
     })
     .catch((err) => {
       this.userInfos = null;
     });
+  }
+
+  ngOnChanges() {
+    if (this.userInfos?.id == this.userId) return;
+    this.ngOnInit();
   }
 }

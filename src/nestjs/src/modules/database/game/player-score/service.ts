@@ -68,9 +68,10 @@ export class DBPlayerScoreService {
 				(element) => element.playerId == userId,
 			);
 			userStats.push({
+				id: gameInfo.id,
 				score: playerScore.score,
-				opponent: gameInfo.users.filter(
-					(element) => element != userId,
+				opponent: gameInfo.usersArray.filter(
+					(element) => element.id != userId,
 				)[0],
 				opponentScore: gameInfo.playersScores.find(
 					(element) => element.playerId != userId,
