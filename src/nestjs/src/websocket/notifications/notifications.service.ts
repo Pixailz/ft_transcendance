@@ -2,7 +2,11 @@ import { Injectable } from "@nestjs/common";
 import { WSSocket } from "../socket.service";
 import { DBNotificationService } from "src/modules/database/notification/service";
 import { Server, Socket } from "socket.io";
-import { NotifStatus, NotificationEntity, NotificationType } from "src/modules/database/notification/entity";
+import {
+	NotifStatus,
+	NotificationEntity,
+	NotificationType,
+} from "src/modules/database/notification/entity";
 import { UserService } from "src/adapter/user/service";
 
 @Injectable()
@@ -11,14 +15,12 @@ export class WSNotificationService {
 		private userService: UserService,
 		public wsSocket: WSSocket,
 		private dbNotificationService: DBNotificationService,
-		) {}
+	) {}
 
-	async getFtLogin(id: number)
-	{
+	async getFtLogin(id: number) {
 		const user = await this.userService.getInfoById(id);
-		return (user.ftLogin);
+		return user.ftLogin;
 	}
-
 
 	async getAllNotifications(socket: Socket) {
 		const user_id = this.wsSocket.getUserId(socket.id);
@@ -26,6 +28,21 @@ export class WSNotificationService {
 			await this.dbNotificationService.getNotifByUserId(user_id);
 
 		socket.emit("getAllNotifications", notifs);
+	}
+
+	async sendGameInvite(server: Server, room_id: number, user_id: number) {
+		const notif_user = await this.dbNotificationService.create({
+			type: NotificationType.GAME_REQ,
+			userId: user_id,
+			data: room_id.toString(),
+		});
+		console.log(notif_user);
+		this.wsSocket.sendToUser(
+			server,
+			user_id,
+			"getNewNotification",
+			notif_user,
+		);
 	}
 
 	async sendFriendRequest(
@@ -155,11 +172,13 @@ export class WSNotificationService {
 		socket.emit("removeNotification", id);
 	}
 
-	async updateNotificationStatus(socket: Socket, id: number, status: NotifStatus)
-	{
-		if (!(await this.dbNotificationService.isExist(id)))
-			return ;
-		await this.dbNotificationService.update(id, {status: status});
+	async updateNotificationStatus(
+		socket: Socket,
+		id: number,
+		status: NotifStatus,
+	) {
+		if (!(await this.dbNotificationService.isExist(id))) return;
+		await this.dbNotificationService.update(id, { status: status });
 		const new_notif = await this.dbNotificationService.returnOne(id);
 		socket.emit("updateNotificationStatus", id);
 	}

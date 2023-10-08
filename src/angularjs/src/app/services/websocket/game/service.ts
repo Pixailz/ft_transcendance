@@ -12,6 +12,7 @@ export class GameService {
 	obsToDestroy: Subscription[] = [];
 
 	room: LobbyI = DefLobbyI;
+	roomid: string = "";
 	in_game: boolean = false;
 	maps: MapI[] = Maps;
 
@@ -20,8 +21,9 @@ export class GameService {
 		private wsService: WSService,
 	) {
 		this.obsToDestroy.push(this.wsGateway.listenGameWaiting()
-			.subscribe((data: null) => {
+			.subscribe((data: any) => {
 				console.log("[WS:game] GameWaiting event")
+				this.roomid = data;
 				this.room.status = GameStatus.WAITING;
 			}
 		));
@@ -82,6 +84,9 @@ export class GameService {
 
 	searchGame(game_option: GameOptionI)
 	{ this.wsGateway.searchGame(game_option); }
+
+	joinGame(room_id: string)
+	{ this.wsGateway.joinGame(room_id); }
 
 	isInGame()
 	{ this.wsGateway.isInGame(); }

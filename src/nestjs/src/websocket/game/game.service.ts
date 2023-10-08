@@ -46,6 +46,23 @@ export class WSGameService {
 		}
 	}
 
+	async gameJoin(server: Server, socket: Socket, room_id: string) {
+		const player: PlayerSockI = {
+			user: this.sanitize.User(
+				await this.userService.getInfoById(
+					this.wsSocket.getUserId(socket.id),
+				),
+			),
+			socket: socket.id,
+		};
+		const room = this.rooms.get(room_id);
+		if (room) {
+			this.addPlayerToRoom(player, room_id, socket);
+			if (this.isFullRoom(room)) this.startGame(server, room_id);
+			else socket.emit("gameWaiting", room_id);
+		}
+	}
+
 	async gameSearch(server: Server, socket: Socket, game_opt: GameOptionI) {
 		const player: PlayerSockI = {
 			user: this.sanitize.User(
@@ -59,7 +76,8 @@ export class WSGameService {
 		const room = this.rooms.get(room_id);
 		if (this.isFullRoom(room) && room.status !== LobbyStatus.STARTED)
 			this.startGame(server, room_id);
-		else if (room.status === LobbyStatus.LOBBY) socket.emit("gameWaiting");
+		else if (room.status === LobbyStatus.LOBBY)
+			socket.emit("gameWaiting", room_id);
 	}
 
 	gameSearchOpponent(player: PlayerSockI, game_opt: any, socket: Socket) {
@@ -210,9 +228,9 @@ export class WSGameService {
 					console.log("Ending game of room: ", roomid);
 					return;
 				}
-				Object.getOwnPropertyNames(room).forEach((value) => {
-					delete room[value];
-				});
+				// Object.getOwnPropertyNames(room).forEach((value) => {
+				// 	delete room[value];
+				// });
 				this.rooms.delete(roomid);
 				console.log("Garbage Collected room: ", roomid);
 			}
@@ -287,9 +305,9 @@ export class WSGameService {
 		// await sleep(5000);
 		await sleep(1000);
 		this.wsSocket.sendToUserInGame(server, room, "gameEnded", {});
-		Object.getOwnPropertyNames(this.rooms.get(room_id)).forEach((value) => {
-			delete this.rooms.get(room_id)[value];
-		});
+		// Object.getOwnPropertyNames(this.rooms.get(room_id)).forEach((value) => {
+		// 	delete this.rooms.get(room_id)[value];
+		// });
 		this.rooms.delete(room_id);
 		console.log("GAME ENDED");
 	}

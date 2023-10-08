@@ -227,6 +227,9 @@ export class WSGateway {
 	searchGame(game_option: GameOptionI)
 	{ this.socket.emit("gameSearch", game_option); }
 
+	joinGame(game_id: string)
+	{ this.socket.emit("gameJoin", game_id); }
+
 	isInGame()
 	{ this.socket.emit("isInGame"); }
 
@@ -235,6 +238,9 @@ export class WSGateway {
 
 	sendInput(direction: string, type: string, pending_input: number)
 	{ this.socket.emit("gameSendInput", direction, type, pending_input); }
+
+	sendGameInvite(user_id: number, room_id: string)
+	{ this.socket.emit("gameSendInvite", room_id, user_id); }
 
 	// LISTENER
 

@@ -1,3 +1,9 @@
 <div class='container'>
-	Waiting for opponent
+	<h1>Waiting for opponent</h1>
+	<button *ngIf="inviteLink" [cdkCopyToClipboard]="inviteLink">
+		Copy invite link
+	</button>
+	<button *ngIf="inviteLink" (click)="sendToFriend()">
+		Send Invite to Friend
+	</button>
 </div>
