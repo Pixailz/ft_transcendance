@@ -3,7 +3,7 @@ import { Subscription } from "rxjs";
 
 import { WSGateway } from "../gateway";
 import { WSService } from "../service";
-import { DefLobbyI, GameOptionI, GameStateI, GameStatus, LobbyI } from "src/app/interfaces/game/game-room.interface";
+import { DefLobbyI, GameOptionI, GameStateI, GameStatus, LobbyI, MapI, Maps } from "src/app/interfaces/game/game-room.interface";
 
 @Injectable({
 	providedIn: "root",
@@ -13,6 +13,7 @@ export class GameService {
 
 	room: LobbyI = DefLobbyI;
 	in_game: boolean = false;
+	maps: MapI[] = Maps;
 
 	constructor(
 		private wsGateway: WSGateway,

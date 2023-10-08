@@ -14,6 +14,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -65,6 +66,7 @@ import { GameStartedComponent } from './components/game/started/started.componen
 import { GameComponent } from './pages/game/game.component';
 import { GameLobbyComponent } from './components/game/lobby/lobby.component';
 import { UserStatsComponent } from './components/user-stats/user-stats.component';
+import { OptionsDialogComponent } from './components/game/options-dialog/options-dialog.component';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -117,6 +119,7 @@ const config: SocketIoConfig = {
 		NewDmComponent,
 		UserTooltipComponent,
 		TooltipDirective,
+  OptionsDialogComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -132,6 +135,7 @@ const config: SocketIoConfig = {
 		MatSlideToggleModule,
 		MatFormFieldModule,
 		MatInputModule,
+		MatCheckboxModule,
 		MatSelectModule,
 		ReactiveFormsModule,
 		AppRoutingModule,

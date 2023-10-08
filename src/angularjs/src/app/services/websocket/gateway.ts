@@ -7,7 +7,7 @@ import { UserChatRoomI } from 'src/app/interfaces/chat/user-chat-room.interface'
 import { FriendRequestI } from 'src/app/interfaces/user/friend.interface';
 import { UserI } from 'src/app/interfaces/user/user.interface';
 import { NotifStatus } from 'src/app/interfaces/notification.interface';
-import { GameStateI } from 'src/app/interfaces/game/game-room.interface';
+import { GameOptionI, GameStateI } from 'src/app/interfaces/game/game-room.interface';
 
 @Injectable({
 	providedIn: 'root',
@@ -224,7 +224,7 @@ export class WSGateway {
 	{ return this.socket.fromEvent<GameStateI>("gameState"); }
 
 	// EMITER
-	searchGame(game_option: any)
+	searchGame(game_option: GameOptionI)
 	{ this.socket.emit("gameSearch", game_option); }
 
 	isInGame()

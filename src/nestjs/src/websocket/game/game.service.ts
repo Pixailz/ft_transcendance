@@ -12,11 +12,18 @@ import {
 	LobbyI,
 	PlayerI,
 	PlayerSockI,
+	GameOptionI,
+	PowerUpI,
 } from "./game.interface";
 import { UserEntity } from "src/modules/database/user/entity";
 import { DBGameInfoService } from "src/modules/database/game/gameInfo/service";
 import { GameInfoEntity } from "src/modules/database/game/gameInfo/entity";
 import { DBPlayerScoreService } from "src/modules/database/game/player-score/service";
+
+export enum powerUpMercyFlags {
+	GIVE_THEM_A_CHANCE = 0,
+	KILL_THEM_ALL = 1,
+}
 
 @Injectable()
 export class WSGameService {
@@ -39,7 +46,7 @@ export class WSGameService {
 		}
 	}
 
-	async gameSearch(server: Server, socket: Socket, game_opt: any) {
+	async gameSearch(server: Server, socket: Socket, game_opt: GameOptionI) {
 		const player: PlayerSockI = {
 			user: this.sanitize.User(
 				await this.userService.getInfoById(
@@ -57,6 +64,7 @@ export class WSGameService {
 
 	gameSearchOpponent(player: PlayerSockI, game_opt: any, socket: Socket) {
 		const room_id = this.gameSearchRoom(player, game_opt);
+		console.log(room_id, game_opt);
 
 		if (room_id !== "") {
 			this.addPlayerToRoom(player, room_id, socket);
@@ -71,7 +79,7 @@ export class WSGameService {
 			if (this.isInRoom(player, room)) return room_id; //we first loop to check if the player is already in a room
 		}
 		for (const [room_id, room] of this.rooms) {
-			if (room.type === game_opt.type && !this.isFullRoom(room))
+			if (room.options.type === game_opt.type && !this.isFullRoom(room))
 				return room_id; //then we loop to find a room with the same game type and not full
 		}
 		return "";
@@ -86,8 +94,9 @@ export class WSGameService {
 	isFullRoom(room: LobbyI): boolean {
 		let max_player = 0;
 		let nb_player = 0;
-		switch (room.type) {
+		switch (room.options.type) {
 			case "normal":
+			case "custom":
 				max_player = 2;
 				break;
 		}
@@ -126,7 +135,7 @@ export class WSGameService {
 		current_lobby.state.players.push(player);
 	}
 
-	createRoom(player: PlayerSockI, game_opt: any, socket: Socket) {
+	createRoom(player: PlayerSockI, game_opt: GameOptionI, socket: Socket) {
 		let room_id = `${this.getUidPart(8)}-`;
 
 		for (let i = 0; i < 4; i++) room_id += `${this.getUidPart(4)}-`;
@@ -134,7 +143,7 @@ export class WSGameService {
 
 		this.rooms.set(room_id, {
 			status: LobbyStatus.LOBBY,
-			type: "",
+			options: game_opt,
 			winner_id: -1,
 			state: {
 				gameStatus: GameStatus.WAITING,
@@ -160,7 +169,7 @@ export class WSGameService {
 			},
 			players: [],
 		} as LobbyI);
-		this.rooms.get(room_id).type = game_opt.type;
+		this.rooms.get(room_id).options.type = game_opt.type;
 
 		this.addPlayerToRoom(player, room_id, socket);
 		return room_id;
@@ -192,6 +201,21 @@ export class WSGameService {
 					room.players[player_id].socket = "";
 					break;
 				}
+			}
+			if (
+				room.players.find((player) => player.socket !== "") ===
+				undefined
+			) {
+				if (room.status === LobbyStatus.STARTED) {
+					room.status = LobbyStatus.LOBBY;
+					console.log("Ending game of room: ", roomid);
+					return;
+				}
+				Object.getOwnPropertyNames(room).forEach((value) => {
+					delete room[value];
+				});
+				this.rooms.delete(roomid);
+				console.log("Garbage Collected room: ", roomid);
 			}
 		}
 	}
@@ -228,12 +252,15 @@ export class WSGameService {
 	async startGame(server: Server, room_id: string) {
 		const room = this.rooms.get(room_id);
 
-		if (room.state.gameStatus === GameStatus.FINISHED) {
+		if (
+			room.state.gameStatus === GameStatus.FINISHED ||
+			!this.isFullRoom(room)
+		) {
 			return;
 		}
 		this.gameDBService
 			.create({
-				type: room.type,
+				type: room.options.type,
 				users: room.players.map((player) => player.user.id),
 			})
 			.then((gameInfo: GameInfoEntity) => {
@@ -254,7 +281,7 @@ export class WSGameService {
 		// await sleep(3000);
 		await sleep(500);
 		this.resetBall(server, room);
-		while (room.state.gameStatus === GameStatus.STARTED) {
+		while (room.status === LobbyStatus.STARTED) {
 			this.update(server, room);
 			await sleep(1000 / 64);
 		}
@@ -277,6 +304,9 @@ export class WSGameService {
 			this.moveBall(room);
 			this.checkCollisions(room);
 			this.checkBallLose(server, room);
+			if (room.options.powerUps) {
+				this.powerUpsNurcery(room);
+			}
 		}
 		this.wsSocket.sendStatusToGame(server, room);
 	}
@@ -304,6 +334,130 @@ export class WSGameService {
 	}
 
 	/************** Game methods, called by update() ***************/
+	private powerUpsNurcery(room: LobbyI) {
+		if (!room.state.powerUps) room.state.powerUps = [];
+		this.maybeGiveBirthToPowerUp(room);
+		this.watchPowerUpsGrowUp(room);
+		this.maybeKillPowerUps(room, powerUpMercyFlags.GIVE_THEM_A_CHANCE); //they've probably been bad boys, we dont know
+	}
+
+	private maybeGiveBirthToPowerUp(room: LobbyI) {
+		const powerUpCreationProbability = 0.0005 / room.state.powerUps.length;
+		if (Math.random() < powerUpCreationProbability) {
+			let type;
+			switch (Math.floor(Math.random() * 4)) {
+				default:
+				case 0:
+					type = "speed";
+					break;
+				case 1:
+					type = "size";
+					break;
+				case 2:
+					type = "sticky";
+					break;
+				case 3:
+					type = "death";
+					break;
+			}
+			const powerUp = {
+				x: Math.random() * 700 + 50,
+				y: Math.random() * 500 + 50,
+				type: type,
+				// duration between 4 and 8s
+				duration: Math.random() * 4 + 4,
+				appliedAt: null,
+				appliedTo: null,
+			};
+			room.state.powerUps.push(powerUp);
+		}
+	}
+
+	private watchPowerUpsGrowUp(room: LobbyI) {
+		room.state.powerUps.forEach((powerUp) => {
+			const ballCenter = { x: room.state.ball.x, y: room.state.ball.y };
+			const powerUpCenter = { x: powerUp.x, y: powerUp.y };
+			const distance = Math.sqrt(
+				Math.pow(ballCenter.x - powerUpCenter.x, 2) +
+					Math.pow(ballCenter.y - powerUpCenter.y, 2),
+			);
+			if (distance < 20) {
+				this.watchPowerUpGettingAJob(room, powerUp); //he's sooooo cute he's getting a job
+			}
+		});
+	}
+
+	private watchPowerUpGettingAJob(room: LobbyI, powerUp: PowerUpI) {
+		const playerSide = room.state.ball.vx > 0 ? "left" : "right";
+		const player = this.getPlayerBySide(room, playerSide);
+		switch (powerUp.type) {
+			case "speed":
+				room.state.ball.vx *= 2;
+				room.state.ball.vy *= 2;
+				powerUp.appliedTo = "ball";
+				break;
+			case "size":
+				player.paddle.height *= 2;
+				powerUp.appliedTo = playerSide;
+				break;
+			case "sticky":
+				// room.state.ball.vx = 0;
+				// room.state.ball.vy = 0;
+				// powerUp.appliedTo = "ball";
+				break;
+			case "death":
+				player.paddle.height = 0;
+				powerUp.appliedTo = playerSide;
+				break;
+		}
+		powerUp.appliedAt = Date.now();
+		console.log("This little boy just get a job ", powerUp);
+	}
+
+	private maybeKillPowerUps(room: LobbyI, cleanFlag: powerUpMercyFlags) {
+		room.state.powerUps.forEach((powerUp) => {
+			if (
+				cleanFlag === powerUpMercyFlags.KILL_THEM_ALL ||
+				(powerUp.appliedAt &&
+					Date.now() - powerUp.appliedAt > powerUp.duration * 1000)
+			) {
+				this.killPowerUp(room, powerUp); // we found a bad boy
+				room.state.powerUps.splice(
+					room.state.powerUps.indexOf(powerUp),
+					1,
+				);
+			}
+		});
+	}
+
+	private killPowerUp(room: LobbyI, powerUp: PowerUpI) {
+		let player;
+		switch (powerUp.type) {
+			case "speed":
+				room.state.ball.vx /= 2;
+				room.state.ball.vy /= 2;
+				break;
+			case "size":
+				if (!powerUp.appliedTo) break;
+				player = this.getPlayerBySide(room, powerUp.appliedTo);
+				player.paddle.height /= 2;
+				break;
+			case "sticky":
+				// room.state.ball.vx = 3;
+				// room.state.ball.vy = Math.random() * 2 - 1;
+				break;
+			case "death":
+				// if no one has scored yet, then he's saved by the bell
+				// otherwise he has lost ball, died, and powerup is removed
+				if (!powerUp.appliedTo) break;
+				player = this.getPlayerBySide(room, powerUp.appliedTo);
+				player.paddle.height = 75;
+				break;
+			default:
+				break;
+		}
+	}
+
 	private determineMovement(direction: string) {
 		return direction === "bottom" ? 5 : -5;
 	}
@@ -370,6 +524,8 @@ export class WSGameService {
 
 	private ballWon(server: Server, room: LobbyI, player: PlayerI | undefined) {
 		if (player) {
+			if (room.options.powerUps)
+				this.maybeKillPowerUps(room, powerUpMercyFlags.KILL_THEM_ALL);
 			this.playerScoreUpdate(player, room);
 			this.checkGameOver(room);
 			this.resetBall(server, room);

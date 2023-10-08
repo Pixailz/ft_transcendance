@@ -10,6 +10,7 @@ import { WSGateway } from 'src/app/services/websocket/gateway';
 import { Subscription } from 'rxjs';
 import { WSService } from 'src/app/services/websocket/service';
 import { UserService } from 'src/app/services/user.service';
+import { PowerUp } from 'src/app/interfaces/game/actors/powerup';
 
 @Component({
 	selector: 'app-game-started',
@@ -22,6 +23,7 @@ export class GameStartedComponent implements OnInit {
 	private engine: ex.Engine;
 	private game: ex.Scene;
 	private gameStatus: ex.Label;
+	private loader: ex.Loader;
 	private localPaddle: Paddle;
 	private localScore: ex.Label;
 	private pendingInputs: Array<any>;
@@ -35,7 +37,17 @@ export class GameStartedComponent implements OnInit {
 	private serverReceivedTime: number;
 	private serverUpdateTime: number;
 	private side_id: string;
-	
+
+	// PowerUps Sprites
+	private pwrupImgSpeed: ex.ImageSource;
+	private pwrupSpeed: PowerUp;
+	private pwrupImgSize: ex.ImageSource;
+	private pwrupSize: PowerUp;
+	private pwrupImgSticky: ex.ImageSource;
+	private pwrupSticky: PowerUp;
+	private pwrupImgDeath: ex.ImageSource;
+	private pwrupDeath: PowerUp;
+
 	// Debug Elements
 	private devTool: DevTool | null = null;
 	private FPSToolsTimer: ex.Timer;
@@ -75,6 +87,7 @@ export class GameStartedComponent implements OnInit {
 		this.engine.add('game', this.game);
 		this.engine.backgroundColor = ex.Color.Gray;
 		this.engine.fixedUpdateFps = 64;
+		this.loader = new ex.Loader();
 	}
 
 	private initGameObjects(): void {
@@ -89,6 +102,11 @@ export class GameStartedComponent implements OnInit {
 		this.remoteScore = this.createScore(0);
 		this.gameStatus = this.createGameStatus();
 		this.ball = this.createBall();
+		this.pwrupImgDeath = new ex.ImageSource('assets/powerups/death.png');
+		this.pwrupImgSpeed = new ex.ImageSource('assets/powerups/speed.png');
+		this.pwrupImgSize = new ex.ImageSource('assets/powerups/size.png');
+		this.pwrupImgSticky = new ex.ImageSource('assets/powerups/sticky.png');
+		this.loader.addResources([this.pwrupImgDeath, this.pwrupImgSpeed, this.pwrupImgSize, this.pwrupImgSticky]);
 		this.graphic_sec_prompt = this.createDebugLabel('graphic_ms');
 		this.graphic_ms_prompt = this.createDebugLabel('graphic_sec');
 		this.server_sec_prompt = this.createDebugLabel('server_ms');
@@ -106,7 +124,7 @@ export class GameStartedComponent implements OnInit {
 			if (player.id === this.userService.user.id)
 				this.side_id = player.side_id;
 		});
-		this.engine.start().then(() => {
+		this.engine.start(this.loader).then(() => {
 			this.engine.goToScene('game');
 			this.engine.onPostUpdate = this.postUpdate.bind(this);
 			this.obsToDestroy.push(this.wsGateway.listenGameStarting()
@@ -252,7 +270,58 @@ export class GameStartedComponent implements OnInit {
 			}
 		}
 		this.serverReceivedTime = Date.now();
+		this.spawnPowerUps();
 	}
+
+	private spawnPowerUps(): void {
+		this.gameService.room.state.powerUps?.forEach((powerUp) => {
+			if (powerUp.appliedAt) return (this.unspawnPowerUp(powerUp));
+			switch (powerUp.type) {
+				case 'speed':
+					this.pwrupSpeed = this.createPowerUp(powerUp, this.pwrupImgSpeed);
+					break;
+				case 'size':
+					this.pwrupSize = this.createPowerUp(powerUp, this.pwrupImgSize);
+					break;
+				case 'sticky':
+					this.pwrupSticky = this.createPowerUp(powerUp, this.pwrupImgSticky);
+					break;
+				case 'death':
+					this.pwrupDeath = this.createPowerUp(powerUp, this.pwrupImgDeath);
+					break;
+			}
+		});
+	}
+
+	private unspawnPowerUp(powerUp: any): void {
+		switch (powerUp.type) {
+			case 'speed':
+				this.pwrupSpeed.kill();
+				break;
+			case 'size':
+				this.pwrupSize.kill();
+				break;
+			case 'sticky':
+				this.pwrupSticky.kill();
+				break;
+			case 'death':
+				this.pwrupDeath.kill();
+				break;
+		}
+	}
+
+	private createPowerUp(powerUp: any, image: ex.ImageSource): PowerUp {
+		const pwrup = this.createGameObject(PowerUp, [
+			powerUp.x,
+			powerUp.y,
+			powerUp.type,
+			image,
+		]);
+		pwrup.graphics.use(image.toSprite());
+		this.engine.load(this.loader);
+		return pwrup;
+	}
+
 	private predictionCorrection(): void {
 		let latestState = this.receivedStates[this.receivedStates.length - 1];
 		if (!latestState) return;
