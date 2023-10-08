@@ -40,13 +40,14 @@ export class GameStartedComponent implements OnInit {
 
 	// PowerUps Sprites
 	private pwrupImgSpeed: ex.ImageSource;
-	private pwrupSpeed: PowerUp;
+	private pwrupSpeed: PowerUp | undefined = undefined;
 	private pwrupImgSize: ex.ImageSource;
-	private pwrupSize: PowerUp;
+	private pwrupSize: PowerUp | undefined = undefined;
 	private pwrupImgSticky: ex.ImageSource;
-	private pwrupSticky: PowerUp;
+	private pwrupSticky: PowerUp | undefined = undefined;
 	private pwrupImgDeath: ex.ImageSource;
-	private pwrupDeath: PowerUp;
+	private pwrupDeath: PowerUp | undefined = undefined;
+	private powerUpsNumber: number = 0;
 
 	// Debug Elements
 	private devTool: DevTool | null = null;
@@ -87,7 +88,13 @@ export class GameStartedComponent implements OnInit {
 		this.engine.add('game', this.game);
 		this.engine.backgroundColor = ex.Color.Gray;
 		this.engine.fixedUpdateFps = 64;
+		this.pwrupImgDeath = new ex.ImageSource('assets/powerups/death.png');
+		this.pwrupImgSpeed = new ex.ImageSource('assets/powerups/speed.png');
+		this.pwrupImgSize = new ex.ImageSource('assets/powerups/size.png');
+		this.pwrupImgSticky = new ex.ImageSource('assets/powerups/sticky.png');
 		this.loader = new ex.Loader();
+		this.loader.addResources([this.pwrupImgDeath, this.pwrupImgSpeed, this.pwrupImgSize, this.pwrupImgSticky]);
+		this.loader.suppressPlayButton = true;
 	}
 
 	private initGameObjects(): void {
@@ -102,11 +109,6 @@ export class GameStartedComponent implements OnInit {
 		this.remoteScore = this.createScore(0);
 		this.gameStatus = this.createGameStatus();
 		this.ball = this.createBall();
-		this.pwrupImgDeath = new ex.ImageSource('assets/powerups/death.png');
-		this.pwrupImgSpeed = new ex.ImageSource('assets/powerups/speed.png');
-		this.pwrupImgSize = new ex.ImageSource('assets/powerups/size.png');
-		this.pwrupImgSticky = new ex.ImageSource('assets/powerups/sticky.png');
-		this.loader.addResources([this.pwrupImgDeath, this.pwrupImgSpeed, this.pwrupImgSize, this.pwrupImgSticky]);
 		this.graphic_sec_prompt = this.createDebugLabel('graphic_ms');
 		this.graphic_ms_prompt = this.createDebugLabel('graphic_sec');
 		this.server_sec_prompt = this.createDebugLabel('server_ms');
@@ -270,24 +272,63 @@ export class GameStartedComponent implements OnInit {
 			}
 		}
 		this.serverReceivedTime = Date.now();
-		this.spawnPowerUps();
+		this.updatePowerUps();
+	}
+
+	private updatePowerUps(): void {
+		if (this.gameService.room.state.powerUps?.length > this.powerUpsNumber) {
+			this.spawnPowerUps();
+		} else if (this.gameService.room.state.powerUps?.length <= this.powerUpsNumber) {
+			if (this.pwrupSpeed && (!this.gameService.room.state.powerUps?.find((pwrup) => pwrup.type === 'speed')
+									|| this.gameService.room.state.powerUps?.find((pwrup) => pwrup.type === 'speed')?.appliedTo)) {
+				this.pwrupSpeed.kill();
+				this.pwrupSpeed = undefined;
+			}
+			if (this.pwrupSize && (!this.gameService.room.state.powerUps?.find((pwrup) => pwrup.type === 'size')
+									|| this.gameService.room.state.powerUps?.find((pwrup) => pwrup.type === 'size')?.appliedTo)) {
+				this.pwrupSize.kill();
+				this.pwrupSize = undefined;
+			}
+			if (this.pwrupSticky && (!this.gameService.room.state.powerUps?.find((pwrup) => pwrup.type === 'sticky')
+									|| this.gameService.room.state.powerUps?.find((pwrup) => pwrup.type === 'sticky')?.appliedTo)) {
+				this.pwrupSticky.kill();
+				this.pwrupSticky = undefined;
+			}
+			if (this.pwrupDeath && (!this.gameService.room.state.powerUps?.find((pwrup) => pwrup.type === 'death')
+									|| this.gameService.room.state.powerUps?.find((pwrup) => pwrup.type === 'death')?.appliedTo)) {
+				this.pwrupDeath.kill();
+				this.pwrupDeath = undefined;
+			}
+		}
+		this.powerUpsNumber = this.gameService.room.state.powerUps?.length;
 	}
 
 	private spawnPowerUps(): void {
 		this.gameService.room.state.powerUps?.forEach((powerUp) => {
-			if (powerUp.appliedAt) return (this.unspawnPowerUp(powerUp));
 			switch (powerUp.type) {
 				case 'speed':
-					this.pwrupSpeed = this.createPowerUp(powerUp, this.pwrupImgSpeed);
+					if (!this.pwrupSpeed) {
+						this.pwrupSpeed = this.createPowerUp(powerUp);
+						this.pwrupSpeed.graphics.add(this.pwrupImgSpeed.toSprite());
+					}
 					break;
 				case 'size':
-					this.pwrupSize = this.createPowerUp(powerUp, this.pwrupImgSize);
+					if (!this.pwrupSize) {
+						this.pwrupSize = this.createPowerUp(powerUp);
+						this.pwrupSize.graphics.add(this.pwrupImgSize.toSprite());
+					}
 					break;
 				case 'sticky':
-					this.pwrupSticky = this.createPowerUp(powerUp, this.pwrupImgSticky);
+					if (!this.pwrupSticky) {
+						this.pwrupSticky = this.createPowerUp(powerUp);
+						this.pwrupSticky.graphics.add(this.pwrupImgSticky.toSprite());
+					}
 					break;
 				case 'death':
-					this.pwrupDeath = this.createPowerUp(powerUp, this.pwrupImgDeath);
+					if (!this.pwrupDeath) {
+						this.pwrupDeath = this.createPowerUp(powerUp);
+						this.pwrupDeath.graphics.add(this.pwrupImgDeath.toSprite());
+					}
 					break;
 			}
 		});
@@ -310,15 +351,21 @@ export class GameStartedComponent implements OnInit {
 		}
 	}
 
-	private createPowerUp(powerUp: any, image: ex.ImageSource): PowerUp {
+	private createPowerUp(powerUp: any): PowerUp {
 		const pwrup = this.createGameObject(PowerUp, [
 			powerUp.x,
 			powerUp.y,
-			powerUp.type,
-			image,
+			20
 		]);
-		pwrup.graphics.use(image.toSprite());
-		this.engine.load(this.loader);
+		// const pwrupTimer = new ex.Timer({
+		// 	interval: powerUp.duration * 1000,
+		// 	repeats: false,
+		// 	fcn: () => {
+		// 		pwrup.kill();
+		// 	},
+		// })
+		// this.game.add(pwrupTimer);
+		// pwrupTimer.start();
 		return pwrup;
 	}
 

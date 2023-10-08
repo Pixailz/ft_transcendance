@@ -64,7 +64,6 @@ export class WSGameService {
 
 	gameSearchOpponent(player: PlayerSockI, game_opt: any, socket: Socket) {
 		const room_id = this.gameSearchRoom(player, game_opt);
-		console.log(room_id, game_opt);
 
 		if (room_id !== "") {
 			this.addPlayerToRoom(player, room_id, socket);
@@ -287,7 +286,6 @@ export class WSGameService {
 		}
 		// await sleep(5000);
 		await sleep(1000);
-		console.log(await this.gameDBService.returnOne(room.db_room_id));
 		this.wsSocket.sendToUserInGame(server, room, "gameEnded", {});
 		Object.getOwnPropertyNames(this.rooms.get(room_id)).forEach((value) => {
 			delete this.rooms.get(room_id)[value];
@@ -342,8 +340,13 @@ export class WSGameService {
 	}
 
 	private maybeGiveBirthToPowerUp(room: LobbyI) {
-		const powerUpCreationProbability = 0.0005 / room.state.powerUps.length;
-		if (Math.random() < powerUpCreationProbability) {
+		//generate a PowerUp every 6-9s
+		const isPregnant =
+			Math.random() > 0.9969 &&
+			room.state.powerUps.length < 3 &&
+			room.state.gameStatus === GameStatus.STARTED &&
+			Date.now() - room.state.ball.lastHit > 3000;
+		if (isPregnant) {
 			let type;
 			switch (Math.floor(Math.random() * 4)) {
 				default:
@@ -370,16 +373,20 @@ export class WSGameService {
 				appliedTo: null,
 			};
 			room.state.powerUps.push(powerUp);
+			console.log("new powerUp: ", powerUp);
 		}
 	}
 
 	private watchPowerUpsGrowUp(room: LobbyI) {
 		room.state.powerUps.forEach((powerUp) => {
+			if (powerUp.appliedAt) return; //he's already got a job
 			const ballCenter = { x: room.state.ball.x, y: room.state.ball.y };
 			const powerUpCenter = { x: powerUp.x, y: powerUp.y };
-			const distance = Math.sqrt(
-				Math.pow(ballCenter.x - powerUpCenter.x, 2) +
-					Math.pow(ballCenter.y - powerUpCenter.y, 2),
+			const distance = Math.abs(
+				Math.sqrt(
+					Math.pow(ballCenter.x - powerUpCenter.x, 2) +
+						Math.pow(ballCenter.y - powerUpCenter.y, 2),
+				),
 			);
 			if (distance < 20) {
 				this.watchPowerUpGettingAJob(room, powerUp); //he's sooooo cute he's getting a job
@@ -403,7 +410,7 @@ export class WSGameService {
 			case "sticky":
 				// room.state.ball.vx = 0;
 				// room.state.ball.vy = 0;
-				// powerUp.appliedTo = "ball";
+				powerUp.appliedTo = "ball";
 				break;
 			case "death":
 				player.paddle.height = 0;
@@ -526,6 +533,7 @@ export class WSGameService {
 		if (player) {
 			if (room.options.powerUps)
 				this.maybeKillPowerUps(room, powerUpMercyFlags.KILL_THEM_ALL);
+			room.state.ball.lastHit = Date.now();
 			this.playerScoreUpdate(player, room);
 			this.checkGameOver(room);
 			this.resetBall(server, room);
@@ -539,14 +547,6 @@ export class WSGameService {
 				playerId: player.id,
 				score: player.score,
 			})
-			.then(async (score) => {
-				console.log("playerScore updated, new scores: ");
-				console.log(
-					await this.scoreDBService.find({
-						where: { gameInfo: { id: room.db_room_id } },
-					}),
-				);
-			})
 			.catch((err) => {
 				console.error(err);
 			});
@@ -555,6 +555,7 @@ export class WSGameService {
 	private checkGameOver(room: LobbyI) {
 		room.state.players.forEach((player) => {
 			if (player.score == 5) {
+				room.status = LobbyStatus.LOBBY;
 				room.state.gameStatus = GameStatus.FINISHED;
 			}
 		});

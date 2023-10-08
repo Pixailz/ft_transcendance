@@ -53,6 +53,7 @@ export interface BallI {
 	y: number;
 	vx: number;
 	vy: number;
+	lastHit: number;
 }
 
 export const DefBallI: BallI = {
@@ -60,6 +61,7 @@ export const DefBallI: BallI = {
 	y: 300,
 	vx: 0,
 	vy: 0,
+	lastHit: -1,
 };
 
 export interface PaddleI {
