@@ -239,10 +239,19 @@ export class WSGateway {
 	sendInput(direction: string, type: string, pending_input: number)
 	{ this.socket.emit("gameSendInput", direction, type, pending_input); }
 
-	sendGameInvite(user_id: number, room_id: string)
-	{ this.socket.emit("gameSendInvite", room_id, user_id); }
-
+	//GAME REQUEST
 	// LISTENER
 
 	// EMITER
+	sendGameInvite(user_id: number, room_id: string)
+	{ this.socket.emit("gameSendInvite", room_id, user_id); }
+
+	delGameInvite(id: number)
+	{ this.socket.emit("delGameInvite", id) }
+
+	acceptGameInvite(id: number)
+	{ this.socket.emit("acceptGameInvite", id) }
+
+	declineGameInvite(id: number)
+	{ this.socket.emit("declineGameInvite", id) }
 }

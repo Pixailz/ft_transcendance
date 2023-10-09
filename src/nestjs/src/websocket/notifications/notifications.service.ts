@@ -30,21 +30,6 @@ export class WSNotificationService {
 		socket.emit("getAllNotifications", notifs);
 	}
 
-	async sendGameInvite(server: Server, room_id: number, user_id: number) {
-		const notif_user = await this.dbNotificationService.create({
-			type: NotificationType.GAME_REQ,
-			userId: user_id,
-			data: room_id.toString(),
-		});
-		console.log(notif_user);
-		this.wsSocket.sendToUser(
-			server,
-			user_id,
-			"getNewNotification",
-			notif_user,
-		);
-	}
-
 	async sendFriendRequest(
 		server: Server,
 		friend_id: number,
@@ -164,6 +149,94 @@ export class WSNotificationService {
 			friend_id,
 			"delNotification",
 			notif_user.id,
+		);
+	}
+
+	async sendGameInvite(
+		server: Server,
+		socket: Socket,
+		room_id: number,
+		friend_id: number,
+		) {
+		const user_id = this.wsSocket.getUserId(socket.id);
+		const notif_user = await this.dbNotificationService.create({
+			type: NotificationType.GAME_REQ,
+			userId: friend_id,
+			data: room_id.toString(),
+			data2: await this.getFtLogin(user_id),
+		});
+		// console.log(notif_user);
+		this.wsSocket.sendToUser(
+			server,
+			friend_id,
+			"getNewNotification",
+			notif_user,
+		);
+	}
+
+	async delGameInvite(server:Server, socket: Socket, id: number)
+	{
+		const user_id = this.wsSocket.getUserId(socket.id);
+		const notif = await this.dbNotificationService.returnOne(id);
+		if (!notif)
+		{
+			console.log('Notif not found');
+			return ;
+		}
+		await this.dbNotificationService.delete(notif.id);
+		this.wsSocket.sendToUser(
+			server,
+			user_id,
+			"delNotification",
+			notif.id,
+		);
+	}
+
+	async acceptGameInvite(server:Server, socket:Socket, id: number)
+	{
+		const notif = await this.dbNotificationService.returnOne(id);
+		if (!notif)
+		{
+			console.log('Notif not found');
+			return ;
+		}
+		const friend = await this.userService.getInfoByLogin(notif.data2);
+
+		const user_id = this.wsSocket.getUserId(socket.id);
+		const accept_notif = await this.dbNotificationService.create({
+			type: NotificationType.GAME_REQ_ACCEPTED,
+			userId: user_id,
+			data: await this.getFtLogin(user_id),
+		});
+		this.wsSocket.sendToUser(
+			server,
+			friend.id,
+			"getNewNotification",
+			accept_notif,
+		);
+	}
+
+	async declineGameInvite(server:Server, socket:Socket, id: number)
+	{
+		const notif = await this.dbNotificationService.returnOne(id);
+		if (!notif)
+		{
+			console.log('Notif not found');
+			return ;
+		}
+		const friend = await this.userService.getInfoByLogin(notif.data2);
+
+		const user_id = this.wsSocket.getUserId(socket.id);
+		const decline_notif = await this.dbNotificationService.create({
+			type: NotificationType.GAME_REQ_DENIED,
+			userId: user_id,
+			data: await this.getFtLogin(user_id),
+		});
+		this.wsSocket.sendToUser(
+			server,
+			friend.id,
+			"getNewNotification",
+			decline_notif,
 		);
 	}
 

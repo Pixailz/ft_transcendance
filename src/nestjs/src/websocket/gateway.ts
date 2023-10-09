@@ -267,20 +267,31 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.wsGameService.onMove(this.server, socket, status);
 	}
 
+	//GAME NOTIFICATION
 	@SubscribeMessage("gameSendInvite")
 	async handleSendGameInvite(socket: Socket, data: any) {
 		this.wsNotificationService.sendGameInvite(
 			this.server,
+			socket,
 			data[0],
 			data[1],
 		);
 	}
 
-	// @SubscribeMessage("gameAcceptInvite")
-	// async handleAcceptGameInvite(socket: Socket, data: any) {
-	// 	this.wsNotificationService.acceptGameInvite(this.server, data);
-	// }
+	@SubscribeMessage("delGameInvite")
+	async delGameInvite(socket: Socket, data: any) {
+		this.wsNotificationService.delGameInvite(this.server, socket, data);
+	}
 
+	@SubscribeMessage("acceptGameInvite")
+	async acceptGameInvite(socket: Socket, data: any) {
+		this.wsNotificationService.acceptGameInvite(this.server, socket, data);
+	}
+
+	@SubscribeMessage("declineGameInvite")
+	async declineGameInvite(socket: Socket, data: any) {
+		this.wsNotificationService.declineGameInvite(this.server, socket, data);
+	}
 	// @SubscribeMessage("gameRejectInvite")
 	// async handleRejectGameInvite(socket: Socket, data: any) {
 	// 	this.wsNotificationService.rejectGameInvite(this.server, socket, data);

@@ -75,6 +75,12 @@ export class NotificationComponent{
 			case NotificationType.GAME_REQ:
 				component = this.container.createComponent(NotifGameInviteComponent);
 				break;
+			case NotificationType.GAME_REQ_DACCEPT:
+				component = this.container.createComponent(TextNotificationComponent);
+				break;
+			case NotificationType.GAME_REQ_DENIED:
+					component = this.container.createComponent(TextNotificationComponent);
+				break;
 			default:
 				break;
 		}

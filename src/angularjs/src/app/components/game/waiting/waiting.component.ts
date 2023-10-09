@@ -4,6 +4,7 @@ import { FriendService } from 'src/app/services/websocket/friend/service';
 import { GameService } from 'src/app/services/websocket/game/service';
 import { WSGateway } from 'src/app/services/websocket/gateway';
 import { GameInviteDialogComponent } from '../invite-dialog/game-invite-dialog.component';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
 	selector: 'app-game-waiting',
@@ -23,7 +24,7 @@ export class GameWaitingComponent {
 		this.inviteLink = window.location.origin + "/play/" + this.gameService.roomid;
 	}
 
-	sendToFriend(){
+	async sendToFriend(){
 		//select friend
 		const dialogRef = this.matDialog.open(GameInviteDialogComponent, {
 			width: '300px',
