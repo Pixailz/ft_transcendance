@@ -38,6 +38,7 @@ export const DefGameOptionI: GameOptionI = {
 	powerUps: false,
 	map: { name: "normal", thumbnail: "/assets/images/maps/normal.png" },
 };
+
 export interface CanvasI {
 	width: number;
 	height: number;

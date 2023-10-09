@@ -4,6 +4,7 @@ import { Subscription } from "rxjs";
 import { WSGateway } from "../gateway";
 import { WSService } from "../service";
 import { DefLobbyI, GameOptionI, GameStateI, GameStatus, LobbyI, MapI, Maps } from "src/app/interfaces/game/game-room.interface";
+import { Router } from "@angular/router";
 
 @Injectable({
 	providedIn: "root",
@@ -19,6 +20,7 @@ export class GameService {
 	constructor(
 		private wsGateway: WSGateway,
 		private wsService: WSService,
+		private router: Router,
 	) {
 		this.obsToDestroy.push(this.wsGateway.listenGameWaiting()
 			.subscribe((data: any) => {
@@ -74,6 +76,7 @@ export class GameService {
 			this.room.players[i].email = "";
 			this.room.players[i].status = 0;
 		}
+		this.router.navigate(["/play"], { replaceUrl: true });
 	}
 
 	ngOnDestroy()

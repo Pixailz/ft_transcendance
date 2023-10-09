@@ -5,10 +5,9 @@ import { Ball } from 'src/app/interfaces/game/actors/ball';
 import { Vector } from 'excalibur';
 import { DevTool } from '@excaliburjs/dev-tools';
 import { GameService } from 'src/app/services/websocket/game/service';
-import { GameStateI, GameStatus } from 'src/app/interfaces/game/game-room.interface';
+import { GameStateI } from 'src/app/interfaces/game/game-room.interface';
 import { WSGateway } from 'src/app/services/websocket/gateway';
 import { Subscription } from 'rxjs';
-import { WSService } from 'src/app/services/websocket/service';
 import { UserService } from 'src/app/services/user.service';
 import { PowerUp } from 'src/app/interfaces/game/actors/powerup';
 
@@ -65,7 +64,6 @@ export class GameStartedComponent implements OnInit {
 		private userService: UserService,
 		private gameService: GameService,
 		private wsGateway: WSGateway,
-		private wsService: WSService,
 	) {
 	}
 
@@ -276,6 +274,7 @@ export class GameStartedComponent implements OnInit {
 	}
 
 	private updatePowerUps(): void {
+		if (!this.gameService.room.options.powerUps) return;
 		if (this.gameService.room.state.powerUps?.length > this.powerUpsNumber) {
 			this.spawnPowerUps();
 		} else if (this.gameService.room.state.powerUps?.length <= this.powerUpsNumber) {
@@ -332,23 +331,6 @@ export class GameStartedComponent implements OnInit {
 					break;
 			}
 		});
-	}
-
-	private unspawnPowerUp(powerUp: any): void {
-		switch (powerUp.type) {
-			case 'speed':
-				this.pwrupSpeed.kill();
-				break;
-			case 'size':
-				this.pwrupSize.kill();
-				break;
-			case 'sticky':
-				this.pwrupSticky.kill();
-				break;
-			case 'death':
-				this.pwrupDeath.kill();
-				break;
-		}
 	}
 
 	private createPowerUp(powerUp: any): PowerUp {

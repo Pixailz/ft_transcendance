@@ -39,7 +39,7 @@ const routes: Routes = [
 			},{
 				path: 'play/:room_id',
 				component: GameComponent,
-				data: { animation: 'Play', reuseRoute: true }
+				data: { animation: 'Play', reuseRoute: false }
 			},
 			{
 				path: 'chat/dm',

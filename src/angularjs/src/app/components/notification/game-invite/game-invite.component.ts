@@ -20,7 +20,7 @@ export class NotifGameInviteComponent {
 	accept(){
 		this.wsGateway.acceptGameInvite(this.notif.id);
 		this.wsGateway.delGameInvite(this.notif.id);
-		this.router.navigate(["/play", this.notif.data]);
+		this.router.navigate(["/play", this.notif.data], { replaceUrl: true });
 	}
 
 	reject(){

@@ -121,6 +121,7 @@ export const DefGameStateI: GameStateI = {
 
 export interface LobbyI {
 	status			: number,
+	options			: GameOptionI,
 	id				: string,
 	type			: string,
 	players			: UserI[],
@@ -130,6 +131,7 @@ export interface LobbyI {
 
 export const DefLobbyI: LobbyI = {
 	status			: GameStatus.LOBBY,
+	options			: DefGameOptionI,
 	id				: "",
 	type			: "",
 	players			: [],
