@@ -17,16 +17,13 @@
     padding: 0;
 }
 
-mat-form-field{
-    width: 17vw;
+form {
+    width: 90%;
 }
 
-mat-option {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+mat-form-field{
     width: 100%;
-  }
+}
 mat-option img {
     margin-right: 10px;
   }

@@ -1,4 +1,7 @@
 <div class="container">
+	<div class="bg-container">
+		<mat-icon *ngFor="let i of [].constructor(6)" fontIcon="sports_esports"></mat-icon>
+	</div>
 	<p>{{notif.toDisplay}}</p>
 	<button class="accept-btn" (click)="accept()">
 		<mat-icon fontIcon="done">

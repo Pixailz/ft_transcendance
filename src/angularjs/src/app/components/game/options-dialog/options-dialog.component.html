@@ -11,7 +11,7 @@
             <mat-select [(ngModel)]="data.map" name="map" required>
                 <mat-option *ngFor="let map of maps" [value]="map.name">
                     <img [src]="map.thumbnail" alt="{{map.name}} thumbnail" width="50" height="50">
-                    {{map.name}}
+                    <span>{{map.name}}</span>
                 </mat-option>
             </mat-select>
         </mat-form-field>

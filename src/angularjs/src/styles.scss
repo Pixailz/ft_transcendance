@@ -142,3 +142,12 @@ li.newRoomBtn app-flat-button button  {
 	height: 3em;
 	width: 100%;
 }
+
+
+
+mat-option > span.mdc-list-item__primary-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
