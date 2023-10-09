@@ -79,8 +79,10 @@ export class GameStartedComponent implements OnInit {
 	private initGameEngine(): void {
 		this.engine = new ex.Engine({
 			canvasElementId: 'pong',
-			width: 800,
-			height: 600,
+			displayMode: ex.DisplayMode.FitContainer,
+			enableCanvasTransparency: true,
+			backgroundColor: ex.Color.Black,
+			viewport: {height: 600, width: 800},
 		});
 		this.game = new ex.Scene();
 		this.engine.add('game', this.game);
@@ -93,6 +95,9 @@ export class GameStartedComponent implements OnInit {
 		this.loader = new ex.Loader();
 		this.loader.addResources([this.pwrupImgDeath, this.pwrupImgSpeed, this.pwrupImgSize, this.pwrupImgSticky]);
 		this.loader.suppressPlayButton = true;
+		this.loader.backgroundColor = ex.Color.Black.toString();
+		this.loader.logo = '';
+		this.loader.loadingBarColor = ex.Color.White;
 	}
 
 	private initGameObjects(): void {
@@ -411,16 +416,26 @@ export class GameStartedComponent implements OnInit {
 	}
 
 	private handleInputHold(evt: ex.Input.KeyEvent): void {
-		if ([ex.Input.Keys.S, ex.Input.Keys.W].includes(evt.key)) {
-			this.sendInput(evt.key === ex.Input.Keys.S ? 'bottom' : 'up', 'keydown');
+		if ([ex.Input.Keys.S, ex.Input.Keys.ArrowDown].includes(evt.key)) {
+			this.sendInput('bottom', 'keydown');
+			const input = this.pendingInputs[this.pendingInputs.length - 1];
+			this.paddleUpdate(input);
+		}
+		if ([ex.Input.Keys.W, ex.Input.Keys.ArrowUp].includes(evt.key)) {
+			this.sendInput('top', 'keydown');
 			const input = this.pendingInputs[this.pendingInputs.length - 1];
 			this.paddleUpdate(input);
 		}
 	}
 
 	private handleInputRelease(evt: ex.Input.KeyEvent): void {
-		if ([ex.Input.Keys.S, ex.Input.Keys.W].includes(evt.key)) {
-			this.sendInput(evt.key === ex.Input.Keys.S ? 'bottom' : 'up', 'keyup');
+		if ([ex.Input.Keys.S, ex.Input.Keys.ArrowDown].includes(evt.key)) {
+			this.sendInput('bottom', 'keyup');
+			const input = this.pendingInputs[this.pendingInputs.length - 1];
+			this.paddleUpdate(input);
+		}
+		if ([ex.Input.Keys.W, ex.Input.Keys.ArrowUp].includes(evt.key)) {
+			this.sendInput('top', 'keyup');
 			const input = this.pendingInputs[this.pendingInputs.length - 1];
 			this.paddleUpdate(input);
 		}
