@@ -35,7 +35,16 @@ export class LoginComponent  implements OnInit {
 		this.loginForm = this.formBuilder.group({
 			nickname: undefined,
 			pass: undefined,
+			show_pass: false,
+			login: true,
 		}, { updateOn: "change" });
+		this.loginForm.valueChanges.subscribe((value: any) => {
+			var pass_input = document.getElementById("password") as HTMLInputElement;
+			if (!value.show_pass)
+				pass_input.type = "password"
+			else
+				pass_input.type = "text"
+		});
 	}
 
 	async ngOnInit() {
@@ -118,6 +127,15 @@ export class LoginComponent  implements OnInit {
 			+'&state='
 			+btoa(JSON.stringify({redirect: this.route.snapshot.queryParamMap.get('returnUrl')}))
 	};
+
+	async doAction()
+	{
+		if (this.loginForm.value.login)
+			await this.SignInExt()
+		else
+			await this.RegisterExt()
+		this.loginForm.value.reset()
+	}
 
 	async SignInExt()
 	{

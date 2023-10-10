@@ -195,39 +195,6 @@ form {
 	}
 }
 
-input[type=checkbox] {
-		appearance: none;
-		width: 40px;
-		height: 20px;
-		margin: 0;
-		cursor: pointer;
-		border: 1px solid white;
-		position: relative;
-		padding: 2px;
-		background-color: #ff9999;
-		border-radius: 9999px;
-		transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
-}
-
-input[type=checkbox]::before {
-		content: "";
-		height: 14px;
-		aspect-ratio: 1;
-		position: absolute;
-		left: 2px;
-		background-color: white;
-		border-radius: 9999px;
-		transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
-}
-
-input[type=checkbox]:checked {
-		background-color: #a7dca3;
-}
-
-input[type=checkbox]:checked::before {
-		left: 22px;
-}
-
 @keyframes color-anim {
 		0% {
 			color: red;

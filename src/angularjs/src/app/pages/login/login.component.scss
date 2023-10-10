@@ -1,14 +1,10 @@
-button {
+.ft-btn-login {
 	background-color: #00BABC;
 	border: none;
 	min-width: 150px;
 	min-height: 60px;
-	position: relative;
-	top: 50%;
-	left: 50%;
 	height: 30px;
 	padding: 10px 15px;
-	transform: translate(-50%, -50%);
 	border-radius: 5px;
 	display: flex;
 	justify-content: space-between;
@@ -25,6 +21,74 @@ button {
 	}
 }
 
-button img {
+.ft-btn-login img {
 	height: 30px;
+}
+
+// FORM
+.container {
+	padding: 1em;
+	width: fit-content;
+}
+
+// FORM
+.container form {
+	flex-direction: column;
+	display: flex;
+	max-width: 20vw;
+	gap: 0.5em;
+}
+
+// FORM.INPUT[text]
+.container form input[type="text"]
+{
+	;
+}
+
+// FORM.INPUT[text]
+.container form input[type="password"]
+{
+	;
+}
+
+// FORM.password
+.container form .show-pass
+{
+	// appearance: none;
+	// width: 40px;
+	// height: 20px;
+	// margin: 0;
+	// cursor: pointer;
+	// border: 1px solid white;
+	// position: relative;
+	// padding: 2px;
+	// background-color: #ff9999;
+	// border-radius: 9999px;
+	// transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
+
+	// &::before {
+	// 	content: "";
+	// 	height: 14px;
+	// 	aspect-ratio: 1;
+	// 	position: absolute;
+	// 	left: 2px;
+	// 	background-color: white;
+	// 	border-radius: 9999px;
+	// 	transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
+	// }
+
+	// &:checked {
+	// 	background-color: #a7dca3;
+	// }
+
+	// &:checked::before {
+	// 	left: 22px;
+	// }
+
+}
+
+// FORM.div.password-container
+.container form .password-container {
+	width: 100%;
+	position:relative;
 }
