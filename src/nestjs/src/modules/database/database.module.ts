@@ -10,6 +10,8 @@ import { FriendEntity } from "./friend/entity";
 import { FriendRequestEntity } from "./friendRequest/entity";
 import { BlockedEntity } from "./blocked/entity";
 import { NotificationEntity } from "./notification/entity";
+import { MessageContentEntity } from "./messageContent/entity";
+import { PlayerScoreEntity } from "./game/player-score/entity";
 
 import { DBUserService } from "./user/service";
 import { DBChatRoomService } from "./chatRoom/service";
@@ -20,6 +22,8 @@ import { DBFriendService } from "./friend/service";
 import { DBFriendRequestService } from "./friendRequest/service";
 import { DBBlockedService } from "./blocked/service";
 import { DBNotificationService } from "./notification/service";
+import { DBPlayerScoreService } from "./game/player-score/service";
+import { DBMessageContentService } from "./messageContent/service";
 
 import { DBUserController } from "./user/controller";
 import { DBChatRoomController } from "./chatRoom/controller";
@@ -28,11 +32,10 @@ import { DBMessageController } from "./message/controller";
 import { DBGameInfoController } from "./game/gameInfo/controller";
 import { DBFriendController } from "./friend/controller";
 import { DBFriendRequestController } from "./friendRequest/controller";
-import { Sanitize } from "./sanitize-object";
 import { DBBlockedController } from "./blocked/controller";
 import { DBNotificationController } from "./notification/controller";
-import { PlayerScoreEntity } from "./game/player-score/entity";
-import { DBPlayerScoreService } from "./game/player-score/service";
+
+import { Sanitize } from "./sanitize-object";
 
 @Module({
 	imports: [
@@ -54,6 +57,7 @@ import { DBPlayerScoreService } from "./game/player-score/service";
 				FriendRequestEntity,
 				BlockedEntity,
 				NotificationEntity,
+				MessageContentEntity,
 			],
 			synchronize: true,
 		}),
@@ -68,6 +72,7 @@ import { DBPlayerScoreService } from "./game/player-score/service";
 			FriendRequestEntity,
 			BlockedEntity,
 			NotificationEntity,
+			MessageContentEntity,
 		]),
 	],
 	controllers: [
@@ -93,6 +98,7 @@ import { DBPlayerScoreService } from "./game/player-score/service";
 		DBFriendRequestService,
 		DBBlockedService,
 		DBNotificationService,
+		DBMessageContentService,
 	],
 	exports: [
 		DBUserService,
@@ -105,6 +111,7 @@ import { DBPlayerScoreService } from "./game/player-score/service";
 		DBFriendRequestService,
 		DBBlockedService,
 		DBNotificationService,
+		DBMessageContentService,
 	],
 })
 export class DBModule {}
