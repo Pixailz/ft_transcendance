@@ -74,6 +74,7 @@ export class DBChatRoomService {
 			relations: {
 				message: {
 					user: true,
+					content: true,
 				},
 				roomInfo: {
 					user: true,
@@ -96,6 +97,7 @@ export class DBChatRoomService {
 			relations: {
 				message: {
 					user: true,
+					content: true,
 				},
 				roomInfo: {
 					user: true,
@@ -154,6 +156,7 @@ export class DBChatRoomService {
 				},
 				message: {
 					user: true,
+					content: true,
 				},
 			},
 			where: [
@@ -181,6 +184,7 @@ export class DBChatRoomService {
 				},
 				message: {
 					user: true,
+					content: true,
 				},
 			},
 			where: [

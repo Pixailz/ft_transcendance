@@ -4,6 +4,7 @@ import { WSSocket } from "../socket.service";
 import { Server, Socket } from "socket.io";
 import { Sanitize } from "../../modules/database/sanitize-object";
 import { DBBlockedService } from "src/modules/database/blocked/service";
+import { MessageContentEntity } from "src/modules/database/messageContent/entity";
 
 @Injectable()
 export class WSChatDmService {
@@ -90,7 +91,7 @@ export class WSChatDmService {
 		server: Server,
 		socket: Socket,
 		dst_id: number,
-		message: string,
+		message: MessageContentEntity[],
 	) {
 		const user_id = this.wsSocket.getUserId(socket.id);
 

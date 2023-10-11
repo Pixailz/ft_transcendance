@@ -7,6 +7,7 @@ import * as bcrypt from "bcrypt";
 import { UserService } from "src/adapter/user/service";
 import { DBUserChatRoomService } from "src/modules/database/userChatRoom/service";
 import { Sanitize } from "../../modules/database/sanitize-object";
+import { MessageContentEntity } from "src/modules/database/messageContent/entity";
 
 export enum RoomAction {
 	KICK,
@@ -165,7 +166,7 @@ export class WSChatChannelService {
 		server: Server,
 		socket: Socket,
 		dst_id: number,
-		message: string,
+		message: MessageContentEntity[],
 	) {
 		const user_id = this.wsSocket.getUserId(socket.id);
 		var not_in_room: boolean = false;

@@ -37,13 +37,8 @@ export class MessageEntity {
 	@JoinColumn({ name: "roomId" })
 	public room: ChatRoomEntity;
 
-	//new content
 	@OneToMany((type) => MessageContentEntity, (content) => content.message)
-	messageContent: MessageContentEntity[];
-
-	//old
-	@Column({ type: "varchar", length: 120, default: "" })
-	public content: string;
+	content: MessageContentEntity[];
 
 	@CreateDateColumn({ type: "timestamp" })
 	public updateAt: Date;

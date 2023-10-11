@@ -11,6 +11,7 @@ import { DBUserService } from "src/modules/database/user/service";
 import { WSSocket } from "src/websocket/socket.service";
 import { UserService } from "../user/service";
 import { Sanitize } from "../../modules/database/sanitize-object";
+import { MessageContentEntity } from "src/modules/database/messageContent/entity";
 
 @Injectable()
 export class ChatRoomService {
@@ -197,16 +198,17 @@ export class ChatRoomService {
 		const chat_room = await this.dbChatRoomService.getJoinedChannelRoom(
 			room_id,
 		);
+		console.log(chat_room);
 		return this.sanitize.ChatRoom(chat_room);
 	}
 
 	async sendMessage(
 		dest_id: number,
 		from_id: number,
-		message: string,
+		message_content: MessageContentEntity[],
 	): Promise<number> {
 		return await this.dbMessageService.create(
-			{ content: message },
+			{ content: message_content },
 			from_id,
 			dest_id,
 		);

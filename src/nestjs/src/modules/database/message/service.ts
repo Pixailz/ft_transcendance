@@ -58,6 +58,7 @@ export class DBMessageService {
 		return await this.messageRepo.findOne({
 			relations: {
 				user: true,
+				content: true,
 			},
 			where: {
 				id: message_id,
