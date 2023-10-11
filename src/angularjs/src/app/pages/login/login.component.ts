@@ -1,4 +1,3 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -7,7 +6,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TwofaformComponent } from 'src/app/components/twofaform/twofaform.component';
 
 import { environment } from 'src/app/environments/environment';
-import { BackService } from 'src/app/services/back.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -134,7 +132,7 @@ export class LoginComponent  implements OnInit {
 			await this.SignInExt()
 		else
 			await this.RegisterExt()
-		this.loginForm.value.reset()
+		this.loginForm.reset()
 	}
 
 	async SignInExt()

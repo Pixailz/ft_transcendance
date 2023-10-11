@@ -27,7 +27,8 @@
 			(click)="doAction()"
 			[disabled]="!loginForm.valid"
 		>
-			DO_ACTION
+			<span *ngIf=loginForm.value.login>login</span>
+			<span *ngIf=!loginForm.value.login>register</span>
 		</button>
 	</form>
 	<button class="ft-btn-login"(click)="SignIn()" [disabled]="!isButtonClickable">
