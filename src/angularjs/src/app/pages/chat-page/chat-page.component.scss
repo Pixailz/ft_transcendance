@@ -9,6 +9,9 @@ ul {
 	max-width: 50%;
 	min-width: fit-content;
 	position: relative;
+	overflow-y: auto;
+	overflow-x: hidden;
+	padding-right: 0.5em;
 
 	li {
 		width: 100%;

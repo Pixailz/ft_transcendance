@@ -11,6 +11,7 @@ import { DBUserService } from "src/modules/database/user/service";
 import { WSSocket } from "src/websocket/socket.service";
 import { UserService } from "../user/service";
 import { Sanitize } from "../../modules/database/sanitize-object";
+import { DBChatRoomPost } from "src/modules/database/chatRoom/dto";
 
 @Injectable()
 export class ChatRoomService {

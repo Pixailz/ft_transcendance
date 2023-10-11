@@ -31,7 +31,7 @@
 
 		<div class="twofacontainer">
 			<label for="a2f" style="margin-right: 10px;">TwoFA</label>
-			<input id="twofa" (click)="setupTwoFa()" type="checkbox" name="a2f" [checked]="userForm.value.twofa">
+			<input id="twofa" (click)="setupTwoFa()" class="toggle" type="checkbox" name="a2f" [checked]="userForm.value.twofa">
 		</div>
 		<span class="invalid-nickname" @enterInvalidNickname *ngIf="invalidNickname.length">{{invalidNickname}}</span>
 		<button class="submit-btn"
