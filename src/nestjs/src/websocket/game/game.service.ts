@@ -294,6 +294,7 @@ export class WSGameService {
 		this.wsSocket.sendToUserInGame(server, room, "gameStarting", [
 			room_id,
 			room.state,
+			"3",
 		]);
 		// await sleep(3000);
 		await sleep(500);
@@ -360,24 +361,29 @@ export class WSGameService {
 	private maybeGiveBirthToPowerUp(room: LobbyI) {
 		//generate a PowerUp every 6-9s
 		const isPregnant =
-			Math.random() > 0.9969 &&
+			Math.random() > 0.995 &&
 			room.state.powerUps.length < 3 &&
 			room.state.gameStatus === GameStatus.STARTED &&
-			Date.now() - room.state.ball.lastHit > 3000;
+			Date.now() - room.state.ball.lastHit > 1000;
 		if (isPregnant) {
 			let type;
-			switch (Math.floor(Math.random() * 4)) {
+			let prob = Math.floor(Math.random() * 4)
+			switch (prob) {
 				default:
 				case 0:
+					if (room.state.powerUps.find((powerup) => powerup.type == "speed")) return;
 					type = "speed";
 					break;
 				case 1:
+					if (room.state.powerUps.find((powerup) => powerup.type == "size")) return;
 					type = "size";
 					break;
 				case 2:
+					if (room.state.powerUps.find((powerup) => powerup.type == "sticky")) return;
 					type = "sticky";
 					break;
 				case 3:
+					if (room.state.powerUps.find((powerup) => powerup.type == "death")) return;
 					type = "death";
 					break;
 			}

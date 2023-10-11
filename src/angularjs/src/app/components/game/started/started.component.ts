@@ -79,14 +79,13 @@ export class GameStartedComponent implements OnInit {
 	private initGameEngine(): void {
 		this.engine = new ex.Engine({
 			canvasElementId: 'pong',
-			displayMode: ex.DisplayMode.FitContainer,
-			enableCanvasTransparency: true,
+			displayMode: ex.DisplayMode.FitContainerAndFill,
 			backgroundColor: ex.Color.Black,
 			viewport: {height: 600, width: 800},
 		});
 		this.game = new ex.Scene();
 		this.engine.add('game', this.game);
-		this.engine.backgroundColor = ex.Color.Gray;
+		// this.engine.backgroundColor = ex.Color.Gray;
 		this.engine.fixedUpdateFps = 64;
 		this.pwrupImgDeath = new ex.ImageSource('assets/powerups/death.png');
 		this.pwrupImgSpeed = new ex.ImageSource('assets/powerups/speed.png');
@@ -96,7 +95,8 @@ export class GameStartedComponent implements OnInit {
 		this.loader.addResources([this.pwrupImgDeath, this.pwrupImgSpeed, this.pwrupImgSize, this.pwrupImgSticky]);
 		this.loader.suppressPlayButton = true;
 		this.loader.backgroundColor = ex.Color.Black.toString();
-		this.loader.logo = '';
+		this.loader.logoHeight = 0;
+		this.loader.logoWidth = 0;
 		this.loader.loadingBarColor = ex.Color.White;
 	}
 
@@ -135,7 +135,7 @@ export class GameStartedComponent implements OnInit {
 			this.obsToDestroy.push(this.wsGateway.listenGameStarting()
 				.subscribe((data: any) => {
 					console.log("[WS:game] GameStarting event")
-					this.handleBallStart("3");
+					this.handleBallStart(data);
 				}
 			));
 			this.obsToDestroy.push(this.wsGateway.listenGameState()
@@ -399,16 +399,17 @@ export class GameStartedComponent implements OnInit {
 		}
 	}
 
-	private handleBallStart(message): void {
+	private handleBallStart(data): void {
 		const counter = new ex.Timer({
 			interval: 1000,
 			repeats: true,
-			numberOfRepeats: +message,
+			numberOfRepeats: +data[2],
 			fcn: () => {
 				this.gameStatus.text =
-				'Starts in : ' + (+message - 1 - counter.timesRepeated);
+				'Starts in : ' + (+data[2] - 1 - counter.timesRepeated);
 				this.gameStatus.text =
-				counter.timesRepeated === +message - 1 ? '' : this.gameStatus.text;
+				counter.timesRepeated === +data[2] - 1 ? '' : this.gameStatus.text;
+				console.log(counter);
 			},
 		});
 		this.game.add(counter);
