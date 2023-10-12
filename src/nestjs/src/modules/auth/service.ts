@@ -48,18 +48,16 @@ export class AuthService {
 		};
 	}
 
-	async ftSignInExt(nickname: string, pass: string): Promise<any> {
-		let user = await this.dbUserService.returnOne(null, null, nickname);
-		if (!user)
-			return (new UnauthorizedException());
+	async extSignIn(nickname: string, pass: string): Promise<any> {
+		const user = await this.dbUserService.returnOne(null, nickname);
+		if (!user) return new UnauthorizedException();
 		if (!(await this.bcryptWrap.compare(pass, user.password)))
-			return (new UnauthorizedException());
+			return new UnauthorizedException();
 		const payload = { sub: user.id };
-		let status: string;
 
 		if (user.twoAuthFactor) {
 			return {
-				status: "2fa_ext",
+				status: "2fa",
 				nonce: user.nonce,
 			};
 		}
@@ -70,22 +68,21 @@ export class AuthService {
 		};
 	}
 
-	async ftRegisterExt(nickname: string, pass: string): Promise<any> {
-		let user = await this.dbUserService.returnOne(null, null, nickname);
+	async extRegister(nickname: string, pass: string): Promise<any> {
+		const user = await this.dbUserService.returnOne(null, nickname);
 		console.log(user);
-		if (user)
-			return (new UnauthorizedException());
+		if (user) return new UnauthorizedException();
 		const user_id = await this.dbUserService.create({
-			ftLogin: "extern",
+			ftLogin: nickname,
 		});
-		this.dbUserService.update(user_id, {
-			nickname: nickname,
-			password: await this.bcryptWrap.hash(pass),
-		})
-			.catch((err) => {
-				console.log(err)
-				return (err);
+		this.dbUserService
+			.update(user_id, {
+				password: await this.bcryptWrap.hash(pass),
 			})
+			.catch((err) => {
+				console.log(err);
+				return err;
+			});
 
 		const payload = { sub: user_id };
 		return {
@@ -97,8 +94,7 @@ export class AuthService {
 	async ftSignInTest(test: number): Promise<any> {
 		let login = "norminet";
 		let nickname = "leSangCho";
-		if (test !== 0)
-		{
+		if (test !== 0) {
 			login += test;
 			nickname += test;
 		}
@@ -107,11 +103,9 @@ export class AuthService {
 			const user_id = await this.dbUserService.create({
 				ftLogin: login,
 			});
-			await this.dbUserService.update(user_id, { nickname: nickname});
+			await this.dbUserService.update(user_id, { nickname: nickname });
 			user = await this.dbUserService.returnOne(user_id);
-		}
-		else
-			return (await this.ftSignInTest(test + 1));
+		} else return await this.ftSignInTest(test + 1);
 
 		console.log("test user created");
 		return {

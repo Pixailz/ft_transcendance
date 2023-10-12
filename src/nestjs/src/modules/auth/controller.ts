@@ -6,7 +6,6 @@ import { Public } from "src/decorators/public";
 export class AuthController {
 	constructor(private authService: AuthService) {}
 
-
 	@Public()
 	@Get("ft_callback")
 	async login(@Query("code") code: string) {
@@ -16,20 +15,22 @@ export class AuthController {
 	}
 
 	@Public()
-	@Get("ft_callback_ext")
+	@Get("ext_login")
 	async login_ext(
 		@Query("nickname") nickname: string,
-		@Query("pass") pass: string
-	)
-	{ return this.authService.ftSignInExt(nickname, pass); }
+		@Query("pass") pass: string,
+	) {
+		return this.authService.extSignIn(nickname, pass);
+	}
 
 	@Public()
-	@Get("ft_register_ext")
+	@Get("ext_register")
 	async register_ext(
 		@Query("nickname") nickname: string,
-		@Query("pass") pass: string
-	)
-	{ return this.authService.ftRegisterExt(nickname, pass); }
+		@Query("pass") pass: string,
+	) {
+		return this.authService.extRegister(nickname, pass);
+	}
 
 	@Get("profile")
 	getProfile(@Request() req) {

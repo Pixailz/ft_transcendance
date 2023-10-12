@@ -22,7 +22,7 @@ export class DBUserInfoPost {
 
 	@IsOptional()
 	@IsString()
-	@MinLength(4, { message: "minimum len for nickname is 3" })
+	@MinLength(4, { message: "minimum len for password is 4" })
 	password?: string;
 
 	@IsOptional()
