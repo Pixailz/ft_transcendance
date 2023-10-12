@@ -361,8 +361,8 @@ export class WSGameService {
 	private maybeGiveBirthToPowerUp(room: LobbyI) {
 		//generate a PowerUp every 6-9s
 		const isPregnant =
-			Math.random() > 0.995 &&
-			room.state.powerUps.length < 3 &&
+			Math.random() > 0.993 &&
+			room.state.powerUps.length < 4 &&
 			room.state.gameStatus === GameStatus.STARTED &&
 			Date.now() - room.state.ball.lastHit > 1000;
 		if (isPregnant) {
@@ -412,7 +412,7 @@ export class WSGameService {
 						Math.pow(ballCenter.y - powerUpCenter.y, 2),
 				),
 			);
-			if (distance < 20) {
+			if (distance < 30) {
 				this.watchPowerUpGettingAJob(room, powerUp); //he's sooooo cute he's getting a job
 			}
 		});
@@ -432,12 +432,12 @@ export class WSGameService {
 				powerUp.appliedTo = playerSide;
 				break;
 			case "sticky":
-				// room.state.ball.vx = 0;
-				// room.state.ball.vy = 0;
+				room.state.ball.vx = 0;
+				room.state.ball.vy = 0;
 				powerUp.appliedTo = "ball";
 				break;
 			case "death":
-				player.paddle.height = 0;
+				player.paddle.height = 15;
 				powerUp.appliedTo = playerSide;
 				break;
 		}
@@ -446,7 +446,7 @@ export class WSGameService {
 	}
 
 	private maybeKillPowerUps(room: LobbyI, cleanFlag: powerUpMercyFlags) {
-		room.state.powerUps.forEach((powerUp) => {
+		room.state.powerUps.forEach((powerUp, index) => {
 			if (
 				cleanFlag === powerUpMercyFlags.KILL_THEM_ALL ||
 				(powerUp.appliedAt &&
@@ -454,7 +454,7 @@ export class WSGameService {
 			) {
 				this.killPowerUp(room, powerUp); // we found a bad boy
 				room.state.powerUps.splice(
-					room.state.powerUps.indexOf(powerUp),
+					index,
 					1,
 				);
 			}
@@ -465,6 +465,7 @@ export class WSGameService {
 		let player;
 		switch (powerUp.type) {
 			case "speed":
+				if (!powerUp.appliedTo) break;
 				room.state.ball.vx /= 2;
 				room.state.ball.vy /= 2;
 				break;
@@ -474,8 +475,8 @@ export class WSGameService {
 				player.paddle.height /= 2;
 				break;
 			case "sticky":
-				// room.state.ball.vx = 3;
-				// room.state.ball.vy = Math.random() * 2 - 1;
+				room.state.ball.vx = Math.random() * 10 - 1;
+				room.state.ball.vy = Math.random() * 2 - 1;
 				break;
 			case "death":
 				// if no one has scored yet, then he's saved by the bell
@@ -541,6 +542,7 @@ export class WSGameService {
 					(room.state.ball.x - player.paddle.x) / 10;
 				room.state.ball.vy +=
 					(room.state.ball.y - player.paddle.y) / 10;
+				room.state.ball.lastHit = Date.now();
 			}
 		});
 	}
@@ -555,8 +557,7 @@ export class WSGameService {
 
 	private ballWon(server: Server, room: LobbyI, player: PlayerI | undefined) {
 		if (player) {
-			if (room.options.powerUps)
-				this.maybeKillPowerUps(room, powerUpMercyFlags.KILL_THEM_ALL);
+			this.maybeKillPowerUps(room, powerUpMercyFlags.KILL_THEM_ALL);
 			room.state.ball.lastHit = Date.now();
 			this.playerScoreUpdate(player, room);
 			this.checkGameOver(room);

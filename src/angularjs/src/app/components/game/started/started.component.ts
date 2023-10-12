@@ -85,7 +85,7 @@ export class GameStartedComponent implements OnInit {
 		});
 		this.game = new ex.Scene();
 		this.engine.add('game', this.game);
-		// this.engine.backgroundColor = ex.Color.Gray;
+		this.engine.backgroundColor = ex.Color.Gray;
 		this.engine.fixedUpdateFps = 64;
 		this.pwrupImgDeath = new ex.ImageSource('assets/powerups/death.png');
 		this.pwrupImgSpeed = new ex.ImageSource('assets/powerups/speed.png');
@@ -275,36 +275,50 @@ export class GameStartedComponent implements OnInit {
 			}
 		}
 		this.serverReceivedTime = Date.now();
-		this.updatePowerUps();
+		this.updatePowerUps(state);
 	}
 
-	private updatePowerUps(): void {
-		if (!this.gameService.room.options.powerUps) return;
-		if (this.gameService.room.state.powerUps?.length > this.powerUpsNumber) {
+	private updatePowerUps(state: GameStateI): void {
+		if (state.powerUps?.length > this.powerUpsNumber) {
 			this.spawnPowerUps();
-		} else if (this.gameService.room.state.powerUps?.length <= this.powerUpsNumber) {
-			if (this.pwrupSpeed && (!this.gameService.room.state.powerUps?.find((pwrup) => pwrup.type === 'speed')
-									|| this.gameService.room.state.powerUps?.find((pwrup) => pwrup.type === 'speed')?.appliedTo)) {
+		} else if (state.powerUps?.length <= this.powerUpsNumber) {
+			if (this.pwrupSpeed && (!state.powerUps?.find((pwrup) => pwrup.type === 'speed')
+									|| state.powerUps?.find((pwrup) => pwrup.type === 'speed')?.appliedTo)) {
 				this.pwrupSpeed.kill();
 				this.pwrupSpeed = undefined;
 			}
-			if (this.pwrupSize && (!this.gameService.room.state.powerUps?.find((pwrup) => pwrup.type === 'size')
-									|| this.gameService.room.state.powerUps?.find((pwrup) => pwrup.type === 'size')?.appliedTo)) {
+			if (this.pwrupSize && (!state.powerUps?.find((pwrup) => pwrup.type === 'size')
+									|| state.powerUps?.find((pwrup) => pwrup.type === 'size')?.appliedTo)) {
 				this.pwrupSize.kill();
 				this.pwrupSize = undefined;
 			}
-			if (this.pwrupSticky && (!this.gameService.room.state.powerUps?.find((pwrup) => pwrup.type === 'sticky')
-									|| this.gameService.room.state.powerUps?.find((pwrup) => pwrup.type === 'sticky')?.appliedTo)) {
+			if (this.pwrupSticky && (!state.powerUps?.find((pwrup) => pwrup.type === 'sticky')
+									|| state.powerUps?.find((pwrup) => pwrup.type === 'sticky')?.appliedTo)) {
 				this.pwrupSticky.kill();
 				this.pwrupSticky = undefined;
 			}
-			if (this.pwrupDeath && (!this.gameService.room.state.powerUps?.find((pwrup) => pwrup.type === 'death')
-									|| this.gameService.room.state.powerUps?.find((pwrup) => pwrup.type === 'death')?.appliedTo)) {
+			if (this.pwrupDeath && (!state.powerUps?.find((pwrup) => pwrup.type === 'death')
+									|| state.powerUps?.find((pwrup) => pwrup.type === 'death')?.appliedTo)) {
 				this.pwrupDeath.kill();
 				this.pwrupDeath = undefined;
 			}
 		}
-		this.powerUpsNumber = this.gameService.room.state.powerUps?.length;
+		this.powerUpsNumber = state.powerUps?.length;
+		this.updateSizes(state);
+	}
+
+	private updateSizes(state: GameStateI) {
+		state.players.forEach((player) => {
+			const paddle =
+				player.side_id === this.side_id ? this.localPaddle : this.remotePaddle;
+			if (paddle.height != player.paddle.height){
+				const diff = paddle.height > player.paddle.height ? 
+				  (player.paddle.height/this.paddleHeight) 
+				: (player.paddle.height/paddle.height);
+				const vec = new ex.Vector(1, diff);
+				paddle.transform.scale = vec;
+			}
+		})
 	}
 
 	private spawnPowerUps(): void {
@@ -607,5 +621,6 @@ export class GameStartedComponent implements OnInit {
 		this.obsToDestroy.forEach((obs) => obs.unsubscribe());
 		if (this.devTool) delete this.devTool;
 		this.engine.stop();
+		this.engine = null;
 	}
 }
