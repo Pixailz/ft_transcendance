@@ -2,9 +2,23 @@
 	<input class="glass" id="name" type="text" formControlName="name" required placeholder="Untitled" maxlength="120" autofocus>
 	<input class="glass" [ngClass]="{'disabled': newRoomForm.value.isPrivate === true}" id="password" type="password" formControlName="password" placeholder="Password">
 	<div class="toggle-container">
-		<input class="toggle" name="private" type="checkbox" formControlName="isPrivate">
 		<label for="private"><mat-icon fontIcon="mail_lock"></mat-icon></label>
+		<input class="toggle" name="private" type="checkbox" formControlName="isPrivate">
 	</div>
-	<button (click)="onCreate()" [disabled]="!newRoomForm.valid">Submit</button>
-	<button>Add Friend</button>
+	<div class="btn-container">
+		<button class="submit-btn"
+		(click)="onCreate()"
+		[disabled]="!newRoomForm.valid"
+		>
+			<div class="icon-container save">
+				<mat-icon fontIcon="chevron_right"></mat-icon>
+			</div>
+			<div class="icon-container close">
+				<mat-icon fontIcon="close"></mat-icon>
+			</div>
+		</button>
+		<button class="add-friend-btn" (click)="addFriends()">
+			<mat-icon fontIcon="forward_to_inbox"></mat-icon>
+		</button>
+	</div>
 </form>
