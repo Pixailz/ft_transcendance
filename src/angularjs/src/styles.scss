@@ -138,6 +138,39 @@ ul {
 	}
 }
 
+.toggle-btn {
+	appearance: none;
+	width: 40px;
+	height: 20px;
+	margin: 0;
+	cursor: pointer;
+	border: 1px solid white;
+	position: relative;
+	padding: 2px;
+	background-color: #ff9999;
+	border-radius: 9999px;
+	transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
+}
+
+.toggle-btn::before {
+	content: "";
+	height: 14px;
+	aspect-ratio: 1;
+	position: absolute;
+	left: 2px;
+	background-color: white;
+	border-radius: 9999px;
+	transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
+}
+
+.toggle-btn:checked {
+	background-color: #a7dca3;
+}
+
+.toggle-btn:checked::before {
+	left: 22px;
+}
+
 li.newRoomBtn app-flat-button button  {
 	height: 3em;
 	width: 100%;

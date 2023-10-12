@@ -43,11 +43,11 @@ export class BackService {
 			"body": this.body,
 			"mode": "cors"
 		});
-		const log_header = `[${res.status}:${route}] ${method}`;
+		const log_header = `[${method}:${route}:${res.status}] ${res.statusText}`;
 		if (res.status >= 400)
 			return Promise.reject({
 				status: res.status,
-				message: `${log_header} request failed`
+				message: log_header
 			});
 		if (method === "DELETE")
 			return (Promise.resolve(""));

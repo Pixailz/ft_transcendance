@@ -378,7 +378,7 @@
 			<div class="message" *ngIf="!friendService.isMeBlocked(chatChannelService.getCurrentMessageUser(i).id)">
 				<div class="title-line">
 					<span class="date" *ngIf="!isFollowingDay(i)">{{chatChannelService.getCurrentMessage(i).updateAt | date: 'dd/MM/YYYY'}}</span>
-					<span class="login" *ngIf="!chatChannelService.isSameUser(i)">{{chatChannelService.getCurrentMessageUser(i).ftLogin}}</span>
+					<span class="login" *ngIf="!chatChannelService.isSameUser(i)">{{chatChannelService.getCurrentMessageUser(i).nickname}}</span>
 				</div>
 				<div class="msg-line">
 					<span class="content">{{chatChannelService.getCurrentMessage(i).content}}</span>
