@@ -30,7 +30,7 @@ export class PrivChatPageComponent {
 			return ;
 	}
 
-	sendMessage(message: MessageContentI) {
+	sendMessage(message: MessageContentI[]) {
 		this.wsGateway.sendDmMessage(this.chatDmService.getSelectedDm().room.id, message);
 	}
 

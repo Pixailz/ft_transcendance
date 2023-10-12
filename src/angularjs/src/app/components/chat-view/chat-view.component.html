@@ -25,8 +25,16 @@
 </ol>
 
 <span class="char-left" *ngIf="!blocked">{{messageLength}}/120</span>
+
 <form [formGroup]="messageForm" *ngIf="!blocked">
-	<input formControlName="content" type="text" [placeholder]="messagePlaceHolder" maxlength="120">
+	<div *ngIf="messageForm.value.type === 0">
+		<input formControlName="string"
+			type="text" placeholder="Type something ..." maxlength="120">
+	</div>
+	<div *ngIf="messageForm.value.type === 1">
+		<input formControlName="gameInvite"
+		type="text" placeholder="Enter the room id ..." maxlength="120">
+	</div>
 	<button class="btn-send" (click)="sendMessage()" [disabled]="!messageLength">
 		<mat-icon fontIcon="send"></mat-icon>
 	</button>

@@ -16,12 +16,11 @@ export class ChatViewComponent {
 	messageForm!: FormGroup;
 
 	messageType: MessageContentType = MessageContentType.STRING;
-	messagePlaceHolder: string = "Type something ..."
 	displaySpecialMessage: boolean = false;
 
 	@Input() blocked: boolean = false;
 	@Input() room!: ChatRoomI;
-	@Output() sendMessageEmitter = new EventEmitter<MessageContentI>();
+	@Output() sendMessageEmitter = new EventEmitter<MessageContentI[]>();
 
 	constructor(
 		private formBuilder: FormBuilder,
@@ -31,12 +30,24 @@ export class ChatViewComponent {
 
 	async ngOnInit() {
 		this.messageForm = this.formBuilder.group({
-			content: "",
+			type: MessageContentType.STRING,
+			string: "",
+			gameInvite: "",
 		}, { updateOn: "change" });
 		this.activateString();
-		this.messageForm.get('content')!.valueChanges
+		this.messageForm!.valueChanges
 		.subscribe((value: any) => {
-			this.messageLength = value?.length;
+			switch (this.messageForm.value.type)
+			{
+				case (MessageContentType.STRING): {
+					this.messageLength = value?.string.length;
+					break;
+				}
+				case (MessageContentType.GAME_INVITE): {
+					this.messageLength = value?.gameInvite.length;
+					break;
+				}
+			}
 		});
 	}
 
@@ -77,15 +88,29 @@ export class ChatViewComponent {
 	sendMessage() {
 		if (this.blocked)
 			return ;
-		if (!this.messageForm.value.content.length)
+		const message_content: MessageContentI[] = [];
+		if (this.messageForm.value.string?.length)
+		{
+			message_content.push({
+				type: MessageContentType.STRING,
+				content: this.messageForm.value.string,
+			})
+		}
+		if (this.messageForm.value.gameInvite?.length)
+		{
+			message_content.push({
+				type: MessageContentType.GAME_INVITE,
+				content: this.messageForm.value.gameInvite,
+			})
+		}
+		if (!message_content.length)
 			return ;
-		console.log(this.messageForm.value);
-		this.sendMessageEmitter.emit({
-			type: this.messageType,
-			content: this.messageForm.value.content,
+		this.sendMessageEmitter.emit(message_content);
+		this.messageForm.setValue({
+			type: MessageContentType.STRING,
+			string: "",
+			gameInvite: "",
 		});
-		this.messageForm.reset();
-		this.messageType = MessageContentType.STRING;
 	}
 
 	specialMessage()
@@ -95,13 +120,15 @@ export class ChatViewComponent {
 
 	activateString()
 	{
-		this.messageType = MessageContentType.STRING;
-		this.messagePlaceHolder = "Type something ...";
+		this.messageForm.patchValue({
+			type: MessageContentType.STRING,
+		});
 	}
 
 	activateGameInvite()
 	{
-		this.messageType = MessageContentType.GAME_INVITE;
-		this.messagePlaceHolder = "Enter the room id ...";
+		this.messageForm.patchValue({
+			type: MessageContentType.GAME_INVITE,
+		});
 	}
 }

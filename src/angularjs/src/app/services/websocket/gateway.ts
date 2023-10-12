@@ -48,7 +48,7 @@ export class WSGateway {
 	createDmRoom(dst_id: number)
 	{ this.socket.emit("createDmRoom", dst_id); }
 
-	sendDmMessage(room_id: number, message: MessageContentI)
+	sendDmMessage(room_id: number, message: MessageContentI[])
 	{ this.socket.emit("sendDmMessage", room_id, message); }
 
 
