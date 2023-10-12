@@ -8,6 +8,7 @@ import { FriendRequestI } from 'src/app/interfaces/user/friend.interface';
 import { UserI } from 'src/app/interfaces/user/user.interface';
 import { NotifStatus } from 'src/app/interfaces/notification.interface';
 import { GameStateI } from 'src/app/interfaces/game/game-room.interface';
+import { MessageContentI } from 'src/app/interfaces/chat/message.inteface';
 
 @Injectable({
 	providedIn: 'root',
@@ -47,7 +48,7 @@ export class WSGateway {
 	createDmRoom(dst_id: number)
 	{ this.socket.emit("createDmRoom", dst_id); }
 
-	sendDmMessage(room_id: number, message: string)
+	sendDmMessage(room_id: number, message: MessageContentI)
 	{ this.socket.emit("sendDmMessage", room_id, message); }
 
 

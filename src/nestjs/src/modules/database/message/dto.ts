@@ -3,5 +3,5 @@ import { MessageContentEntity } from "../messageContent/entity";
 
 export class DBMessagePost {
 	@IsNotEmpty()
-	content: MessageContentEntity[];
+	message: MessageContentEntity[];
 }

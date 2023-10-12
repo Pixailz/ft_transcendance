@@ -59,7 +59,7 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			this.server,
 			socket,
 			data[0],
-			data[1],
+			Array(data[1]),
 		);
 	}
 

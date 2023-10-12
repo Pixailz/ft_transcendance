@@ -23,7 +23,7 @@ export class DBMessageController {
 		@Body() post: DBMessagePost,
 	) {
 		const userId = req.user.user_id;
-		return this.dbMessageService.create(post, userId, chatId);
+		// return this.dbMessageService.create(post, userId, chatId);
 	}
 
 	@Get()
@@ -41,7 +41,7 @@ export class DBMessageController {
 		@Param("id") MessageId: number,
 		@Body() MessagePost: DBMessagePost,
 	) {
-		return await this.dbMessageService.update(MessageId, MessagePost);
+		// return await this.dbMessageService.update(MessageId, MessagePost);
 	}
 
 	@Delete(":id")

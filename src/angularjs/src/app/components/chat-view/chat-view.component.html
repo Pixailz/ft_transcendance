@@ -4,17 +4,44 @@
 		<div class="msg-line">
 			<div class="msg">
 				<span class="login" *ngIf="!isSameUser(i)">{{getCurrentMessageUser(i).ftLogin}}</span>
-				<span class="content">{{getCurrentMessage(i).content?.replace(' ', '&nbsp;')}}</span>
+				<div *ngFor="let content of getCurrentMessage(i).content">
+					<div *ngIf="content.type == 0">
+						<!-- STRING:<br> -->
+						<span class="content-string">
+							{{content.content.replace(' ', '&nbsp;')}}
+						</span>
+					</div>
+					<div *ngIf="content.type == 1">
+						<!-- GAME-INVITE:<br> -->
+						<span class="content-game-invite">
+							{{content.content.replace(' ', '&nbsp;')}}
+						</span>
+					</div>
+				</div>
 			</div>
 			<span class="time">{{getCurrentMessage(i).updateAt | date: 'HH:mm'}}</span>
 		</div>
 	</li>
 </ol>
-<span class="char-left" *ngIf="!blocked" >{{messageLength}}/120</span>
+
+<span class="char-left" *ngIf="!blocked">{{messageLength}}/120</span>
 <form [formGroup]="messageForm" *ngIf="!blocked">
-    <input formControlName="message" type="text" placeholder="Type something ... " maxlength="120">
-    <button (click)="sendMessage()" [disabled]="!messageLength">
+	<input formControlName="content" type="text" [placeholder]="messagePlaceHolder" maxlength="120">
+	<button class="btn-send" (click)="sendMessage()" [disabled]="!messageLength">
 		<mat-icon fontIcon="send"></mat-icon>
 	</button>
+	<button class="btn-add" (click)="specialMessage()">
+		<mat-icon fontIcon="add"></mat-icon>
+	</button>
+	<ul class="display-special-message" *ngIf="displaySpecialMessage; else empty">
+		<button class="btn-activate" (click)="activateString()">
+			String
+		</button>
+		<button class="btn-activate" (click)="activateGameInvite()">
+			GameInvite
+		</button>
+	</ul>
+	<ng-template #empty>
+	</ng-template>
 </form>
 

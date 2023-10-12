@@ -4,8 +4,6 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { DBMessageContentPost } from "./dto";
 import { MessageContentEntity } from "./entity";
-import { ChatRoomEntity } from "../chatRoom/entity";
-import { UserEntity } from "../user/entity";
 import { MessageEntity } from "../message/entity";
 
 @Injectable()

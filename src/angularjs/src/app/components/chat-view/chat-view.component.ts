@@ -1,11 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ChatRoomI } from 'src/app/interfaces/chat/chat-room.interface';
-import { MessageI } from 'src/app/interfaces/chat/message.inteface';
+import { MessageContentI, MessageContentType, MessageI } from 'src/app/interfaces/chat/message.inteface';
 import { UserI } from 'src/app/interfaces/user/user.interface';
 import { UserService } from 'src/app/services/user.service';
 import { ChatRoomService } from 'src/app/services/websocket/chat/chatroom.service';
-import { WSGateway } from 'src/app/services/websocket/gateway';
 
 @Component({
 	selector: 'app-chat-view',
@@ -16,26 +15,28 @@ export class ChatViewComponent {
 	messageLength: number = 0;
 	messageForm!: FormGroup;
 
+	messageType: MessageContentType = MessageContentType.STRING;
+	messagePlaceHolder: string = "Type something ..."
+	displaySpecialMessage: boolean = false;
+
 	@Input() blocked: boolean = false;
 	@Input() room!: ChatRoomI;
-    @Output() sendMessageEmitter = new EventEmitter<string>();
-
+	@Output() sendMessageEmitter = new EventEmitter<MessageContentI>();
 
 	constructor(
 		private formBuilder: FormBuilder,
 		private chatRoomService: ChatRoomService,
 		public userService: UserService,
-		private wsGateway: WSGateway
 	) {}
 
 	async ngOnInit() {
 		this.messageForm = this.formBuilder.group({
-			message: ""
+			content: "",
 		}, { updateOn: "change" });
-
-		this.messageForm.get('message')!.valueChanges
+		this.activateString();
+		this.messageForm.get('content')!.valueChanges
 		.subscribe((value: any) => {
-			this.messageLength = value.length;
+			this.messageLength = value?.length;
 		});
 	}
 
@@ -76,11 +77,31 @@ export class ChatViewComponent {
 	sendMessage() {
 		if (this.blocked)
 			return ;
-		if (!this.messageForm.value.message.length)
+		if (!this.messageForm.value.content.length)
 			return ;
-		this.sendMessageEmitter.emit(this.messageForm.value.message);
-		this.messageForm.patchValue({
-			message: "",
+		console.log(this.messageForm.value);
+		this.sendMessageEmitter.emit({
+			type: this.messageType,
+			content: this.messageForm.value.content,
 		});
+		this.messageForm.reset();
+		this.messageType = MessageContentType.STRING;
+	}
+
+	specialMessage()
+	{
+		this.displaySpecialMessage = !this.displaySpecialMessage;
+	}
+
+	activateString()
+	{
+		this.messageType = MessageContentType.STRING;
+		this.messagePlaceHolder = "Type something ...";
+	}
+
+	activateGameInvite()
+	{
+		this.messageType = MessageContentType.GAME_INVITE;
+		this.messagePlaceHolder = "Enter the room id ...";
 	}
 }

@@ -30,7 +30,6 @@ export class AuthService {
 		const nonce = await this.dbUserService.getNonce(user.id);
 		const payload = { sub: user.id };
 		let status;
-
 		if (user.twoAuthFactor) {
 			return {
 				status: "2fa",

@@ -622,9 +622,13 @@ export class WSChatChannelService {
 			console.log(
 				`[WS:ChatChannel] ${
 					user.nickname
-				} cannot do ${this.getRoomActionStr(action)} in ${
+				} cannot do ${
+					this.getRoomActionStr(action)
+				} in ${
 					room.name
-				} to ${target.nickname}`,
+				} to ${
+					target.nickname
+				}`,
 			);
 			return;
 		}

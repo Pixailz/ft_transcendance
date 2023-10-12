@@ -1,26 +1,10 @@
-import { UserI, DefUserI } from "../user/user.interface";
 import { DefUserChatRoomI, UserChatRoomI } from "../user/user-chat-room.interface";
+import { DefMessageI, MessageI } from "./message.inteface";
 
 export enum RoomType {
 	PRIVATE,
 	PUBLIC,
 	PROTECTED,
-}
-
-export interface MessageI {
-	id					: number;
-	roomId?				: number;
-	userId				: number;
-	user				: UserI;
-	room?				: ChatRoomI;
-	content?			: string;
-	updateAt?			: Date;
-}
-
-export const DefMessageI: MessageI = {
-	id					: -1,
-	userId				: -1,
-	user				: DefUserI,
 }
 
 export interface ChatRoomI {
