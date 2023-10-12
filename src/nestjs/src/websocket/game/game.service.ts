@@ -332,6 +332,7 @@ export class WSGameService {
 	onMove(server: Server, socket: Socket, message: any) {
 		const user_id = this.wsSocket.getUserId(socket.id);
 		const room_id = this.getRoomIdBySocketId(socket.id);
+		if (!room_id) return;
 		const player = this.getPlayerById(room_id, user_id);
 		const message_direction = message[0];
 		const message_type = message[1];
@@ -367,23 +368,43 @@ export class WSGameService {
 			Date.now() - room.state.ball.lastHit > 1000;
 		if (isPregnant) {
 			let type;
-			let prob = Math.floor(Math.random() * 4)
+			const prob = Math.floor(Math.random() * 4);
 			switch (prob) {
 				default:
 				case 0:
-					if (room.state.powerUps.find((powerup) => powerup.type == "speed")) return;
+					if (
+						room.state.powerUps.find(
+							(powerup) => powerup.type == "speed",
+						)
+					)
+						return;
 					type = "speed";
 					break;
 				case 1:
-					if (room.state.powerUps.find((powerup) => powerup.type == "size")) return;
+					if (
+						room.state.powerUps.find(
+							(powerup) => powerup.type == "size",
+						)
+					)
+						return;
 					type = "size";
 					break;
 				case 2:
-					if (room.state.powerUps.find((powerup) => powerup.type == "sticky")) return;
+					if (
+						room.state.powerUps.find(
+							(powerup) => powerup.type == "sticky",
+						)
+					)
+						return;
 					type = "sticky";
 					break;
 				case 3:
-					if (room.state.powerUps.find((powerup) => powerup.type == "death")) return;
+					if (
+						room.state.powerUps.find(
+							(powerup) => powerup.type == "death",
+						)
+					)
+						return;
 					type = "death";
 					break;
 			}
@@ -446,17 +467,14 @@ export class WSGameService {
 	}
 
 	private maybeKillPowerUps(room: LobbyI, cleanFlag: powerUpMercyFlags) {
-		room.state.powerUps.forEach((powerUp, index) => {
+		room.state.powerUps?.forEach((powerUp, index) => {
 			if (
 				cleanFlag === powerUpMercyFlags.KILL_THEM_ALL ||
 				(powerUp.appliedAt &&
 					Date.now() - powerUp.appliedAt > powerUp.duration * 1000)
 			) {
 				this.killPowerUp(room, powerUp); // we found a bad boy
-				room.state.powerUps.splice(
-					index,
-					1,
-				);
+				room.state.powerUps.splice(index, 1);
 			}
 		});
 	}
@@ -598,7 +616,7 @@ export class WSGameService {
 	/********** Helpers ***********/
 	private getPlayerById(room_id: string, user_id: number) {
 		const room = this.rooms.get(room_id);
-		return room.state.players.find((player) => player.id === user_id);
+		return room.state?.players.find((player) => player.id === user_id);
 	}
 
 	private getRoomIdBySocketId(socket_id: string) {
@@ -609,7 +627,7 @@ export class WSGameService {
 	}
 
 	private getPlayerBySide(room: LobbyI, side_id: string) {
-		return room.state.players.find((player) => player.side_id === side_id);
+		return room.state?.players.find((player) => player.side_id === side_id);
 	}
 }
 
