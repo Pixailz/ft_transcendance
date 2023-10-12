@@ -92,14 +92,13 @@ describe("DBmessageService", () => {
 				await chatRoomRepo.findOneBy({ name: unit_room + "_name_BIS" })
 			).id;
 			const post = { content: "Hi test create" };
-			let messId = await service.create(post, userId, roomId);
+			let messId = await service.create(userId, roomId);
 			const message = await service.returnOne(messId);
 			expect(message.id).toEqual(messId);
-			expect(message.content).toEqual(post.content);
-			await expect(service.create(post, -1, roomId)).rejects.toThrowError(
+			await expect(service.create(-1, roomId)).rejects.toThrowError(
 				new ForbiddenException("User not found"),
 			);
-			await expect(service.create(post, userId, -1)).rejects.toThrowError(
+			await expect(service.create(userId, -1)).rejects.toThrowError(
 				new ForbiddenException("ChatRoom not found"),
 			);
 		});
@@ -111,12 +110,10 @@ describe("DBmessageService", () => {
 			let room_name = unit_room + "_name_BIS";
 			const room = await chatRoomRepo.findOneBy({ name: room_name });
 			const messId = await service.create(
-				{ content: "UNIT TEST" },
 				user.id,
 				room.id,
 			);
 			let message = await service.returnOne(messId);
-			expect(message.content).toEqual("UNIT TEST");
 			await service.delete(messId);
 			await expect(service.returnOne(messId)).rejects.toThrowError(
 				new ForbiddenException("Message not found"),
@@ -133,12 +130,10 @@ describe("DBmessageService", () => {
 				name: unit_user + "Cascade test",
 			});
 			const messId = await service.create(
-				{ content: "UNIT CASCADE TEST" },
 				userId,
 				tmpRoomId,
 			);
 			let message = await service.returnOne(messId);
-			expect(message.content).toEqual("UNIT CASCADE TEST");
 			expect(message.userId).toEqual(userId);
 			expect(message.roomId).toEqual(tmpRoomId);
 			await userService.delete(userId);
