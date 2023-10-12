@@ -51,8 +51,8 @@
 					<mat-form-field style="width: 80%; margin: 10px;">
 						<mat-label>Selected Friend</mat-label>
 						<mat-select multiple formControlName="user">
-							<mat-option *ngFor="let friend of chatDmService.getFriends()" [value]="friend.user_info">
-							{{userService.getUserInfoFormated(friend.user_info)}}
+							<mat-option *ngFor="let friend of friendService.getFriends()" [value]="friend">
+							{{userService.getUserInfoFormated(friend)}}
 							</mat-option>
 						</mat-select>
 					</mat-form-field>
