@@ -132,7 +132,12 @@ export class LoginComponent  implements OnInit {
 			await this.SignInExt()
 		else
 			await this.RegisterExt()
-		this.loginForm.reset()
+		this.loginForm.reset({
+			nickname: undefined,
+			pass: undefined,
+			show_pass: false,
+			login: true,
+		})
 	}
 
 	async SignInExt()
