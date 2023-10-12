@@ -13,6 +13,7 @@ import { UserService } from "../user/service";
 import { Sanitize } from "../../modules/database/sanitize-object";
 import { MessageContentEntity } from "src/modules/database/messageContent/entity";
 import { DBMessageContentService } from "src/modules/database/messageContent/service";
+import { BrcyptWrap } from "src/addons/bcrypt.wrapper";
 
 @Injectable()
 export class ChatRoomService {
@@ -24,6 +25,7 @@ export class ChatRoomService {
 		private dbMessageContentService: DBMessageContentService,
 		private dbUserService: DBUserService,
 		private userService: UserService,
+		private bcryptWrap: BrcyptWrap,
 		private wsSocket: WSSocket,
 	) {}
 
@@ -106,10 +108,6 @@ export class ChatRoomService {
 		);
 	}
 
-	async hashPass(password: string): Promise<string> {
-		const salt = await bcrypt.genSalt();
-		return await bcrypt.hash(password, salt);
-	}
 	async createChannelRoom(user_id: number, name: string, password: string, is_private: boolean) {
 		var room_id: number = -1;
 		if (is_private)
@@ -125,7 +123,7 @@ export class ChatRoomService {
 		else
 		{
 			if (password.length !== 0) {
-				const hashed_pass = await this.hashPass(password);
+				const hashed_pass = await this.bcryptWrap.hash(password);
 				room_id = await this.dbChatRoomService.create({
 					name: name,
 					password: hashed_pass,

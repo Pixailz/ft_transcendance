@@ -35,7 +35,7 @@ export class DBUserService {
 		const api42Service = new Api42Service();
 		const user42 = await api42Service.getUserFromCode(code);
 
-		const user = await this.get_user(null, user42.login);
+		const user = await this.get_user(null, user42.login, null);
 		return user;
 	}
 
@@ -48,12 +48,12 @@ export class DBUserService {
 		return await this.userRepo.find();
 	}
 
-	async returnOne(userId?: number, ft_login?: string): Promise<UserEntity> {
-		return await this.get_user(userId, ft_login);
+	async returnOne(userId?: number, ft_login?: string, nickname?: string): Promise<UserEntity> {
+		return await this.get_user(userId, ft_login, nickname);
 	}
 
 	async update(userId: number, userPost: DBUserInfoPost) {
-		const user = await this.get_user(userId, null);
+		const user = await this.get_user(userId, null, null);
 		if (!user) throw new NotFoundException("User not found");
 		if (userPost.nickname)
 		{
@@ -73,7 +73,7 @@ export class DBUserService {
 	}
 
 	async delete(userId: number) {
-		const user = await this.get_user(userId, null);
+		const user = await this.get_user(userId, null, null);
 		if (user) return await this.userRepo.delete({ id: userId });
 		else throw new NotFoundException("User not found");
 	}
@@ -81,6 +81,7 @@ export class DBUserService {
 	async get_user(
 		userId: number | null,
 		ft_login: string | null,
+		nickname: string | null,
 	): Promise<UserEntity> | null {
 		if (userId) {
 			const user = await this.userRepo.findOneBy({ id: userId });
@@ -88,6 +89,10 @@ export class DBUserService {
 		}
 		if (ft_login) {
 			const user = await this.userRepo.findOneBy({ ftLogin: ft_login });
+			if (user) return user;
+		}
+		if (nickname) {
+			const user = await this.userRepo.findOneBy({ nickname: nickname });
 			if (user) return user;
 		}
 		return null;

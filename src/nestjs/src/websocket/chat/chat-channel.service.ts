@@ -3,11 +3,11 @@ import { ChatRoomService } from "src/adapter/chatRoom/service";
 import { WSSocket } from "../socket.service";
 import { Server, Socket } from "socket.io";
 import { ChatRoomEntity, RoomType } from "src/modules/database/chatRoom/entity";
-import * as bcrypt from "bcrypt";
 import { UserService } from "src/adapter/user/service";
 import { DBUserChatRoomService } from "src/modules/database/userChatRoom/service";
 import { Sanitize } from "../../modules/database/sanitize-object";
 import { MessageContentEntity } from "src/modules/database/messageContent/entity";
+import { BrcyptWrap } from "src/addons/bcrypt.wrapper";
 
 export enum RoomAction {
 	KICK,
@@ -26,6 +26,7 @@ export class WSChatChannelService {
 		private chatRoomService: ChatRoomService,
 		private userService: UserService,
 		private dbUserChatRoomService: DBUserChatRoomService,
+		private bcryptWrap: BrcyptWrap,
 		public wsSocket: WSSocket,
 	) {}
 
@@ -137,7 +138,7 @@ export class WSChatChannelService {
 		if (room.type === RoomType.PROTECTED) {
 			if (!password || password === "") not_good_pass = true;
 			else {
-				const isMatch = await bcrypt.compare(password, room.password);
+				const isMatch = await this.bcryptWrap.compare(password, room.password);
 				if (!isMatch) not_good_pass = true;
 			}
 		}
@@ -218,9 +219,7 @@ export class WSChatChannelService {
 		)
 			details["password"] = "";
 		else if (detail.password && detail.password !== "")
-			details["password"] = await this.chatRoomService.hashPass(
-				detail.password,
-			);
+			details["password"] = await this.bcryptWrap.hash(detail.password);
 		return details;
 	}
 
