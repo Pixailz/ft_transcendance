@@ -51,8 +51,8 @@
 					<mat-form-field style="width: 80%; margin: 10px;">
 						<mat-label>Selected Friend</mat-label>
 						<mat-select multiple formControlName="user">
-							<mat-option *ngFor="let friend of chatDmService.getFriends()" [value]="friend.user_info">
-							{{userService.getUserInfoFormated(friend.user_info)}}
+							<mat-option *ngFor="let friend of friendService.getFriends()" [value]="friend">
+							{{userService.getUserInfoFormated(friend)}}
 							</mat-option>
 						</mat-select>
 					</mat-form-field>
@@ -378,7 +378,7 @@
 			<div class="message" *ngIf="!friendService.isMeBlocked(chatChannelService.getCurrentMessageUser(i).id)">
 				<div class="title-line">
 					<span class="date" *ngIf="!isFollowingDay(i)">{{chatChannelService.getCurrentMessage(i).updateAt | date: 'dd/MM/YYYY'}}</span>
-					<span class="login" *ngIf="!chatChannelService.isSameUser(i)">{{chatChannelService.getCurrentMessageUser(i).ftLogin}}</span>
+					<span class="login" *ngIf="!chatChannelService.isSameUser(i)">{{chatChannelService.getCurrentMessageUser(i).nickname}}</span>
 				</div>
 				<div class="msg-line">
 					<span class="content">{{chatChannelService.getCurrentMessage(i).content}}</span>
