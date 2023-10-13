@@ -69,7 +69,6 @@ export class AuthService {
 
 	async extRegister(nickname: string, pass: string): Promise<any> {
 		const user = await this.dbUserService.returnOne(null, nickname);
-		console.log(user);
 		if (user) return new UnauthorizedException();
 		const user_id = await this.dbUserService.create({
 			ftLogin: nickname,

@@ -60,7 +60,6 @@ export class DBPlayerScoreService {
 		if (!user) {
 			throw new NotFoundException("User not found");
 		}
-		console.log(user);
 		const gameInfos = user.gameInfos;
 		const userStats = [];
 		gameInfos.forEach((gameInfo) => {

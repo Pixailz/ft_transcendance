@@ -6,7 +6,7 @@ import { ChatRoomI } from 'src/app/interfaces/chat/chat-room.interface';
 import { UserChatRoomI } from 'src/app/interfaces/chat/user-chat-room.interface';
 import { FriendRequestI } from 'src/app/interfaces/user/friend.interface';
 import { UserI } from 'src/app/interfaces/user/user.interface';
-import { NotifStatus } from 'src/app/interfaces/notification.interface';
+import { NotifStatus, NotificationI } from 'src/app/interfaces/notification.interface';
 import { GameStateI } from 'src/app/interfaces/game/game-room.interface';
 import { MessageContentI } from 'src/app/interfaces/chat/message.inteface';
 
@@ -183,8 +183,8 @@ export class WSGateway {
 	// NOTIFICATION
 
 	// LISTENER
-	listenAllNotifications(): Observable<any[]>
-	{ return this.socket.fromEvent<any[]>("getAllNotifications") }
+	listenAllNotifications(): Observable<any>
+	{ return this.socket.fromEvent<any>("getAllNotifications") }
 
 	listenNewNotification(): Observable<any>
 	{ return this.socket.fromEvent<any>("getNewNotification") }

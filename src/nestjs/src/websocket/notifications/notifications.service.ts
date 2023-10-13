@@ -24,7 +24,6 @@ export class WSNotificationService {
 		const user_id = this.wsSocket.getUserId(socket.id);
 		const notifs: NotificationEntity[] =
 			await this.dbNotificationService.getNotifByUserId(user_id);
-
 		socket.emit("getAllNotifications", notifs);
 	}
 
@@ -95,7 +94,6 @@ export class WSNotificationService {
 		friend_id: number,
 		user_id: number,
 	) {
-		const user = await this.userService.getInfoById(friend_id);
 		const notif_user = await this.dbNotificationService.create({
 			type: NotificationType.FRIEND_REQ_DENIED_FROM,
 			userId: user_id,
