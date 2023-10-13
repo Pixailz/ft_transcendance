@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ChatRoomSettingsComponent } from 'src/app/components/chat-room-settings/chat-room-settings.component';
 import { NewChatRoomComponent } from 'src/app/components/new-chat-room/new-chat-room.component';
 import { ChatRoomI } from 'src/app/interfaces/chat/chat-room.interface';
 import { ChatChannelService } from 'src/app/services/websocket/chat/channel/service';
@@ -33,4 +34,11 @@ export class ChatPageComponent {
 		});
 	}
 
+	onModifyChatRoom(room: ChatRoomI)
+	{
+		this.dialog.open(ChatRoomSettingsComponent, {
+			panelClass: ["custom-dialog"],
+			data: {room: room},
+		});
+	}
 }

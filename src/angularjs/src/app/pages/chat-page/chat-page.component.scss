@@ -19,6 +19,9 @@ ul {
 		transition: all 0.2s linear;
 
 		button {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
 			width: 100%;
 			font-size: 1em;
 			color: white;
@@ -31,6 +34,28 @@ ul {
 			}
 			background: transparent;
 			border: none;
+			
+
+			&:hover > mat-icon {
+				opacity: 0.45;
+			}
+			
+			mat-icon {
+				transform: rotate(0deg);
+				width: fit-content;
+				height: fit-content;
+				font-size: 1.5em;
+				margin-left: 0.5em;
+				opacity: 0;
+				transition: all .2s linear;
+				cursor: pointer;
+
+				&:hover {
+					transform: rotate(45deg);
+					opacity: 0.85;
+				}
+			}
+
 		}
 
 		&:not(.newRoomBtn) &:hover

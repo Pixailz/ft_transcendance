@@ -1,0 +1,30 @@
+<ng-template #notOwner>
+	<span>{{room.name}}</span>
+</ng-template>
+
+<ng-container *ngIf="chatRoomService.isOwner(room, userService.user.id) else notOwner">
+	<form [formGroup]="roomForm">
+		<input value="{{room.name}}" class="glass" id="name" type="text" formControlName="name" required placeholder="Untitled" maxlength="120" autofocus>
+		<input class="glass" [ngClass]="{'disabled': roomForm.value.isPrivate === true}" id="password" type="password" maxlength="120" formControlName="password" placeholder="Password">
+		<div class="toggle-container">
+			<label for="private"><mat-icon fontIcon="mail_lock"></mat-icon></label>
+			<input class="toggle" name="private" type="checkbox" formControlName="is_private">
+		</div>
+		<div class="btn-container">
+			<button class="submit-btn"
+			[disabled]="!roomForm.valid"
+			>
+				<div class="icon-container save">
+					<mat-icon fontIcon="chevron_right"></mat-icon>
+				</div>
+				<div class="icon-container close">
+					<mat-icon fontIcon="close"></mat-icon>
+				</div>
+			</button>
+			<button class="add-friend-btn">
+				<mat-icon fontIcon="forward_to_inbox"></mat-icon>
+			</button>
+		</div>
+	</form>
+	
+</ng-container>

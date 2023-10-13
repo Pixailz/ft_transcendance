@@ -40,7 +40,7 @@ export class ChatChannelFriendListComponent {
 
 		const sortedUsers = this.sortUsersByMatching(filteredUsers, searchString.toLowerCase());
 
-		return sortedUsers;
+		return (sortedUsers);
 	}
 
 	private sortUsersByMatching(users: UserI[], searchString: string): UserI[] {
@@ -73,7 +73,7 @@ export class ChatChannelFriendListComponent {
 				}
 			}
 		}
-		return 1 / (1 + dp[m][n]);
+		return (1 / (1 + dp[m][n]));
 	}
 
 	public toggleFriend(friend: UserI) {
@@ -88,6 +88,6 @@ export class ChatChannelFriendListComponent {
 	}
 
 	public isFriendAdded(friend: UserI) {
-		return this.friend_added.findIndex((elem) => elem === friend.id) !== -1;
+		return (this.friend_added.findIndex((elem) => elem === friend.id) !== -1);
 	}
 }

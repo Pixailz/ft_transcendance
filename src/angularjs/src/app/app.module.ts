@@ -67,6 +67,7 @@ import { GameLobbyComponent } from './components/game/lobby/lobby.component';
 import { ChatPageComponent } from './pages/chat-page/chat-page.component';
 import { NewChatRoomComponent } from './components/new-chat-room/new-chat-room.component';
 import { ChatChannelFriendListComponent } from './components/chat-channel-friend-list/chat-channel-friend-list.component';
+import { ChatRoomSettingsComponent } from './components/chat-room-settings/chat-room-settings.component';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -121,6 +122,7 @@ const config: SocketIoConfig = {
   ChatPageComponent,
   NewChatRoomComponent,
   ChatChannelFriendListComponent,
+  ChatRoomSettingsComponent,
 	],
 	imports: [
 		BrowserModule,

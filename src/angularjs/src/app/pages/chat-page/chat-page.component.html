@@ -2,7 +2,7 @@
     <li class="glass" *ngFor="let room of chatChannelService.getJoinedChannelRoom();">
         <button  (click)="onSelectRoom(room)">
             <span>{{chatRoomService.getRoomTitle(room)}}</span>
-            <!-- <span appTooltip [user]="friend.user_info">{{chatRoomService.getRoomTitle(room)}}</span> -->
+            <mat-icon fontIcon="settings" (click)="onModifyChatRoom(room)" ></mat-icon>
         </button>
     </li>
 	<li class="newRoomBtn">

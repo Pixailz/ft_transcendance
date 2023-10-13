@@ -1,6 +1,6 @@
 <form [formGroup]="newRoomForm">
 	<input class="glass" id="name" type="text" formControlName="name" required placeholder="Untitled" maxlength="120" autofocus>
-	<input class="glass" [ngClass]="{'disabled': newRoomForm.value.isPrivate === true}" id="password" type="password" formControlName="password" placeholder="Password">
+	<input class="glass" [ngClass]="{'disabled': newRoomForm.value.isPrivate === true}" maxlength="120" id="password" type="password" formControlName="password" placeholder="Password">
 	<div class="toggle-container">
 		<label for="private"><mat-icon fontIcon="mail_lock"></mat-icon></label>
 		<input class="toggle" name="private" type="checkbox" formControlName="isPrivate">
