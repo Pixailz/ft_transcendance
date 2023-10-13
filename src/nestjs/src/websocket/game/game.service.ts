@@ -12,11 +12,18 @@ import {
 	LobbyI,
 	PlayerI,
 	PlayerSockI,
+	GameOptionI,
+	PowerUpI,
 } from "./game.interface";
 import { UserEntity } from "src/modules/database/user/entity";
 import { DBGameInfoService } from "src/modules/database/game/gameInfo/service";
 import { GameInfoEntity } from "src/modules/database/game/gameInfo/entity";
 import { DBPlayerScoreService } from "src/modules/database/game/player-score/service";
+
+export enum powerUpMercyFlags {
+	GIVE_THEM_A_CHANCE = 0,
+	KILL_THEM_ALL = 1,
+}
 
 @Injectable()
 export class WSGameService {
@@ -39,7 +46,24 @@ export class WSGameService {
 		}
 	}
 
-	async gameSearch(server: Server, socket: Socket, game_opt: any) {
+	async gameJoin(server: Server, socket: Socket, room_id: string) {
+		const player: PlayerSockI = {
+			user: this.sanitize.User(
+				await this.userService.getInfoById(
+					this.wsSocket.getUserId(socket.id),
+				),
+			),
+			socket: socket.id,
+		};
+		const room = this.rooms.get(room_id);
+		if (room) {
+			this.addPlayerToRoom(player, room_id, socket);
+			if (this.isFullRoom(room)) this.startGame(server, room_id);
+			else socket.emit("gameWaiting", room_id);
+		}
+	}
+
+	async gameSearch(server: Server, socket: Socket, game_opt: GameOptionI) {
 		const player: PlayerSockI = {
 			user: this.sanitize.User(
 				await this.userService.getInfoById(
@@ -52,7 +76,8 @@ export class WSGameService {
 		const room = this.rooms.get(room_id);
 		if (this.isFullRoom(room) && room.status !== LobbyStatus.STARTED)
 			this.startGame(server, room_id);
-		else if (room.status === LobbyStatus.LOBBY) socket.emit("gameWaiting");
+		else if (room.status === LobbyStatus.LOBBY)
+			socket.emit("gameWaiting", room_id);
 	}
 
 	gameSearchOpponent(player: PlayerSockI, game_opt: any, socket: Socket) {
@@ -71,7 +96,7 @@ export class WSGameService {
 			if (this.isInRoom(player, room)) return room_id; //we first loop to check if the player is already in a room
 		}
 		for (const [room_id, room] of this.rooms) {
-			if (room.type === game_opt.type && !this.isFullRoom(room))
+			if (room.options.type === game_opt.type && !this.isFullRoom(room))
 				return room_id; //then we loop to find a room with the same game type and not full
 		}
 		return "";
@@ -86,8 +111,9 @@ export class WSGameService {
 	isFullRoom(room: LobbyI): boolean {
 		let max_player = 0;
 		let nb_player = 0;
-		switch (room.type) {
+		switch (room.options.type) {
 			case "normal":
+			case "custom":
 				max_player = 2;
 				break;
 		}
@@ -126,7 +152,7 @@ export class WSGameService {
 		current_lobby.state.players.push(player);
 	}
 
-	createRoom(player: PlayerSockI, game_opt: any, socket: Socket) {
+	createRoom(player: PlayerSockI, game_opt: GameOptionI, socket: Socket) {
 		let room_id = `${this.getUidPart(8)}-`;
 
 		for (let i = 0; i < 4; i++) room_id += `${this.getUidPart(4)}-`;
@@ -134,7 +160,7 @@ export class WSGameService {
 
 		this.rooms.set(room_id, {
 			status: LobbyStatus.LOBBY,
-			type: "",
+			options: game_opt,
 			winner_id: -1,
 			state: {
 				gameStatus: GameStatus.WAITING,
@@ -160,7 +186,7 @@ export class WSGameService {
 			},
 			players: [],
 		} as LobbyI);
-		this.rooms.get(room_id).type = game_opt.type;
+		this.rooms.get(room_id).options.type = game_opt.type;
 
 		this.addPlayerToRoom(player, room_id, socket);
 		return room_id;
@@ -192,6 +218,21 @@ export class WSGameService {
 					room.players[player_id].socket = "";
 					break;
 				}
+			}
+			if (
+				room.players.find((player) => player.socket !== "") ===
+				undefined
+			) {
+				if (room.status === LobbyStatus.STARTED) {
+					room.status = LobbyStatus.LOBBY;
+					console.log("Ending game of room: ", roomid);
+					return;
+				}
+				// Object.getOwnPropertyNames(room).forEach((value) => {
+				// 	delete room[value];
+				// });
+				this.rooms.delete(roomid);
+				console.log("Garbage Collected room: ", roomid);
 			}
 		}
 	}
@@ -228,12 +269,15 @@ export class WSGameService {
 	async startGame(server: Server, room_id: string) {
 		const room = this.rooms.get(room_id);
 
-		if (room.state.gameStatus === GameStatus.FINISHED) {
+		if (
+			room.state.gameStatus === GameStatus.FINISHED ||
+			!this.isFullRoom(room)
+		) {
 			return;
 		}
 		this.gameDBService
 			.create({
-				type: room.type,
+				type: room.options.type,
 				users: room.players.map((player) => player.user.id),
 			})
 			.then((gameInfo: GameInfoEntity) => {
@@ -250,21 +294,21 @@ export class WSGameService {
 		this.wsSocket.sendToUserInGame(server, room, "gameStarting", [
 			room_id,
 			room.state,
+			"3",
 		]);
 		// await sleep(3000);
 		await sleep(500);
 		this.resetBall(server, room);
-		while (room.state.gameStatus === GameStatus.STARTED) {
+		while (room.status === LobbyStatus.STARTED) {
 			this.update(server, room);
 			await sleep(1000 / 64);
 		}
 		// await sleep(5000);
 		await sleep(1000);
-		console.log(await this.gameDBService.returnOne(room.db_room_id));
 		this.wsSocket.sendToUserInGame(server, room, "gameEnded", {});
-		Object.getOwnPropertyNames(this.rooms.get(room_id)).forEach((value) => {
-			delete this.rooms.get(room_id)[value];
-		});
+		// Object.getOwnPropertyNames(this.rooms.get(room_id)).forEach((value) => {
+		// 	delete this.rooms.get(room_id)[value];
+		// });
 		this.rooms.delete(room_id);
 		console.log("GAME ENDED");
 	}
@@ -277,6 +321,9 @@ export class WSGameService {
 			this.moveBall(room);
 			this.checkCollisions(room);
 			this.checkBallLose(server, room);
+			if (room.options.powerUps) {
+				this.powerUpsNurcery(room);
+			}
 		}
 		this.wsSocket.sendStatusToGame(server, room);
 	}
@@ -285,6 +332,7 @@ export class WSGameService {
 	onMove(server: Server, socket: Socket, message: any) {
 		const user_id = this.wsSocket.getUserId(socket.id);
 		const room_id = this.getRoomIdBySocketId(socket.id);
+		if (!room_id) return;
 		const player = this.getPlayerById(room_id, user_id);
 		const message_direction = message[0];
 		const message_type = message[1];
@@ -304,6 +352,162 @@ export class WSGameService {
 	}
 
 	/************** Game methods, called by update() ***************/
+	private powerUpsNurcery(room: LobbyI) {
+		if (!room.state.powerUps) room.state.powerUps = [];
+		this.maybeGiveBirthToPowerUp(room);
+		this.watchPowerUpsGrowUp(room);
+		this.maybeKillPowerUps(room, powerUpMercyFlags.GIVE_THEM_A_CHANCE); //they've probably been bad boys, we dont know
+	}
+
+	private maybeGiveBirthToPowerUp(room: LobbyI) {
+		//generate a PowerUp every 6-9s
+		const isPregnant =
+			Math.random() > 0.993 &&
+			room.state.powerUps.length < 4 &&
+			room.state.gameStatus === GameStatus.STARTED &&
+			Date.now() - room.state.ball.lastHit > 1000;
+		if (isPregnant) {
+			let type;
+			const prob = Math.floor(Math.random() * 4);
+			switch (prob) {
+				default:
+				case 0:
+					if (
+						room.state.powerUps.find(
+							(powerup) => powerup.type == "speed",
+						)
+					)
+						return;
+					type = "speed";
+					break;
+				case 1:
+					if (
+						room.state.powerUps.find(
+							(powerup) => powerup.type == "size",
+						)
+					)
+						return;
+					type = "size";
+					break;
+				case 2:
+					if (
+						room.state.powerUps.find(
+							(powerup) => powerup.type == "sticky",
+						)
+					)
+						return;
+					type = "sticky";
+					break;
+				case 3:
+					if (
+						room.state.powerUps.find(
+							(powerup) => powerup.type == "death",
+						)
+					)
+						return;
+					type = "death";
+					break;
+			}
+			const powerUp = {
+				x: Math.random() * 700 + 50,
+				y: Math.random() * 500 + 50,
+				type: type,
+				// duration between 4 and 8s
+				duration: Math.random() * 4 + 4,
+				appliedAt: null,
+				appliedTo: null,
+			};
+			room.state.powerUps.push(powerUp);
+			console.log("new powerUp: ", powerUp);
+		}
+	}
+
+	private watchPowerUpsGrowUp(room: LobbyI) {
+		room.state.powerUps.forEach((powerUp) => {
+			if (powerUp.appliedAt) return; //he's already got a job
+			const ballCenter = { x: room.state.ball.x, y: room.state.ball.y };
+			const powerUpCenter = { x: powerUp.x, y: powerUp.y };
+			const distance = Math.abs(
+				Math.sqrt(
+					Math.pow(ballCenter.x - powerUpCenter.x, 2) +
+						Math.pow(ballCenter.y - powerUpCenter.y, 2),
+				),
+			);
+			if (distance < 30) {
+				this.watchPowerUpGettingAJob(room, powerUp); //he's sooooo cute he's getting a job
+			}
+		});
+	}
+
+	private watchPowerUpGettingAJob(room: LobbyI, powerUp: PowerUpI) {
+		const playerSide = room.state.ball.vx > 0 ? "left" : "right";
+		const player = this.getPlayerBySide(room, playerSide);
+		switch (powerUp.type) {
+			case "speed":
+				room.state.ball.vx *= 2;
+				room.state.ball.vy *= 2;
+				powerUp.appliedTo = "ball";
+				break;
+			case "size":
+				player.paddle.height *= 2;
+				powerUp.appliedTo = playerSide;
+				break;
+			case "sticky":
+				room.state.ball.vx = 0;
+				room.state.ball.vy = 0;
+				powerUp.appliedTo = "ball";
+				break;
+			case "death":
+				player.paddle.height = 15;
+				powerUp.appliedTo = playerSide;
+				break;
+		}
+		powerUp.appliedAt = Date.now();
+		console.log("This little boy just get a job ", powerUp);
+	}
+
+	private maybeKillPowerUps(room: LobbyI, cleanFlag: powerUpMercyFlags) {
+		room.state.powerUps?.forEach((powerUp, index) => {
+			if (
+				cleanFlag === powerUpMercyFlags.KILL_THEM_ALL ||
+				(powerUp.appliedAt &&
+					Date.now() - powerUp.appliedAt > powerUp.duration * 1000)
+			) {
+				this.killPowerUp(room, powerUp); // we found a bad boy
+				room.state.powerUps.splice(index, 1);
+			}
+		});
+	}
+
+	private killPowerUp(room: LobbyI, powerUp: PowerUpI) {
+		let player;
+		switch (powerUp.type) {
+			case "speed":
+				if (!powerUp.appliedTo) break;
+				room.state.ball.vx /= 2;
+				room.state.ball.vy /= 2;
+				break;
+			case "size":
+				if (!powerUp.appliedTo) break;
+				player = this.getPlayerBySide(room, powerUp.appliedTo);
+				player.paddle.height /= 2;
+				break;
+			case "sticky":
+				room.state.ball.vx = Math.random() * 10 - 1;
+				room.state.ball.vy = Math.random() * 2 - 1;
+				break;
+			case "death":
+				// if no one has scored yet, then he's saved by the bell
+				// otherwise he has lost ball, died, and powerup is removed
+				if (!powerUp.appliedTo) break;
+				player = this.getPlayerBySide(room, powerUp.appliedTo);
+				player.paddle.height = 75;
+				break;
+			default:
+				break;
+		}
+	}
+
 	private determineMovement(direction: string) {
 		return direction === "bottom" ? 5 : -5;
 	}
@@ -356,6 +560,7 @@ export class WSGameService {
 					(room.state.ball.x - player.paddle.x) / 10;
 				room.state.ball.vy +=
 					(room.state.ball.y - player.paddle.y) / 10;
+				room.state.ball.lastHit = Date.now();
 			}
 		});
 	}
@@ -370,6 +575,8 @@ export class WSGameService {
 
 	private ballWon(server: Server, room: LobbyI, player: PlayerI | undefined) {
 		if (player) {
+			this.maybeKillPowerUps(room, powerUpMercyFlags.KILL_THEM_ALL);
+			room.state.ball.lastHit = Date.now();
 			this.playerScoreUpdate(player, room);
 			this.checkGameOver(room);
 			this.resetBall(server, room);
@@ -383,14 +590,6 @@ export class WSGameService {
 				playerId: player.id,
 				score: player.score,
 			})
-			.then(async (score) => {
-				console.log("playerScore updated, new scores: ");
-				console.log(
-					await this.scoreDBService.find({
-						where: { gameInfo: { id: room.db_room_id } },
-					}),
-				);
-			})
 			.catch((err) => {
 				console.error(err);
 			});
@@ -399,6 +598,7 @@ export class WSGameService {
 	private checkGameOver(room: LobbyI) {
 		room.state.players.forEach((player) => {
 			if (player.score == 5) {
+				room.status = LobbyStatus.LOBBY;
 				room.state.gameStatus = GameStatus.FINISHED;
 			}
 		});
@@ -416,7 +616,7 @@ export class WSGameService {
 	/********** Helpers ***********/
 	private getPlayerById(room_id: string, user_id: number) {
 		const room = this.rooms.get(room_id);
-		return room.state.players.find((player) => player.id === user_id);
+		return room.state?.players.find((player) => player.id === user_id);
 	}
 
 	private getRoomIdBySocketId(socket_id: string) {
@@ -427,7 +627,7 @@ export class WSGameService {
 	}
 
 	private getPlayerBySide(room: LobbyI, side_id: string) {
-		return room.state.players.find((player) => player.side_id === side_id);
+		return room.state?.players.find((player) => player.side_id === side_id);
 	}
 }
 

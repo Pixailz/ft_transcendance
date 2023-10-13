@@ -143,6 +143,21 @@ export class NotificationService {
 				notif.toDisplay = "Friend request to " + notif.data + " denied";
 				break ;
 			}
+			case (NotificationType.GAME_REQ): {
+				notif = notification;
+				notif.toDisplay = "Game: " + notif.data2;
+				break;
+			}
+			case (NotificationType.GAME_REQ_DACCEPT): {
+				notif = notification;
+				notif.toDisplay = "Game accepted: " + notif.data;
+				break;
+			}
+			case (NotificationType.GAME_REQ_DENIED): {
+				notif = notification;
+				notif.toDisplay = "Game decline: " + notif.data;
+				break;
+			}
 		}
 		return (notif);
 	}

@@ -5,11 +5,11 @@ import { Ball } from 'src/app/interfaces/game/actors/ball';
 import { Vector } from 'excalibur';
 import { DevTool } from '@excaliburjs/dev-tools';
 import { GameService } from 'src/app/services/websocket/game/service';
-import { GameStateI, GameStatus } from 'src/app/interfaces/game/game-room.interface';
+import { GameStateI } from 'src/app/interfaces/game/game-room.interface';
 import { WSGateway } from 'src/app/services/websocket/gateway';
 import { Subscription } from 'rxjs';
-import { WSService } from 'src/app/services/websocket/service';
 import { UserService } from 'src/app/services/user.service';
+import { PowerUp } from 'src/app/interfaces/game/actors/powerup';
 
 @Component({
 	selector: 'app-game-started',
@@ -22,6 +22,7 @@ export class GameStartedComponent implements OnInit {
 	private engine: ex.Engine;
 	private game: ex.Scene;
 	private gameStatus: ex.Label;
+	private loader: ex.Loader;
 	private localPaddle: Paddle;
 	private localScore: ex.Label;
 	private pendingInputs: Array<any>;
@@ -35,7 +36,18 @@ export class GameStartedComponent implements OnInit {
 	private serverReceivedTime: number;
 	private serverUpdateTime: number;
 	private side_id: string;
-	
+
+	// PowerUps Sprites
+	private pwrupImgSpeed: ex.ImageSource;
+	private pwrupSpeed: PowerUp | undefined = undefined;
+	private pwrupImgSize: ex.ImageSource;
+	private pwrupSize: PowerUp | undefined = undefined;
+	private pwrupImgSticky: ex.ImageSource;
+	private pwrupSticky: PowerUp | undefined = undefined;
+	private pwrupImgDeath: ex.ImageSource;
+	private pwrupDeath: PowerUp | undefined = undefined;
+	private powerUpsNumber: number = 0;
+
 	// Debug Elements
 	private devTool: DevTool | null = null;
 	private FPSToolsTimer: ex.Timer;
@@ -52,7 +64,6 @@ export class GameStartedComponent implements OnInit {
 		private userService: UserService,
 		private gameService: GameService,
 		private wsGateway: WSGateway,
-		private wsService: WSService,
 	) {
 	}
 
@@ -68,13 +79,25 @@ export class GameStartedComponent implements OnInit {
 	private initGameEngine(): void {
 		this.engine = new ex.Engine({
 			canvasElementId: 'pong',
-			width: 800,
-			height: 600,
+			displayMode: ex.DisplayMode.FitContainerAndFill,
+			backgroundColor: ex.Color.Black,
+			viewport: {height: 600, width: 800},
 		});
 		this.game = new ex.Scene();
 		this.engine.add('game', this.game);
 		this.engine.backgroundColor = ex.Color.Gray;
 		this.engine.fixedUpdateFps = 64;
+		this.pwrupImgDeath = new ex.ImageSource('assets/powerups/death.png');
+		this.pwrupImgSpeed = new ex.ImageSource('assets/powerups/speed.png');
+		this.pwrupImgSize = new ex.ImageSource('assets/powerups/size.png');
+		this.pwrupImgSticky = new ex.ImageSource('assets/powerups/sticky.png');
+		this.loader = new ex.Loader();
+		this.loader.addResources([this.pwrupImgDeath, this.pwrupImgSpeed, this.pwrupImgSize, this.pwrupImgSticky]);
+		this.loader.suppressPlayButton = true;
+		this.loader.backgroundColor = ex.Color.Black.toString();
+		this.loader.logoHeight = 0;
+		this.loader.logoWidth = 0;
+		this.loader.loadingBarColor = ex.Color.White;
 	}
 
 	private initGameObjects(): void {
@@ -106,13 +129,13 @@ export class GameStartedComponent implements OnInit {
 			if (player.id === this.userService.user.id)
 				this.side_id = player.side_id;
 		});
-		this.engine.start().then(() => {
+		this.engine.start(this.loader).then(() => {
 			this.engine.goToScene('game');
 			this.engine.onPostUpdate = this.postUpdate.bind(this);
 			this.obsToDestroy.push(this.wsGateway.listenGameStarting()
 				.subscribe((data: any) => {
 					console.log("[WS:game] GameStarting event")
-					this.handleBallStart("3");
+					this.handleBallStart(data);
 				}
 			));
 			this.obsToDestroy.push(this.wsGateway.listenGameState()
@@ -252,7 +275,101 @@ export class GameStartedComponent implements OnInit {
 			}
 		}
 		this.serverReceivedTime = Date.now();
+		this.updatePowerUps(state);
 	}
+
+	private updatePowerUps(state: GameStateI): void {
+		if (state.powerUps?.length > this.powerUpsNumber) {
+			this.spawnPowerUps();
+		} else if (state.powerUps?.length <= this.powerUpsNumber) {
+			if (this.pwrupSpeed && (!state.powerUps?.find((pwrup) => pwrup.type === 'speed')
+									|| state.powerUps?.find((pwrup) => pwrup.type === 'speed')?.appliedTo)) {
+				this.pwrupSpeed.kill();
+				this.pwrupSpeed = undefined;
+			}
+			if (this.pwrupSize && (!state.powerUps?.find((pwrup) => pwrup.type === 'size')
+									|| state.powerUps?.find((pwrup) => pwrup.type === 'size')?.appliedTo)) {
+				this.pwrupSize.kill();
+				this.pwrupSize = undefined;
+			}
+			if (this.pwrupSticky && (!state.powerUps?.find((pwrup) => pwrup.type === 'sticky')
+									|| state.powerUps?.find((pwrup) => pwrup.type === 'sticky')?.appliedTo)) {
+				this.pwrupSticky.kill();
+				this.pwrupSticky = undefined;
+			}
+			if (this.pwrupDeath && (!state.powerUps?.find((pwrup) => pwrup.type === 'death')
+									|| state.powerUps?.find((pwrup) => pwrup.type === 'death')?.appliedTo)) {
+				this.pwrupDeath.kill();
+				this.pwrupDeath = undefined;
+			}
+		}
+		this.powerUpsNumber = state.powerUps?.length;
+		this.updateSizes(state);
+	}
+
+	private updateSizes(state: GameStateI) {
+		state.players.forEach((player) => {
+			const paddle =
+				player.side_id === this.side_id ? this.localPaddle : this.remotePaddle;
+			if (paddle.height != player.paddle.height){
+				const diff = paddle.height > player.paddle.height ? 
+				  (player.paddle.height/this.paddleHeight) 
+				: (player.paddle.height/paddle.height);
+				const vec = new ex.Vector(1, diff);
+				paddle.transform.scale = vec;
+			}
+		})
+	}
+
+	private spawnPowerUps(): void {
+		this.gameService.room.state.powerUps?.forEach((powerUp) => {
+			switch (powerUp.type) {
+				case 'speed':
+					if (!this.pwrupSpeed) {
+						this.pwrupSpeed = this.createPowerUp(powerUp);
+						this.pwrupSpeed.graphics.add(this.pwrupImgSpeed.toSprite());
+					}
+					break;
+				case 'size':
+					if (!this.pwrupSize) {
+						this.pwrupSize = this.createPowerUp(powerUp);
+						this.pwrupSize.graphics.add(this.pwrupImgSize.toSprite());
+					}
+					break;
+				case 'sticky':
+					if (!this.pwrupSticky) {
+						this.pwrupSticky = this.createPowerUp(powerUp);
+						this.pwrupSticky.graphics.add(this.pwrupImgSticky.toSprite());
+					}
+					break;
+				case 'death':
+					if (!this.pwrupDeath) {
+						this.pwrupDeath = this.createPowerUp(powerUp);
+						this.pwrupDeath.graphics.add(this.pwrupImgDeath.toSprite());
+					}
+					break;
+			}
+		});
+	}
+
+	private createPowerUp(powerUp: any): PowerUp {
+		const pwrup = this.createGameObject(PowerUp, [
+			powerUp.x,
+			powerUp.y,
+			20
+		]);
+		// const pwrupTimer = new ex.Timer({
+		// 	interval: powerUp.duration * 1000,
+		// 	repeats: false,
+		// 	fcn: () => {
+		// 		pwrup.kill();
+		// 	},
+		// })
+		// this.game.add(pwrupTimer);
+		// pwrupTimer.start();
+		return pwrup;
+	}
+
 	private predictionCorrection(): void {
 		let latestState = this.receivedStates[this.receivedStates.length - 1];
 		if (!latestState) return;
@@ -296,16 +413,17 @@ export class GameStartedComponent implements OnInit {
 		}
 	}
 
-	private handleBallStart(message): void {
+	private handleBallStart(data): void {
 		const counter = new ex.Timer({
 			interval: 1000,
 			repeats: true,
-			numberOfRepeats: +message,
+			numberOfRepeats: +data[2],
 			fcn: () => {
 				this.gameStatus.text =
-				'Starts in : ' + (+message - 1 - counter.timesRepeated);
+				'Starts in : ' + (+data[2] - 1 - counter.timesRepeated);
 				this.gameStatus.text =
-				counter.timesRepeated === +message - 1 ? '' : this.gameStatus.text;
+				counter.timesRepeated === +data[2] - 1 ? '' : this.gameStatus.text;
+				console.log(counter);
 			},
 		});
 		this.game.add(counter);
@@ -313,16 +431,26 @@ export class GameStartedComponent implements OnInit {
 	}
 
 	private handleInputHold(evt: ex.Input.KeyEvent): void {
-		if ([ex.Input.Keys.S, ex.Input.Keys.W].includes(evt.key)) {
-			this.sendInput(evt.key === ex.Input.Keys.S ? 'bottom' : 'up', 'keydown');
+		if ([ex.Input.Keys.S, ex.Input.Keys.ArrowDown].includes(evt.key)) {
+			this.sendInput('bottom', 'keydown');
+			const input = this.pendingInputs[this.pendingInputs.length - 1];
+			this.paddleUpdate(input);
+		}
+		if ([ex.Input.Keys.W, ex.Input.Keys.ArrowUp].includes(evt.key)) {
+			this.sendInput('top', 'keydown');
 			const input = this.pendingInputs[this.pendingInputs.length - 1];
 			this.paddleUpdate(input);
 		}
 	}
 
 	private handleInputRelease(evt: ex.Input.KeyEvent): void {
-		if ([ex.Input.Keys.S, ex.Input.Keys.W].includes(evt.key)) {
-			this.sendInput(evt.key === ex.Input.Keys.S ? 'bottom' : 'up', 'keyup');
+		if ([ex.Input.Keys.S, ex.Input.Keys.ArrowDown].includes(evt.key)) {
+			this.sendInput('bottom', 'keyup');
+			const input = this.pendingInputs[this.pendingInputs.length - 1];
+			this.paddleUpdate(input);
+		}
+		if ([ex.Input.Keys.W, ex.Input.Keys.ArrowUp].includes(evt.key)) {
+			this.sendInput('top', 'keyup');
 			const input = this.pendingInputs[this.pendingInputs.length - 1];
 			this.paddleUpdate(input);
 		}
@@ -493,5 +621,6 @@ export class GameStartedComponent implements OnInit {
 		this.obsToDestroy.forEach((obs) => obs.unsubscribe());
 		if (this.devTool) delete this.devTool;
 		this.engine.stop();
+		this.engine = null;
 	}
 }

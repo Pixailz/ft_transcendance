@@ -5,6 +5,9 @@
 		<app-text-notification *ngSwitchCase=NotificationType.FRIEND_REQ_ACCEPTED [notif]="notification"></app-text-notification>
 		<app-text-notification *ngSwitchCase=NotificationType.FRIEND_REQ_DENIED_FROM [notif]="notification"></app-text-notification>
 		<app-text-notification *ngSwitchCase=NotificationType.FRIEND_REQ_DENIED_TO [notif]="notification"></app-text-notification>
+		<app-text-notification *ngSwitchCase=NotificationType.GAME_REQ_DACCEPT [notif]="notification"></app-text-notification>
+		<app-text-notification *ngSwitchCase=NotificationType.GAME_REQ_DENIED [notif]="notification"></app-text-notification>
+		<app-game-invite *ngSwitchCase=NotificationType.GAME_REQ [notif]="notification"></app-game-invite>
 	</li>
 </ul>
 

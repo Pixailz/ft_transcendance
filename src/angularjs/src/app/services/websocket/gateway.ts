@@ -7,7 +7,7 @@ import { UserChatRoomI } from 'src/app/interfaces/chat/user-chat-room.interface'
 import { FriendRequestI } from 'src/app/interfaces/user/friend.interface';
 import { UserI } from 'src/app/interfaces/user/user.interface';
 import { NotifStatus, NotificationI } from 'src/app/interfaces/notification.interface';
-import { GameStateI } from 'src/app/interfaces/game/game-room.interface';
+import { GameOptionI, GameStateI } from 'src/app/interfaces/game/game-room.interface';
 import { MessageContentI } from 'src/app/interfaces/chat/message.inteface';
 
 @Injectable({
@@ -225,8 +225,11 @@ export class WSGateway {
 	{ return this.socket.fromEvent<GameStateI>("gameState"); }
 
 	// EMITER
-	searchGame(game_option: any)
+	searchGame(game_option: GameOptionI)
 	{ this.socket.emit("gameSearch", game_option); }
+
+	joinGame(game_id: string)
+	{ this.socket.emit("gameJoin", game_id); }
 
 	isInGame()
 	{ this.socket.emit("isInGame"); }
@@ -237,7 +240,19 @@ export class WSGateway {
 	sendInput(direction: string, type: string, pending_input: number)
 	{ this.socket.emit("gameSendInput", direction, type, pending_input); }
 
+	//GAME REQUEST
 	// LISTENER
 
 	// EMITER
+	sendGameInvite(user_id: number, room_id: string)
+	{ this.socket.emit("gameSendInvite", room_id, user_id); }
+
+	delGameInvite(id: number)
+	{ this.socket.emit("delGameInvite", id) }
+
+	acceptGameInvite(id: number)
+	{ this.socket.emit("acceptGameInvite", id) }
+
+	declineGameInvite(id: number)
+	{ this.socket.emit("declineGameInvite", id) }
 }
