@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ChatRoomI } from 'src/app/interfaces/chat/chat-room.interface';
 import { MessageContentI, MessageContentType, MessageI } from 'src/app/interfaces/chat/message.inteface';
 import { UserI } from 'src/app/interfaces/user/user.interface';
@@ -25,6 +26,7 @@ export class ChatViewComponent {
 	constructor(
 		private formBuilder: FormBuilder,
 		private chatRoomService: ChatRoomService,
+		public router: Router,
 		public userService: UserService,
 	) {}
 
@@ -131,4 +133,7 @@ export class ChatViewComponent {
 			type: MessageContentType.GAME_INVITE,
 		});
 	}
+
+	joinGame(room_id: string)
+	{ this.router.navigate(["/play", room_id], { replaceUrl: true }); }
 }

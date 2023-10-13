@@ -30,11 +30,9 @@ export class GameService {
 			}
 		));
 		this.obsToDestroy.push(this.wsGateway.listenIsInGame()
-			.subscribe((room_id: string) => {
+			.subscribe((data: null) => {
 				console.log("[WS:game] IsInGame event");
-				console.log(room_id);
 				this.in_game = true;
-				this.room.id = room_id;
 			}
 		));
 		this.obsToDestroy.push(this.wsGateway.listenGameStarting()
@@ -55,6 +53,7 @@ export class GameService {
 		this.obsToDestroy.push(this.wsGateway.listenGameEnded()
 			.subscribe((data: any) => {
 				console.log("[WS:game] GameEnded event")
+				this.in_game = false;
 				this.resetRoom();
 			}
 		));

@@ -117,6 +117,28 @@ export class DBChatRoomService {
 		});
 	}
 
+	async getDmBetween(user_a: number, user_b: number): Promise<ChatRoomEntity> {
+		return await this.chatRoomRepo.findOne({
+			relations: {
+				roomInfo: true,
+			},
+			where: [
+				{
+					roomInfo: {
+						userId: user_a,
+					},
+					type: RoomType.DIRECT_MSG,
+				},
+				{
+					roomInfo: {
+						userId: user_b,
+					},
+					type: RoomType.DIRECT_MSG,
+				},
+			]
+		});
+	}
+
 	async getAllAvailableChannelRoom(): Promise<ChatRoomEntity[]> {
 		return await this.chatRoomRepo.find({
 			relations: {

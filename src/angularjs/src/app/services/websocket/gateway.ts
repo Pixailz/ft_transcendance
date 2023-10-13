@@ -209,8 +209,8 @@ export class WSGateway {
 	listenGameWaiting(): Observable<null>
 	{ return this.socket.fromEvent<null>("gameWaiting"); }
 
-	listenIsInGame(): Observable<string>
-	{ return this.socket.fromEvent<string>("isInGame"); }
+	listenIsInGame(): Observable<null>
+	{ return this.socket.fromEvent<null>("isInGame"); }
 
 	listenGameStarting(): Observable<any>
 	{ return this.socket.fromEvent<any>("gameStarting"); }

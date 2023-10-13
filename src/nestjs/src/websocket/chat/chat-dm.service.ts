@@ -74,6 +74,7 @@ export class WSChatDmService {
 			"getNewDmRoom",
 			this.sanitize.ChatRoom(chat_room),
 		);
+		return (room_id);
 	}
 
 	async getAllDmMessage(socket: Socket): Promise<any> {
@@ -104,7 +105,6 @@ export class WSChatDmService {
 		);
 		const new_message = await this.chatRoomService.getMessage(message_id);
 		const all_user = await this.chatRoomService.getAllUserFromRoom(dst_id);
-
 		this.wsSocket.sendToUsers(server, all_user, "getNewDmMessage", {
 			room_id: dst_id,
 			message: this.sanitize.Message(new_message),

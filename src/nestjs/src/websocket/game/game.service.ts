@@ -83,7 +83,7 @@ export class WSGameService {
 	gameSearchOpponent(player: PlayerSockI, game_opt: any, socket: Socket) {
 		const room_id = this.gameSearchRoom(player, game_opt);
 
-		if (room_id !== "") {
+		if (room_id !== "" && !game_opt.is_private) {
 			this.addPlayerToRoom(player, room_id, socket);
 		} else {
 			return this.createRoom(player, game_opt, socket);
@@ -96,7 +96,9 @@ export class WSGameService {
 			if (this.isInRoom(player, room)) return room_id; //we first loop to check if the player is already in a room
 		}
 		for (const [room_id, room] of this.rooms) {
-			if (room.options.type === game_opt.type && !this.isFullRoom(room))
+			if (room.options.powerUps === game_opt.powerUps &&
+				room.options.maps.name === game_opt.maps.name &&
+				!room.options.is_private && !this.isFullRoom(room))
 				return room_id; //then we loop to find a room with the same game type and not full
 		}
 		return "";
@@ -109,14 +111,14 @@ export class WSGameService {
 	}
 
 	isFullRoom(room: LobbyI): boolean {
-		let max_player = 0;
+		let max_player = 2;
 		let nb_player = 0;
-		switch (room.options.type) {
-			case "normal":
-			case "custom":
-				max_player = 2;
-				break;
-		}
+		// switch (room.options.type) {
+		// 	case "normal":
+		// 	case "custom":
+		// 		max_player = 2;
+		// 		break;
+		// }
 		for (const friend_id in room.players) nb_player++;
 		return nb_player >= max_player;
 	}
@@ -130,7 +132,6 @@ export class WSGameService {
 				current_lobby.players[player_id].socket = player_sock.socket;
 				socket.emit(
 					"gameReconnect",
-					// this.getOpponent(room_id, user_id_str),
 					current_lobby.state,
 				);
 				return;
@@ -160,7 +161,12 @@ export class WSGameService {
 
 		this.rooms.set(room_id, {
 			status: LobbyStatus.LOBBY,
-			options: game_opt,
+			options: {
+				type: "normal",
+				powerUps: game_opt.powerUps,
+				maps: game_opt.maps,
+				is_private: game_opt.is_private,
+			},
 			winner_id: -1,
 			state: {
 				gameStatus: GameStatus.WAITING,
@@ -186,8 +192,6 @@ export class WSGameService {
 			},
 			players: [],
 		} as LobbyI);
-		this.rooms.get(room_id).options.type = game_opt.type;
-
 		this.addPlayerToRoom(player, room_id, socket);
 		return room_id;
 	}
@@ -197,18 +201,17 @@ export class WSGameService {
 	}
 
 	isInGame(server: Server, socket: Socket) {
-		// const user_id_str = this.wsSocket.getUserId(socket.id).toString();
-		// let isInGame = false;
-		// for (let room_id in this.rooms) {
-		// 	const room = this.rooms.get(room_id);
-		// 	for (const player_id in room.players) {
-		// 		if (player_id === user_id_str) {
-		// 			isInGame = true;
-		// 			break;
-		// 		}
-		// 	}
-		// }
-		// if (isInGame) server.to(socket.id).emit("isInGame", room_id);
+		const user_id = this.wsSocket.getUserId(socket.id);
+		let isInGame = false;
+		for (const [roomid, room] of this.rooms) {
+			for (const player_id in room.players) {
+				if (room.players[player_id].user.id === user_id) {
+					isInGame = true;
+					break;
+				}
+			}
+		}
+		if (isInGame) server.to(socket.id).emit("isInGame");
 	}
 
 	disconnect(socket_id: string) {

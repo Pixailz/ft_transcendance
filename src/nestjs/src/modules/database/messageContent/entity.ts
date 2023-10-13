@@ -9,7 +9,8 @@ import {
 
 export enum MessageContentType {
 	STRING,
-	REQUEST,
+	GAME_INVITE,
+	// TODO
 	IMAGE,
 }
 

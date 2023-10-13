@@ -40,14 +40,23 @@ ol {
 					font-size: 1.2em;
 					overflow-wrap: break-word;
 					width: 100%;
-					color: green;
 				}
 
 				.content-game-invite {
-					font-size: 1.2em;
-					overflow-wrap: break-word;
-					width: 100%;
-					color: blue;
+					aspect-ratio: 1;
+					opacity: 1;
+					border: none;
+					border-radius: 9999px;
+					background-color: white;
+					mat-icon {
+						font-size: 1.2em;
+						width: fit-content;
+						height: fit-content;
+					}
+				}
+
+				&:hover .content-game-invite mat-icon {
+					opacity: 0.5;
 				}
 
 				.login {

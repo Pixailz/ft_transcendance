@@ -13,9 +13,9 @@
 					</div>
 					<div *ngIf="content.type == 1">
 						<!-- GAME-INVITE:<br> -->
-						<span class="content-game-invite">
-							{{content.content.replace(' ', '&nbsp;')}}
-						</span>
+						<button class="content-game-invite" (click)="joinGame(content.content)">
+							<mat-icon fontIcon="videogame_asset"> </mat-icon	>
+						</button>
 					</div>
 				</div>
 			</div>

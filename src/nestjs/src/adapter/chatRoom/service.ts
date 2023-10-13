@@ -206,7 +206,6 @@ export class ChatRoomService {
 		from_id: number,
 		message_content: MessageContentEntity[],
 	): Promise<number> {
-
 		const messageId = await this.dbMessageService.create(
 			from_id,
 			dest_id,

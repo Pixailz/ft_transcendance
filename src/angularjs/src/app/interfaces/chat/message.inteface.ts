@@ -3,7 +3,9 @@ import { ChatRoomI } from "./chat-room.interface";
 
 export enum MessageContentType {
 	STRING,
-	GAME_INVITE
+	GAME_INVITE,
+	// TODO
+	IMAGE,
 }
 
 export interface MessageI {
