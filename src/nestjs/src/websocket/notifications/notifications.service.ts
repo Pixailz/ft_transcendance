@@ -2,7 +2,11 @@ import { Injectable } from "@nestjs/common";
 import { WSSocket } from "../socket.service";
 import { DBNotificationService } from "src/modules/database/notification/service";
 import { Server, Socket } from "socket.io";
-import { NotifStatus, NotificationEntity, NotificationType } from "src/modules/database/notification/entity";
+import {
+	NotifStatus,
+	NotificationEntity,
+	NotificationType,
+} from "src/modules/database/notification/entity";
 import { UserService } from "src/adapter/user/service";
 
 @Injectable()
@@ -11,14 +15,12 @@ export class WSNotificationService {
 		private userService: UserService,
 		public wsSocket: WSSocket,
 		private dbNotificationService: DBNotificationService,
-		) {}
+	) {}
 
-	async getFtLogin(id: number)
-	{
+	async getFtLogin(id: number) {
 		const user = await this.userService.getInfoById(id);
-		return (user.ftLogin);
+		return user.ftLogin;
 	}
-
 
 	async getAllNotifications(socket: Socket) {
 		const user_id = this.wsSocket.getUserId(socket.id);
@@ -150,16 +152,106 @@ export class WSNotificationService {
 		);
 	}
 
+	async sendGameInvite(
+		server: Server,
+		socket: Socket,
+		room_id: number,
+		friend_id: number,
+		) {
+		const user_id = this.wsSocket.getUserId(socket.id);
+		const notif_user = await this.dbNotificationService.create({
+			type: NotificationType.GAME_REQ,
+			userId: friend_id,
+			data: room_id.toString(),
+			data2: await this.getFtLogin(user_id),
+		});
+		// console.log(notif_user);
+		this.wsSocket.sendToUser(
+			server,
+			friend_id,
+			"getNewNotification",
+			notif_user,
+		);
+	}
+
+	async delGameInvite(server:Server, socket: Socket, id: number)
+	{
+		const user_id = this.wsSocket.getUserId(socket.id);
+		const notif = await this.dbNotificationService.returnOne(id);
+		if (!notif)
+		{
+			console.log('Notif not found');
+			return ;
+		}
+		await this.dbNotificationService.delete(notif.id);
+		this.wsSocket.sendToUser(
+			server,
+			user_id,
+			"delNotification",
+			notif.id,
+		);
+	}
+
+	async acceptGameInvite(server:Server, socket:Socket, id: number)
+	{
+		const notif = await this.dbNotificationService.returnOne(id);
+		if (!notif)
+		{
+			console.log('Notif not found');
+			return ;
+		}
+		const friend = await this.userService.getInfoByLogin(notif.data2);
+
+		const user_id = this.wsSocket.getUserId(socket.id);
+		const accept_notif = await this.dbNotificationService.create({
+			type: NotificationType.GAME_REQ_ACCEPTED,
+			userId: user_id,
+			data: await this.getFtLogin(user_id),
+		});
+		this.wsSocket.sendToUser(
+			server,
+			friend.id,
+			"getNewNotification",
+			accept_notif,
+		);
+	}
+
+	async declineGameInvite(server:Server, socket:Socket, id: number)
+	{
+		const notif = await this.dbNotificationService.returnOne(id);
+		if (!notif)
+		{
+			console.log('Notif not found');
+			return ;
+		}
+		const friend = await this.userService.getInfoByLogin(notif.data2);
+
+		const user_id = this.wsSocket.getUserId(socket.id);
+		const decline_notif = await this.dbNotificationService.create({
+			type: NotificationType.GAME_REQ_DENIED,
+			userId: user_id,
+			data: await this.getFtLogin(user_id),
+		});
+		this.wsSocket.sendToUser(
+			server,
+			friend.id,
+			"getNewNotification",
+			decline_notif,
+		);
+	}
+
 	async removeNotif(socket: Socket, id: number) {
 		await this.dbNotificationService.delete(id);
 		socket.emit("removeNotification", id);
 	}
 
-	async updateNotificationStatus(socket: Socket, id: number, status: NotifStatus)
-	{
-		if (!(await this.dbNotificationService.isExist(id)))
-			return ;
-		await this.dbNotificationService.update(id, {status: status});
+	async updateNotificationStatus(
+		socket: Socket,
+		id: number,
+		status: NotifStatus,
+	) {
+		if (!(await this.dbNotificationService.isExist(id))) return;
+		await this.dbNotificationService.update(id, { status: status });
 		const new_notif = await this.dbNotificationService.returnOne(id);
 		socket.emit("updateNotificationStatus", id);
 	}

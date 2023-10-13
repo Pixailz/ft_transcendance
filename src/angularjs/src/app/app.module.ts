@@ -11,9 +11,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -40,7 +42,7 @@ import { UserProfileComponent } from './pages/user-profile/user-profile.componen
 import { TwofaformComponent } from './components/twofaform/twofaform.component';
 import { CustomReuseStrategy } from './reuse-strategy';
 import {  MatBadgeModule  } from '@angular/material/badge';
-
+import { ClipboardModule } from '@angular/cdk/clipboard';
 // WEBSOCKET
 import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
 import { GlobalErrorHandlerService } from './services/global-error-handler.service';
@@ -65,6 +67,9 @@ import { GameStartedComponent } from './components/game/started/started.componen
 import { GameComponent } from './pages/game/game.component';
 import { GameLobbyComponent } from './components/game/lobby/lobby.component';
 import { UserStatsComponent } from './components/user-stats/user-stats.component';
+import { OptionsDialogComponent } from './components/game/options-dialog/options-dialog.component';
+import { NotifGameInviteComponent } from './components/notification/game-invite/game-invite.component';
+import { GameInviteDialogComponent } from './components/game/invite-dialog/game-invite-dialog.component';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -112,11 +117,14 @@ const config: SocketIoConfig = {
 	    ClickOutDirective,
 		ChatViewComponent,
 		PrivChatPageComponent,
+		NotifGameInviteComponent,
+		GameInviteDialogComponent,
 		ResizableDirective,
 		ResizableHandleComponent,
 		NewDmComponent,
 		UserTooltipComponent,
 		TooltipDirective,
+  OptionsDialogComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -129,14 +137,17 @@ const config: SocketIoConfig = {
 		MatDialogModule,
 		MatToolbarModule,
 		MatTableModule,
+		MatListModule,
 		MatSlideToggleModule,
 		MatFormFieldModule,
 		MatInputModule,
+		MatCheckboxModule,
 		MatSelectModule,
 		ReactiveFormsModule,
 		AppRoutingModule,
 		HttpClientModule,
 		FormsModule,
+		ClipboardModule,
 		MatProgressBarModule,
 		SocketIoModule.forRoot(config),
 		CodeInputModule,
