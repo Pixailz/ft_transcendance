@@ -596,8 +596,9 @@ export class WSGameService {
 	}
 
 	private checkGameOver(room: LobbyI) {
-		room.state.players.forEach((player) => {
+		room.state.players.forEach(async (player) => {
 			if (player.score == 5) {
+				await this.userService.updateElo(room.players[0].user.id, room.players[1].user.id, room.winner_id);
 				room.status = LobbyStatus.LOBBY;
 				room.state.gameStatus = GameStatus.FINISHED;
 			}
