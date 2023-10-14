@@ -1,11 +1,37 @@
-.opponent{
-    color: #fff;
-    font-weight: 700;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    width: 100%;
+.win{
+    color: #4CAF50;
+}
+
+.lose{
+    color: #f44336;
+}
+
+.draw{
+    color: #ff9800;
+}
+
+mat-cell, mat-header-cell {
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
+.mat-column-game{
+    flex: 0 0 10%;
+    align-content: center;
+ }
+ 
+ .mat-column-score{
+    flex: 0 0 25%;
+    align-content: center;
+ }
+ 
+ .mat-column-opponent{
+    flex: 0 0 35%;
+    align-content: center;
+ }
+ 
+ .mat-column-date{
+    flex: 0 0 30%;
+    align-content: center;
+ }

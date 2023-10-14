@@ -14,6 +14,13 @@
 	max-width: 600px;
 	position: relative;
 	border-radius: 40px;
+	overflow: scroll;
+
+	.header{
+		position: sticky;
+		top: 0;
+		z-index: 1;
+	}
 
 	span, h1 {
 		font-family: 'Arvo', serif;
@@ -23,7 +30,7 @@
 	img {
 		height: 125px;
 		position: absolute;
-		top: 20px;
+		top: 10px;
 		left: 40px;
 		box-shadow: 10px 10px 100px -30px black;
 		transition: all .2s ease-out;
@@ -62,7 +69,6 @@
 			}
 
 		}
-
 		.friend-btn{
 			margin: 10px;
 		}

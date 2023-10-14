@@ -1,6 +1,8 @@
 <div *ngIf="userService.isGoodUser(user_info); else userNotFound" class="container">
-	<img [src]="user_info.picture || 'assets/img/avatar-placeholder.jpg'" alt="user picture" />
-	<h1 class="login">{{user_info.ftLogin}}</h1>
+	<div class="header">
+		<img [src]="user_info.picture || 'assets/img/avatar-placeholder.jpg'" alt="user picture" />
+		<h1 class="login">{{user_info.ftLogin}}</h1>
+	</div>
 	<div class="glass data">
 		<div class="personal_data">
 			<div class="line">
@@ -14,6 +16,12 @@
 			<div class="line">
 				<span>lastSeen:</span>
 				<span>{{user_info.lastSeen | date: 'dd/MM/YYYY HH:mm:ss'}}</span>
+			</div>
+			<div class="line">
+				<span>games:</span>
+			</div>
+			<div class="profile_game_data">
+				<app-user-stats [userId]="user_info.id"></app-user-stats>
 			</div>
 		</div>
 		<div *ngIf="userService.user.id !== user_info.id">
@@ -32,7 +40,6 @@
 				color="primary" (click)="unblockUser(user_info.id)"
 				></app-flat-button>
 		</div>
-		<app-user-stats [userId]="user_info.id"></app-user-stats>
 	</div>
 </div>
 
