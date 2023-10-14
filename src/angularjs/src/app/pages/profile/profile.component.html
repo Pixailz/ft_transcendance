@@ -2,6 +2,7 @@
 	<div class="header">
 		<img [src]="user_info.picture || 'assets/img/avatar-placeholder.jpg'" alt="user picture" />
 		<h1 class="login">{{user_info.ftLogin}}</h1>
+		<mat-icon *ngIf="this.userService.user.id === user_info.id" class="edit-icon" (click)="openEditDialog()">edit</mat-icon>
 	</div>
 	<div class="glass data">
 		<div class="personal_data">
@@ -42,7 +43,9 @@
 		</div>
 	</div>
 </div>
-
+<div class="bg-container">
+	<span [ngStyle]="{'animation-duration': math.sqrt(user_info.nickname.length) + 's, 5s'}" *ngFor="let _ of [].constructor(9)">{{user_info.nickname}}</span>
+</div>
 <ng-template #userNotFound>
 	<h1>User Not Found</h1>
 </ng-template>

@@ -38,7 +38,7 @@ import { NotificationComponent } from './components/notification/notification.co
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { RegisterComponent } from './pages/register/register.component';
-import { UserProfileComponent } from './pages/user-profile/user-profile.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { TwofaformComponent } from './components/twofaform/twofaform.component';
 import { CustomReuseStrategy } from './reuse-strategy';
 import {  MatBadgeModule  } from '@angular/material/badge';

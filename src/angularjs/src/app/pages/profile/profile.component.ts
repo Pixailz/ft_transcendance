@@ -5,6 +5,8 @@ import { BackService } from 'src/app/services/back.service';
 import { WSGateway } from 'src/app/services/websocket/gateway';
 import { FriendService } from 'src/app/services/websocket/friend/service';
 import { UserService } from 'src/app/services/user.service';
+import { MatDialog } from '@angular/material/dialog';
+import { UserProfileComponent } from '../../components/user-profile/user-profile.component';
 
 
 export enum FriendReqStatus {
@@ -22,12 +24,14 @@ export class ProfileComponent implements OnInit {
 	user_info: UserI = DefUserI;
 	user_id : number = -1;
 	subscription: any = null;
+	math = Math;
 	constructor(
 		private route: ActivatedRoute,
 		private back: BackService,
 		public userService: UserService,
 		public friendService: FriendService,
 		public wsGateway: WSGateway,
+		public matDialog: MatDialog
 	) {}
 
 
@@ -43,6 +47,13 @@ export class ProfileComponent implements OnInit {
 			if (params['login'] != this.user_info.ftLogin && this.user_id != -1){
 				this.ngOnInit();
 			}
+		});
+	}
+
+	openEditDialog() {
+		const dialogRef = this.matDialog.open(UserProfileComponent);
+		dialogRef.afterClosed().subscribe(result => {
+			this.ngOnInit();
 		});
 	}
 
