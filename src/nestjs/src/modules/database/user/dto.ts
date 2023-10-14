@@ -5,6 +5,7 @@ import {
 	IsString,
 	IsBoolean,
 	MinLength,
+	IsNumber,
 } from "class-validator";
 
 export class DBUserPost {
@@ -45,4 +46,8 @@ export class DBUserInfoPost {
 	@IsOptional()
 	@IsString()
 	twoAuthFactorSecret?: string;
+
+	@IsOptional()
+	@IsNumber()
+	elo?: number;
 }
