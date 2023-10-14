@@ -2,7 +2,7 @@
   <p> No games found </p>
 </div>
 <div *ngIf="userInfos">
-  <mat-table [dataSource]="userInfos" class="user-stats">
+  <mat-table [dataSource]="userInfosSource" class="user-stats">
     <ng-container matColumnDef="game">
       <mat-header-cell *matHeaderCellDef> # </mat-header-cell>
       <mat-cell *matCellDef="let element">
@@ -15,7 +15,7 @@
         <span [ngClass]="element.result">
           {{element.score}}
         </span>
-        - {{element.opponentScore}}
+        &nbsp;- {{element.opponentScore}}
       </mat-cell>
     </ng-container>
     <ng-container matColumnDef="opponent">
@@ -34,4 +34,5 @@
     <mat-header-row *matHeaderRowDef="['game', 'score', 'opponent', 'date']"></mat-header-row>
     <mat-row *matRowDef="let row; columns: ['game', 'score', 'opponent', 'date'];"></mat-row>
   </mat-table>
+  <mat-paginator #paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
 </div>

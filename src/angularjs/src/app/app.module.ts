@@ -18,6 +18,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { CodeInputModule } from 'angular-code-input';
@@ -137,6 +139,7 @@ const config: SocketIoConfig = {
 		MatDialogModule,
 		MatToolbarModule,
 		MatTableModule,
+		MatPaginatorModule,
 		MatListModule,
 		MatSlideToggleModule,
 		MatFormFieldModule,
@@ -154,6 +157,7 @@ const config: SocketIoConfig = {
 		MatBadgeModule,
 	],
 	providers: [
+		MatTableDataSource,
 		AuthGuardService,
 		{ provide: ErrorHandler, useClass: GlobalErrorHandlerService },
 		{ provide: RouteReuseStrategy, useClass: CustomReuseStrategy },

@@ -1,8 +1,8 @@
 <div *ngIf="userService.isGoodUser(user_info); else userNotFound" class="container">
 	<div class="header">
 		<img [src]="user_info.picture || 'assets/img/avatar-placeholder.jpg'" alt="user picture" />
-		<h1 class="login">{{user_info.ftLogin}}</h1>
-		<mat-icon *ngIf="this.userService.user.id === user_info.id" class="edit-icon" (click)="openEditDialog()">edit</mat-icon>
+		<h1 class="login">{{user_info.nickname}}</h1>
+		<mat-icon *ngIf="this.userService.user.id === user_info.id" class="edit-icon" (click)="openEditDialog()">settings</mat-icon>
 	</div>
 	<div class="glass data">
 		<div class="personal_data">
