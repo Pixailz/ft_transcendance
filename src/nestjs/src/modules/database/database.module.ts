@@ -33,6 +33,8 @@ import { DBBlockedController } from "./blocked/controller";
 import { DBNotificationController } from "./notification/controller";
 import { PlayerScoreEntity } from "./game/player-score/entity";
 import { DBPlayerScoreService } from "./game/player-score/service";
+import { Elo } from "./elo";
+
 
 @Module({
 	imports: [
@@ -93,6 +95,7 @@ import { DBPlayerScoreService } from "./game/player-score/service";
 		DBFriendRequestService,
 		DBBlockedService,
 		DBNotificationService,
+		Elo,
 	],
 	exports: [
 		DBUserService,
@@ -105,6 +108,7 @@ import { DBPlayerScoreService } from "./game/player-score/service";
 		DBFriendRequestService,
 		DBBlockedService,
 		DBNotificationService,
+		Elo,
 	],
 })
 export class DBModule {}
