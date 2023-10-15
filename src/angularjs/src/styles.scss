@@ -184,3 +184,25 @@ mat-option > span.mdc-list-item__primary-text {
     align-items: center;
     width: 100%;
   }
+
+
+
+
+.user-profile-tooltip app-user-tooltip{
+	/* border-radius: 0.7em; */
+	/* translate: -50% 100%; */
+	/* gap: 1em; */
+	border-radius: 1.7em !important;
+	translate: 0 -65% !important;
+	bottom: auto;
+	left: auto;
+}
+
+.profile_game_data {
+ .mat-mdc-table {
+	background-color: inherit !important;
+ }
+ .mat-mdc-paginator {
+	background-color: inherit !important;
+ }
+}

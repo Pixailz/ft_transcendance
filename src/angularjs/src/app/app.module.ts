@@ -18,6 +18,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { CodeInputModule } from 'angular-code-input';
@@ -38,7 +39,7 @@ import { NotificationComponent } from './components/notification/notification.co
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { RegisterComponent } from './pages/register/register.component';
-import { UserProfileComponent } from './pages/user-profile/user-profile.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { TwofaformComponent } from './components/twofaform/twofaform.component';
 import { CustomReuseStrategy } from './reuse-strategy';
 import {  MatBadgeModule  } from '@angular/material/badge';
@@ -66,7 +67,7 @@ import { GameWaitingComponent } from './components/game/waiting/waiting.componen
 import { GameStartedComponent } from './components/game/started/started.component';
 import { GameComponent } from './pages/game/game.component';
 import { GameLobbyComponent } from './components/game/lobby/lobby.component';
-import { UserStatsComponent } from './components/user-stats/user-stats.component';
+import { GamesHistoryComponent } from './components/game/games-history/game-history.component';
 import { OptionsDialogComponent } from './components/game/options-dialog/options-dialog.component';
 import { NotifGameInviteComponent } from './components/notification/game-invite/game-invite.component';
 import { GameInviteDialogComponent } from './components/game/invite-dialog/game-invite-dialog.component';
@@ -90,7 +91,7 @@ const config: SocketIoConfig = {
 		HomeDashboardComponent,
 		PageNotFoundComponent,
 		UserProfileComponent,
-		UserStatsComponent,
+		GamesHistoryComponent,
 		AvatarComponent,
 		LoginComponent,
 		RegisterComponent,
@@ -124,7 +125,7 @@ const config: SocketIoConfig = {
 		NewDmComponent,
 		UserTooltipComponent,
 		TooltipDirective,
-  OptionsDialogComponent,
+		OptionsDialogComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -137,6 +138,7 @@ const config: SocketIoConfig = {
 		MatDialogModule,
 		MatToolbarModule,
 		MatTableModule,
+		MatPaginatorModule,
 		MatListModule,
 		MatSlideToggleModule,
 		MatFormFieldModule,

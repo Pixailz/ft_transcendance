@@ -19,9 +19,15 @@ export class GameController {
 		private scoresService: DBPlayerScoreService,
 	) {}
 
-	@Get("user-stats/:id")
-	async getUserStats(@Param("id") userId: number): Promise<any> {
-		const userStats = await this.scoresService.getUserStats(userId);
+	@Get("stats/:id")
+	async getUserGameStats(@Param("id") userId: number): Promise<any> {
+		const userStats = await this.scoresService.getUserGameStats(userId);
 		return userStats;
+	}
+
+	@Get("history/:id")
+	async getGamesHistory(@Param("id") userId: number): Promise<any> {
+		const games = await this.scoresService.getGamesHistory(userId);
+		return games;
 	}
 }

@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
-import { UserStatsComponent } from './user-stats.component';
+import { UserStatsComponent } from './game-history.component';
 
 describe('UserStatsComponent', () => {
   let component: UserStatsComponent;

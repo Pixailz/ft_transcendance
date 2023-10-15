@@ -1,6 +1,9 @@
-<div *ngIf="userService.isGoodUser(user_info); else userNotFound" class="container">
-	<img [src]="user_info.picture || 'assets/img/avatar-placeholder.jpg'" alt="user picture" />
-	<h1 class="login">{{user_info.ftLogin}}</h1>
+<div *ngIf="userService.isGoodUser(user_info) && games_infos; else userNotFound" class="container">
+	<div class="header">
+		<img [src]="user_info.picture || 'assets/img/avatar-placeholder.jpg'" alt="user picture" />
+		<h1 class="login">{{user_info.nickname}}</h1>
+		<mat-icon *ngIf="this.userService.user.id === user_info.id" class="edit-icon" (click)="openEditDialog()">settings</mat-icon>
+	</div>
 	<div class="glass data">
 		<div class="personal_data">
 			<div class="line">
@@ -14,6 +17,16 @@
 			<div class="line">
 				<span>lastSeen:</span>
 				<span>{{user_info.lastSeen | date: 'dd/MM/YYYY HH:mm:ss'}}</span>
+			</div>
+			<div class="line">
+				<span>game stats:</span>
+				<span>{{games_infos.totalGames}} played, {{games_infos.totalWins}} won ({{games_infos.winRatio}}%)</span>
+			</div>
+			<div class="line">
+				<span>match history:</span>
+			</div>
+			<div class="profile_game_data">
+				<app-game-history [userId]="user_info.id"></app-game-history>
 			</div>
 		</div>
 		<div *ngIf="userService.user.id !== user_info.id">
@@ -32,10 +45,11 @@
 				color="primary" (click)="unblockUser(user_info.id)"
 				></app-flat-button>
 		</div>
-		<app-user-stats [userId]="user_info.id"></app-user-stats>
 	</div>
 </div>
-
+<div class="bg-container">
+	<span [ngStyle]="{'animation-duration': math.sqrt(user_info.nickname.length) + 's, 5s'}" *ngFor="let _ of [].constructor(9)">{{user_info.nickname}}</span>
+</div>
 <ng-template #userNotFound>
 	<h1>User Not Found</h1>
 </ng-template>
