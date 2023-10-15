@@ -57,6 +57,7 @@ export class DBUserService {
 
 	async updateElo(player_1: number, player_2: number, winner: number)
 	{
+		if (winner == -1) return;
 		let user_1 = await this.get_user(player_1, null, null);
 		let user_2 = await this.get_user(player_2, null, null);
 		if (!user_1 || !user_2) throw new NotFoundException("User not found");

@@ -308,10 +308,18 @@ export class WSGameService {
 		this.wsSocket.sendToUserInGame(server, room, "gameEnded", {});
 		room.state.players.forEach((player) => {
 			if (
-				player.score >=
+				player.score >
 				room.state.players.find((p) => p.id !== player.id)?.score
 			)
 				room.winner_id = player.id;
+			else if (
+				player.score <
+				room.state.players.find((p) => p.id !== player.id)?.score
+			)
+				room.winner_id = room.state.players.find(
+					(p) => p.id !== player.id,
+				)?.id;
+			else room.winner_id = -1;
 		});
 		await this.userService.updateElo(
 			room.players[0].user.id,
