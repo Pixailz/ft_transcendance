@@ -36,7 +36,11 @@ export class UserController {
 	@Get("profile/:login")
 	async getUserProfile(
 		@Param("login") ft_login: string,
+		@Request() req,
 	): Promise<UserEntity> {
+		if (!ft_login) return null;
+		if (ft_login == "me")
+			return this.dbUserService.returnOne(req.user.user_id);
 		return await this.dbUserService.getUserByLogin(ft_login);
 	}
 

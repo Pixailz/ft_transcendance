@@ -48,7 +48,7 @@ export class DBPlayerScoreService {
 		}
 	}
 
-	async getUserStats(userId: number): Promise<any> {
+	async getGamesHistory(userId: number): Promise<any> {
 		const user = await this.userRepo.findOne({
 			where: { id: userId },
 			relations: [
@@ -67,18 +67,65 @@ export class DBPlayerScoreService {
 			const playerScore = gameInfo.playersScores.find(
 				(element) => element.playerId == userId,
 			);
+			const score = playerScore.score;
+			const opponent = gameInfo.usersArray.filter(
+				(element) => element.id != userId,
+			)[0];
+			const opponentScore = gameInfo.playersScores.find(
+				(element) => element.playerId != userId,
+			).score;
+			const createdAt = gameInfo.createdAt;
+			const result =
+				score > opponentScore
+					? "win"
+					: score < opponentScore
+					? "lose"
+					: "draw";
 			userStats.push({
 				id: gameInfo.id,
-				score: playerScore.score,
-				opponent: gameInfo.usersArray.filter(
-					(element) => element.id != userId,
-				)[0],
-				opponentScore: gameInfo.playersScores.find(
-					(element) => element.playerId != userId,
-				).score,
-				createdAt: gameInfo.createdAt,
+				opponent: opponent,
+				score: score,
+				opponentScore: opponentScore,
+				createdAt: createdAt,
+				result: result,
 			});
 		});
+		return userStats.sort((a, b) => b.createdAt - a.createdAt);
+	}
+
+	async getUserGameStats(userId: number): Promise<any> {
+		const user = await this.userRepo.findOne({
+			where: { id: userId },
+			relations: [
+				"gameInfos",
+				"gameInfos.playersScores",
+				"gameInfos.usersArray",
+			],
+		});
+		if (!user) {
+			throw new NotFoundException("User not found");
+		}
+		const gameInfos = user.gameInfos;
+		const userStats = {
+			totalGames: gameInfos.length,
+			totalWins: 0,
+			winRatio: 0,
+		};
+		gameInfos.forEach((gameInfo) => {
+			const playerScore = gameInfo.playersScores.find(
+				(element) => element.playerId == userId,
+			);
+			const score = playerScore.score;
+			const opponentScore = gameInfo.playersScores.find(
+				(element) => element.playerId != userId,
+			).score;
+			if (score > opponentScore) {
+				userStats.totalWins++;
+			}
+		});
+		userStats.winRatio = Math.round(
+			(userStats.totalWins / userStats.totalGames) * 100,
+		);
 		return userStats;
 	}
 }

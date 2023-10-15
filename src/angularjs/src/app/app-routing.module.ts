@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { HomeDashboardComponent } from './pages/home-dashboard/home-dashboard.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
-import { UserProfileComponent } from './pages/user-profile/user-profile.component';
 import { LoginComponent } from './pages/login/login.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { RegisterComponent } from './pages/register/register.component';
@@ -50,11 +49,6 @@ const routes: Routes = [
 				path: 'chat/global',
 				component: WSChatChannelComponent,
 				data: { animation: 'ChatChannel', reuseRoute: true }
-			},
-			{
-				path: 'profile',
-				component: UserProfileComponent,
-				data: { animation: 'Profile', reuseRoute: true }
 			},
 			{
 				path: 'profile/:login',
