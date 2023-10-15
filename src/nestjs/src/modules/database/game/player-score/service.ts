@@ -48,7 +48,7 @@ export class DBPlayerScoreService {
 		}
 	}
 
-	async getUserStats(userId: number): Promise<any> {
+	async getGamesHistory(userId: number): Promise<any> {
 		const user = await this.userRepo.findOne({
 			where: { id: userId },
 			relations: [
@@ -91,5 +91,41 @@ export class DBPlayerScoreService {
 			});
 		});
 		return userStats.sort((a, b) => b.createdAt - a.createdAt);
+	}
+
+	async getUserGameStats(userId: number): Promise<any> {
+		const user = await this.userRepo.findOne({
+			where: { id: userId },
+			relations: [
+				"gameInfos",
+				"gameInfos.playersScores",
+				"gameInfos.usersArray",
+			],
+		});
+		if (!user) {
+			throw new NotFoundException("User not found");
+		}
+		const gameInfos = user.gameInfos;
+		const userStats = {
+			totalGames: gameInfos.length,
+			totalWins: 0,
+			winRatio: 0,
+		};
+		gameInfos.forEach((gameInfo) => {
+			const playerScore = gameInfo.playersScores.find(
+				(element) => element.playerId == userId,
+			);
+			const score = playerScore.score;
+			const opponentScore = gameInfo.playersScores.find(
+				(element) => element.playerId != userId,
+			).score;
+			if (score > opponentScore) {
+				userStats.totalWins++;
+			}
+		});
+		userStats.winRatio = Math.round(
+			(userStats.totalWins / userStats.totalGames) * 100,
+		);
+		return userStats;
 	}
 }

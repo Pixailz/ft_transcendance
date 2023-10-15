@@ -23,6 +23,7 @@ export enum FriendReqStatus {
 export class ProfileComponent implements OnInit {
 	user_info: UserI = DefUserI;
 	user_id : number = -1;
+	games_infos: { totalGames: number, totalWins: number, winRatio: number };
 	subscription: any = null;
 	math = Math;
 	constructor(
@@ -42,6 +43,11 @@ export class ProfileComponent implements OnInit {
 				console.log("[profile]", err.status);
 			});
 		this.user_id = (await this.userService.getUserInfo()).id;
+		this.games_infos = await this.back.req("GET",
+			"/game/stats/" + this.user_info.id)
+			.catch((err) => {
+				console.log("[profile]", err.status);
+			});
 		if (this.subscription) return;
 		this.subscription = this.route.params.subscribe(params => {
 			if (params['login'] != this.user_info.ftLogin && this.user_id != -1){

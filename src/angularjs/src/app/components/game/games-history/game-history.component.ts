@@ -5,11 +5,11 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
-  selector: 'app-user-stats',
-  templateUrl: './user-stats.component.html',
-  styleUrls: ['./user-stats.component.css']
+  selector: 'app-game-history',
+  templateUrl: './game-history.component.html',
+  styleUrls: ['./game-history.component.css']
 })
-export class UserStatsComponent implements OnInit {
+export class GamesHistoryComponent implements OnInit {
   @Input() userId: number;
   userInfos: any = null;
   constructor(
@@ -24,7 +24,7 @@ export class UserStatsComponent implements OnInit {
       this.userInfos = null;
       return;
     }
-    this.backService.req("GET", "/game/user-stats/" + this.userId)
+    this.backService.req("GET", "/game/history/" + this.userId)
     .then((res) => {
       if (!res.length) this.userInfos = null;
       else {
