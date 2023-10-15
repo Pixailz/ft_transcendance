@@ -306,6 +306,18 @@ export class WSGameService {
 		// await sleep(5000);
 		await sleep(1000);
 		this.wsSocket.sendToUserInGame(server, room, "gameEnded", {});
+		room.state.players.forEach((player) => {
+			if (
+				player.score >=
+				room.state.players.find((p) => p.id !== player.id)?.score
+			)
+				room.winner_id = player.id;
+		});
+		await this.userService.updateElo(
+			room.players[0].user.id,
+			room.players[1].user.id,
+			room.winner_id,
+		);
 		// Object.getOwnPropertyNames(this.rooms.get(room_id)).forEach((value) => {
 		// 	delete this.rooms.get(room_id)[value];
 		// });
@@ -598,7 +610,6 @@ export class WSGameService {
 	private checkGameOver(room: LobbyI) {
 		room.state.players.forEach(async (player) => {
 			if (player.score == 5) {
-				await this.userService.updateElo(room.players[0].user.id, room.players[1].user.id, room.winner_id);
 				room.status = LobbyStatus.LOBBY;
 				room.state.gameStatus = GameStatus.FINISHED;
 			}
