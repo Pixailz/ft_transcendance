@@ -31,8 +31,8 @@
       <mat-header-cell *matHeaderCellDef> Date </mat-header-cell>
       <mat-cell *matCellDef="let element"> {{element.createdAt | date:'short' }} </mat-cell>
     </ng-container>
-    <mat-header-row *matHeaderRowDef="['game', 'score', 'opponent', 'elo','date']"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: ['game', 'score', 'opponent', 'elo', 'date'];"></mat-row>
+    <mat-header-row *matHeaderRowDef="['game', 'score', 'opponent', 'date']"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: ['game', 'score', 'opponent', 'date'];"></mat-row>
   </mat-table>
   <mat-paginator #paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
 </div>
