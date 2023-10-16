@@ -5,19 +5,22 @@
 	height: 100%;
 	width: 100%;
 }
+
 .glass.container {
     display: flex;
     margin: 20px;
     flex-direction: column;
     align-items: center;
+	background-color: transparent;
+	border: none;
 }
 
 .password-container {
     position: relative;
     display: flex;
     align-items: center;
-}
 
+}
 
 .password-container mat-icon {
     position: absolute;
@@ -26,7 +29,7 @@
 }
 
 label {
-	color: #00BABC;
+	color: white;
 	font-weight: bold;
 }
 
@@ -39,16 +42,60 @@ label {
 	width: 100%;
 }
 
+form {
+	position: relative;
+	height: fit-content;
+	width: fit-content;
+	input:not(.toggle-btn) {
+		outline: none;
+		border: none;
+		height: 50px;
+		padding: 4px 70px 4px 20px;
+		border-radius: 9999px;
+		font-size: large;
+		border: 2px solid rgba($color: #8f8f8f, $alpha: 0.3);
+		color: white;
+		background: rgba($color: #3a3a3a, $alpha: 0.3);
+	}
+	
+	div {
+		display: flex;
+		justify-content: space-between;
+		&:not(.toggle) {
+			padding-top: 1em;
+			padding-bottom: 1em;
+		}
+	}
+
+	button:not(.ft-btn-login){
+		margin: 0.2em 0.4em;
+		background-color: #00BABC;
+		border-radius: 0.5em;
+		&:disabled{
+			filter: brightness(50%);
+		} 
+		&:hover:not(:disabled) {
+			cursor: pointer;
+			filter: brightness(80%);
+		
+		}
+		span {
+			font-size: 1.3em;
+			color: white;
+		}
+	}
+}	
+
+
 .ft-btn-login {
 	background-color: #00BABC;
+	display: flex;
 	border: none;
 	min-width: 150px;
 	min-height: 60px;
 	height: 30px;
 	padding: 10px 15px;
-	margin-top: 30px;
 	border-radius: 5px;
-	display: flex;
 	justify-content: space-between;
 	align-items: center;
 

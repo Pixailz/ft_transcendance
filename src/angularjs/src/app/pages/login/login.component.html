@@ -1,31 +1,38 @@
+
 <div class="glass container">
-	<form [formGroup]="loginForm" class="loginform" *ngIf="isButtonClickable">
-
-		<input type="text" formControlName="nickname" placeholder="User name" required />
-
-		<div class="password-container">
-			<input matInput id="password" [type]="passwordInputType" formControlName="pass" placeholder="User password"
-				required />
-			<mat-icon (click)="toggle()">
-				{{loginForm.value.show_pass ? 'visibility_off' : 'visibility'}}
-			</mat-icon>
-			<input style="display:none;" type="checkbox" formControlName="show_pass" />
-		</div>
-
+<form [formGroup]="loginForm" class="loginform" *ngIf="isButtonClickable">
+	
+	<input type="text"  formControlName="nickname" placeholder="User name" required />
+	
+	<div class="password-container">
+		<input 
+		[type]="passwordInputType"
+		formControlName="pass"
+		placeholder="User password"
+		required 
+		/>
+		<mat-icon (click)="toggle()">
+			{{loginForm.value.show_pass ? 'visibility_off' : 'visibility'}}
+		</mat-icon>
+		<input style="display:none;" type="checkbox" formControlName="show_pass" />
+	</div>
+	<div class="toggle">
 		<label for="toggle">I have an account!</label>
 		<input class="toggle-btn" type="checkbox" formControlName="login" />
+	</div>
 	<br/>
+	<div class="btn-container">
 		<button (click)="doAction()" [disabled]="!loginForm.valid">
 			<span *ngIf="loginForm.value.login">login</span>
 			<span *ngIf="!loginForm.value.login">register</span>
 		</button>
-	</form>
-
-	<button class="ft-btn-login" (click)="SignIn()" [disabled]="!isButtonClickable">
-		<div class="btn-content" *ngIf="isButtonClickable">
-			<img src="./assets/img/42-logo.png" alt="42 logo">
-			<span>Login</span>
-		</div>
-		<span *ngIf="!isButtonClickable" id="message">Please wait...</span>
-	</button>
+		<button class="ft-btn-login" (click)="SignIn()" [disabled]="!isButtonClickable">
+			<div class="btn-content" *ngIf="isButtonClickable">
+				<img src="./assets/img/42-logo.png" alt="42 logo">
+				<span>Login</span>
+			</div>
+			<span *ngIf="!isButtonClickable" id="message">Please wait...</span>
+		</button>
+	</div>
+</form>
 </div>
