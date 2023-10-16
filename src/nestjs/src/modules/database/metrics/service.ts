@@ -56,6 +56,7 @@ export class UserMetricsService {
 				"achievements.achievement",
 			],
 		});
+		if (!completeUser) return;
 		const metrics = completeUser.metrics;
 		metrics.totalGames = completeUser.gameInfos.length;
 		metrics.totalWins = completeUser.gameInfos.filter(

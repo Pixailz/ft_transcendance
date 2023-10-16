@@ -1,0 +1,42 @@
+:host {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.card {
+    border: 1px solid #ccc;
+    // margin: 10px;
+    width: calc(100% / 3 - 20px);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    img {
+        max-width: 64px;
+        max-height: 64px;
+    }
+
+    span {
+        display: flex;
+        flex-direction: row;
+        align-content: center;
+        align-items: center;
+        align-self: center;
+        vertical-align: center;
+    }
+
+    .unlocked {
+        color: green;
+    }
+}

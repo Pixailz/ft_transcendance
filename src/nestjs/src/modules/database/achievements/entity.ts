@@ -25,6 +25,8 @@ export class AchievementEntity {
 
 	@Column({ type: "varchar", length: 120 })
 	imageUrl: string;
+
+	unlocked?: boolean;
 }
 
 @Entity()
@@ -50,37 +52,43 @@ export const achievementsList: Partial<AchievementEntity>[] = [
 		name: "First game",
 		description: "Play your first game",
 		points: 10,
-		imageUrl: "/assets/achivements/fst_game.svg",
+		// imageUrl: "/assets/achivements/fst_game.svg",
+		imageUrl: "https://placehold.it/64",
 	},
 	{
 		name: "AFK",
 		description: "Lose your first game",
 		points: 10,
-		imageUrl: "/assets/achivements/afk.svg",
+		// imageUrl: "/assets/achivements/afk.svg",
+		imageUrl: "https://placehold.it/64",
 	},
 	{
 		name: "I'm a pro",
 		description: "Win 10 games",
 		points: 100,
-		imageUrl: "/assets/achivements/win10.svg",
+		// imageUrl: "/assets/achivements/win10.svg",
+		imageUrl: "https://placehold.it/64",
 	},
 	{
 		name: "Oh It's Ranked?",
 		description: "Lose 50% of your initial elo",
 		points: 420,
-		imageUrl: "/assets/achivements/elolose.svg",
+		// imageUrl: "/assets/achivements/elolose.svg",
+		imageUrl: "https://placehold.it/64",
 	},
 	{
 		name: "I've got friends?!",
 		description: "Add a friend",
 		points: 10,
-		imageUrl: "/assets/achivements/friend.svg",
+		// imageUrl: "/assets/achivements/friend.svg",
+		imageUrl: "https://placehold.it/64",
 	},
 	{
 		name: "MasterTyper",
 		description: "Send 100 messages",
 		points: 100,
-		imageUrl: "/assets/achivements/typer.svg",
+		// imageUrl: "/assets/achivements/typer.svg",
+		imageUrl: "https://placehold.it/64",
 	},
 ];
 

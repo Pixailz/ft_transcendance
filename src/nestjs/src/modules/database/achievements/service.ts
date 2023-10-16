@@ -100,4 +100,22 @@ export class AchievementService {
 			}
 		}
 	}
+
+	async getUserAchievements(nickname: string) {
+		const achievements = await this.achievementRepository.find();
+		const user = await this.userRepository.findOne({
+			where: { nickname: nickname },
+			relations: ["achievements", "achievements.achievement"],
+		});
+		user.achievements.forEach((userAchievement) => {
+			if (userAchievement.achievement) {
+				achievements.forEach((achievement) => {
+					if (userAchievement.achievement.id === achievement.id) {
+						achievement.unlocked = true;
+					}
+				});
+			}
+		});
+		return achievements;
+	}
 }

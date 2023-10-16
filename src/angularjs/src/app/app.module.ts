@@ -72,6 +72,7 @@ import { OptionsDialogComponent } from './components/game/options-dialog/options
 import { NotifGameInviteComponent } from './components/notification/game-invite/game-invite.component';
 import { GameInviteDialogComponent } from './components/game/invite-dialog/game-invite-dialog.component';
 import { NotifAchievementComponent } from './components/notification/achievement/notif-achievement';
+import { AchievementsComponent } from './pages/achievements/achievements.component';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -128,6 +129,7 @@ const config: SocketIoConfig = {
 		UserTooltipComponent,
 		TooltipDirective,
 		OptionsDialogComponent,
+  AchievementsComponent,
 	],
 	imports: [
 		BrowserModule,
