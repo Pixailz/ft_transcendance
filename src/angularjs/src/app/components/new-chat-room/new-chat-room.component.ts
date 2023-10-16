@@ -2,10 +2,8 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { pairwise } from 'rxjs';
-import { UserI } from 'src/app/interfaces/user/user.interface';
 import { FriendService } from 'src/app/services/websocket/friend/service';
 import { WSGateway } from 'src/app/services/websocket/gateway';
-import { __values } from 'tslib';
 import { ChatChannelFriendListComponent } from '../chat-channel-friend-list/chat-channel-friend-list.component';
 
 @Component({
@@ -17,7 +15,6 @@ export class NewChatRoomComponent {
 
   newRoomForm!: FormGroup;
   userList:    number[] = [];
-  // passDisabled: boolean = false;
 
   constructor (
     private formBuilder: FormBuilder,
