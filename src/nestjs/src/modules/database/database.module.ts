@@ -38,7 +38,7 @@ import { AchievementEntity, UserAchievementEntity } from "./achievements/entity"
 import { AchievementService } from "./achievements/service";
 import { UserMetricsEntity } from "./metrics/entity";
 import { UserMetricsService } from "./metrics/service";
-import { WSModule } from "src/websocket/module";
+import { WSModule } from "../../websocket/module";
 
 @Module({
 	imports: [

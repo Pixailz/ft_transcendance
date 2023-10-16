@@ -3,16 +3,16 @@ import * as bcrypt from "bcrypt";
 
 import { DBUserChatRoomService } from "../../modules/database/userChatRoom/service";
 import { DBChatRoomService } from "../../modules/database/chatRoom/service";
-import { DBMessageService } from "src/modules/database/message/service";
-import { MessageEntity } from "src/modules/database/message/entity";
-import { ChatRoomEntity, RoomType } from "src/modules/database/chatRoom/entity";
+import { DBMessageService } from "../../modules/database/message/service";
+import { MessageEntity } from "../../modules/database/message/entity";
+import { ChatRoomEntity, RoomType } from "../../modules/database/chatRoom/entity";
 import { Server } from "socket.io";
-import { DBUserService } from "src/modules/database/user/service";
-import { WSSocket } from "src/websocket/socket.service";
+import { DBUserService } from "../../modules/database/user/service";
+import { WSSocket } from "../../websocket/socket.service";
 import { UserService } from "../user/service";
 import { Sanitize } from "../../modules/database/sanitize-object";
-import { BrcyptWrap } from "src/addons/bcrypt.wrapper";
-import { UserMetricsService } from "src/modules/database/metrics/service";
+import { BrcyptWrap } from "../../addons/bcrypt.wrapper";
+import { UserMetricsService } from "../../modules/database/metrics/service";
 
 @Injectable()
 export class ChatRoomService {

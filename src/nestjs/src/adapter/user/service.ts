@@ -2,10 +2,10 @@ import { Injectable } from "@nestjs/common";
 import { DBUserService } from "../../modules/database/user/service";
 import { JwtService } from "@nestjs/jwt";
 import { UserEntity } from "../../modules/database/user/entity";
-import { DBFriendService } from "src/modules/database/friend/service";
-import { DBFriendRequestService } from "src/modules/database/friendRequest/service";
-import { FriendRequestEntity } from "src/modules/database/friendRequest/entity";
-import { DBBlockedService } from "src/modules/database/blocked/service";
+import { DBFriendService } from "../../modules/database/friend/service";
+import { DBFriendRequestService } from "../../modules/database/friendRequest/service";
+import { FriendRequestEntity } from "../../modules/database/friendRequest/entity";
+import { DBBlockedService } from "../../modules/database/blocked/service";
 
 @Injectable()
 export class UserService {

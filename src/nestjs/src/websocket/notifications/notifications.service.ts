@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { WSSocket } from "../socket.service";
-import { DBNotificationService } from "src/modules/database/notification/service";
+import { DBNotificationService } from "../../modules/database/notification/service";
 import { Server, Socket } from "socket.io";
 import {
 	NotifStatus,
 	NotificationEntity,
 	NotificationType,
-} from "src/modules/database/notification/entity";
-import { UserService } from "src/adapter/user/service";
+} from "../..//modules/database/notification/entity";
+import { UserService } from "../../adapter/user/service";
 
 @Injectable()
 export class WSNotificationService {

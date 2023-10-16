@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { DBUserService } from "../database/user/service";
 import { Api42Service } from "../api42/service";
 import { JwtService } from "@nestjs/jwt";
-import { BrcyptWrap } from "src/addons/bcrypt.wrapper";
+import { BrcyptWrap } from "../../addons/bcrypt.wrapper";
 
 @Injectable()
 export class AuthService {

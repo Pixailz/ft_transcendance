@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { Server, Socket } from "socket.io";
-import { UserService } from "src/adapter/user/service";
+import { UserService } from "../../adapter/user/service";
 import { WSSocket } from "../socket.service";
-import { DBFriendRequestService } from "src/modules/database/friendRequest/service";
-import { DBFriendService } from "src/modules/database/friend/service";
+import { DBFriendRequestService } from "../../modules/database/friendRequest/service";
+import { DBFriendService } from "../../modules/database/friend/service";
 import { Sanitize } from "../../modules/database/sanitize-object";
 import { WSNotificationService } from "../notifications/notifications.service";
-import { DBBlockedService } from "src/modules/database/blocked/service";
-import { UserMetricsService } from "src/modules/database/metrics/service";
+import { DBBlockedService } from "../../modules/database/blocked/service";
+import { UserMetricsService } from "../../modules/database/metrics/service";
 
 @Injectable()
 export class WSFriendService {

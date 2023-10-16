@@ -1,9 +1,9 @@
 import { Module, forwardRef } from "@nestjs/common";
 
-import { AuthModule } from "src/modules/auth/module";
-import { DBModule } from "src/modules/database/database.module";
-import { UserService } from "src/adapter/user/service";
-import { ChatRoomService } from "src/adapter/chatRoom/service";
+import { AuthModule } from "../modules/auth/module";
+import { DBModule } from "../modules/database/database.module";
+import { UserService } from "../adapter/user/service";
+import { ChatRoomService } from "../adapter/chatRoom/service";
 import { WSGateway } from "./gateway";
 import { WSSocket } from "./socket.service";
 import { WSChatChannelService } from "./chat/chat-channel.service";
@@ -13,7 +13,7 @@ import { WSService } from "./service";
 import { Sanitize } from "../modules/database/sanitize-object";
 import { WSNotificationService } from "./notifications/notifications.service";
 import { WSGameService } from "./game/game.service";
-import { BrcyptWrap } from "src/addons/bcrypt.wrapper";
+import { BrcyptWrap } from "../addons/bcrypt.wrapper";
 
 
 @Module({

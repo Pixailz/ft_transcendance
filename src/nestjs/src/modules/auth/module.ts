@@ -7,7 +7,7 @@ import { AuthService } from "./service";
 import { Api42Module } from "../api42/module";
 import { DBModule } from "../database/database.module";
 import { JwtStrategy } from "./jwt.strategy";
-import { BrcyptWrap } from "src/addons/bcrypt.wrapper";
+import { BrcyptWrap } from "../../addons/bcrypt.wrapper";
 
 @Module({
 	imports: [

@@ -1,13 +1,13 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { ChatRoomService } from "src/adapter/chatRoom/service";
+import { ChatRoomService } from "../../adapter/chatRoom/service";
 import { WSSocket } from "../socket.service";
 import { Server, Socket } from "socket.io";
-import { ChatRoomEntity, RoomType } from "src/modules/database/chatRoom/entity";
-import { UserService } from "src/adapter/user/service";
-import { DBUserChatRoomService } from "src/modules/database/userChatRoom/service";
+import { ChatRoomEntity, RoomType } from "../../modules/database/chatRoom/entity";
+import { UserService } from "../../adapter/user/service";
+import { DBUserChatRoomService } from "../../modules/database/userChatRoom/service";
 import { Sanitize } from "../../modules/database/sanitize-object";
-import { BrcyptWrap } from "src/addons/bcrypt.wrapper";
-import { UserMetricsService } from "src/modules/database/metrics/service";
+import { BrcyptWrap } from "../../addons/bcrypt.wrapper";
+import { UserMetricsService } from "../../modules/database/metrics/service";
 
 export enum RoomAction {
 	KICK,

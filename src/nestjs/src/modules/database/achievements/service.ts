@@ -7,8 +7,8 @@ import {
 	achievementsConditions,
 } from "./entity";
 import { UserEntity } from "../user/entity";
-import { WSNotificationService } from "src/websocket/notifications/notifications.service";
-import { WSGateway } from "src/websocket/gateway";
+import { WSNotificationService } from "../../../websocket/notifications/notifications.service";
+import { WSGateway } from "../../../websocket/gateway";
 @Injectable()
 export class AchievementService {
 	constructor(

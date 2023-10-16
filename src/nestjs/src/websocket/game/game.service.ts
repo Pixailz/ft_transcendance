@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { Server, Socket } from "socket.io";
 import { WSSocket } from "../socket.service";
 import { randomBytes } from "crypto";
-import { UserService } from "src/adapter/user/service";
+import { UserService } from "../../adapter/user/service";
 import { Sanitize } from "../../modules/database/sanitize-object";
 import {
 	DefPaddleI,
@@ -15,11 +15,11 @@ import {
 	GameOptionI,
 	PowerUpI,
 } from "./game.interface";
-import { UserEntity } from "src/modules/database/user/entity";
-import { DBGameInfoService } from "src/modules/database/game/gameInfo/service";
-import { GameInfoEntity } from "src/modules/database/game/gameInfo/entity";
-import { DBPlayerScoreService } from "src/modules/database/game/playerScore/service";
-import { UserMetricsService } from "src/modules/database/metrics/service";
+import { UserEntity } from "../../modules/database/user/entity";
+import { DBGameInfoService } from "../../modules/database/game/gameInfo/service";
+import { GameInfoEntity } from "../../modules/database/game/gameInfo/entity";
+import { DBPlayerScoreService } from "../../modules/database/game/playerScore/service";
+import { UserMetricsService } from "../../modules/database/metrics/service";
 
 export enum powerUpMercyFlags {
 	GIVE_THEM_A_CHANCE = 0,

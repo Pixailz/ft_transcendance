@@ -118,9 +118,7 @@ export class UserEntity {
 	public achievements: UserAchievementEntity[];
 
 	// metrics
-	@OneToOne(() => UserMetricsEntity, (metrics) => metrics.user, {
-		cascade: true,
-	})
+	@OneToOne(() => UserMetricsEntity, (metrics) => metrics.user)
 	public metrics: UserMetricsEntity;
 
 	constructor(partial: Partial<UserEntity>) {
