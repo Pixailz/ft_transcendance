@@ -71,10 +71,11 @@ export class AuthService {
 		const user = await this.dbUserService.returnOne(null, nickname);
 		if (user) return new UnauthorizedException();
 		const user_id = await this.dbUserService.create({
-			ftLogin: nickname,
+			ftLogin: "extern",
 		});
 		this.dbUserService
 			.update(user_id, {
+				nickname: nickname,
 				password: await this.bcryptWrap.hash(pass),
 			})
 			.catch((err) => {
