@@ -12,16 +12,16 @@ import { WSGateway } from 'src/app/services/websocket/gateway';
 })
 export class NewDmComponent {
 
-  friends: any[] = this.data.friends;
+	friends: any[] = this.data.friends;
 
-  constructor(
-      public userService: UserService,
-      private chatDmService: ChatDmService,
-      private chatRoomService: ChatRoomService,
-      private dialogRef: MatDialogRef<NewDmComponent>,
-      private wsGateway: WSGateway,
-      @Inject(MAT_DIALOG_DATA) public data: any
-  ){}
+	constructor(
+		public userService: UserService,
+		private chatDmService: ChatDmService,
+		private chatRoomService: ChatRoomService,
+		private dialogRef: MatDialogRef<NewDmComponent>,
+		private wsGateway: WSGateway,
+		@Inject(MAT_DIALOG_DATA) public data: any
+	){}
 
 
 	onCreateDm(friend: any) {
@@ -34,6 +34,6 @@ export class NewDmComponent {
 			return ;
 		}
 		this.wsGateway.createDmRoom(friend.user_info.id);
-    this.dialogRef.close();
-  }
+		this.dialogRef.close();
+	}
 }

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NewDmComponent } from 'src/app/components/new-dm/new-dm.component';
+import { MessageContentI } from 'src/app/interfaces/chat/message.inteface';
 import { UserService } from 'src/app/services/user.service';
 import { ChatDmService } from 'src/app/services/websocket/chat/direct-message/service';
 import { FriendService } from 'src/app/services/websocket/friend/service';
@@ -29,7 +30,7 @@ export class PrivChatPageComponent {
 			return ;
 	}
 
-	sendMessage(message: string) {
+	sendMessage(message: MessageContentI[]) {
 		this.wsGateway.sendDmMessage(this.chatDmService.getSelectedDm().room.id, message);
 	}
 

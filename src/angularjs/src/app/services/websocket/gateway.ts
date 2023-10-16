@@ -6,8 +6,9 @@ import { ChatRoomI } from 'src/app/interfaces/chat/chat-room.interface';
 import { UserChatRoomI } from 'src/app/interfaces/chat/user-chat-room.interface';
 import { FriendRequestI } from 'src/app/interfaces/user/friend.interface';
 import { UserI } from 'src/app/interfaces/user/user.interface';
-import { NotifStatus } from 'src/app/interfaces/notification.interface';
+import { NotifStatus, NotificationI } from 'src/app/interfaces/notification.interface';
 import { GameOptionI, GameStateI } from 'src/app/interfaces/game/game-room.interface';
+import { MessageContentI } from 'src/app/interfaces/chat/message.inteface';
 
 @Injectable({
 	providedIn: 'root',
@@ -47,7 +48,7 @@ export class WSGateway {
 	createDmRoom(dst_id: number)
 	{ this.socket.emit("createDmRoom", dst_id); }
 
-	sendDmMessage(room_id: number, message: string)
+	sendDmMessage(room_id: number, message: MessageContentI[])
 	{ this.socket.emit("sendDmMessage", room_id, message); }
 
 
@@ -182,8 +183,8 @@ export class WSGateway {
 	// NOTIFICATION
 
 	// LISTENER
-	listenAllNotifications(): Observable<any[]>
-	{ return this.socket.fromEvent<any[]>("getAllNotifications") }
+	listenAllNotifications(): Observable<any>
+	{ return this.socket.fromEvent<any>("getAllNotifications") }
 
 	listenNewNotification(): Observable<any>
 	{ return this.socket.fromEvent<any>("getNewNotification") }
@@ -208,8 +209,8 @@ export class WSGateway {
 	listenGameWaiting(): Observable<null>
 	{ return this.socket.fromEvent<null>("gameWaiting"); }
 
-	listenIsInGame(): Observable<string>
-	{ return this.socket.fromEvent<string>("isInGame"); }
+	listenIsInGame(): Observable<null>
+	{ return this.socket.fromEvent<null>("isInGame"); }
 
 	listenGameStarting(): Observable<any>
 	{ return this.socket.fromEvent<any>("gameStarting"); }

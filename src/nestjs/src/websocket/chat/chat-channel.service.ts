@@ -8,6 +8,8 @@ import { DBUserChatRoomService } from "../../modules/database/userChatRoom/servi
 import { Sanitize } from "../../modules/database/sanitize-object";
 import { BrcyptWrap } from "../../addons/bcrypt.wrapper";
 import { UserMetricsService } from "../../modules/database/metrics/service";
+import { MessageContentEntity } from "../../modules/database/messageContent/entity";
+
 
 export enum RoomAction {
 	KICK,
@@ -168,7 +170,7 @@ export class WSChatChannelService {
 		server: Server,
 		socket: Socket,
 		dst_id: number,
-		message: string,
+		message: MessageContentEntity[],
 	) {
 		const user_id = this.wsSocket.getUserId(socket.id);
 		var not_in_room: boolean = false;
@@ -622,9 +624,13 @@ export class WSChatChannelService {
 			console.log(
 				`[WS:ChatChannel] ${
 					user.nickname
-				} cannot do ${this.getRoomActionStr(action)} in ${
+				} cannot do ${
+					this.getRoomActionStr(action)
+				} in ${
 					room.name
-				} to ${target.nickname}`,
+				} to ${
+					target.nickname
+				}`,
 			);
 			return;
 		}

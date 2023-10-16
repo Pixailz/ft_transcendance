@@ -14,7 +14,7 @@ export class NotifGameInviteComponent {
 	constructor(
 		public router: Router,
 		public wsGateway: WSGateway,
-		)
+	)
 	{}
 
 	accept(){

@@ -10,6 +10,8 @@ import { FriendEntity } from "./friend/entity";
 import { FriendRequestEntity } from "./friendRequest/entity";
 import { BlockedEntity } from "./blocked/entity";
 import { NotificationEntity } from "./notification/entity";
+import { MessageContentEntity } from "./messageContent/entity";
+import { PlayerScoreEntity } from "./game/player-score/entity";
 
 import { DBUserService } from "./user/service";
 import { DBChatRoomService } from "./chatRoom/service";
@@ -20,6 +22,8 @@ import { DBFriendService } from "./friend/service";
 import { DBFriendRequestService } from "./friendRequest/service";
 import { DBBlockedService } from "./blocked/service";
 import { DBNotificationService } from "./notification/service";
+import { DBPlayerScoreService } from "./game/player-score/service";
+import { DBMessageContentService } from "./messageContent/service";
 
 import { DBUserController } from "./user/controller";
 import { DBChatRoomController } from "./chatRoom/controller";
@@ -28,7 +32,6 @@ import { DBMessageController } from "./message/controller";
 import { DBGameInfoController } from "./game/gameInfo/controller";
 import { DBFriendController } from "./friend/controller";
 import { DBFriendRequestController } from "./friendRequest/controller";
-import { Sanitize } from "./sanitize-object";
 import { DBBlockedController } from "./blocked/controller";
 import { DBNotificationController } from "./notification/controller";
 import { PlayerScoreEntity } from "./game/playerScore/entity";
@@ -39,6 +42,7 @@ import { AchievementService } from "./achievements/service";
 import { UserMetricsEntity } from "./metrics/entity";
 import { UserMetricsService } from "./metrics/service";
 import { WSModule } from "../../websocket/module";
+import { Sanitize } from "./sanitize-object";
 
 @Module({
 	imports: [
@@ -64,6 +68,7 @@ import { WSModule } from "../../websocket/module";
 				AchievementEntity,
 				UserAchievementEntity,
 				UserMetricsEntity,
+				MessageContentEntity,
 			],
 			synchronize: true,
 		}),
@@ -81,6 +86,7 @@ import { WSModule } from "../../websocket/module";
 			AchievementEntity,
 			UserAchievementEntity,
 			UserMetricsEntity,
+			MessageContentEntity,
 		]),
 	],
 	controllers: [
@@ -108,6 +114,7 @@ import { WSModule } from "../../websocket/module";
 		DBNotificationService,
 		AchievementService,
 		UserMetricsService,
+		DBMessageContentService,
 		Elo,
 	],
 	exports: [
@@ -123,6 +130,7 @@ import { WSModule } from "../../websocket/module";
 		DBNotificationService,
 		AchievementService,
 		UserMetricsService,
+		DBMessageContentService,
 		Elo,
 	],
 })

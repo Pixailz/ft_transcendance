@@ -1,125 +1,164 @@
 :host {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    font-size: 1em;
-    color: white;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	font-size: 1em;
+	color: white;
 }
 
 ol {
 
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    height: 100%;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column-reverse;
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	height: 100%;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column-reverse;
 
-    li {
-        margin-bottom: .8em;
-        display: flex;
-        flex-direction: column;
+	li {
+		margin-bottom: .8em;
+		display: flex;
+		flex-direction: column;
 
-        .msg-line {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+		.msg-line {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
 
-            .msg {
-                display: flex;
-                flex-direction: column;
-                border: 1px solid rgba(150, 150, 150, 0.4);
-                background: rgba(198, 198, 198, 0.3);
-                border-radius: .6em;
-                backdrop-filter: blur(10px);
-                padding: .3em .5em;
+			.msg {
+				display: flex;
+				flex-direction: column;
+				border: 1px solid rgba(150, 150, 150, 0.4);
+				background: rgba(198, 198, 198, 0.3);
+				border-radius: .6em;
+				backdrop-filter: blur(10px);
+				padding: .3em .5em;
 				max-width: 80%;
 
-                .content {
-                    font-size: 1.2em;
+				.content-string {
+					font-size: 1.2em;
 					overflow-wrap: break-word;
 					width: 100%;
 				}
 
-                .login {
-                    width: fit-content;
-                    height: fit-content;
-                    font-size: .8em;
-                    color: red;
-                }
-            }
+				.content-game-invite {
+					aspect-ratio: 1;
+					opacity: 1;
+					border: none;
+					border-radius: 9999px;
+					background-color: white;
+					mat-icon {
+						font-size: 1.2em;
+						width: fit-content;
+						height: fit-content;
+					}
+				}
+
+				&:hover .content-game-invite mat-icon {
+					opacity: 0.5;
+				}
+
+				.login {
+					width: fit-content;
+					height: fit-content;
+					font-size: .8em;
+					color: red;
+				}
+			}
 
 
-            span.time {
-                opacity: 0;
-                transition: opacity .1s linear;
-            }
-            &:hover span.time {
-                opacity: 1;
-            }
-        }
+			span.time {
+				opacity: 0;
+				transition: opacity .1s linear;
+			}
+			&:hover span.time {
+				opacity: 1;
+			}
+		}
 
-        span.date {
-            width: fit-content;
-            height: fit-content;
-            margin: auto;
-            padding: .5em;
-            margin-bottom: .8em;
-            border-radius: .6em;
-            background: linear-gradient(135deg, #292929, #0e0e0e);
-        }
+		span.date {
+			width: fit-content;
+			height: fit-content;
+			margin: auto;
+			padding: .5em;
+			margin-bottom: .8em;
+			border-radius: .6em;
+			background: linear-gradient(135deg, #292929, #0e0e0e);
+		}
 
-        &.me {
+		&.me {
 
-            .msg-line {
-                display: flex;
-                flex-direction: row-reverse;
+			.msg-line {
+				display: flex;
+				flex-direction: row-reverse;
 
-                .msg {
-                    border: 1px solid rgba(90,90,90,0.4);
-                    background: rgba(90, 90, 90, 0.3);
-                    align-items: end;
-                    text-align: right;
-                }
-            }
-        }
-    }
+				.msg {
+					border: 1px solid rgba(90,90,90,0.4);
+					background: rgba(90, 90, 90, 0.3);
+					align-items: end;
+					text-align: right;
+				}
+			}
+		}
+	}
 }
 
-
 form {
-    display: flex;
-    position: relative;
-    --btn-margin: 0.5em;
+	display: flex;
+	position: relative;
+	--btn-margin: 0.5em;
 
-    input {
-        padding: 0.6em 0.8em;
+	div {
+		width: 100%;
+	}
+
+	input {
+		padding: 0.6em 0.8em;
+		padding-left: 2.5em;
 		padding-right: 2.5em;
-        width: 100%;
-        box-sizing: border-box;
-        border-radius: 9999px;
-        outline: 0;
-        border: 0;
-        font-size: 1.3em;
-        border: 2px solid rgba($color: #8f8f8f, $alpha: 0.3);
-        color: white;
-        background: rgba($color: #3a3a3a, $alpha: 0.3);
-        backdrop-filter: blur(10px);
-    }
+		width: 100%;
+		box-sizing: border-box;
+		border-radius: 9999px;
+		outline: 0;
+		border: 0;
+		font-size: 1.3em;
+		border: 2px solid rgba($color: #8f8f8f, $alpha: 0.3);
+		color: white;
+		background: rgba($color: #3a3a3a, $alpha: 0.3);
+		backdrop-filter: blur(10px);
+	}
 
-    button {
-        position: absolute;
-        right: var(--btn-margin);
-        top: var(--btn-margin);
-        height: calc(100% - 2 * var(--btn-margin));
-        aspect-ratio: 1;
-        border: none;
-        border-radius: 9999px;
-        background-color: white;
-        padding: 0;
-        --pseudo-width: 50%;
-        --pseudo-hegiht: 15%;
+	.display-special-message {
+		max-height: 300px;
+		width: 10em;
+		bottom: 4.5em;
+		overflow-y: auto;
+		position: absolute;
+
+		background: transparent;
+		.btn-activate {
+			transition: background-color .3s ease-in;
+
+			&:not(:last-child) {
+				border-bottom: 1px dashed rgba(255,255,255,0.4);
+			}
+		}
+	}
+
+	.btn-add {
+		position: absolute;
+		left: var(--btn-margin);
+		top: var(--btn-margin);
+		height: calc(100% - 2 * var(--btn-margin));
+		// height: 2.5em;
+		aspect-ratio: 1;
+		border: none;
+		border-radius: 9999px;
+		background-color: white;
+		padding: 0;
+		--pseudo-width: 50%;
+		--pseudo-hegiht: 15%;
 		transition: all .2s linear;
 		cursor: pointer;
 		font-size: 1em;
@@ -129,18 +168,42 @@ form {
 			width: fit-content;
 			height: fit-content;
 		}
-    }
+	}
+
+	.btn-send {
+		position: absolute;
+		right: var(--btn-margin);
+		top: var(--btn-margin);
+		height: calc(100% - 2 * var(--btn-margin));
+		// height: 2.5em;
+		aspect-ratio: 1;
+		border: none;
+		border-radius: 9999px;
+		background-color: white;
+		padding: 0;
+		--pseudo-width: 50%;
+		--pseudo-hegiht: 15%;
+		transition: all .2s linear;
+		cursor: pointer;
+		font-size: 1em;
+
+		mat-icon {
+			font-size: 1.2em;
+			width: fit-content;
+			height: fit-content;
+		}
+	}
 }
 
 span.char-left {
-    width: fit-content;
-    align-self: flex-end;
-    color: #8f8f8f;
-    height: fit-content;
-    margin-right: 1em;
-    margin-bottom: 0.2em;
+	width: fit-content;
+	align-self: flex-end;
+	color: #8f8f8f;
+	height: fit-content;
+	margin-right: 1em;
+	margin-bottom: 0.2em;
 }
 
 .date, span.time {
-    font-size: 1em;
+	font-size: 1em;
 }

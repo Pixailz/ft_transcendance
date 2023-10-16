@@ -39,7 +39,6 @@ export class ChatDmService {
 		this.obsToDestroy.push(this.wsGateway.listenNewDmMessage()
 			.subscribe((data: any) => {
 				console.log("[WS:DM] NewDmMessage event")
-				console.log("[WS:DM] data ", data);
 				this.updateNewDmMessage(data);
 			}
 		));
@@ -136,11 +135,9 @@ export class ChatDmService {
 	{
 		for (const friend_id in this.chat.dm)
 		{
-			if (this.chat.dm[friend_id].room.roomId == message.roomId)
+			if (this.chat.dm[friend_id].room.id == message.room_id)
 			{
 				this.chat.dm[friend_id].room.message.push(message.message);
-				if (this.chat.selected_dm.room.roomId === Number(this.chat.selected_dm_id))
-					this.chat.selected_dm.message.push(message.message);
 				break ;
 			}
 		}
