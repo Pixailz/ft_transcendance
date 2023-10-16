@@ -34,11 +34,13 @@ export class WSNotificationService {
 		server: Server,
 		user_id: number,
 		achievement_name: string,
+		achievement_desc: string,
 	) {
 		const notif = await this.dbNotificationService.create({
 			type: NotificationType.ACHIEVEMENT,
 			userId: user_id,
 			data: achievement_name,
+			data2: achievement_desc,
 		});
 		this.wsSocket.sendToUser(server, user_id, "getNewNotification", notif);
 	}

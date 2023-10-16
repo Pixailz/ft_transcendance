@@ -86,6 +86,7 @@ export class AchievementService {
 					this.wsGateway.server,
 					user.id,
 					newAchievement.achievement.name,
+					newAchievement.achievement.description,
 				);
 				console.log(
 					"unlocked achievement",

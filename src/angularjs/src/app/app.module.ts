@@ -71,6 +71,7 @@ import { GamesHistoryComponent } from './components/game/games-history/game-hist
 import { OptionsDialogComponent } from './components/game/options-dialog/options-dialog.component';
 import { NotifGameInviteComponent } from './components/notification/game-invite/game-invite.component';
 import { GameInviteDialogComponent } from './components/game/invite-dialog/game-invite-dialog.component';
+import { NotifAchievementComponent } from './components/notification/achievement/notif-achievement';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -111,6 +112,7 @@ const config: SocketIoConfig = {
 		NotifFriendReqAcceptedComponent,
 		NotifFriendReqDeniedFromComponent,
 		NotifFriendReqDeniedToComponent,
+		NotifAchievementComponent,
 		GameComponent,
 		GameWaitingComponent,
 		GameStartedComponent,

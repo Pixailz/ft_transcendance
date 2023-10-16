@@ -161,6 +161,11 @@ export class NotificationService {
 				notif.toDisplay = "Game decline: " + notif.data;
 				break;
 			}
+			case (NotificationType.ACHIEVEMENT): {
+				notif = notification;
+				notif.toDisplay = "Achievement: " + notif.data;
+				break;
+			}
 		}
 		return (notif);
 	}
