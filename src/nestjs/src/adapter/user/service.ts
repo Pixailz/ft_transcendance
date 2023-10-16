@@ -65,4 +65,8 @@ export class UserService {
 	async setStatus(user_id: number, status: number) {
 		await this.dbUserService.setStatus(user_id, status);
 	}
+
+	async updateElo(player_1: number, player_2: number, winner: number) {
+		await this.dbUserService.updateElo(player_1, player_2, winner);
+	}
 }

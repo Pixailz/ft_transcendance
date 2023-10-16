@@ -38,7 +38,7 @@ export class DBGameInfoService {
 		}
 
 		gameInfo.playersScores = playerScores;
-		console.log(gameInfo);
+		// console.log(gameInfo);
 		return await this.gameInfoRepo.save(gameInfo);
 	}
 

@@ -14,6 +14,7 @@ export interface UserI {
 	status?				: number;
 	twoAuthFactor?		: boolean;
 	lastSeen			: Date;
+	elo?				: number;
 }
 
 export const DefUserI: UserI = {

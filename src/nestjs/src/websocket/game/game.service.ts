@@ -221,16 +221,13 @@ export class WSGameService {
 			}
 			if (
 				room.players.find((player) => player.socket !== "") ===
-				undefined
+				undefined //if we don't find any player with a socket, then the room is empty
 			) {
 				if (room.status === LobbyStatus.STARTED) {
 					room.status = LobbyStatus.LOBBY;
 					console.log("Ending game of room: ", roomid);
-					return;
+					return; //game should be ended by the main loop
 				}
-				// Object.getOwnPropertyNames(room).forEach((value) => {
-				// 	delete room[value];
-				// });
 				this.rooms.delete(roomid);
 				console.log("Garbage Collected room: ", roomid);
 			}
@@ -269,26 +266,64 @@ export class WSGameService {
 	async startGame(server: Server, room_id: string) {
 		const room = this.rooms.get(room_id);
 
-		if (
-			room.state.gameStatus === GameStatus.FINISHED ||
-			!this.isFullRoom(room)
-		) {
+		if (!this.canStartGame(room)) return;
+
+		try {
+			await this.createGameDB(room);
+		} catch (err) {
+			console.error(err);
+			this.wsSocket.sendToUserInGame(server, room, "gameEnded", {});
 			return;
 		}
-		this.gameDBService
-			.create({
-				type: room.options.type,
-				users: room.players.map((player) => player.user.id),
-			})
-			.then((gameInfo: GameInfoEntity) => {
-				room.db_room_id = gameInfo.id;
-			})
-			.catch((err) => {
-				console.error(err);
-				this.wsSocket.sendToUserInGame(server, room, "gameEnded", {});
-				return;
-			});
 
+		this.startGameInRoom(server, room, room_id); //send the game initial state to the players
+		await sleep(500, room_id); //wait for the client to setup the game
+
+		this.resetBall(server, room); //set the ball position for first serve
+
+		/**	Main game loop
+		 * 	- update the game state at 64Hz
+		 *  - can be stopped by:
+		 * 		- all players disconnecting (handled by disconnect())
+		 * 		- a player winning (handled by checkGameOver())
+		 *  - when stopped, the game is ended, winner determined and elo updated
+		 */
+		await this.mainLoop(server, room, room_id);
+
+		await sleep(1000, room_id); //game ended, wait a bit before kicking the players
+		this.wsSocket.sendToUserInGame(server, room, "gameEnded", {});
+
+		await this.determineWinnerAndUpdateElo(room);
+
+		this.rooms.delete(room_id);
+		console.log("game ended");
+	}
+
+	private async mainLoop(server: Server, room: LobbyI, room_id: string) {
+		while (room.status === LobbyStatus.STARTED) {
+			this.update(server, room);
+			await sleep(1000 / 64, room_id);
+		}
+		console.log("quitting main loop");
+		clearSleeps(room_id);
+	}
+
+	private canStartGame(room: LobbyI) {
+		return (
+			room.state.gameStatus !== GameStatus.FINISHED &&
+			this.isFullRoom(room)
+		);
+	}
+
+	private async createGameDB(room: LobbyI) {
+		const gameInfo: GameInfoEntity = await this.gameDBService.create({
+			type: room.options.type,
+			users: room.players.map((player) => player.user.id),
+		});
+		room.db_room_id = gameInfo.id;
+	}
+
+	private startGameInRoom(server: Server, room: LobbyI, room_id: string) {
 		room.status = LobbyStatus.STARTED;
 		room.state.gameStatus = GameStatus.STARTED;
 		this.wsSocket.sendToUserInGame(server, room, "gameStarting", [
@@ -296,21 +331,24 @@ export class WSGameService {
 			room.state,
 			"3",
 		]);
-		// await sleep(3000);
-		await sleep(500);
-		this.resetBall(server, room);
-		while (room.status === LobbyStatus.STARTED) {
-			this.update(server, room);
-			await sleep(1000 / 64);
+	}
+
+	private async determineWinnerAndUpdateElo(room: LobbyI) {
+		const winner = this.checkWinner(room.state.players);
+		if (winner !== null) {
+			room.winner_id = winner.id;
+			await this.userService.updateElo(
+				room.players[0].user.id,
+				room.players[1].user.id,
+				room.winner_id,
+			);
 		}
-		// await sleep(5000);
-		await sleep(1000);
-		this.wsSocket.sendToUserInGame(server, room, "gameEnded", {});
-		// Object.getOwnPropertyNames(this.rooms.get(room_id)).forEach((value) => {
-		// 	delete this.rooms.get(room_id)[value];
-		// });
-		this.rooms.delete(room_id);
-		console.log("GAME ENDED");
+	}
+
+	private checkWinner(players: PlayerI[]): PlayerI {
+		if (players[0].score > players[1].score) return players[0];
+		else if (players[0].score < players[1].score) return players[1];
+		else return null;
 	}
 
 	// /************* Method called at each tick, updates the state *************/
@@ -596,7 +634,7 @@ export class WSGameService {
 	}
 
 	private checkGameOver(room: LobbyI) {
-		room.state.players.forEach((player) => {
+		room.state.players.forEach(async (player) => {
 			if (player.score == 5) {
 				room.status = LobbyStatus.LOBBY;
 				room.state.gameStatus = GameStatus.FINISHED;
@@ -631,4 +669,18 @@ export class WSGameService {
 	}
 }
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const timeouts = new Map<string, NodeJS.Timeout[]>();
+
+const sleep = (ms: number, roomid: string) =>
+	new Promise((resolve) => {
+		const r = setTimeout(resolve, ms);
+		if (!timeouts.has(roomid)) timeouts.set(roomid, []);
+		timeouts.get(roomid).push(r);
+	});
+
+const clearSleeps = (roomid: string) => {
+	if (timeouts.has(roomid)) {
+		timeouts.get(roomid).forEach((timeout) => clearTimeout(timeout));
+		timeouts.delete(roomid);
+	}
+};

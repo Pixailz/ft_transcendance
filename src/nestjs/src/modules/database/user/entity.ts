@@ -45,6 +45,9 @@ export class UserEntity {
 	@Column({ type: "integer", default: Status.DISCONNECTED })
 	public status: number;
 
+	@Column({ type: "integer", default: 800 })
+	public elo: number;
+
 	@Column({ type: "boolean", default: false })
 	public twoAuthFactor: boolean;
 
