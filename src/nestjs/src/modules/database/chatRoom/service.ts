@@ -74,6 +74,7 @@ export class DBChatRoomService {
 			relations: {
 				message: {
 					user: true,
+					content: true,
 				},
 				roomInfo: {
 					user: true,
@@ -96,6 +97,7 @@ export class DBChatRoomService {
 			relations: {
 				message: {
 					user: true,
+					content: true,
 				},
 				roomInfo: {
 					user: true,
@@ -112,6 +114,28 @@ export class DBChatRoomService {
 					updateAt: "ASC",
 				},
 			},
+		});
+	}
+
+	async getDmBetween(user_a: number, user_b: number): Promise<ChatRoomEntity> {
+		return await this.chatRoomRepo.findOne({
+			relations: {
+				roomInfo: true,
+			},
+			where: [
+				{
+					roomInfo: {
+						userId: user_a,
+					},
+					type: RoomType.DIRECT_MSG,
+				},
+				{
+					roomInfo: {
+						userId: user_b,
+					},
+					type: RoomType.DIRECT_MSG,
+				},
+			]
 		});
 	}
 
@@ -154,6 +178,7 @@ export class DBChatRoomService {
 				},
 				message: {
 					user: true,
+					content: true,
 				},
 			},
 			where: [
@@ -181,6 +206,7 @@ export class DBChatRoomService {
 				},
 				message: {
 					user: true,
+					content: true,
 				},
 			},
 			where: [

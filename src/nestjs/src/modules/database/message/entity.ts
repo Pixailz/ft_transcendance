@@ -5,10 +5,12 @@ import {
 	PrimaryGeneratedColumn,
 	ManyToOne,
 	JoinColumn,
+	OneToMany,
 } from "typeorm";
 
 import { UserEntity } from "../user/entity";
 import { ChatRoomEntity } from "../chatRoom/entity";
+import { MessageContentEntity } from "../messageContent/entity";
 
 @Entity()
 export class MessageEntity {
@@ -35,8 +37,8 @@ export class MessageEntity {
 	@JoinColumn({ name: "roomId" })
 	public room: ChatRoomEntity;
 
-	@Column({ type: "varchar", length: 120, default: "" })
-	public content: string;
+	@OneToMany((type) => MessageContentEntity, (content) => content.message)
+	content: MessageContentEntity[];
 
 	@CreateDateColumn({ type: "timestamp" })
 	public updateAt: Date;

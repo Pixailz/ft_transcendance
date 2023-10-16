@@ -8,13 +8,18 @@ import {
 	NotificationType,
 } from "src/modules/database/notification/entity";
 import { UserService } from "src/adapter/user/service";
+import { WSChatDmService } from "../chat/chat-dm.service";
+import { MessageContentEntity, MessageContentType } from "src/modules/database/messageContent/entity";
+import { DBChatRoomService } from "src/modules/database/chatRoom/service";
 
 @Injectable()
 export class WSNotificationService {
 	constructor(
 		private userService: UserService,
+		private wsChatDmService: WSChatDmService,
 		public wsSocket: WSSocket,
 		private dbNotificationService: DBNotificationService,
+		private dbChatRoomService: DBChatRoomService,
 	) {}
 
 	async getFtLogin(id: number) {
@@ -26,7 +31,6 @@ export class WSNotificationService {
 		const user_id = this.wsSocket.getUserId(socket.id);
 		const notifs: NotificationEntity[] =
 			await this.dbNotificationService.getNotifByUserId(user_id);
-
 		socket.emit("getAllNotifications", notifs);
 	}
 
@@ -97,7 +101,6 @@ export class WSNotificationService {
 		friend_id: number,
 		user_id: number,
 	) {
-		const user = await this.userService.getInfoById(friend_id);
 		const notif_user = await this.dbNotificationService.create({
 			type: NotificationType.FRIEND_REQ_DENIED_FROM,
 			userId: user_id,
@@ -155,23 +158,38 @@ export class WSNotificationService {
 	async sendGameInvite(
 		server: Server,
 		socket: Socket,
-		room_id: number,
+		room_id: string,
 		friend_id: number,
-		) {
+	) {
 		const user_id = this.wsSocket.getUserId(socket.id);
 		const notif_user = await this.dbNotificationService.create({
 			type: NotificationType.GAME_REQ,
 			userId: friend_id,
-			data: room_id.toString(),
+			data: room_id,
 			data2: await this.getFtLogin(user_id),
 		});
-		// console.log(notif_user);
 		this.wsSocket.sendToUser(
 			server,
 			friend_id,
 			"getNewNotification",
 			notif_user,
 		);
+		const room = await this.dbChatRoomService.getDmBetween(user_id, friend_id);
+		let roomId: number;
+		if (!room)
+			roomId = await this.wsChatDmService.createDmRoom(server, socket, friend_id);
+		else
+			roomId = room.id;
+		this.wsChatDmService.sendDmMessage(server, socket, roomId, [
+			{
+				type: MessageContentType.STRING,
+				content: "Join me for a game :)",
+			} as MessageContentEntity,
+			{
+				type: MessageContentType.GAME_INVITE,
+				content: room_id,
+			} as MessageContentEntity,
+		])
 	}
 
 	async delGameInvite(server:Server, socket: Socket, id: number)

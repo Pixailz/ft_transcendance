@@ -11,6 +11,8 @@ import { DBUserService } from "src/modules/database/user/service";
 import { WSSocket } from "src/websocket/socket.service";
 import { UserService } from "../user/service";
 import { Sanitize } from "../../modules/database/sanitize-object";
+import { MessageContentEntity } from "src/modules/database/messageContent/entity";
+import { DBMessageContentService } from "src/modules/database/messageContent/service";
 import { BrcyptWrap } from "src/addons/bcrypt.wrapper";
 
 @Injectable()
@@ -20,6 +22,7 @@ export class ChatRoomService {
 		private dbUserChatRoomService: DBUserChatRoomService,
 		private dbChatRoomService: DBChatRoomService,
 		private dbMessageService: DBMessageService,
+		private dbMessageContentService: DBMessageContentService,
 		private dbUserService: DBUserService,
 		private userService: UserService,
 		private bcryptWrap: BrcyptWrap,
@@ -201,13 +204,15 @@ export class ChatRoomService {
 	async sendMessage(
 		dest_id: number,
 		from_id: number,
-		message: string,
+		message_content: MessageContentEntity[],
 	): Promise<number> {
-		return await this.dbMessageService.create(
-			{ content: message },
+		const messageId = await this.dbMessageService.create(
 			from_id,
 			dest_id,
 		);
+		for (let i in message_content)
+			await this.dbMessageContentService.create(message_content[i], messageId);
+		return messageId;
 	}
 
 	async getAllUserFromRoom(room_id: number): Promise<number[]> {
