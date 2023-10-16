@@ -18,7 +18,7 @@ import {
 import { UserEntity } from "src/modules/database/user/entity";
 import { DBGameInfoService } from "src/modules/database/game/gameInfo/service";
 import { GameInfoEntity } from "src/modules/database/game/gameInfo/entity";
-import { DBPlayerScoreService } from "src/modules/database/game/player-score/service";
+import { DBPlayerScoreService } from "src/modules/database/game/playerScore/service";
 
 export enum powerUpMercyFlags {
 	GIVE_THEM_A_CHANCE = 0,

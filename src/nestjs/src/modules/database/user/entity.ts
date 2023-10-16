@@ -14,7 +14,7 @@ import { MessageEntity } from "../message/entity";
 import { FriendEntity } from "../friend/entity";
 import { BlockedEntity } from "../blocked/entity";
 import { Exclude } from "class-transformer";
-import { PlayerScoreEntity } from "../game/player-score/entity";
+import { PlayerScoreEntity } from "../game/playerScore/entity";
 
 export enum Status {
 	DISCONNECTED,

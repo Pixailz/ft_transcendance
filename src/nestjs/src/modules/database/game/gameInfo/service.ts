@@ -6,7 +6,7 @@ import { GameInfoEntity } from "./entity";
 import { DBGameInfoPost } from "./dto";
 
 import { UserEntity } from "../../user/entity";
-import { PlayerScoreEntity } from "../player-score/entity";
+import { PlayerScoreEntity } from "../playerScore/entity";
 
 @Injectable()
 export class DBGameInfoService {

@@ -8,7 +8,7 @@ import {
 } from "typeorm";
 
 import { UserEntity } from "../../user/entity";
-import { PlayerScoreEntity } from "../player-score/entity";
+import { PlayerScoreEntity } from "../playerScore/entity";
 
 @Entity()
 export class GameInfoEntity {

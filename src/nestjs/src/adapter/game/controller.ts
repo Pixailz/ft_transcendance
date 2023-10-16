@@ -9,7 +9,7 @@ import {
 	UseInterceptors,
 } from "@nestjs/common";
 import { DBGameInfoService } from "src/modules/database/game/gameInfo/service";
-import { DBPlayerScoreService } from "src/modules/database/game/player-score/service";
+import { DBPlayerScoreService } from "src/modules/database/game/playerScore/service";
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller("game")

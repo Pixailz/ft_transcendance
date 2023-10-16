@@ -31,10 +31,9 @@ import { DBFriendRequestController } from "./friendRequest/controller";
 import { Sanitize } from "./sanitize-object";
 import { DBBlockedController } from "./blocked/controller";
 import { DBNotificationController } from "./notification/controller";
-import { PlayerScoreEntity } from "./game/player-score/entity";
-import { DBPlayerScoreService } from "./game/player-score/service";
+import { PlayerScoreEntity } from "./game/playerScore/entity";
+import { DBPlayerScoreService } from "./game/playerScore/service";
 import { Elo } from "./elo";
-
 
 @Module({
 	imports: [
