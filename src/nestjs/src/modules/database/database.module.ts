@@ -34,8 +34,10 @@ import { DBFriendController } from "./friend/controller";
 import { DBFriendRequestController } from "./friendRequest/controller";
 import { DBBlockedController } from "./blocked/controller";
 import { DBNotificationController } from "./notification/controller";
-
 import { Sanitize } from "./sanitize-object";
+import { PlayerScoreEntity } from "./game/player-score/entity";
+import { DBPlayerScoreService } from "./game/player-score/service";
+import { Elo } from "./elo";
 
 @Module({
 	imports: [
@@ -99,6 +101,7 @@ import { Sanitize } from "./sanitize-object";
 		DBBlockedService,
 		DBNotificationService,
 		DBMessageContentService,
+		Elo,
 	],
 	exports: [
 		DBUserService,
@@ -112,6 +115,7 @@ import { Sanitize } from "./sanitize-object";
 		DBBlockedService,
 		DBNotificationService,
 		DBMessageContentService,
+		Elo,
 	],
 })
 export class DBModule {}

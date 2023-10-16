@@ -15,6 +15,7 @@ import { WSNotificationService } from "./notifications/notifications.service";
 import { WSGameService } from "./game/game.service";
 import { BrcyptWrap } from "src/addons/bcrypt.wrapper";
 
+
 @Module({
 	imports: [AuthModule, DBModule],
 	providers: [
