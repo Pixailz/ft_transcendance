@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Module, forwardRef } from "@nestjs/common";
 
 import { AuthModule } from "src/modules/auth/module";
 import { DBModule } from "src/modules/database/database.module";
@@ -17,7 +17,7 @@ import { BrcyptWrap } from "src/addons/bcrypt.wrapper";
 
 
 @Module({
-	imports: [AuthModule, DBModule],
+	imports: [AuthModule, forwardRef(() => DBModule)],
 	providers: [
 		Sanitize,
 		UserService,
@@ -32,5 +32,15 @@ import { BrcyptWrap } from "src/addons/bcrypt.wrapper";
 		WSNotificationService,
 		WSGameService,
 	],
+	exports: [
+		WSSocket,
+		WSGateway,
+		WSService,
+		WSChatDmService,
+		WSChatChannelService,
+		WSFriendService,
+		WSNotificationService,
+		WSGameService,
+	]
 })
 export class WSModule {}

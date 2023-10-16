@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Module, forwardRef } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { UserEntity } from "./user/entity";
@@ -34,9 +34,15 @@ import { DBNotificationController } from "./notification/controller";
 import { PlayerScoreEntity } from "./game/playerScore/entity";
 import { DBPlayerScoreService } from "./game/playerScore/service";
 import { Elo } from "./elo";
+import { AchievementEntity, UserAchievementEntity } from "./achievements/entity";
+import { AchievementService } from "./achievements/service";
+import { UserMetricsEntity } from "./metrics/entity";
+import { UserMetricsService } from "./metrics/service";
+import { WSModule } from "src/websocket/module";
 
 @Module({
 	imports: [
+		forwardRef(() => WSModule),
 		TypeOrmModule.forRoot({
 			type: "postgres",
 			host: "postgresql",
@@ -55,6 +61,9 @@ import { Elo } from "./elo";
 				FriendRequestEntity,
 				BlockedEntity,
 				NotificationEntity,
+				AchievementEntity,
+				UserAchievementEntity,
+				UserMetricsEntity,
 			],
 			synchronize: true,
 		}),
@@ -69,6 +78,9 @@ import { Elo } from "./elo";
 			FriendRequestEntity,
 			BlockedEntity,
 			NotificationEntity,
+			AchievementEntity,
+			UserAchievementEntity,
+			UserMetricsEntity,
 		]),
 	],
 	controllers: [
@@ -94,6 +106,8 @@ import { Elo } from "./elo";
 		DBFriendRequestService,
 		DBBlockedService,
 		DBNotificationService,
+		AchievementService,
+		UserMetricsService,
 		Elo,
 	],
 	exports: [
@@ -107,6 +121,8 @@ import { Elo } from "./elo";
 		DBFriendRequestService,
 		DBBlockedService,
 		DBNotificationService,
+		AchievementService,
+		UserMetricsService,
 		Elo,
 	],
 })

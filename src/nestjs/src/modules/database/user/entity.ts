@@ -6,6 +6,8 @@ import {
 	OneToMany,
 	ManyToMany,
 	JoinTable,
+	ManyToOne,
+	OneToOne,
 } from "typeorm";
 
 import { UserChatRoomEntity } from "../userChatRoom/entity";
@@ -15,6 +17,8 @@ import { FriendEntity } from "../friend/entity";
 import { BlockedEntity } from "../blocked/entity";
 import { Exclude } from "class-transformer";
 import { PlayerScoreEntity } from "../game/playerScore/entity";
+import { UserAchievementEntity } from "../achievements/entity";
+import { UserMetricsEntity } from "../metrics/entity";
 
 export enum Status {
 	DISCONNECTED,
@@ -106,7 +110,18 @@ export class UserEntity {
 	@OneToMany((type) => BlockedEntity, (blocked) => blocked.target)
 	target: BlockedEntity[];
 
-	// muted
+	// achievements
+	@OneToMany(
+		(type) => UserAchievementEntity,
+		(userAchievement) => userAchievement.user,
+	)
+	public achievements: UserAchievementEntity[];
+
+	// metrics
+	@OneToOne(() => UserMetricsEntity, (metrics) => metrics.user, {
+		cascade: true,
+	})
+	public metrics: UserMetricsEntity;
 
 	constructor(partial: Partial<UserEntity>) {
 		Object.assign(this, partial);

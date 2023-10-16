@@ -30,6 +30,19 @@ export class WSNotificationService {
 		socket.emit("getAllNotifications", notifs);
 	}
 
+	async sendAchievement(
+		server: Server,
+		user_id: number,
+		achievement_name: string,
+	) {
+		const notif = await this.dbNotificationService.create({
+			type: NotificationType.ACHIEVEMENT,
+			userId: user_id,
+			data: achievement_name,
+		});
+		this.wsSocket.sendToUser(server, user_id, "getNewNotification", notif);
+	}
+
 	async sendFriendRequest(
 		server: Server,
 		friend_id: number,

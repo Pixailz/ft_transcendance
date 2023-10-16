@@ -12,4 +12,7 @@ export class DBGameInfoPost {
 
 	@IsOptional()
 	playersScores?: PlayerScoreEntity[];
+
+	@IsOptional()
+	winnerId?: number;
 }

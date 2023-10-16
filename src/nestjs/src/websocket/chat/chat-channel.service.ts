@@ -7,6 +7,7 @@ import { UserService } from "src/adapter/user/service";
 import { DBUserChatRoomService } from "src/modules/database/userChatRoom/service";
 import { Sanitize } from "../../modules/database/sanitize-object";
 import { BrcyptWrap } from "src/addons/bcrypt.wrapper";
+import { UserMetricsService } from "src/modules/database/metrics/service";
 
 export enum RoomAction {
 	KICK,
@@ -26,6 +27,7 @@ export class WSChatChannelService {
 		private userService: UserService,
 		private dbUserChatRoomService: DBUserChatRoomService,
 		private bcryptWrap: BrcyptWrap,
+		private metricsService: UserMetricsService,
 		public wsSocket: WSSocket,
 	) {}
 

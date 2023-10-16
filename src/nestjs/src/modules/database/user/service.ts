@@ -15,6 +15,7 @@ import { Status, UserEntity } from "./entity";
 import { DBUserPost, DBUserInfoPost } from "./dto";
 import { Api42Service } from "../../api42/service";
 import { Sanitize } from "../sanitize-object";
+import { UserMetricsEntity } from "../metrics/entity";
 
 @Injectable()
 export class DBUserService {
@@ -30,6 +31,8 @@ export class DBUserService {
 		if (userPost.ftLogin === "")
 			throw new BadRequestException("User Login can't be blank or empty");
 		user.ftLogin = userPost.ftLogin;
+		user.metrics = new UserMetricsEntity({});
+		user.achievements = [];
 		await this.userRepo.save(user);
 		return user.id;
 	}

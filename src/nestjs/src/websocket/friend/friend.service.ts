@@ -7,6 +7,7 @@ import { DBFriendService } from "src/modules/database/friend/service";
 import { Sanitize } from "../../modules/database/sanitize-object";
 import { WSNotificationService } from "../notifications/notifications.service";
 import { DBBlockedService } from "src/modules/database/blocked/service";
+import { UserMetricsService } from "src/modules/database/metrics/service";
 
 @Injectable()
 export class WSFriendService {
@@ -16,6 +17,7 @@ export class WSFriendService {
 		private dbFriendRequestService: DBFriendRequestService,
 		private dbFriendService: DBFriendService,
 		private dbBlockedService: DBBlockedService,
+		private metricsService: UserMetricsService,
 		public wsSocket: WSSocket,
 		public wsNotificationService: WSNotificationService,
 	) {}
@@ -57,6 +59,8 @@ export class WSFriendService {
 		const friend = await this.userService.getInfoById(friend_id);
 		const user = await this.userService.getInfoById(user_id);
 		await this.dbFriendRequestService.acceptReq(friend_id, user_id);
+		await this.metricsService.updateMetrics(user);
+		await this.metricsService.updateMetrics(friend);
 		this.wsSocket.sendToUser(
 			server,
 			user_id,
