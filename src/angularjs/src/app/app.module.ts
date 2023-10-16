@@ -127,8 +127,7 @@ const config: SocketIoConfig = {
 		NewDmComponent,
 		UserTooltipComponent,
 		TooltipDirective,
-		OptionsDialogComponent,
-    AchievementsComponent,
+	    AchievementsComponent,
 	  ],
 	imports: [
 		BrowserModule,

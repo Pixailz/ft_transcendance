@@ -11,7 +11,6 @@ import { FriendRequestEntity } from "./friendRequest/entity";
 import { BlockedEntity } from "./blocked/entity";
 import { NotificationEntity } from "./notification/entity";
 import { MessageContentEntity } from "./messageContent/entity";
-import { PlayerScoreEntity } from "./game/player-score/entity";
 
 import { DBUserService } from "./user/service";
 import { DBChatRoomService } from "./chatRoom/service";
@@ -22,7 +21,6 @@ import { DBFriendService } from "./friend/service";
 import { DBFriendRequestService } from "./friendRequest/service";
 import { DBBlockedService } from "./blocked/service";
 import { DBNotificationService } from "./notification/service";
-import { DBPlayerScoreService } from "./game/player-score/service";
 import { DBMessageContentService } from "./messageContent/service";
 
 import { DBUserController } from "./user/controller";

@@ -14,6 +14,7 @@ import { Sanitize } from "../../modules/database/sanitize-object";
 import { MessageContentEntity } from "src/modules/database/messageContent/entity";
 import { DBMessageContentService } from "src/modules/database/messageContent/service";
 import { BrcyptWrap } from "src/addons/bcrypt.wrapper";
+import { UserMetricsService } from "src/modules/database/metrics/service";
 
 @Injectable()
 export class ChatRoomService {
