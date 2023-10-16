@@ -3,7 +3,7 @@
 		<span class="date" *ngIf="!isFollowingDay(i)">{{getCurrentMessage(i).updateAt | date: 'dd/MM/YYYY'}}</span>
 		<div class="msg-line">
 			<div class="msg">
-				<span class="login" *ngIf="!isSameUser(i)">{{getCurrentMessageUser(i).ftLogin}}</span>
+				<span class="login" *ngIf="!isSameUser(i)">{{getCurrentMessageUser(i).nickname}}</span>
 				<span class="content">{{getCurrentMessage(i).content?.replace(' ', '&nbsp;')}}</span>
 			</div>
 			<span class="time">{{getCurrentMessage(i).updateAt | date: 'HH:mm'}}</span>

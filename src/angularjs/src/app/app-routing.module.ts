@@ -52,12 +52,12 @@ const routes: Routes = [
 				data: { animation: 'ChatChannel', reuseRoute: true }
 			},
 			{
-				path: 'profile/:login',
+				path: 'profile/:nickname',
 				component: ProfileComponent,
 				data: { animation: 'ProfileUser', reuseRoute: true }
 			},
 			{
-				path: 'achievements/:login',
+				path: 'achievements/:nickname',
 				component: AchievementsComponent,
 				data: { animation: 'Achievements', reuseRoute: true }
 			},
