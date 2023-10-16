@@ -67,9 +67,7 @@ import { GameWaitingComponent } from './components/game/waiting/waiting.componen
 import { GameStartedComponent } from './components/game/started/started.component';
 import { GameComponent } from './pages/game/game.component';
 import { GameLobbyComponent } from './components/game/lobby/lobby.component';
-import { UserStatsComponent } from './components/user-stats/user-stats.component';
 import { GamesHistoryComponent } from './components/game/games-history/game-history.component';
-import { OptionsDialogComponent } from './components/game/options-dialog/options-dialog.component';
 import { NotifGameInviteComponent } from './components/notification/game-invite/game-invite.component';
 import { GameInviteDialogComponent } from './components/game/invite-dialog/game-invite-dialog.component';
 
@@ -126,7 +124,6 @@ const config: SocketIoConfig = {
 		NewDmComponent,
 		UserTooltipComponent,
 		TooltipDirective,
-		OptionsDialogComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -164,4 +161,3 @@ const config: SocketIoConfig = {
 	bootstrap: [AppComponent]
 })
 export class AppModule { }
-
