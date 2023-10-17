@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { WSSocket } from "../socket.service";
-import { DBNotificationService } from "src/modules/database/notification/service";
+import { DBNotificationService } from "../../modules/database/notification/service";
 import { Server, Socket } from "socket.io";
 import {
 	NotifStatus,
 	NotificationEntity,
 	NotificationType,
-} from "src/modules/database/notification/entity";
-import { UserService } from "src/adapter/user/service";
+} from "../../modules/database/notification/entity";
+import { UserService } from "../../adapter/user/service";
 import { WSChatDmService } from "../chat/chat-dm.service";
 import { MessageContentEntity, MessageContentType } from "src/modules/database/messageContent/entity";
 import { DBChatRoomService } from "src/modules/database/chatRoom/service";
@@ -32,6 +32,21 @@ export class WSNotificationService {
 		const notifs: NotificationEntity[] =
 			await this.dbNotificationService.getNotifByUserId(user_id);
 		socket.emit("getAllNotifications", notifs);
+	}
+
+	async sendAchievement(
+		server: Server,
+		user_id: number,
+		achievement_name: string,
+		achievement_desc: string,
+	) {
+		const notif = await this.dbNotificationService.create({
+			type: NotificationType.ACHIEVEMENT,
+			userId: user_id,
+			data: achievement_name,
+			data2: achievement_desc,
+		});
+		this.wsSocket.sendToUser(server, user_id, "getNewNotification", notif);
 	}
 
 	async sendFriendRequest(

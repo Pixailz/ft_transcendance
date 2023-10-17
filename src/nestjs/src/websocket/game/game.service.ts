@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { Server, Socket } from "socket.io";
 import { WSSocket } from "../socket.service";
 import { randomBytes } from "crypto";
-import { UserService } from "src/adapter/user/service";
+import { UserService } from "../../adapter/user/service";
 import { Sanitize } from "../../modules/database/sanitize-object";
 import {
 	DefPaddleI,
@@ -15,10 +15,11 @@ import {
 	GameOptionI,
 	PowerUpI,
 } from "./game.interface";
-import { UserEntity } from "src/modules/database/user/entity";
-import { DBGameInfoService } from "src/modules/database/game/gameInfo/service";
-import { GameInfoEntity } from "src/modules/database/game/gameInfo/entity";
-import { DBPlayerScoreService } from "src/modules/database/game/player-score/service";
+import { UserEntity } from "../../modules/database/user/entity";
+import { DBGameInfoService } from "../../modules/database/game/gameInfo/service";
+import { GameInfoEntity } from "../../modules/database/game/gameInfo/entity";
+import { DBPlayerScoreService } from "../../modules/database/game/playerScore/service";
+import { UserMetricsService } from "../../modules/database/metrics/service";
 
 export enum powerUpMercyFlags {
 	GIVE_THEM_A_CHANCE = 0,
@@ -35,6 +36,7 @@ export class WSGameService {
 		private wsSocket: WSSocket,
 		private gameDBService: DBGameInfoService,
 		private scoreDBService: DBPlayerScoreService,
+		private metricsService: UserMetricsService,
 	) {
 		this.rooms = new Map();
 	}
@@ -296,9 +298,23 @@ export class WSGameService {
 		await sleep(1000, room_id); //game ended, wait a bit before kicking the players
 		this.wsSocket.sendToUserInGame(server, room, "gameEnded", {});
 
-		await this.determineWinnerAndUpdateElo(room);
+		/** Data Race here:
+		 * 	- the game is ended, client is kicked, but gameroom is still in memory
+		 *  - if a player saves the room_id and reconnects before the game is garbage
+		 * 	collected, he will probably be able to reconnect and the comportement
+		 *  will be undefined, as i can not test it
+		 *  - maybe putting the room in a queue of ended games and garbage collecting
+		 *  it after a while would be a good idea
+		 */
+		await this.determineWinnerAndUpdateElo(room); // data race
+		await this.launchMetricsUpdate(room); // data race
 
 		this.rooms.delete(room_id);
+		/* End of data race here:
+		 * - room is now garbage collected. if player tries to reconnect,
+		 * it will be handled by gameJoin() which wont be able to find the room
+		 * and thus will do nothing
+		 */
 		console.log("game ended");
 	}
 
@@ -340,11 +356,20 @@ export class WSGameService {
 		const winner = this.checkWinner(room.state.players);
 		if (winner !== null) {
 			room.winner_id = winner.id;
+			await this.gameDBService.update(room.db_room_id, {
+				winnerId: room.winner_id,
+			});
 			await this.userService.updateElo(
 				room.players[0].user.id,
 				room.players[1].user.id,
 				room.winner_id,
 			);
+		}
+	}
+
+	private async launchMetricsUpdate(room: LobbyI) {
+		for (const player of room.players) {
+			await this.metricsService.updateMetrics(player.user);
 		}
 	}
 

@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import { ChatRoomService } from "src/adapter/chatRoom/service";
+import { ChatRoomService } from "../../adapter/chatRoom/service";
 import { WSSocket } from "../socket.service";
 import { Server, Socket } from "socket.io";
 import { Sanitize } from "../../modules/database/sanitize-object";
-import { DBBlockedService } from "src/modules/database/blocked/service";
-import { MessageContentEntity } from "src/modules/database/messageContent/entity";
+import { DBBlockedService } from "../../modules/database/blocked/service";
+import { MessageContentEntity } from "../../modules/database/messageContent/entity";
 
 @Injectable()
 export class WSChatDmService {

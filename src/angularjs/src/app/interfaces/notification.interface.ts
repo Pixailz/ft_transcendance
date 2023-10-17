@@ -16,6 +16,8 @@ export enum NotificationType {
 	CHANNEL_REQUEST,
 	CHANNEL_REQ_ACCEPT,
 	CHANNEL_REQ_DENIED,
+
+	ACHIEVEMENT
 }
 
 export enum NotifStatus {

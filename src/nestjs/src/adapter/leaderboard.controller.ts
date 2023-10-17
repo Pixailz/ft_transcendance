@@ -1,6 +1,6 @@
 import { Controller, Get } from "@nestjs/common";
 import { DBGameInfoService } from "src/modules/database/game/gameInfo/service";
-import { DBPlayerScoreService } from "src/modules/database/game/player-score/service";
+import { DBPlayerScoreService } from "src/modules/database/game/playerScore/service";
 import { DBUserService } from "src/modules/database/user/service";
 
 export interface LeaderBoardEntry {

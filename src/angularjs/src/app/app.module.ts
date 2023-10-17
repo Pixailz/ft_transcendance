@@ -70,6 +70,8 @@ import { GameLobbyComponent } from './components/game/lobby/lobby.component';
 import { GamesHistoryComponent } from './components/game/games-history/game-history.component';
 import { NotifGameInviteComponent } from './components/notification/game-invite/game-invite.component';
 import { GameInviteDialogComponent } from './components/game/invite-dialog/game-invite-dialog.component';
+import { NotifAchievementComponent } from './components/notification/achievement/notif-achievement';
+import { AchievementsComponent } from './pages/achievements/achievements.component';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -110,6 +112,7 @@ const config: SocketIoConfig = {
 		NotifFriendReqAcceptedComponent,
 		NotifFriendReqDeniedFromComponent,
 		NotifFriendReqDeniedToComponent,
+		NotifAchievementComponent,
 		GameComponent,
 		GameWaitingComponent,
 		GameStartedComponent,
@@ -124,7 +127,8 @@ const config: SocketIoConfig = {
 		NewDmComponent,
 		UserTooltipComponent,
 		TooltipDirective,
-	],
+	    AchievementsComponent,
+	  ],
 	imports: [
 		BrowserModule,
 		BrowserAnimationsModule,

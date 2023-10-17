@@ -8,7 +8,7 @@ import {
 } from "typeorm";
 
 import { UserEntity } from "../../user/entity";
-import { PlayerScoreEntity } from "../player-score/entity";
+import { PlayerScoreEntity } from "../playerScore/entity";
 
 @Entity()
 export class GameInfoEntity {
@@ -36,6 +36,12 @@ export class GameInfoEntity {
 	)
 	public playersScores: PlayerScoreEntity[];
 
+	@Column({ type: "integer", default: -1 })
+	public winnerId: number;
+
 	@Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
 	public createdAt: Date;
+
+	@Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+	public finishedAt: Date;
 }

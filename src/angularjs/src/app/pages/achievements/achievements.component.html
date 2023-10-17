@@ -1,0 +1,10 @@
+<div class="grid">
+  <div class="card" *ngFor="let achievement of achievements">
+    <span>
+    <img [src]="achievement.imageUrl" alt="{{achievement.name}}">
+    <h2>{{achievement.name}}</h2>
+    </span>
+    <p>{{achievement.description}}</p>
+    <div [class.unlocked]="achievement.unlocked">Points: {{achievement.points}}</div>
+  </div>
+</div>

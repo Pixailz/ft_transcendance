@@ -24,11 +24,19 @@
 		top: 0;
 		z-index: 1;
 		background-color: rgba($color: #383838, $alpha: 0.7);
-		mat-icon {
+		.edit-icon {
 			cursor: pointer;
 			position: absolute;
 			top: 20px;
 			right: 20px;
+			font-size: 2em;
+			color: white;
+		}
+		.medal-icon {
+			cursor: pointer;
+			position: absolute;
+			top: 20px;
+			right: 50px;
 			font-size: 2em;
 			color: white;
 		}

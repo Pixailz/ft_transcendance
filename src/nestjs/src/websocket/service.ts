@@ -1,8 +1,8 @@
 import { Server, Socket } from "socket.io";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { WSSocket } from "./socket.service";
-import { Status } from "src/modules/database/user/entity";
-import { UserService } from "src/adapter/user/service";
+import { Status } from "../modules/database/user/entity";
+import { UserService } from "../adapter/user/service";
 import { WSGameService } from "./game/game.service";
 
 @Injectable()

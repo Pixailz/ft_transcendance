@@ -14,7 +14,7 @@ export class HeaderComponent {
 	displayNotifications: boolean = false;
 
 	constructor(
-		private userService: UserService,
+		public userService: UserService,
 		public notificationService: NotificationService
 		) {}
 
