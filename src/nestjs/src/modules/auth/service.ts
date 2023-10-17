@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { DBUserService } from "../database/user/service";
 import { Api42Service } from "../api42/service";
 import { JwtService } from "@nestjs/jwt";
-import { BrcyptWrap } from "src/addons/bcrypt.wrapper";
+import { BrcyptWrap } from "../../addons/bcrypt.wrapper";
 
 @Injectable()
 export class AuthService {
@@ -31,7 +31,6 @@ export class AuthService {
 		}
 		const payload = { sub: user.id };
 		let status: string;
-
 		if (user.twoAuthFactor) {
 			return {
 				status: "2fa",
@@ -70,13 +69,13 @@ export class AuthService {
 
 	async extRegister(nickname: string, pass: string): Promise<any> {
 		const user = await this.dbUserService.returnOne(null, nickname);
-		console.log(user);
 		if (user) return new UnauthorizedException();
 		const user_id = await this.dbUserService.create({
-			ftLogin: nickname,
+			ftLogin: "extern",
 		});
 		this.dbUserService
 			.update(user_id, {
+				nickname: nickname,
 				password: await this.bcryptWrap.hash(pass),
 			})
 			.catch((err) => {

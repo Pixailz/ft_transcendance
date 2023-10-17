@@ -1,12 +1,15 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { ChatRoomService } from "src/adapter/chatRoom/service";
+import { ChatRoomService } from "../../adapter/chatRoom/service";
 import { WSSocket } from "../socket.service";
 import { Server, Socket } from "socket.io";
-import { ChatRoomEntity, RoomType } from "src/modules/database/chatRoom/entity";
-import { UserService } from "src/adapter/user/service";
-import { DBUserChatRoomService } from "src/modules/database/userChatRoom/service";
+import { ChatRoomEntity, RoomType } from "../../modules/database/chatRoom/entity";
+import { UserService } from "../../adapter/user/service";
+import { DBUserChatRoomService } from "../../modules/database/userChatRoom/service";
 import { Sanitize } from "../../modules/database/sanitize-object";
-import { BrcyptWrap } from "src/addons/bcrypt.wrapper";
+import { BrcyptWrap } from "../../addons/bcrypt.wrapper";
+import { UserMetricsService } from "../../modules/database/metrics/service";
+import { MessageContentEntity } from "../../modules/database/messageContent/entity";
+
 
 export enum RoomAction {
 	KICK,
@@ -26,6 +29,7 @@ export class WSChatChannelService {
 		private userService: UserService,
 		private dbUserChatRoomService: DBUserChatRoomService,
 		private bcryptWrap: BrcyptWrap,
+		private metricsService: UserMetricsService,
 		public wsSocket: WSSocket,
 	) {}
 
@@ -166,7 +170,7 @@ export class WSChatChannelService {
 		server: Server,
 		socket: Socket,
 		dst_id: number,
-		message: string,
+		message: MessageContentEntity[],
 	) {
 		const user_id = this.wsSocket.getUserId(socket.id);
 		var not_in_room: boolean = false;
@@ -620,9 +624,13 @@ export class WSChatChannelService {
 			console.log(
 				`[WS:ChatChannel] ${
 					user.nickname
-				} cannot do ${this.getRoomActionStr(action)} in ${
+				} cannot do ${
+					this.getRoomActionStr(action)
+				} in ${
 					room.name
-				} to ${target.nickname}`,
+				} to ${
+					target.nickname
+				}`,
 			);
 			return;
 		}

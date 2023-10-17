@@ -30,13 +30,15 @@ export interface MapI {
 export interface GameOptionI {
 	type: "normal" | "custom";
 	powerUps: boolean;
-	map: MapI;
+	maps: MapI;
+	is_private: boolean;
 }
 
 export const DefGameOptionI: GameOptionI = {
 	type: "normal",
 	powerUps: false,
-	map: { name: "normal", thumbnail: "/assets/images/maps/normal.png" },
+	maps: { name: "normal", thumbnail: "/assets/images/maps/normal.png" },
+	is_private: false,
 };
 
 export interface CanvasI {

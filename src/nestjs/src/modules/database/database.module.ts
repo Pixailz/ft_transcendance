@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Module, forwardRef } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { UserEntity } from "./user/entity";
@@ -10,6 +10,7 @@ import { FriendEntity } from "./friend/entity";
 import { FriendRequestEntity } from "./friendRequest/entity";
 import { BlockedEntity } from "./blocked/entity";
 import { NotificationEntity } from "./notification/entity";
+import { MessageContentEntity } from "./messageContent/entity";
 
 import { DBUserService } from "./user/service";
 import { DBChatRoomService } from "./chatRoom/service";
@@ -20,6 +21,7 @@ import { DBFriendService } from "./friend/service";
 import { DBFriendRequestService } from "./friendRequest/service";
 import { DBBlockedService } from "./blocked/service";
 import { DBNotificationService } from "./notification/service";
+import { DBMessageContentService } from "./messageContent/service";
 
 import { DBUserController } from "./user/controller";
 import { DBChatRoomController } from "./chatRoom/controller";
@@ -28,16 +30,21 @@ import { DBMessageController } from "./message/controller";
 import { DBGameInfoController } from "./game/gameInfo/controller";
 import { DBFriendController } from "./friend/controller";
 import { DBFriendRequestController } from "./friendRequest/controller";
-import { Sanitize } from "./sanitize-object";
 import { DBBlockedController } from "./blocked/controller";
 import { DBNotificationController } from "./notification/controller";
-import { PlayerScoreEntity } from "./game/player-score/entity";
-import { DBPlayerScoreService } from "./game/player-score/service";
+import { PlayerScoreEntity } from "./game/playerScore/entity";
+import { DBPlayerScoreService } from "./game/playerScore/service";
 import { Elo } from "./elo";
-
+import { AchievementEntity, UserAchievementEntity } from "./achievements/entity";
+import { AchievementService } from "./achievements/service";
+import { UserMetricsEntity } from "./metrics/entity";
+import { UserMetricsService } from "./metrics/service";
+import { WSModule } from "../../websocket/module";
+import { Sanitize } from "./sanitize-object";
 
 @Module({
 	imports: [
+		forwardRef(() => WSModule),
 		TypeOrmModule.forRoot({
 			type: "postgres",
 			host: "postgresql",
@@ -56,6 +63,10 @@ import { Elo } from "./elo";
 				FriendRequestEntity,
 				BlockedEntity,
 				NotificationEntity,
+				AchievementEntity,
+				UserAchievementEntity,
+				UserMetricsEntity,
+				MessageContentEntity,
 			],
 			synchronize: true,
 		}),
@@ -70,6 +81,10 @@ import { Elo } from "./elo";
 			FriendRequestEntity,
 			BlockedEntity,
 			NotificationEntity,
+			AchievementEntity,
+			UserAchievementEntity,
+			UserMetricsEntity,
+			MessageContentEntity,
 		]),
 	],
 	controllers: [
@@ -95,6 +110,9 @@ import { Elo } from "./elo";
 		DBFriendRequestService,
 		DBBlockedService,
 		DBNotificationService,
+		AchievementService,
+		UserMetricsService,
+		DBMessageContentService,
 		Elo,
 	],
 	exports: [
@@ -108,6 +126,9 @@ import { Elo } from "./elo";
 		DBFriendRequestService,
 		DBBlockedService,
 		DBNotificationService,
+		AchievementService,
+		UserMetricsService,
+		DBMessageContentService,
 		Elo,
 	],
 })

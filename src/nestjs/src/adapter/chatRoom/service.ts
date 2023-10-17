@@ -3,15 +3,18 @@ import * as bcrypt from "bcrypt";
 
 import { DBUserChatRoomService } from "../../modules/database/userChatRoom/service";
 import { DBChatRoomService } from "../../modules/database/chatRoom/service";
-import { DBMessageService } from "src/modules/database/message/service";
-import { MessageEntity } from "src/modules/database/message/entity";
-import { ChatRoomEntity, RoomType } from "src/modules/database/chatRoom/entity";
+import { DBMessageService } from "../../modules/database/message/service";
+import { MessageEntity } from "../../modules/database/message/entity";
+import { ChatRoomEntity, RoomType } from "../../modules/database/chatRoom/entity";
 import { Server } from "socket.io";
-import { DBUserService } from "src/modules/database/user/service";
-import { WSSocket } from "src/websocket/socket.service";
+import { DBUserService } from "../../modules/database/user/service";
+import { WSSocket } from "../../websocket/socket.service";
 import { UserService } from "../user/service";
 import { Sanitize } from "../../modules/database/sanitize-object";
+import { MessageContentEntity } from "src/modules/database/messageContent/entity";
+import { DBMessageContentService } from "src/modules/database/messageContent/service";
 import { BrcyptWrap } from "src/addons/bcrypt.wrapper";
+import { UserMetricsService } from "src/modules/database/metrics/service";
 
 @Injectable()
 export class ChatRoomService {
@@ -20,10 +23,12 @@ export class ChatRoomService {
 		private dbUserChatRoomService: DBUserChatRoomService,
 		private dbChatRoomService: DBChatRoomService,
 		private dbMessageService: DBMessageService,
+		private dbMessageContentService: DBMessageContentService,
 		private dbUserService: DBUserService,
 		private userService: UserService,
 		private bcryptWrap: BrcyptWrap,
 		private wsSocket: WSSocket,
+		private metricsService: UserMetricsService,
 	) {}
 
 	async setStatus(server: Server, user_id: number, status: number) {
@@ -51,7 +56,7 @@ export class ChatRoomService {
 			user_id,
 		);
 
-		for (var i = 0; i < all_chat_room.length; i++) {
+		for (let i = 0; i < all_chat_room.length; i++) {
 			const friends_id = await this.getAllUserFromRoom(
 				all_chat_room[i].id,
 			);
@@ -105,10 +110,14 @@ export class ChatRoomService {
 		);
 	}
 
-	async createChannelRoom(user_id: number, name: string, password: string, is_private: boolean) {
-		var room_id: number = -1;
-		if (is_private)
-		{
+	async createChannelRoom(
+		user_id: number,
+		name: string,
+		password: string,
+		is_private: boolean,
+	) {
+		let room_id = -1;
+		if (is_private) {
 			room_id = await this.dbChatRoomService.create({
 				name: name,
 				password: "",
@@ -116,9 +125,7 @@ export class ChatRoomService {
 			await this.dbChatRoomService.updateType(room_id, {
 				type: RoomType.PRIVATE,
 			});
-		}
-		else
-		{
+		} else {
 			if (password.length !== 0) {
 				const hashed_pass = await this.bcryptWrap.hash(password);
 				room_id = await this.dbChatRoomService.create({
@@ -153,8 +160,13 @@ export class ChatRoomService {
 		is_private: boolean,
 		user_ids: number[],
 	) {
-		const room_id = await this.createChannelRoom(user_id, name, password, is_private);
-		for (let id of user_ids) {
+		const room_id = await this.createChannelRoom(
+			user_id,
+			name,
+			password,
+			is_private,
+		);
+		for (const id of user_ids) {
 			await this.dbUserChatRoomService.create(
 				{ isOwner: false, isAdmin: false },
 				id,
@@ -201,20 +213,25 @@ export class ChatRoomService {
 	async sendMessage(
 		dest_id: number,
 		from_id: number,
-		message: string,
+		message_content: MessageContentEntity[],
 	): Promise<number> {
-		return await this.dbMessageService.create(
-			{ content: message },
+		const messageId = await this.dbMessageService.create(
 			from_id,
 			dest_id,
 		);
+		for (let i in message_content)
+			await this.dbMessageContentService.create(message_content[i], messageId);
+    await this.metricsService.updateMetrics(
+			await this.dbUserService.returnOne(from_id),
+		);
+		return messageId;
 	}
 
 	async getAllUserFromRoom(room_id: number): Promise<number[]> {
 		const all_user_chat_room = await this.dbUserChatRoomService.getUserRoom(
 			room_id,
 		);
-		var user_list: number[] = [];
+		const user_list: number[] = [];
 		all_user_chat_room.forEach((i) => {
 			if (!i.isBanned) user_list.push(i.userId);
 		});

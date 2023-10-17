@@ -13,6 +13,7 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
 import { GameComponent } from './pages/game/game.component';
 import { PrivChatPageComponent } from './pages/priv-chat-page/priv-chat-page.component';
+import { AchievementsComponent } from './pages/achievements/achievements.component';
 
 const routes: Routes = [
 	{
@@ -51,9 +52,14 @@ const routes: Routes = [
 				data: { animation: 'ChatChannel', reuseRoute: true }
 			},
 			{
-				path: 'profile/:login',
+				path: 'profile/:nickname',
 				component: ProfileComponent,
 				data: { animation: 'ProfileUser', reuseRoute: true }
+			},
+			{
+				path: 'achievements/:nickname',
+				component: AchievementsComponent,
+				data: { animation: 'Achievements', reuseRoute: true }
 			},
 			{
 				path: 'chat/rub',

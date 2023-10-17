@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { Server, Socket } from "socket.io";
 import { WSSocket } from "../socket.service";
 import { randomBytes } from "crypto";
-import { UserService } from "src/adapter/user/service";
+import { UserService } from "../../adapter/user/service";
 import { Sanitize } from "../../modules/database/sanitize-object";
 import {
 	DefPaddleI,
@@ -15,10 +15,11 @@ import {
 	GameOptionI,
 	PowerUpI,
 } from "./game.interface";
-import { UserEntity } from "src/modules/database/user/entity";
-import { DBGameInfoService } from "src/modules/database/game/gameInfo/service";
-import { GameInfoEntity } from "src/modules/database/game/gameInfo/entity";
-import { DBPlayerScoreService } from "src/modules/database/game/player-score/service";
+import { UserEntity } from "../../modules/database/user/entity";
+import { DBGameInfoService } from "../../modules/database/game/gameInfo/service";
+import { GameInfoEntity } from "../../modules/database/game/gameInfo/entity";
+import { DBPlayerScoreService } from "../../modules/database/game/playerScore/service";
+import { UserMetricsService } from "../../modules/database/metrics/service";
 
 export enum powerUpMercyFlags {
 	GIVE_THEM_A_CHANCE = 0,
@@ -35,6 +36,7 @@ export class WSGameService {
 		private wsSocket: WSSocket,
 		private gameDBService: DBGameInfoService,
 		private scoreDBService: DBPlayerScoreService,
+		private metricsService: UserMetricsService,
 	) {
 		this.rooms = new Map();
 	}
@@ -83,7 +85,7 @@ export class WSGameService {
 	gameSearchOpponent(player: PlayerSockI, game_opt: any, socket: Socket) {
 		const room_id = this.gameSearchRoom(player, game_opt);
 
-		if (room_id !== "") {
+		if (room_id !== "" && !game_opt.is_private) {
 			this.addPlayerToRoom(player, room_id, socket);
 		} else {
 			return this.createRoom(player, game_opt, socket);
@@ -96,7 +98,9 @@ export class WSGameService {
 			if (this.isInRoom(player, room)) return room_id; //we first loop to check if the player is already in a room
 		}
 		for (const [room_id, room] of this.rooms) {
-			if (room.options.type === game_opt.type && !this.isFullRoom(room))
+			if (room.options.powerUps === game_opt.powerUps &&
+				room.options.maps.name === game_opt.maps.name &&
+				!room.options.is_private && !this.isFullRoom(room))
 				return room_id; //then we loop to find a room with the same game type and not full
 		}
 		return "";
@@ -109,14 +113,14 @@ export class WSGameService {
 	}
 
 	isFullRoom(room: LobbyI): boolean {
-		let max_player = 0;
+		let max_player = 2;
 		let nb_player = 0;
-		switch (room.options.type) {
-			case "normal":
-			case "custom":
-				max_player = 2;
-				break;
-		}
+		// switch (room.options.type) {
+		// 	case "normal":
+		// 	case "custom":
+		// 		max_player = 2;
+		// 		break;
+		// }
 		for (const friend_id in room.players) nb_player++;
 		return nb_player >= max_player;
 	}
@@ -130,7 +134,6 @@ export class WSGameService {
 				current_lobby.players[player_id].socket = player_sock.socket;
 				socket.emit(
 					"gameReconnect",
-					// this.getOpponent(room_id, user_id_str),
 					current_lobby.state,
 				);
 				return;
@@ -160,7 +163,12 @@ export class WSGameService {
 
 		this.rooms.set(room_id, {
 			status: LobbyStatus.LOBBY,
-			options: game_opt,
+			options: {
+				type: "normal",
+				powerUps: game_opt.powerUps,
+				maps: game_opt.maps,
+				is_private: game_opt.is_private,
+			},
 			winner_id: -1,
 			state: {
 				gameStatus: GameStatus.WAITING,
@@ -186,8 +194,6 @@ export class WSGameService {
 			},
 			players: [],
 		} as LobbyI);
-		this.rooms.get(room_id).options.type = game_opt.type;
-
 		this.addPlayerToRoom(player, room_id, socket);
 		return room_id;
 	}
@@ -197,18 +203,17 @@ export class WSGameService {
 	}
 
 	isInGame(server: Server, socket: Socket) {
-		// const user_id_str = this.wsSocket.getUserId(socket.id).toString();
-		// let isInGame = false;
-		// for (let room_id in this.rooms) {
-		// 	const room = this.rooms.get(room_id);
-		// 	for (const player_id in room.players) {
-		// 		if (player_id === user_id_str) {
-		// 			isInGame = true;
-		// 			break;
-		// 		}
-		// 	}
-		// }
-		// if (isInGame) server.to(socket.id).emit("isInGame", room_id);
+		const user_id = this.wsSocket.getUserId(socket.id);
+		let isInGame = false;
+		for (const [roomid, room] of this.rooms) {
+			for (const player_id in room.players) {
+				if (room.players[player_id].user.id === user_id) {
+					isInGame = true;
+					break;
+				}
+			}
+		}
+		if (isInGame) server.to(socket.id).emit("isInGame");
 	}
 
 	disconnect(socket_id: string) {
@@ -293,9 +298,23 @@ export class WSGameService {
 		await sleep(1000, room_id); //game ended, wait a bit before kicking the players
 		this.wsSocket.sendToUserInGame(server, room, "gameEnded", {});
 
-		await this.determineWinnerAndUpdateElo(room);
+		/** Data Race here:
+		 * 	- the game is ended, client is kicked, but gameroom is still in memory
+		 *  - if a player saves the room_id and reconnects before the game is garbage
+		 * 	collected, he will probably be able to reconnect and the comportement
+		 *  will be undefined, as i can not test it
+		 *  - maybe putting the room in a queue of ended games and garbage collecting
+		 *  it after a while would be a good idea
+		 */
+		await this.determineWinnerAndUpdateElo(room); // data race
+		await this.launchMetricsUpdate(room); // data race
 
 		this.rooms.delete(room_id);
+		/* End of data race here:
+		 * - room is now garbage collected. if player tries to reconnect,
+		 * it will be handled by gameJoin() which wont be able to find the room
+		 * and thus will do nothing
+		 */
 		console.log("game ended");
 	}
 
@@ -337,11 +356,20 @@ export class WSGameService {
 		const winner = this.checkWinner(room.state.players);
 		if (winner !== null) {
 			room.winner_id = winner.id;
+			await this.gameDBService.update(room.db_room_id, {
+				winnerId: room.winner_id,
+			});
 			await this.userService.updateElo(
 				room.players[0].user.id,
 				room.players[1].user.id,
 				room.winner_id,
 			);
+		}
+	}
+
+	private async launchMetricsUpdate(room: LobbyI) {
+		for (const player of room.players) {
+			await this.metricsService.updateMetrics(player.user);
 		}
 	}
 

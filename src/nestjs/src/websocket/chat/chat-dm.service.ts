@@ -1,9 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import { ChatRoomService } from "src/adapter/chatRoom/service";
+import { ChatRoomService } from "../../adapter/chatRoom/service";
 import { WSSocket } from "../socket.service";
 import { Server, Socket } from "socket.io";
 import { Sanitize } from "../../modules/database/sanitize-object";
-import { DBBlockedService } from "src/modules/database/blocked/service";
+import { DBBlockedService } from "../../modules/database/blocked/service";
+import { MessageContentEntity } from "../../modules/database/messageContent/entity";
 
 @Injectable()
 export class WSChatDmService {
@@ -73,6 +74,7 @@ export class WSChatDmService {
 			"getNewDmRoom",
 			this.sanitize.ChatRoom(chat_room),
 		);
+		return (room_id);
 	}
 
 	async getAllDmMessage(socket: Socket): Promise<any> {
@@ -90,7 +92,7 @@ export class WSChatDmService {
 		server: Server,
 		socket: Socket,
 		dst_id: number,
-		message: string,
+		message: MessageContentEntity[],
 	) {
 		const user_id = this.wsSocket.getUserId(socket.id);
 
@@ -103,7 +105,6 @@ export class WSChatDmService {
 		);
 		const new_message = await this.chatRoomService.getMessage(message_id);
 		const all_user = await this.chatRoomService.getAllUserFromRoom(dst_id);
-
 		this.wsSocket.sendToUsers(server, all_user, "getNewDmMessage", {
 			room_id: dst_id,
 			message: this.sanitize.Message(new_message),

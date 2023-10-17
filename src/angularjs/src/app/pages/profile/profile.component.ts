@@ -38,7 +38,7 @@ export class ProfileComponent implements OnInit {
 
 	async ngOnInit() {
 		this.user_info = await this.back.req("GET",
-			"/user/profile/" + this.route.snapshot.paramMap.get("login"))
+			"/user/profile/" + this.route.snapshot.paramMap.get("nickname"))
 			.catch((err) => {
 				console.log("[profile]", err.status);
 			});
@@ -51,7 +51,7 @@ export class ProfileComponent implements OnInit {
 			});
 		if (this.subscription) return;
 		this.subscription = this.route.params.subscribe(params => {
-			if (params['login'] != this.user_info.ftLogin && this.user_id != -1){
+			if (params['nickname'] != this.user_info.nickname && this.user_id != -1){
 				this.ngOnInit();
 			}
 		});
