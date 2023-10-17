@@ -1,5 +1,4 @@
 export class ReplaceNickname {
-
     replace_nickname(name: string)
     {
         const	accept_char = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-0123456789"

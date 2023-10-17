@@ -17,6 +17,8 @@ import { Api42Service } from "../../api42/service";
 import { Sanitize } from "../sanitize-object";
 import { UserMetricsEntity } from "../metrics/entity";
 
+
+
 @Injectable()
 export class DBUserService {
 	constructor(
@@ -84,9 +86,7 @@ export class DBUserService {
 		if (!user) throw new NotFoundException("User not found");
 		if (userPost.nickname)
 		{
-			let nickname = userPost.nickname.trim();
-			nickname = nickname.replace(/ /g, '');
-			nickname = nickname.replace(/	/g, '');
+			const nickname = this.replace_nickname(userPost.nickname);
 			if (nickname.length <= 2)
 				throw new BadRequestException("Invalid nickname");
 			const check_name = await this.userRepo.findOneBy({
@@ -169,4 +169,22 @@ export class DBUserService {
 			console.log("[userService:setStatus]", err.message);
 		});
 	}
+
+	replace_nickname(name: string)
+    {
+        const	accept_char = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-0123456789"
+        let		new_name = '';
+        for (let i = 0; i < name.length; i++)
+        {
+            for (let j = 0; j < accept_char.length; j++)
+            {
+                if (accept_char[j] === name[i])
+                {
+                    new_name += name[i];
+                    break;
+                }
+            }
+        }
+        return (new_name);
+    }
 }
