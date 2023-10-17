@@ -5,7 +5,7 @@ import {
 	InternalServerErrorException,
 	ConflictException,
 } from "@nestjs/common";
-import { Repository } from "typeorm";
+import { ILike, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Elo } from "../elo";
 
@@ -91,11 +91,13 @@ export class DBUserService {
 		if (!user) throw new NotFoundException("User not found");
 		if (userPost.nickname)
 		{
+			if (userPost.nickname.length > 120)
+				userPost.nickname = userPost.nickname.substring(0, 120);
 			const nickname = this.replace_nickname(userPost.nickname);
 			if (nickname.length <= 2)
 				throw new BadRequestException("Invalid nickname");
 			const check_name = await this.userRepo.findOneBy({
-				nickname: nickname,
+				nickname: ILike(nickname),
 			});
 			if (check_name)
 				throw new ConflictException("Nickname already taken");
@@ -124,7 +126,7 @@ export class DBUserService {
 			if (user) return user;
 		}
 		if (nickname) {
-			const user = await this.userRepo.findOneBy({ nickname: nickname });
+			const user = await this.userRepo.findOneBy({ nickname: ILike(nickname) });
 			if (user) return user;
 		}
 		return null;
