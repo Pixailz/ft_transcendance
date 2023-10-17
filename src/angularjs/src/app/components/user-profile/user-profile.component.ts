@@ -7,6 +7,7 @@ import { TwofaformComponent } from 'src/app/components/twofaform/twofaform.compo
 import { animate, style, transition, trigger } from '@angular/animations';
 import { pairwise } from 'rxjs';
 import { ReplaceNickname } from 'src/utils/utils';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-user-profile',
@@ -28,6 +29,7 @@ export class UserProfileComponent implements OnInit {
 		private formBuilder: FormBuilder,
 		public dialog: MatDialog,
 		private replaceNickname: ReplaceNickname,
+		public router: Router,
 		)
 		{}
 
@@ -79,6 +81,7 @@ export class UserProfileComponent implements OnInit {
 				})
 				this.submitted = true;
 				this.user.nickname = this.userForm.value.nickname;
+				this.router.navigate(['/profile/' + this.user.nickname]);
 			})
 			.catch((err) => {
 				if (err.status == 409)
