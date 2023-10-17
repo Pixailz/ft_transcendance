@@ -1,0 +1,11 @@
+<form [formGroup]="searchRoomForm">
+	<div class="input-container">
+		<input class="glass" formControlName="searchString" type="text" placeholder="Search...">
+		<mat-icon fontIcon="search"></mat-icon>
+	</div>
+	<ol>
+		<li *ngFor="let room of showed_rooms" (click)="joinRoom(room)">
+			<span>{{chatRoomService.getRoomTitle(room)}}</span>
+		</li>
+	</ol>
+</form>

@@ -70,6 +70,8 @@ ul {
 		&.newRoomBtn {
 			width: 100%;
             z-index: 1;
+			display: flex;
+			justify-content: space-evenly;
 
 			& app-flat-button {
 				display: block;
@@ -78,7 +80,6 @@ ul {
 				font-size: 1em;
 				padding: 0;
 				--bg-color: 167, 220, 163;
-				width: 100%;
 			}
 		}
 	}

@@ -68,6 +68,8 @@ import { ChatPageComponent } from './pages/chat-page/chat-page.component';
 import { NewChatRoomComponent } from './components/new-chat-room/new-chat-room.component';
 import { ChatChannelFriendListComponent } from './components/chat-channel-friend-list/chat-channel-friend-list.component';
 import { ChatRoomSettingsComponent } from './components/chat-room-settings/chat-room-settings.component';
+import { JoinChatRoomComponent } from './components/join-chat-room/join-chat-room.component';
+import { ProtectedRoomPasswordComponent } from './components/protected-room-password/protected-room-password.component';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -123,6 +125,8 @@ const config: SocketIoConfig = {
   NewChatRoomComponent,
   ChatChannelFriendListComponent,
   ChatRoomSettingsComponent,
+  JoinChatRoomComponent,
+  ProtectedRoomPasswordComponent,
 	],
 	imports: [
 		BrowserModule,
