@@ -3,7 +3,7 @@
 	<input class="glass" [ngClass]="{'disabled': newRoomForm.value.isPrivate === true}" maxlength="120" id="password" type="password" formControlName="password" placeholder="Password">
 	<div class="toggle-container">
 		<label for="private"><mat-icon fontIcon="mail_lock"></mat-icon></label>
-		<input class="toggle" name="private" type="checkbox" formControlName="isPrivate">
+		<input class="toggle-btn" name="private" type="checkbox" formControlName="isPrivate">
 	</div>
 	<div class="btn-container">
 		<button class="submit-btn"

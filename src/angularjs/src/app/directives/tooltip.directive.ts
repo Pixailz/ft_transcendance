@@ -24,8 +24,6 @@ export class TooltipDirective {
         let factory = this.resolver.resolveComponentFactory(UserTooltipComponent);
         tooltip = this.viewContainerRef.createComponent(factory);
         console.log("X : ", event.clientX, "Y : ", event.clientY);
-        tooltip.instance.left = 0;
-        tooltip.instance.top = event;
         tooltip.instance.user = this.user;
         this.displayTooltip = true;
       }

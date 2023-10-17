@@ -248,8 +248,8 @@ export class WSChatChannelComponent implements OnInit {
 	}
 
 	sendMessage() {
-		this.chatChannelService.sendMessage(this.message);
-		this.message = "";
+		// this.chatChannelService.sendMessage(this.message);
+		// this.message = "";
 	}
 
 	canChangeRoomDetails(): boolean

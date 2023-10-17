@@ -29,11 +29,6 @@
 			<app-flat-button data-toggle="tab" [tabindex]="8" class="new-chat-glob" [isActive]="rla.isActive" fontIcon="search"></app-flat-button>
 		</li>
 		<li tabindex="-1" *ngIf="userLoggedIn"
-		routerLink="/chat/rub"
-		routerLinkActive #rla="routerLinkActive">
-			<app-flat-button data-toggle="tab" [tabindex]="8" class="new-chat-glob" [isActive]="rla.isActive" fontIcon="search"></app-flat-button>
-		</li>
-		<li tabindex="-1" *ngIf="userLoggedIn"
 		routerLink="/achievements/{{userService.user.nickname}}"
 		routerLinkActive #rla="routerLinkActive">
 			<app-flat-button data-toggle="tab" [tabindex]="5" class="achievements" [isActive]="rla.isActive" fontIcon="grade"></app-flat-button>
