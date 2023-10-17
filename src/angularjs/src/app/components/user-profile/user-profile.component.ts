@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { TwofaformComponent } from 'src/app/components/twofaform/twofaform.component';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { pairwise } from 'rxjs';
+import { ReplaceNickname } from 'src/utils/utils';
 
 @Component({
 	selector: 'app-user-profile',
@@ -26,6 +27,7 @@ export class UserProfileComponent implements OnInit {
 		private userService: UserService,
 		private formBuilder: FormBuilder,
 		public dialog: MatDialog,
+		private replaceNickname: ReplaceNickname,
 		)
 		{}
 
@@ -47,8 +49,7 @@ export class UserProfileComponent implements OnInit {
 		}, { updateOn: "change" });
 		this.userForm.valueChanges
 		.subscribe((value: any) => {
-			value.nickname = value.nickname.replace(/ /g, '');
-			value.nickname = value.nickname.replace(/	/g, '');
+			value.nickname = this.replaceNickname.replace_nickname(value.nickname);
 			this.userForm.patchValue({
 				nickname: value.nickname,
 			}, {emitEvent: false, onlySelf: true});

@@ -73,6 +73,8 @@ import { GameInviteDialogComponent } from './components/game/invite-dialog/game-
 import { NotifAchievementComponent } from './components/notification/achievement/notif-achievement';
 import { AchievementsComponent } from './pages/achievements/achievements.component';
 
+import { ReplaceNickname } from 'src/utils/utils';
+
 const config: SocketIoConfig = {
 	url: environment.socket_url,
 	options: {
@@ -161,6 +163,7 @@ const config: SocketIoConfig = {
 		AuthGuardService,
 		{ provide: ErrorHandler, useClass: GlobalErrorHandlerService },
 		{ provide: RouteReuseStrategy, useClass: CustomReuseStrategy },
+		ReplaceNickname,
 	],
 	bootstrap: [AppComponent]
 })
