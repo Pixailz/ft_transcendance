@@ -69,14 +69,19 @@ export class DBUserService {
 		let user_1 = await this.get_user(player_1, null, null);
 		let user_2 = await this.get_user(player_2, null, null);
 		if (!user_1 || !user_2) throw new NotFoundException("User not found");
+
 		let gain_1 = this.elo.get_gain(user_1.elo, user_2.elo);
 		let gain_2 = this.elo.get_gain(user_2.elo, user_1.elo);
 		if (winner == player_1)
-			gain_2 *= -1;
+		{
+			user_1.elo += gain_1;
+			user_2.elo -= gain_1;
+		}
 		else
-			gain_1 *= -1
-		user_1.elo += gain_1;
-		user_2.elo += gain_2;
+		{
+			user_2.elo -= gain_2;
+			user_2.elo += gain_2;
+		}
 		await this.userRepo.update(player_1, user_1);
 		await this.userRepo.update(player_2, user_2);
 	}
