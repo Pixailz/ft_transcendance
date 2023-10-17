@@ -11,11 +11,15 @@ import {
 import { DBUserInfoPost } from "../../modules/database/user/dto";
 import { DBUserService } from "../../modules/database/user/service";
 import { UserEntity } from "src/modules/database/user/entity";
+import { AchievementService } from "src/modules/database/achievements/service";
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller("user")
 export class UserController {
-	constructor(private dbUserService: DBUserService) {}
+	constructor(
+		private dbUserService: DBUserService,
+		private achievementsService: AchievementService,
+	) {}
 
 	@Get("me")
 	async get_info_me(@Request() req): Promise<UserEntity | any> {
@@ -33,11 +37,18 @@ export class UserController {
 		return await this.dbUserService.returnOne(req.user.user_id);
 	}
 
-	@Get("profile/:login")
+	@Get("profile/:nickname")
 	async getUserProfile(
-		@Param("login") ft_login: string,
+		@Param("nickname") nickname: string,
 	): Promise<UserEntity> {
-		return await this.dbUserService.getUserByLogin(ft_login);
+		if (!nickname) return null;
+		return await this.dbUserService.returnOne(null, null, nickname);
+	}
+
+	@Get("achievements/:login")
+	async getUserAchievements(@Param("login") ft_login: string) {
+		if (!ft_login) return null;
+		return await this.achievementsService.getUserAchievements(ft_login);
 	}
 
 	// @Get("info/:id")

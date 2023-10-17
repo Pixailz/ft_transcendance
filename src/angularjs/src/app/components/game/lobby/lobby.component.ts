@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { DefGameOptionI } from 'src/app/interfaces/game/game-room.interface';
+import { MatDialog } from '@angular/material/dialog';
 import { GameService } from 'src/app/services/websocket/game/service';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
 	selector: 'app-game-lobby',
@@ -8,16 +9,25 @@ import { GameService } from 'src/app/services/websocket/game/service';
 	styleUrls: ['./lobby.component.scss']
 })
 export class GameLobbyComponent {
-	isInGame: boolean = false;
+	gameOptform!: FormGroup;
 
 	constructor(
 		public gameService: GameService,
-	) { }
-
+		public matDialog: MatDialog,
+		private formBuilder: FormBuilder,
+	) {
+		this.gameOptform = this.formBuilder.group({
+			powerUps: false,
+			maps: {
+				name: "normal",
+				thumbnail: "/assets/images/maps/normal.png"
+			},
+			is_private: false,
+		}, { updateOn: "change" });
+	}
 
 	searchGame()
-	{ this.gameService.searchGame(DefGameOptionI); }
-
-	// reconnectGame()
-	// { this.gameService.reconnectGame(); }
+	{
+		this.gameService.searchGame(this.gameOptform.value);
+	}
 }

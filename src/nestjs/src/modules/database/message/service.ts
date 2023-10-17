@@ -18,7 +18,7 @@ export class DBMessageService {
 		private readonly userRepo: Repository<UserEntity>,
 	) {}
 
-	async create(messagePost: DBMessagePost, userId: number, roomId: number) {
+	async create(userId: number, roomId: number) {
 		const message = new MessageEntity();
 		const room = await this.chatRoomRepo.findOneBy({ id: roomId });
 		const user = await this.userRepo.findOneBy({ id: userId });
@@ -26,7 +26,6 @@ export class DBMessageService {
 		else throw new NotFoundException("ChatRoom not found");
 		if (user) message.userId = userId;
 		else throw new NotFoundException("User not found");
-		message.content = messagePost.content;
 		await this.messageRepo.save(message);
 		return message.id;
 	}
@@ -41,12 +40,12 @@ export class DBMessageService {
 		else throw new NotFoundException("Message not found");
 	}
 
-	async update(messageId: number, dbMessagePost: DBMessagePost) {
-		const message = await this.messageRepo.findOneBy({ id: messageId });
-		if (message)
-			return await this.messageRepo.update(messageId, dbMessagePost);
-		else throw new NotFoundException("Message not found");
-	}
+	// async update(messageId: number, dbMessagePost: DBMessagePost) {
+	// 	const message = await this.messageRepo.findOneBy({ id: messageId });
+	// 	if (message)
+	// 		return await this.messageRepo.update(messageId, dbMessagePost);
+	// 	else throw new NotFoundException("Message not found");
+	// }
 
 	async delete(messageId: number) {
 		const message = await this.messageRepo.findOneBy({ id: messageId });
@@ -58,6 +57,7 @@ export class DBMessageService {
 		return await this.messageRepo.findOne({
 			relations: {
 				user: true,
+				content: true,
 			},
 			where: {
 				id: message_id,

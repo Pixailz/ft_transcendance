@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostBinding, Input, Renderer2 } from '@angular/core';
+import { Component, ElementRef, Input, Renderer2 } from '@angular/core';
 import { Status, UserI } from 'src/app/interfaces/user/user.interface';
 import { FriendService } from 'src/app/services/websocket/friend/service';
 import { WSGateway } from 'src/app/services/websocket/gateway';
@@ -10,13 +10,6 @@ import { WSGateway } from 'src/app/services/websocket/gateway';
 })
 export class UserTooltipComponent {
 	@Input() user!: UserI;
-
-	@HostBinding('style.left.px')
-	left:number;
-
-	@HostBinding('style.top.px')
-	top:number;
-
 	constructor(
 		public friendService: FriendService,
 		private wsGateway: WSGateway

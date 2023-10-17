@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Server } from "socket.io";
-import { ChatRoomEntity } from "src/modules/database/chatRoom/entity";
-import { UserEntity } from "src/modules/database/user/entity";
+import { ChatRoomEntity } from "../modules/database/chatRoom/entity";
+import { UserEntity } from "../modules/database/user/entity";
 import { GameStateI, LobbyI } from "./game/game.interface";
 
 @Injectable()

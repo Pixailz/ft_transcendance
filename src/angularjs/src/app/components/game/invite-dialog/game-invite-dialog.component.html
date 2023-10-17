@@ -1,0 +1,14 @@
+<h2 mat-dialog-title>Invite a Friend</h2>
+<div mat-dialog-content>
+	<p>Select a friend to invite:</p>
+	<mat-list>
+		<mat-list-item *ngFor="let friend of data">
+			<button mat-button (click)="selectFriend(friend.id)">
+				{{ friend.nickname }}
+			</button>
+		</mat-list-item>
+	</mat-list>
+</div>
+<div mat-dialog-actions>
+	<button mat-button (click)="onNoClick()">Cancel</button>
+</div>

@@ -1,0 +1,25 @@
+mat-dialog-content {
+	margin: 20px;
+}
+
+mat-list {
+	max-height: 300px;
+	overflow-y: auto;
+}
+
+mat-list-item {
+	cursor: pointer;
+	div {
+		display: inline;
+	}
+}
+
+mat-dialog-actions {
+	display: flex;
+	justify-content: flex-end;
+	margin: 20px;
+}
+
+button {
+	margin-left: 10px;
+}

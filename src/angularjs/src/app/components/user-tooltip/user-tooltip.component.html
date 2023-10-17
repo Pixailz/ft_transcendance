@@ -1,6 +1,6 @@
-<a [href]="'/profile/' + user.ftLogin">
+<a [routerLink]="'/profile/' + user.nickname">
     <img [ngClass]="getLiteralStatus(user.status)" [src]="user.picture || 'assets/img/avatar-placeholder.jpg'" alt="avatar">
-	<span>{{user.nickname}}</span>
+	<span>{{user.nickname}}<br/>ELO: {{user.elo}}</span>
 </a>
 <button (click)="doAction()">
     <mat-icon [fontIcon]="this.friendService.isTargetBlocked(this.user.id) ? 'person_add' : 'block'"></mat-icon>

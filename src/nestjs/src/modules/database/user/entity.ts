@@ -5,6 +5,9 @@ import {
 	PrimaryGeneratedColumn,
 	OneToMany,
 	ManyToMany,
+	JoinTable,
+	ManyToOne,
+	OneToOne,
 } from "typeorm";
 
 import { UserChatRoomEntity } from "../userChatRoom/entity";
@@ -13,7 +16,9 @@ import { MessageEntity } from "../message/entity";
 import { FriendEntity } from "../friend/entity";
 import { BlockedEntity } from "../blocked/entity";
 import { Exclude } from "class-transformer";
-import { PlayerScoreEntity } from "../game/player-score/entity";
+import { PlayerScoreEntity } from "../game/playerScore/entity";
+import { UserAchievementEntity } from "../achievements/entity";
+import { UserMetricsEntity } from "../metrics/entity";
 
 export enum Status {
 	DISCONNECTED,
@@ -32,6 +37,9 @@ export class UserEntity {
 	@Column({ type: "varchar", length: 120, default: "" })
 	public nickname: string;
 
+	@Column({ type: "varchar", length: 120, default: "" })
+	public password: string;
+
 	@Column({ type: "text", default: "" })
 	public picture: string;
 
@@ -40,6 +48,9 @@ export class UserEntity {
 
 	@Column({ type: "integer", default: Status.DISCONNECTED })
 	public status: number;
+
+	@Column({ type: "integer", default: 800 })
+	public elo: number;
 
 	@Column({ type: "boolean", default: false })
 	public twoAuthFactor: boolean;
@@ -65,10 +76,15 @@ export class UserEntity {
 		(type) => PlayerScoreEntity,
 		(playerScore) => playerScore.playerId,
 	)
-	playerScores: PlayerScoreEntity[];
+	public playerScores: PlayerScoreEntity[];
 
 	@ManyToMany((type) => GameInfoEntity, (gameInfo) => gameInfo.usersArray)
-	gameInfos: GameInfoEntity[];
+	@JoinTable({
+		name: "game_users",
+		joinColumn: { name: "game_info_id", referencedColumnName: "id" },
+		inverseJoinColumn: { name: "user_id", referencedColumnName: "id" },
+	})
+	public gameInfos: GameInfoEntity[];
 
 	@OneToMany((type) => MessageEntity, (message) => message.user)
 	message: MessageEntity[];
@@ -94,7 +110,16 @@ export class UserEntity {
 	@OneToMany((type) => BlockedEntity, (blocked) => blocked.target)
 	target: BlockedEntity[];
 
-	// muted
+	// achievements
+	@OneToMany(
+		(type) => UserAchievementEntity,
+		(userAchievement) => userAchievement.user,
+	)
+	public achievements: UserAchievementEntity[];
+
+	// metrics
+	@OneToOne(() => UserMetricsEntity, (metrics) => metrics.user)
+	public metrics: UserMetricsEntity;
 
 	constructor(partial: Partial<UserEntity>) {
 		Object.assign(this, partial);

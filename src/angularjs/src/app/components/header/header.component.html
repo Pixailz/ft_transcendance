@@ -29,12 +29,22 @@
 			<app-flat-button data-toggle="tab" [tabindex]="8" class="new-chat-glob" [isActive]="rla.isActive" fontIcon="search"></app-flat-button>
 		</li>
 		<li tabindex="-1" *ngIf="userLoggedIn"
-		routerLink="/profile"
+		routerLink="/chat/rub"
+		routerLinkActive #rla="routerLinkActive">
+			<app-flat-button data-toggle="tab" [tabindex]="8" class="new-chat-glob" [isActive]="rla.isActive" fontIcon="search"></app-flat-button>
+		</li>
+		<li tabindex="-1" *ngIf="userLoggedIn"
+		routerLink="/achievements/{{userService.user.nickname}}"
+		routerLinkActive #rla="routerLinkActive">
+			<app-flat-button data-toggle="tab" [tabindex]="5" class="achievements" [isActive]="rla.isActive" fontIcon="grade"></app-flat-button>
+		</li>
+		<li tabindex="-1" *ngIf="userLoggedIn"
+		routerLink="/profile/{{userService.user.nickname}}"
 		routerLinkActive #rla="routerLinkActive" [routerLinkActiveOptions]="{exact: true}">
-			<app-flat-button data-toggle="tab" [tabindex]="5" class="profile" [isActive]="rla.isActive" fontIcon="account_circle"></app-flat-button>
+			<app-flat-button data-toggle="tab" [tabindex]="6" class="profile" [isActive]="rla.isActive" fontIcon="account_circle"></app-flat-button>
 		</li>
 		<li appClickOut (clickOutside)="displayNotifications = false" tabindex="-1" class="notifications-menu" matBadge="{{notificationService.notif_not_seen}}" [matBadgeHidden]="!notificationService.notif_not_seen">
-			<app-flat-button data-toggle="tab" [tabindex]="6" [isActive]="displayNotifications" class="notifications-btn" (click)="OnNotificationClick()" fontIcon="notifications">Menu</app-flat-button>
+			<app-flat-button data-toggle="tab" [tabindex]="7" [isActive]="displayNotifications" class="notifications-btn" (click)="OnNotificationClick()" fontIcon="notifications">Menu</app-flat-button>
 			<app-flat-list @fadeInOut *ngIf="displayNotifications" [notifications]="notificationService.notif"></app-flat-list>
 		</li>
 		<li tabindex="-1"

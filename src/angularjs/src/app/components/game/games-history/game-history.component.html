@@ -1,0 +1,38 @@
+<div *ngIf="!userInfos">
+  <p> No games found </p>
+</div>
+<div *ngIf="userInfos">
+  <mat-table [dataSource]="userInfosSource" class="user-stats">
+    <ng-container matColumnDef="game">
+      <mat-header-cell *matHeaderCellDef> # </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+          {{element.id}}
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="score">
+      <mat-header-cell *matHeaderCellDef> Score </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <span [ngClass]="element.result">
+          {{element.score}}
+        </span>
+        &nbsp;- {{element.opponentScore}}
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="opponent">
+      <mat-header-cell *matHeaderCellDef> Opponent </mat-header-cell>
+      <mat-cell *matCellDef="let element" class="user-profile-tooltip">
+				<span appTooltip [user]="element.opponent">{{element.opponent.nickname}}</span>
+      </mat-cell>
+    </ng-container>
+    <ng-container>
+      <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+    </ng-container>
+    <ng-container matColumnDef="date">
+      <mat-header-cell *matHeaderCellDef> Date </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.createdAt | date:'short' }} </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="['game', 'score', 'opponent', 'date']"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: ['game', 'score', 'opponent', 'date'];"></mat-row>
+  </mat-table>
+  <mat-paginator #paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
+</div>

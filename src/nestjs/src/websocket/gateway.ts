@@ -224,28 +224,21 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage("blockUser")
 	async blockUser(socket: Socket, target_id: number) {
-		await this.wsFriendService.blockUser(
-			this.server,
-			socket,
-			target_id,
-		);
+		await this.wsFriendService.blockUser(this.server, socket, target_id);
 	}
 
 	@SubscribeMessage("unblockUser")
 	async unblockUser(socket: Socket, target_id: number) {
-		await this.wsFriendService.unblockUser(
-			this.server,
-			socket,
-			target_id,
-		);
+		await this.wsFriendService.unblockUser(this.server, socket, target_id);
 	}
 
 	// NOTIFICATIONS
 
 	// HANDLER
 	@SubscribeMessage("getAllNotifications")
-	async getAllNotifications(socket: Socket)
-	{ await this.wsNotificationService.getAllNotifications(socket); }
+	async getAllNotifications(socket: Socket) {
+		await this.wsNotificationService.getAllNotifications(socket);
+	}
 
 	// GAME
 
@@ -253,6 +246,11 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage("gameSearch")
 	async handleGameSearch(socket: Socket, game_opt: any) {
 		await this.wsGameService.gameSearch(this.server, socket, game_opt);
+	}
+
+	@SubscribeMessage("gameJoin")
+	async handleGameJoin(socket: Socket, game_id: string) {
+		await this.wsGameService.gameJoin(this.server, socket, game_id);
 	}
 
 	@SubscribeMessage("isInGame")
@@ -266,13 +264,48 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage("gameSendInput")
-	async handleSendGameStatus(socket: Socket, status: any)
-	{ this.wsGameService.onMove(this.server, socket, status); }
+	async handleSendGameStatus(socket: Socket, status: any) {
+		this.wsGameService.onMove(this.server, socket, status);
+	}
+
+	//GAME NOTIFICATION
+	@SubscribeMessage("gameSendInvite")
+	async handleSendGameInvite(socket: Socket, data: any) {
+		this.wsNotificationService.sendGameInvite(
+			this.server,
+			socket,
+			data[0],
+			data[1],
+		);
+	}
+
+	@SubscribeMessage("delGameInvite")
+	async delGameInvite(socket: Socket, data: any) {
+		this.wsNotificationService.delGameInvite(this.server, socket, data);
+	}
+
+	@SubscribeMessage("acceptGameInvite")
+	async acceptGameInvite(socket: Socket, data: any) {
+		this.wsNotificationService.acceptGameInvite(this.server, socket, data);
+	}
+
+	@SubscribeMessage("declineGameInvite")
+	async declineGameInvite(socket: Socket, data: any) {
+		this.wsNotificationService.declineGameInvite(this.server, socket, data);
+	}
+	// @SubscribeMessage("gameRejectInvite")
+	// async handleRejectGameInvite(socket: Socket, data: any) {
+	// 	this.wsNotificationService.rejectGameInvite(this.server, socket, data);
+	// }
 
 	@SubscribeMessage("updateNotificationStatus")
 	async updateNotificationStatus(socket: Socket, data: any) {
 		const status: NotifStatus = data[0];
 		const notif_id: number = data[1];
-		await this.wsNotificationService.updateNotificationStatus(socket, notif_id, status);
+		await this.wsNotificationService.updateNotificationStatus(
+			socket,
+			notif_id,
+			status,
+		);
 	}
 }

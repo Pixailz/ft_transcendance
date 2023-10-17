@@ -21,14 +21,14 @@ export class NotificationService {
 		private wsService: WSService,
 	){
 		this.obsToDestroy.push(this.wsGateway.listenAllNotifications()
-			.subscribe((notifications: NotificationI[]) => {
+			.subscribe((notifications: any[]) => {
 				console.log("[WS:Notification] AllNotifications event")
 				this.updateAllNotifications(notifications);
 			}
 		));
 
 		this.obsToDestroy.push(this.wsGateway.listenNewNotification()
-			.subscribe((notification: NotificationI) => {
+			.subscribe((notification: any) => {
 				console.log("[WS:Notification] NewNotification event")
 				this.createPopup.next(this.updateNewNotification(notification));
 			}
@@ -95,14 +95,11 @@ export class NotificationService {
 		const user_id = Number(notification.data);
 		var	notif: NotificationI = notification;
 
-		for (var i = 0; friend_req.length; i++)
-		{
+		for (let i = 0; i < friend_req.length; i++)
 			if (friend_req[i].meId === user_id)
 				notif.data = {
 					from: friend_req[i].me,
 				}
-			break ;
-		}
 		return (notif);
 	}
 
@@ -145,6 +142,26 @@ export class NotificationService {
 				notif = notification;
 				notif.toDisplay = "Friend request to " + notif.data + " denied";
 				break ;
+			}
+			case (NotificationType.GAME_REQ): {
+				notif = notification;
+				notif.toDisplay = "Game: " + notif.data2;
+				break;
+			}
+			case (NotificationType.GAME_REQ_DACCEPT): {
+				notif = notification;
+				notif.toDisplay = "Game accepted: " + notif.data;
+				break;
+			}
+			case (NotificationType.GAME_REQ_DENIED): {
+				notif = notification;
+				notif.toDisplay = "Game decline: " + notif.data;
+				break;
+			}
+			case (NotificationType.ACHIEVEMENT): {
+				notif = notification;
+				notif.toDisplay = "Achievement: " + notif.data;
+				break;
 			}
 		}
 		return (notif);

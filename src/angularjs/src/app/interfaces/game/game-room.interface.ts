@@ -8,13 +8,30 @@ export enum GameStatus {
 	INTERRUPTED,
 }
 
+export const Maps: MapI[] = [
+	{name: "normal", thumbnail: "https://placehold.co/50"},
+	{name: "rainbow4ever", thumbnail: "https://placehold.co/50"},
+	{name: "hacker", thumbnail: "https://placehold.co/50"},
+	{name: "xX_b3StM4PSn1P3r_Xx", thumbnail: "https://placehold.co/50"},
+]
+
+export interface MapI {
+	name				: "normal" | "rainbow4ever" | "hacker" | "xX_b3StM4PSn1P3r_Xx",
+	thumbnail			: string,
+}
 
 export interface GameOptionI {
-	type				: string,
+	type				: "normal" | "custom",
+	powerUps			: boolean,
+	map					: MapI,
+	is_private			: boolean,
 }
 
 export const DefGameOptionI : GameOptionI = {
 	type				: "normal",
+	powerUps			: false,
+	map					: {name: "normal", thumbnail: "/assets/images/maps/normal.png"},
+	is_private			: false,
 }
 
 export interface CanvasI {
@@ -63,6 +80,15 @@ export const DefPaddleI: PaddleI = {
 	keyReleased			: true,
 }
 
+export interface PowerUpI {
+	x: number;
+	y: number;
+	type: "speed" | "size" | "sticky" | "death";
+	duration: number;
+	appliedAt?: number;
+	appliedTo?: "left" | "right" | "ball";
+}
+
 export interface PlayerI {
 	id					: number,
 	score				: number,
@@ -85,16 +111,19 @@ export interface GameStateI {
 	players				: PlayerI[],
 	ball				: BallI,
 	serverUpdateTime	: number,
+	powerUps			: PowerUpI[],
 }
 
 export const DefGameStateI: GameStateI = {
 	players				: [],
 	ball				: DefBallI,
 	serverUpdateTime	: Date.now(),
+	powerUps			: [],
 }
 
 export interface LobbyI {
 	status			: number,
+	options			: GameOptionI,
 	id				: string,
 	type			: string,
 	players			: UserI[],
@@ -104,6 +133,7 @@ export interface LobbyI {
 
 export const DefLobbyI: LobbyI = {
 	status			: GameStatus.LOBBY,
+	options			: DefGameOptionI,
 	id				: "",
 	type			: "",
 	players			: [],

@@ -51,13 +51,13 @@
 					<mat-form-field style="width: 80%; margin: 10px;">
 						<mat-label>Selected Friend</mat-label>
 						<mat-select multiple formControlName="user">
-							<mat-option *ngFor="let friend of chatDmService.getFriends()" [value]="friend.user_info">
-							{{userService.getUserInfoFormated(friend.user_info)}}
+							<mat-option *ngFor="let friend of friendService.getFriends()" [value]="friend">
+							{{userService.getUserInfoFormated(friend)}}
 							</mat-option>
 						</mat-select>
 					</mat-form-field>
 					<br>
-					<p *ngFor="let user of getCreateFriendUser();">{{user.ftLogin}}</p>
+					<p *ngFor="let user of getCreateFriendUser();">{{user.nickname}}</p>
 					<mat-card-actions>
 						<div class="buttoncontainer">
 							<button
@@ -164,13 +164,13 @@
 						<p>ID   : {{getJoinSelected().id}}</p>
 						<p>NAME : {{getJoinSelected().name}}</p>
 						<p>TYPE : {{chatRoomService .getRoomTypeStr(getJoinSelected())}}</p>
-						<p>OWNER : {{chatChannelService.getOwner().ftLogin }}</p>
+						<p>OWNER : {{chatChannelService.getOwner().nickname }}</p>
 						<p>ADMIN :</p>
-						<p *ngFor="let user of chatChannelService.getAdmin()">- {{user.ftLogin}}</p>
+						<p *ngFor="let user of chatChannelService.getAdmin()">- {{user.nickname}}</p>
 					</div>
 					<div class="room-join-user" *ngIf="getJoinSelected().id !== -1">
 						<h4>USERS ({{getJoinUser().length}}/40)</h4>
-						<p *ngFor="let user of getJoinUser()">{{user.ftLogin}}</p>
+						<p *ngFor="let user of getJoinUser()">{{user.nickname}}</p>
 					</div>
 				</div>
 			</div>
@@ -253,7 +253,7 @@
 						</mat-select>
 					</mat-form-field>
 					<br>
-					<p *ngFor="let user of roomManagementUser.value?.user;">{{user.ftLogin}}</p>
+					<p *ngFor="let user of roomManagementUser.value?.user;">{{user.nickname}}</p>
 					<mat-card-actions>
 						<div class="buttoncontainer">
 							<button
@@ -292,14 +292,14 @@
 					<p>ID    : {{chatChannelService.getSelectedRoom().id}}</p>
 					<p>NAME  : {{chatChannelService.getSelectedRoom().name}}</p>
 					<p>TYPE  : {{chatRoomService .getRoomTypeStr(chatChannelService.getSelectedRoom())}}</p>
-					<p>OWNER : {{chatChannelService.getOwner().ftLogin }}</p>
+					<p>OWNER : {{chatChannelService.getOwner().nickname }}</p>
 					<p>ADMIN :</p>
-					<p *ngFor="let user of chatChannelService.getAdmin()">- {{user.ftLogin}}</p>
+					<p *ngFor="let user of chatChannelService.getAdmin()">- {{user.nickname}}</p>
 				</div>
 				<div *ngIf="chatChannelService.getSelectedRoom().id !== -1">
 					<h4>USERS ({{chatChannelService.getSelectedRoomUser().length}}/40)</h4>
 					<div *ngFor="let user of chatChannelService.getSelectedRoomUser()">
-						{{user.ftLogin}} ({{user.nickname}})
+						{{user.nickname}} ({{user.nickname}})
 						<div class="button-row">
 							<button mat-raised-button color="warn"
 								(click)="onKickUser(user)"
@@ -350,7 +350,7 @@
 					<div *ngIf="chatChannelService.getSelectedRoomBanned().length">
 						<h4>BANNED ({{chatChannelService.getSelectedRoomBanned().length}})</h4>
 						<div *ngFor="let user of chatChannelService.getSelectedRoomBanned()">
-							{{user.ftLogin}} ({{user.nickname}})
+							{{user.nickname}} ({{user.nickname}})
 							<div class="button-row">
 								<button mat-raised-button color="primary"
 									(click)="onUnBanUser(user)"
@@ -378,7 +378,7 @@
 			<div class="message" *ngIf="!friendService.isMeBlocked(chatChannelService.getCurrentMessageUser(i).id)">
 				<div class="title-line">
 					<span class="date" *ngIf="!isFollowingDay(i)">{{chatChannelService.getCurrentMessage(i).updateAt | date: 'dd/MM/YYYY'}}</span>
-					<span class="login" *ngIf="!chatChannelService.isSameUser(i)">{{chatChannelService.getCurrentMessageUser(i).ftLogin}}</span>
+					<span class="login" *ngIf="!chatChannelService.isSameUser(i)">{{chatChannelService.getCurrentMessageUser(i).nickname}}</span>
 				</div>
 				<div class="msg-line">
 					<span class="content">{{chatChannelService.getCurrentMessage(i).content}}</span>

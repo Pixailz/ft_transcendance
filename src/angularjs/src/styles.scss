@@ -150,12 +150,7 @@ ul {
 	}
 }
 
-li.newRoomBtn app-flat-button button  {
-	height: 3em;
-	width: 100%;
-}
-
-.toggle {
+.toggle-btn {
 	appearance: none;
 	width: 40px;
 	height: 20px;
@@ -169,7 +164,7 @@ li.newRoomBtn app-flat-button button  {
 	transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
 }
 
-.toggle::before {
+.toggle-btn::before {
 	content: "";
 	height: 14px;
 	aspect-ratio: 1;
@@ -180,10 +175,46 @@ li.newRoomBtn app-flat-button button  {
 	transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
 }
 
-.toggle:checked {
+.toggle-btn:checked {
 	background-color: #a7dca3;
 }
 
-.toggle:checked::before {
+.toggle-btn:checked::before {
 	left: 22px;
+}
+
+li.newRoomBtn app-flat-button button  {
+	height: 3em;
+	width: 100%;
+}
+
+
+
+mat-option > span.mdc-list-item__primary-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+
+
+
+.user-profile-tooltip app-user-tooltip{
+	/* border-radius: 0.7em; */
+	/* translate: -50% 100%; */
+	/* gap: 1em; */
+	border-radius: 1.7em !important;
+	translate: 0 -65% !important;
+	bottom: auto;
+	left: auto;
+}
+
+.profile_game_data {
+ .mat-mdc-table {
+	background-color: inherit !important;
+ }
+ .mat-mdc-paginator {
+	background-color: inherit !important;
+ }
 }

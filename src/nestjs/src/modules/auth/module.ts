@@ -1,14 +1,13 @@
-import { Module } from "@nestjs/common";
+import { Module, forwardRef } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
-import { APP_GUARD } from "@nestjs/core";
 
 import { AuthController } from "./controller";
 import { AuthService } from "./service";
 import { Api42Module } from "../api42/module";
 import { DBModule } from "../database/database.module";
 import { JwtStrategy } from "./jwt.strategy";
-import { JwtAuthGuard } from "./jwt-auth.guard";
+import { BrcyptWrap } from "../../addons/bcrypt.wrapper";
 
 @Module({
 	imports: [
@@ -18,11 +17,11 @@ import { JwtAuthGuard } from "./jwt-auth.guard";
 			signOptions: { expiresIn: "1d" },
 		}),
 		Api42Module,
-		DBModule,
+		forwardRef(() => DBModule),
 		PassportModule.register({ defaultStrategy: "jwt" }),
 	],
 	controllers: [AuthController],
-	providers: [AuthService, JwtStrategy],
+	providers: [AuthService, JwtStrategy, BrcyptWrap],
 	exports: [AuthService, JwtModule],
 })
 export class AuthModule {}

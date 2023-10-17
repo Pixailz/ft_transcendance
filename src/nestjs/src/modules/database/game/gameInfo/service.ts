@@ -6,7 +6,7 @@ import { GameInfoEntity } from "./entity";
 import { DBGameInfoPost } from "./dto";
 
 import { UserEntity } from "../../user/entity";
-import { PlayerScoreEntity } from "../player-score/entity";
+import { PlayerScoreEntity } from "../playerScore/entity";
 
 @Injectable()
 export class DBGameInfoService {
@@ -46,7 +46,7 @@ export class DBGameInfoService {
 	}
 
 	async returnOne(gameId: number) {
-		const tmp = await this.gameInfoRepo.findOne({ 
+		const tmp = await this.gameInfoRepo.findOne({
 			where: { id: gameId },
 			relations: ["playersScores", "usersArray"],
 		});

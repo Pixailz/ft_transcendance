@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { HomeDashboardComponent } from './pages/home-dashboard/home-dashboard.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
-import { UserProfileComponent } from './pages/user-profile/user-profile.component';
 import { LoginComponent } from './pages/login/login.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { RegisterComponent } from './pages/register/register.component';
@@ -15,6 +14,7 @@ import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.compon
 import { GameComponent } from './pages/game/game.component';
 import { PrivChatPageComponent } from './pages/priv-chat-page/priv-chat-page.component';
 import { ChatPageComponent } from './pages/chat-page/chat-page.component';
+import { AchievementsComponent } from './pages/achievements/achievements.component';
 
 const routes: Routes = [
 	{
@@ -37,6 +37,10 @@ const routes: Routes = [
 				path: 'play',
 				component: GameComponent,
 				data: { animation: 'Play', reuseRoute: true }
+			},{
+				path: 'play/:room_id',
+				component: GameComponent,
+				data: { animation: 'Play', reuseRoute: false }
 			},
 			{
 				path: 'chat/dm',
@@ -49,14 +53,14 @@ const routes: Routes = [
 				data: { animation: 'ChatChannel', reuseRoute: true }
 			},
 			{
-				path: 'profile',
-				component: UserProfileComponent,
-				data: { animation: 'Profile', reuseRoute: true }
-			},
-			{
-				path: 'profile/:login',
+				path: 'profile/:nickname',
 				component: ProfileComponent,
 				data: { animation: 'ProfileUser', reuseRoute: true }
+			},
+			{
+				path: 'achievements/:nickname',
+				component: AchievementsComponent,
+				data: { animation: 'Achievements', reuseRoute: true }
 			},
 			{
 				path: 'chat/rub',

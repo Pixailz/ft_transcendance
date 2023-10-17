@@ -77,6 +77,7 @@ async update(chatId: number, post: DBChatRoomPost) {
 			relations: {
 				message: {
 					user: true,
+					content: true,
 				},
 				roomInfo: {
 					user: true,
@@ -99,6 +100,7 @@ async update(chatId: number, post: DBChatRoomPost) {
 			relations: {
 				message: {
 					user: true,
+					content: true,
 				},
 				roomInfo: {
 					user: true,
@@ -115,6 +117,28 @@ async update(chatId: number, post: DBChatRoomPost) {
 					updateAt: "ASC",
 				},
 			},
+		});
+	}
+
+	async getDmBetween(user_a: number, user_b: number): Promise<ChatRoomEntity> {
+		return await this.chatRoomRepo.findOne({
+			relations: {
+				roomInfo: true,
+			},
+			where: [
+				{
+					roomInfo: {
+						userId: user_a,
+					},
+					type: RoomType.DIRECT_MSG,
+				},
+				{
+					roomInfo: {
+						userId: user_b,
+					},
+					type: RoomType.DIRECT_MSG,
+				},
+			]
 		});
 	}
 
@@ -157,6 +181,7 @@ async update(chatId: number, post: DBChatRoomPost) {
 				},
 				message: {
 					user: true,
+					content: true,
 				},
 			},
 			where: [
@@ -184,6 +209,7 @@ async update(chatId: number, post: DBChatRoomPost) {
 				},
 				message: {
 					user: true,
+					content: true,
 				},
 			},
 			where: [

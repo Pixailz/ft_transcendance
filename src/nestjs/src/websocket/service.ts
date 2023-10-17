@@ -1,8 +1,8 @@
 import { Server, Socket } from "socket.io";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { WSSocket } from "./socket.service";
-import { Status } from "src/modules/database/user/entity";
-import { UserService } from "src/adapter/user/service";
+import { Status } from "../modules/database/user/entity";
+import { UserService } from "../adapter/user/service";
 import { WSGameService } from "./game/game.service";
 
 @Injectable()
@@ -33,7 +33,7 @@ export class WSService {
 		}
 		this.wsSocket.addNewSocketId(user_info.id, socket.id);
 		console.log(
-			`[WS:connection] User ${user_info.ftLogin} connected (${socket.id})`,
+			`[WS:connection] User ${user_info.nickname} connected (${socket.id})`,
 		);
 		await this.setStatus(server, user_id, Status.CONNECTED);
 	}

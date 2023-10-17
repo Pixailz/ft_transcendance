@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ChatRoomI } from 'src/app/interfaces/chat/chat-room.interface';
-import { MessageI } from 'src/app/interfaces/chat/message.inteface';
+import { MessageContentI, MessageContentType, MessageI } from 'src/app/interfaces/chat/message.inteface';
 import { UserI } from 'src/app/interfaces/user/user.interface';
 import { UserService } from 'src/app/services/user.service';
 import { ChatRoomService } from 'src/app/services/websocket/chat/chatroom.service';
-import { WSGateway } from 'src/app/services/websocket/gateway';
 
 @Component({
 	selector: 'app-chat-view',
@@ -16,26 +16,40 @@ export class ChatViewComponent {
 	messageLength: number = 0;
 	messageForm!: FormGroup;
 
+	messageType: MessageContentType = MessageContentType.STRING;
+	displaySpecialMessage: boolean = false;
+
 	@Input() blocked: boolean = false;
 	@Input() room!: ChatRoomI;
-    @Output() sendMessageEmitter = new EventEmitter<string>();
-
+	@Output() sendMessageEmitter = new EventEmitter<MessageContentI[]>();
 
 	constructor(
 		private formBuilder: FormBuilder,
 		private chatRoomService: ChatRoomService,
 		public userService: UserService,
-		private wsGateway: WSGateway
+		public router: Router,
 	) {}
 
 	async ngOnInit() {
 		this.messageForm = this.formBuilder.group({
-			message: ""
+			type: MessageContentType.STRING,
+			string: "",
+			gameInvite: "",
 		}, { updateOn: "change" });
-
-		this.messageForm.get('message')!.valueChanges
+		this.activateString();
+		this.messageForm!.valueChanges
 		.subscribe((value: any) => {
-			this.messageLength = value.length;
+			switch (this.messageForm.value.type)
+			{
+				case (MessageContentType.STRING): {
+					this.messageLength = value?.string.length;
+					break;
+				}
+				case (MessageContentType.GAME_INVITE): {
+					this.messageLength = value?.gameInvite.length;
+					break;
+				}
+			}
 		});
 	}
 
@@ -76,11 +90,50 @@ export class ChatViewComponent {
 	sendMessage() {
 		if (this.blocked)
 			return ;
-		if (!this.messageForm.value.message.length)
+		const message_content: MessageContentI[] = [];
+		if (this.messageForm.value.string?.length)
+		{
+			message_content.push({
+				type: MessageContentType.STRING,
+				content: this.messageForm.value.string,
+			})
+		}
+		if (this.messageForm.value.gameInvite?.length)
+		{
+			message_content.push({
+				type: MessageContentType.GAME_INVITE,
+				content: this.messageForm.value.gameInvite,
+			})
+		}
+		if (!message_content.length)
 			return ;
-		this.sendMessageEmitter.emit(this.messageForm.value.message);
-		this.messageForm.patchValue({
-			message: "",
+		this.sendMessageEmitter.emit(message_content);
+		this.messageForm.setValue({
+			type: MessageContentType.STRING,
+			string: "",
+			gameInvite: "",
 		});
 	}
+
+	specialMessage()
+	{
+		this.displaySpecialMessage = !this.displaySpecialMessage;
+	}
+
+	activateString()
+	{
+		this.messageForm.patchValue({
+			type: MessageContentType.STRING,
+		});
+	}
+
+	activateGameInvite()
+	{
+		this.messageForm.patchValue({
+			type: MessageContentType.GAME_INVITE,
+		});
+	}
+
+	joinGame(room_id: string)
+	{ this.router.navigate(["/play", room_id], { replaceUrl: true }); }
 }

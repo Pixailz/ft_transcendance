@@ -6,8 +6,9 @@ import { ChatRoomI } from 'src/app/interfaces/chat/chat-room.interface';
 import { UserChatRoomI } from 'src/app/interfaces/chat/user-chat-room.interface';
 import { FriendRequestI } from 'src/app/interfaces/user/friend.interface';
 import { UserI } from 'src/app/interfaces/user/user.interface';
-import { NotifStatus } from 'src/app/interfaces/notification.interface';
-import { GameStateI } from 'src/app/interfaces/game/game-room.interface';
+import { NotifStatus, NotificationI } from 'src/app/interfaces/notification.interface';
+import { GameOptionI, GameStateI } from 'src/app/interfaces/game/game-room.interface';
+import { MessageContentI } from 'src/app/interfaces/chat/message.inteface';
 
 @Injectable({
 	providedIn: 'root',
@@ -47,7 +48,7 @@ export class WSGateway {
 	createDmRoom(dst_id: number)
 	{ this.socket.emit("createDmRoom", dst_id); }
 
-	sendDmMessage(room_id: number, message: string)
+	sendDmMessage(room_id: number, message: MessageContentI[])
 	{ this.socket.emit("sendDmMessage", room_id, message); }
 
 
@@ -182,8 +183,8 @@ export class WSGateway {
 	// NOTIFICATION
 
 	// LISTENER
-	listenAllNotifications(): Observable<any[]>
-	{ return this.socket.fromEvent<any[]>("getAllNotifications") }
+	listenAllNotifications(): Observable<any>
+	{ return this.socket.fromEvent<any>("getAllNotifications") }
 
 	listenNewNotification(): Observable<any>
 	{ return this.socket.fromEvent<any>("getNewNotification") }
@@ -208,8 +209,8 @@ export class WSGateway {
 	listenGameWaiting(): Observable<null>
 	{ return this.socket.fromEvent<null>("gameWaiting"); }
 
-	listenIsInGame(): Observable<string>
-	{ return this.socket.fromEvent<string>("isInGame"); }
+	listenIsInGame(): Observable<null>
+	{ return this.socket.fromEvent<null>("isInGame"); }
 
 	listenGameStarting(): Observable<any>
 	{ return this.socket.fromEvent<any>("gameStarting"); }
@@ -224,8 +225,11 @@ export class WSGateway {
 	{ return this.socket.fromEvent<GameStateI>("gameState"); }
 
 	// EMITER
-	searchGame(game_option: any)
+	searchGame(game_option: GameOptionI)
 	{ this.socket.emit("gameSearch", game_option); }
+
+	joinGame(game_id: string)
+	{ this.socket.emit("gameJoin", game_id); }
 
 	isInGame()
 	{ this.socket.emit("isInGame"); }
@@ -236,7 +240,19 @@ export class WSGateway {
 	sendInput(direction: string, type: string, pending_input: number)
 	{ this.socket.emit("gameSendInput", direction, type, pending_input); }
 
+	//GAME REQUEST
 	// LISTENER
 
 	// EMITER
+	sendGameInvite(user_id: number, room_id: string)
+	{ this.socket.emit("gameSendInvite", room_id, user_id); }
+
+	delGameInvite(id: number)
+	{ this.socket.emit("delGameInvite", id) }
+
+	acceptGameInvite(id: number)
+	{ this.socket.emit("acceptGameInvite", id) }
+
+	declineGameInvite(id: number)
+	{ this.socket.emit("declineGameInvite", id) }
 }

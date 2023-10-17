@@ -6,6 +6,8 @@ import { NotifFriendReqReceivedComponent } from './friend-req-received/friend-re
 import { Subject } from 'rxjs';
 import { NotificationService } from 'src/app/services/websocket/notification/service';
 import { TextNotificationComponent } from '../text-notification/text-notification.component';
+import { NotifGameInviteComponent } from './game-invite/game-invite.component';
+import { NotifAchievementComponent } from './achievement/notif-achievement';
 
 
 export interface timeoutI {
@@ -59,16 +61,18 @@ export class NotificationComponent{
 			case NotificationType.FRIEND_REQ_RECEIVED:
 				component = this.container.createComponent(NotifFriendReqReceivedComponent);
 				break;
-			case NotificationType.FRIEND_REQ_SENT:
-				component = this.container.createComponent(TextNotificationComponent);
+			case NotificationType.GAME_REQ:
+				component = this.container.createComponent(NotifGameInviteComponent);
 				break;
-			case NotificationType.FRIEND_REQ_ACCEPTED:
-				component = this.container.createComponent(TextNotificationComponent);
-				break;
-			case NotificationType.FRIEND_REQ_DENIED_FROM:
-				component = this.container.createComponent(TextNotificationComponent);
+			case NotificationType.ACHIEVEMENT:
+				component = this.container.createComponent(NotifAchievementComponent);
 				break;
 			case NotificationType.FRIEND_REQ_DENIED_TO:
+			case NotificationType.FRIEND_REQ_SENT:
+			case NotificationType.FRIEND_REQ_ACCEPTED:
+			case NotificationType.FRIEND_REQ_DENIED_FROM:
+			case NotificationType.GAME_REQ_DACCEPT:
+			case NotificationType.GAME_REQ_DENIED:
 				component = this.container.createComponent(TextNotificationComponent);
 				break;
 			default:

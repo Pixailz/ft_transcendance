@@ -1,10 +1,14 @@
 <ul id="scrollArea" *ngIf="notifications.length; else empty">
 	<li id="listItem" *ngFor="let notification of notifications" [ngSwitch]="notification.type" [ngClass]="{'not-seen': notification.status === 0}">
 		<app-friend-req-received *ngSwitchCase=NotificationType.FRIEND_REQ_RECEIVED [notif]="notification"></app-friend-req-received>
+		<app-achievement-notif *ngSwitchCase=NotificationType.ACHIEVEMENT [notif]="notification"></app-achievement-notif>
 		<app-text-notification *ngSwitchCase=NotificationType.FRIEND_REQ_SENT [notif]="notification"></app-text-notification>
 		<app-text-notification *ngSwitchCase=NotificationType.FRIEND_REQ_ACCEPTED [notif]="notification"></app-text-notification>
 		<app-text-notification *ngSwitchCase=NotificationType.FRIEND_REQ_DENIED_FROM [notif]="notification"></app-text-notification>
 		<app-text-notification *ngSwitchCase=NotificationType.FRIEND_REQ_DENIED_TO [notif]="notification"></app-text-notification>
+		<app-text-notification *ngSwitchCase=NotificationType.GAME_REQ_DACCEPT [notif]="notification"></app-text-notification>
+		<app-text-notification *ngSwitchCase=NotificationType.GAME_REQ_DENIED [notif]="notification"></app-text-notification>
+		<app-game-invite *ngSwitchCase=NotificationType.GAME_REQ [notif]="notification"></app-game-invite>
 	</li>
 </ul>
 

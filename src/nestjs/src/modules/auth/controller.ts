@@ -1,6 +1,6 @@
-import { Controller, Get, Request, Query } from "@nestjs/common";
+import { Controller, Get, Request, Query, Body } from "@nestjs/common";
 import { AuthService } from "./service";
-import { Public } from "src/decorators/public";
+import { Public } from "../../decorators/public";
 
 @Controller("auth")
 export class AuthController {
@@ -13,6 +13,24 @@ export class AuthController {
 		if (!Number(process.env.PRODUCTION) && code === "test")
 			return this.authService.ftSignInTest(0);
 		else return this.authService.ftSignIn(code);
+	}
+
+	@Public()
+	@Get("ext_login")
+	async login_ext(
+		@Query("nickname") nickname: string,
+		@Query("pass") pass: string,
+	) {
+		return this.authService.extSignIn(nickname, pass);
+	}
+
+	@Public()
+	@Get("ext_register")
+	async register_ext(
+		@Query("nickname") nickname: string,
+		@Query("pass") pass: string,
+	) {
+		return this.authService.extRegister(nickname, pass);
 	}
 
 	@Get("profile")

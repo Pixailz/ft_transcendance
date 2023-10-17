@@ -11,11 +11,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { CodeInputModule } from 'angular-code-input';
@@ -36,11 +39,11 @@ import { NotificationComponent } from './components/notification/notification.co
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { RegisterComponent } from './pages/register/register.component';
-import { UserProfileComponent } from './pages/user-profile/user-profile.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { TwofaformComponent } from './components/twofaform/twofaform.component';
 import { CustomReuseStrategy } from './reuse-strategy';
 import {  MatBadgeModule  } from '@angular/material/badge';
-
+import { ClipboardModule } from '@angular/cdk/clipboard';
 // WEBSOCKET
 import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
 import { GlobalErrorHandlerService } from './services/global-error-handler.service';
@@ -70,6 +73,11 @@ import { ChatChannelFriendListComponent } from './components/chat-channel-friend
 import { ChatRoomSettingsComponent } from './components/chat-room-settings/chat-room-settings.component';
 import { JoinChatRoomComponent } from './components/join-chat-room/join-chat-room.component';
 import { ProtectedRoomPasswordComponent } from './components/protected-room-password/protected-room-password.component';
+import { GamesHistoryComponent } from './components/game/games-history/game-history.component';
+import { NotifGameInviteComponent } from './components/notification/game-invite/game-invite.component';
+import { GameInviteDialogComponent } from './components/game/invite-dialog/game-invite-dialog.component';
+import { NotifAchievementComponent } from './components/notification/achievement/notif-achievement';
+import { AchievementsComponent } from './pages/achievements/achievements.component';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -90,6 +98,7 @@ const config: SocketIoConfig = {
 		HomeDashboardComponent,
 		PageNotFoundComponent,
 		UserProfileComponent,
+		GamesHistoryComponent,
 		AvatarComponent,
 		LoginComponent,
 		RegisterComponent,
@@ -109,24 +118,28 @@ const config: SocketIoConfig = {
 		NotifFriendReqAcceptedComponent,
 		NotifFriendReqDeniedFromComponent,
 		NotifFriendReqDeniedToComponent,
+		NotifAchievementComponent,
 		GameComponent,
 		GameWaitingComponent,
 		GameStartedComponent,
 		GameLobbyComponent,
-	    ClickOutDirective,
+		ClickOutDirective,
 		ChatViewComponent,
 		PrivChatPageComponent,
+		NotifGameInviteComponent,
+		GameInviteDialogComponent,
 		ResizableDirective,
 		ResizableHandleComponent,
 		NewDmComponent,
 		UserTooltipComponent,
 		TooltipDirective,
-  ChatPageComponent,
-  NewChatRoomComponent,
-  ChatChannelFriendListComponent,
-  ChatRoomSettingsComponent,
-  JoinChatRoomComponent,
-  ProtectedRoomPasswordComponent,
+		ChatPageComponent,
+		NewChatRoomComponent,
+		ChatChannelFriendListComponent,
+		ChatRoomSettingsComponent,
+		JoinChatRoomComponent,
+		ProtectedRoomPasswordComponent,
+		AchievementsComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -139,14 +152,18 @@ const config: SocketIoConfig = {
 		MatDialogModule,
 		MatToolbarModule,
 		MatTableModule,
+		MatPaginatorModule,
+		MatListModule,
 		MatSlideToggleModule,
 		MatFormFieldModule,
 		MatInputModule,
+		MatCheckboxModule,
 		MatSelectModule,
 		ReactiveFormsModule,
 		AppRoutingModule,
 		HttpClientModule,
 		FormsModule,
+		ClipboardModule,
 		MatProgressBarModule,
 		SocketIoModule.forRoot(config),
 		CodeInputModule,
@@ -160,4 +177,3 @@ const config: SocketIoConfig = {
 	bootstrap: [AppComponent]
 })
 export class AppModule { }
-
