@@ -1,5 +1,4 @@
 
-<div class="glass container">
 <form [formGroup]="loginForm" class="loginform" *ngIf="isButtonClickable">
 	
 	<input type="text"  formControlName="nickname" placeholder="User name" required />
@@ -11,7 +10,7 @@
 		placeholder="User password"
 		required 
 		/>
-		<mat-icon (click)="toggle()">
+		<mat-icon (click)="toggle()" [ngClass]="{'visibility': loginForm.value.show_pass}">
 			{{loginForm.value.show_pass ? 'visibility_off' : 'visibility'}}
 		</mat-icon>
 		<input style="display:none;" type="checkbox" formControlName="show_pass" />
@@ -22,7 +21,7 @@
 	</div>
 	<br/>
 	<div class="btn-container">
-		<button (click)="doAction()" [disabled]="!loginForm.valid">
+		<button (click)="doAction()" [disabled]="!loginForm.valid" [ngClass]="{'login': loginForm.value.login}">
 			<span *ngIf="loginForm.value.login">login</span>
 			<span *ngIf="!loginForm.value.login">register</span>
 		</button>
@@ -35,4 +34,3 @@
 		</button>
 	</div>
 </form>
-</div>

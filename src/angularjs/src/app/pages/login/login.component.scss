@@ -26,6 +26,13 @@
     position: absolute;
     right: 0;
     cursor: pointer;
+	margin-right: 1em;
+	color: rgba(255, 255, 255, 0.493);
+	transition: color .1s linear;
+}
+
+.password-container mat-icon.visibility {
+	color: rgb(255, 255, 255);
 }
 
 label {
@@ -41,6 +48,11 @@ label {
 	align-content: center;
 	width: 100%;
 }
+
+button {
+	border: none;
+}
+
 
 form {
 	position: relative;
@@ -65,20 +77,32 @@ form {
 			padding-top: 1em;
 			padding-bottom: 1em;
 		}
+
+		&.btn-container {
+			flex-direction: row-reverse;
+		}
 	}
 
 	button:not(.ft-btn-login){
-		margin: 0.2em 0.4em;
-		background-color: #00BABC;
+		padding: 1em 2em;
+		background-color: #ff9999;
 		border-radius: 0.5em;
-		&:disabled{
-			filter: brightness(50%);
-		} 
-		&:hover:not(:disabled) {
-			cursor: pointer;
+		transition: all .1s linear;
+		&:disabled:disabled{
+			background-color:rgb(43, 43, 43);
 			filter: brightness(80%);
-		
+		} 
+		&:not(:disabled) {
+			cursor: pointer;
 		}
+		&:hover:not(:disabled) {
+			filter: brightness(80%);
+		}
+
+		&.login {
+			background-color: #a7dca3;
+		}
+
 		span {
 			font-size: 1.3em;
 			color: white;
@@ -89,20 +113,25 @@ form {
 
 .ft-btn-login {
 	background-color: #00BABC;
-	display: flex;
 	border: none;
 	min-width: 150px;
 	min-height: 60px;
 	height: 30px;
 	padding: 10px 15px;
 	border-radius: 5px;
-	justify-content: space-between;
-	align-items: center;
 
-	span {
-		font-size: 1.3em;
-		color: white;
+	.btn-content {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0;
+		span {
+			color: white;
+			height: fit-content;
+			font-size: 1.3em;
+		}
 	}
+
 
 	&:hover:not(:disabled) {
 		cursor: pointer;
