@@ -62,4 +62,8 @@ jobs:
 
       - name: 🤖 Executing docker compose up
         timeout-minutes: 5
-        run: docker compose -f ${DOCKER_COMPOSE_FILE} up --build --wait
+        run: docker compose -f ${DOCKER_COMPOSE_FILE} up --build -d --wait
+
+      - name: 💬 Docker compose logs
+        if: always()
+        run: docker compose logs
