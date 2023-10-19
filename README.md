@@ -30,15 +30,20 @@
 	</a>
 </p>
 
-<h1>Introduction</h1>
+<h1 align="center">Introduction</h1>
 
+<p align="center">
 Welcome to our ft_transcendence project, an exciting journey in web development that challenges you to explore new horizons and create a real-time, multiplayer online gaming platform centered around the classic game Pong, all while prioritizing robust security practices.
+</p>
 
-Feel free to explore the detailed project specifications and guidelines in the [PDF](https://github.com/Pixailz/ft_transcendence/blob/main/rsc/en.subject.v13.pdf) or you can go to the [wiki](https://github.com/Pixailz/ft_transcendence/wiki) page for more information
+<p align="center">
+Feel free to explore the detailed project specifications and guidelines in the <a href="https://github.com/Pixailz/ft_transcendence/blob/main/rsc/en.subject.v13.pdf">PDF</a> or you can go to the <a href="https://github.com/Pixailz/ft_transcendence/wiki">wiki</a> page for more information
+</p>
 
-<h1>Author</h1>
 
-<table>
+<h1 align="center">Author</h1>
+
+<table align="center">
   <tr>
     <td align="center" valign="top" width="25%">
       <a href="https://github.com/clinche">
