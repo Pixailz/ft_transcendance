@@ -62,6 +62,7 @@ import { ResizableHandleComponent } from './components/resizable-handle/resizabl
 import { NewDmComponent } from './components/new-dm/new-dm.component';
 import { UserTooltipComponent } from './components/user-tooltip/user-tooltip.component';
 import { TooltipDirective } from './directives/tooltip.directive';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 import { GameWaitingComponent } from './components/game/waiting/waiting.component';
 import { GameStartedComponent } from './components/game/started/started.component';
@@ -78,6 +79,7 @@ import { NotifGameInviteComponent } from './components/notification/game-invite/
 import { GameInviteDialogComponent } from './components/game/invite-dialog/game-invite-dialog.component';
 import { NotifAchievementComponent } from './components/notification/achievement/notif-achievement';
 import { AchievementsComponent } from './pages/achievements/achievements.component';
+import { MutedTimeComponentComponent } from './components/muted-time-component/muted-time-component.component';
 
 const config: SocketIoConfig = {
 	url: environment.socket_url,
@@ -140,6 +142,7 @@ const config: SocketIoConfig = {
 		JoinChatRoomComponent,
 		ProtectedRoomPasswordComponent,
 		AchievementsComponent,
+  MutedTimeComponentComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -168,6 +171,7 @@ const config: SocketIoConfig = {
 		SocketIoModule.forRoot(config),
 		CodeInputModule,
 		MatBadgeModule,
+		MatTooltipModule
 	],
 	providers: [
 		AuthGuardService,

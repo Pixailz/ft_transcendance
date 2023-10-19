@@ -22,7 +22,6 @@ export class ProtectedRoomPasswordComponent {
 	}
 
 	ngOnDestroy() {
-		// console.log(this.passwordForm.value.password)
 		this.dialogRef.close(this.passwordForm.value.password);
 	}
 }

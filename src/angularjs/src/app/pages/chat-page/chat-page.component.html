@@ -11,5 +11,5 @@
 	</li>
 </ul>
 
-<app-chat-view *ngIf="chatChannelService.isGoodSelectedRoom()" [room]="chatChannelService.getSelectedRoom()" (sendMessageEmitter)="chatChannelService.sendMessage($event)">
+<app-chat-view *ngIf="chatChannelService.isGoodSelectedRoom()" [blocked]="chatRoomService.isMuted(chatChannelService.getSelectedRoom(), userService.user.id)" [room]="chatChannelService.getSelectedRoom()" (sendMessageEmitter)="chatChannelService.sendMessage($event)">
 </app-chat-view>

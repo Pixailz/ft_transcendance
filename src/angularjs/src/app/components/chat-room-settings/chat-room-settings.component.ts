@@ -2,6 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { pairwise } from 'rxjs';
+import { RoomAction } from 'src/app/interfaces/chat/channel.interface';
 import { ChatRoomI, RoomType } from 'src/app/interfaces/chat/chat-room.interface';
 import { UserI } from 'src/app/interfaces/user/user.interface';
 import { UserService } from 'src/app/services/user.service';
@@ -10,6 +11,7 @@ import { ChatRoomService } from 'src/app/services/websocket/chat/chatroom.servic
 import { FriendService } from 'src/app/services/websocket/friend/service';
 import { WSGateway } from 'src/app/services/websocket/gateway';
 import { ChatChannelFriendListComponent } from '../chat-channel-friend-list/chat-channel-friend-list.component';
+import { MutedTimeComponentComponent } from '../muted-time-component/muted-time-component.component';
 
 @Component({
   selector: 'app-chat-room-settings',
@@ -123,5 +125,41 @@ export class ChatRoomSettingsComponent {
 			}
 		}
 		return (friend);
+	}
+
+	onRoomAction(room: ChatRoomI, action: RoomAction, target_id: number)
+	{ this.wsGateway.roomAction(room.id, action, target_id); }
+
+	onKickUser(room: ChatRoomI, user: UserI)
+	{ this.onRoomAction(room, RoomAction.KICK, user.id); }
+
+	onBanUser(room: ChatRoomI, user: UserI)
+	{ this.onRoomAction(room, RoomAction.BAN, user.id); }
+
+	onUnBanUser(room: ChatRoomI, user: UserI)
+	{ this.onRoomAction(room, RoomAction.UNBAN, user.id); }
+
+	onPromoteUser(room: ChatRoomI, user: UserI)
+	{ this.onRoomAction(room, RoomAction.PROMOTE, user.id); }
+
+	onDemoteUser(room: ChatRoomI, user: UserI)
+	{ this.onRoomAction(room, RoomAction.DEMOTE, user.id); }
+
+	onGiveKrownUser(room: ChatRoomI, user: UserI)
+	{ this.onRoomAction(room, RoomAction.OWNERSHIP, user.id); }
+
+	onUnmuteUser(room: ChatRoomI, user: UserI)
+	{ this.onRoomAction(room, RoomAction.UNMUTE, user.id); }
+
+	onMuteUser(room: ChatRoomI, user: UserI)
+	{
+		const dialog = this.dialog.open(MutedTimeComponentComponent, {
+			panelClass: ['custom-dialog'],
+			data: {},
+		});
+
+		dialog.afterClosed().subscribe((muted_time: number) => {
+			this.wsGateway.channelMute(room.id, user.id, muted_time);
+		})
 	}
 }

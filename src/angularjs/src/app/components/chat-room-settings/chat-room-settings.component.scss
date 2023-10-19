@@ -49,14 +49,23 @@
 
 	ul {
 		max-height: 100%;
+		overflow: auto;
 
 		li {
-			display: flex;
-			justify-content: space-between;
-			gap: .5em;
 			width: 100%;
+			text-align: center;
+
+			&:hover .options {
+				transform: scaleY(100%);
+				opacity: 1;
+			}
 
 			.options {
+				transition: all .3s linear;
+				opacity: 0;
+				transform: scaleY(0);
+				transform-origin: top;
+
 				button {
 					height: 100%;
 					aspect-ratio: 1;
@@ -65,23 +74,20 @@
 					color: rgba(255, 255, 255, 0.437);
 					transition: color .1s linear;
 					
-					&:hover {
-						
-						&.mute {
-							color: rgb(225, 225, 225);
-						}
-						&.kick {
-							color: orange;
-						}
-						&.ban {
-							color: red;
-						}
-						&.admin {
-							color: greenyellow;
-						}
-						&.owner {
-							color: gold;
-						}
+					&:not(:disabled):hover.mute, &.mute.active {
+						color: rgb(225, 225, 225);
+					}
+					&:not(:disabled):hover.kick, &.kick.active {
+						color: orange;
+					}
+					&:not(:disabled):hover.ban, &.ban.active {
+						color: red;
+					}
+					&:not(:disabled):hover.admin, &.admin.active {
+						color: greenyellow;
+					}
+					&:not(:disabled):hover.owner, &.owner.active {
+						color: gold;
 					}
 					
 					
@@ -90,6 +96,9 @@
 						width: fit-content;
 					
 					}
+				}
+				button:disabled {
+					cursor: pointer;
 				}
 			}
 		}
