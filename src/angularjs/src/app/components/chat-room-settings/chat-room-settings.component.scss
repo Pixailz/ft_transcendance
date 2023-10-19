@@ -1,4 +1,7 @@
 :host {
+	display: flex;
+	gap: 2em;
+
 	form {
 		gap: 0.5em;
 		flex-direction: column;
@@ -40,6 +43,54 @@
 			&.disabled {
 				color: white;
 				background: rgba(90, 90, 90, 0.3);
+			}
+		}
+	}
+
+	ul {
+		max-height: 100%;
+
+		li {
+			display: flex;
+			justify-content: space-between;
+			gap: .5em;
+			width: 100%;
+
+			.options {
+				button {
+					height: 100%;
+					aspect-ratio: 1;
+					background-color: transparent;
+					border: none;
+					color: rgba(255, 255, 255, 0.437);
+					transition: color .1s linear;
+					
+					&:hover {
+						
+						&.mute {
+							color: rgb(225, 225, 225);
+						}
+						&.kick {
+							color: orange;
+						}
+						&.ban {
+							color: red;
+						}
+						&.admin {
+							color: greenyellow;
+						}
+						&.owner {
+							color: gold;
+						}
+					}
+					
+					
+					mat-icon {
+						height: fit-content;
+						width: fit-content;
+					
+					}
+				}
 			}
 		}
 	}

@@ -86,5 +86,6 @@ export class JoinChatRoomComponent {
 		else {
 			this.wsGateway.joinChannelRoom(room.id, "");
 		}
+		this.dialogRef.close();
 	}
 }

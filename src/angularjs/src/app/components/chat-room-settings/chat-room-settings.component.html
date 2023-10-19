@@ -30,5 +30,29 @@
 			</button>
 		</div>
 	</form>
+	<ul>
+		<li *ngFor="let user of chatRoomService.getUserInRoom(room)">
+			<span>
+				{{user.nickname}}
+			</span>
+			<div class="options">
+				<button class="mute">
+					<mat-icon fontIcon="volume_off"></mat-icon>
+				</button>
+				<button class="kick">
+					<mat-icon fontIcon="person_remove"></mat-icon>
+				</button>
+				<button class="ban">
+					<mat-icon fontIcon="block"></mat-icon>
+				</button>
+				<button class="admin">
+					<mat-icon fontIcon="admin_panel_settings"></mat-icon>
+				</button>
+				<button class="owner">
+					<mat-icon fontIcon="key"></mat-icon>
+				</button>
+			</div>
+		</li>
+	</ul>
 	
 </ng-container>

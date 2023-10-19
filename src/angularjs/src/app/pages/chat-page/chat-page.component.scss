@@ -72,6 +72,7 @@ ul {
             z-index: 1;
 			display: flex;
 			justify-content: space-evenly;
+			gap: 1em;
 
 			& app-flat-button {
 				display: block;

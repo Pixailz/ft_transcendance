@@ -466,7 +466,7 @@ export class ChatChannelService {
 		const selected_room = this.getSelectedRoom();
 
 		if (selected_room.id === -1) return ;
-		this.wsGateway.sendDmMessage(selected_room.id, message);
+		this.wsGateway.sendGlobalMessage(selected_room.id, message);
 	}
 
 	getInfo()
