@@ -22,9 +22,9 @@ export class WSNotificationService {
 		private dbChatRoomService: DBChatRoomService,
 	) {}
 
-	async getUserNickname(id: number) {
+	async getFtLogin(id: number) {
 		const user = await this.userService.getInfoById(id);
-		return user.nickname;
+		return user.ftLogin;
 	}
 
 	async getAllNotifications(socket: Socket) {
@@ -58,7 +58,7 @@ export class WSNotificationService {
 			type: NotificationType.FRIEND_REQ_SENT,
 			userId: user_id,
 			data: friend_id.toString(),
-			data2: await this.getUserNickname(friend_id),
+			data2: await this.getFtLogin(friend_id),
 		});
 		this.wsSocket.sendToUser(
 			server,
@@ -88,7 +88,7 @@ export class WSNotificationService {
 		const notif_user = await this.dbNotificationService.create({
 			type: NotificationType.FRIEND_REQ_ACCEPTED,
 			userId: user_id,
-			data: await this.getUserNickname(friend_id),
+			data: await this.getFtLogin(friend_id),
 		});
 		this.wsSocket.sendToUser(
 			server,
@@ -100,7 +100,7 @@ export class WSNotificationService {
 		const notif_friend = await this.dbNotificationService.create({
 			type: NotificationType.FRIEND_REQ_ACCEPTED,
 			userId: friend_id,
-			data: await this.getUserNickname(user_id),
+			data: await this.getFtLogin(user_id),
 		});
 		this.wsSocket.sendToUser(
 			server,
@@ -119,7 +119,7 @@ export class WSNotificationService {
 		const notif_user = await this.dbNotificationService.create({
 			type: NotificationType.FRIEND_REQ_DENIED_FROM,
 			userId: user_id,
-			data: await this.getUserNickname(friend_id),
+			data: await this.getFtLogin(friend_id),
 		});
 		this.wsSocket.sendToUser(
 			server,
@@ -131,7 +131,7 @@ export class WSNotificationService {
 		const notif_friend = await this.dbNotificationService.create({
 			type: NotificationType.FRIEND_REQ_DENIED_TO,
 			userId: friend_id,
-			data: await this.getUserNickname(user_id),
+			data: await this.getFtLogin(user_id),
 		});
 		this.wsSocket.sendToUser(
 			server,
@@ -181,7 +181,7 @@ export class WSNotificationService {
 			type: NotificationType.GAME_REQ,
 			userId: friend_id,
 			data: room_id,
-			data2: await this.getUserNickname(user_id),
+			data2: await this.getFtLogin(user_id),
 		});
 		this.wsSocket.sendToUser(
 			server,
@@ -239,7 +239,7 @@ export class WSNotificationService {
 		const accept_notif = await this.dbNotificationService.create({
 			type: NotificationType.GAME_REQ_ACCEPTED,
 			userId: user_id,
-			data: await this.getUserNickname(user_id),
+			data: await this.getFtLogin(user_id),
 		});
 		this.wsSocket.sendToUser(
 			server,
@@ -263,7 +263,7 @@ export class WSNotificationService {
 		const decline_notif = await this.dbNotificationService.create({
 			type: NotificationType.GAME_REQ_DENIED,
 			userId: user_id,
-			data: await this.getUserNickname(user_id),
+			data: await this.getFtLogin(user_id),
 		});
 		this.wsSocket.sendToUser(
 			server,
