@@ -1,5 +1,5 @@
 <div class="container">
-	<p>{{notif.data.from.nickname}}</p>
+	<p>Friend request from {{notif.data.from.nickname}}</p>
 	<button class="accept-btn" (click)="friendService.acceptRequest(notif.data.from.id)">
 		<mat-icon fontIcon="done">
 		</mat-icon>
