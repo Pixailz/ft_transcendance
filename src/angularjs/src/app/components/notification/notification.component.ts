@@ -58,15 +58,13 @@ export class NotificationComponent{
 	displayNotifications(notification: NotificationI) {
 		let component: ComponentRef<any> | null = null;
 		switch (notification.type) {
-			case NotificationType.FRIEND_REQ_RECEIVED:
-				component = this.container.createComponent(NotifFriendReqReceivedComponent);
-				break;
 			case NotificationType.GAME_REQ:
 				component = this.container.createComponent(NotifGameInviteComponent);
 				break;
 			case NotificationType.ACHIEVEMENT:
 				component = this.container.createComponent(NotifAchievementComponent);
 				break;
+			case NotificationType.FRIEND_REQ_RECEIVED:
 			case NotificationType.FRIEND_REQ_DENIED_TO:
 			case NotificationType.FRIEND_REQ_SENT:
 			case NotificationType.FRIEND_REQ_ACCEPTED:
