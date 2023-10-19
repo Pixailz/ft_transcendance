@@ -1,12 +1,14 @@
 <ng-template #notOwner>
 	<div class="info">
-		<h4>ROOM INFO</h4>
-		<p>ID   : {{room.id}}</p>
-		<p>NAME : {{room.name}}</p>
-		<p>TYPE : {{chatRoomService.getRoomTypeStr(room)}}</p>
-		<p>OWNER : {{chatRoomService.getOwner(room).nickname }}</p>
+		<div class="title">
+			<h4>{{room.name}}</h4><span class="id">#{{room.id}}</span>
+			<span class="type">{{chatRoomService.getRoomTypeStr(room)}}</span>
+		</div>
+		<div class="line">
+			<mat-icon fontIcon="key"></mat-icon><span>{{chatRoomService.getOwner(room).nickname }}</span>
+		</div>
 		<p>ADMIN :</p>
-		<p *ngFor="let user of chatRoomService.getAdmin(room)">- {{user.nickname}}</p>
+		<p *ngFor="let user of chatRoomService.getAdmin(room)">{{user.nickname}}</p>
 		<h4>USERS ({{chatRoomService.getUserInRoom(room).length}}/40)</h4>
 		<p *ngFor="let user of chatRoomService.getUserInRoom(room)">{{user.nickname}}</p>
 	</div>

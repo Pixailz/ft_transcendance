@@ -4,7 +4,7 @@
 		<mat-icon fontIcon="search"></mat-icon>
 	</div>
 	<ol>
-		<li *ngFor="let room of showed_rooms" (click)="joinRoom(room)">
+		<li *ngFor="let room of filterAndSortRooms(searchRoomForm.value.searchString)" (click)="joinRoom(room)">
 			<span>{{chatRoomService.getRoomTitle(room)}}</span>
 		</li>
 	</ol>

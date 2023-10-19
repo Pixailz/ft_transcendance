@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ChatRoomI, RoomType } from 'src/app/interfaces/chat/chat-room.interface';
+import { BehaviorSubject } from 'rxjs';
+import { ChatRoomI, DefChatRoomI, RoomType } from 'src/app/interfaces/chat/chat-room.interface';
 import { ChatChannelService } from 'src/app/services/websocket/chat/channel/service';
 import { ChatRoomService } from 'src/app/services/websocket/chat/chatroom.service';
 import { WSGateway } from 'src/app/services/websocket/gateway';
@@ -19,7 +20,7 @@ export class JoinChatRoomComponent {
 	constructor(
 		private formBuilder: FormBuilder,
 		public dialogRef: MatDialogRef<JoinChatRoomComponent>,
-		private chatChannelService: ChatChannelService,
+		public chatChannelService: ChatChannelService,
 		public chatRoomService: ChatRoomService,
 		private dialog: MatDialog,
 		private wsGateway: WSGateway,
@@ -29,9 +30,6 @@ export class JoinChatRoomComponent {
 		this.searchRoomForm = this.formBuilder.group({
 			searchString: ""
 		});
-		this.searchRoomForm.valueChanges.subscribe((value) => {
-			this.showed_rooms = this.filterAndSortRooms(value.searchString);
-		})
 	}
 
 	filterAndSortRooms(searchString: string): ChatRoomI[] {
