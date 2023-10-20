@@ -112,16 +112,20 @@ export class UserService{
 			// 		tmp = "🟢 ";
 			// 	break ;
 			// }
-			case Status.AWAY: {
-				tmp = "🟠 ";
-				break;
-			}
 			case Status.CONNECTED: {
 				tmp = "🟢 ";
 				break;
 			}
 			case Status.DISCONNECTED: {
 				tmp = "⚫ "
+				break;
+			}
+			case Status.INGAME: {
+				tmp = "🟣 "
+				break;
+			}
+			case Status.AWAY: {
+				tmp = "🟠 ";
 				break;
 			}
 		}

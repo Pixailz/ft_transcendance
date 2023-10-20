@@ -23,18 +23,20 @@ export class UserTooltipComponent {
 		}
 	}
 
-	getLiteralStatus(status: number | undefined)
+	getLiteralStatus()
 	{
-		var color;
 		switch (this.user.status) {
-			case Status.AWAY: {
-				return 'away';
-			}
 			case Status.CONNECTED: {
 				return 'connected';
 			}
 			case Status.DISCONNECTED: {
 				return 'disconnected';
+			}
+			case Status.INGAME: {
+				return 'ingame';
+			}
+			case Status.AWAY: {
+				return 'away';
 			}
 			default:
 				return "";

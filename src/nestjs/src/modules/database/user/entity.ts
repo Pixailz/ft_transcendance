@@ -23,7 +23,8 @@ import { UserMetricsEntity } from "../metrics/entity";
 export enum Status {
 	DISCONNECTED,
 	CONNECTED,
-	AWAY,
+	INGAME,
+	// AWAY,
 }
 
 @Entity()

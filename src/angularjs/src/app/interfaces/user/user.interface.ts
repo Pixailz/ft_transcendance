@@ -1,6 +1,8 @@
 export enum Status {
 	DISCONNECTED,
 	CONNECTED,
+	INGAME,
+	// TODO
 	AWAY,
 }
 

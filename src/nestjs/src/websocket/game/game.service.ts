@@ -15,7 +15,7 @@ import {
 	GameOptionI,
 	PowerUpI,
 } from "./game.interface";
-import { UserEntity } from "../../modules/database/user/entity";
+import { Status, UserEntity } from "../../modules/database/user/entity";
 import { DBGameInfoService } from "../../modules/database/game/gameInfo/service";
 import { GameInfoEntity } from "../../modules/database/game/gameInfo/entity";
 import { DBPlayerScoreService } from "../../modules/database/game/playerScore/service";
@@ -59,7 +59,7 @@ export class WSGameService {
 		};
 		const room = this.rooms.get(room_id);
 		if (room) {
-			this.addPlayerToRoom(player, room_id, socket);
+			this.addPlayerToRoom(server, player, room_id, socket);
 			if (this.isFullRoom(room)) this.startGame(server, room_id);
 			else socket.emit("gameWaiting", room_id);
 		}
@@ -74,7 +74,7 @@ export class WSGameService {
 			),
 			socket: socket.id,
 		};
-		const room_id = this.gameSearchOpponent(player, game_opt, socket);
+		const room_id = this.gameSearchOpponent(server, player, game_opt, socket);
 		const room = this.rooms.get(room_id);
 		if (this.isFullRoom(room) && room.status !== LobbyStatus.STARTED)
 			this.startGame(server, room_id);
@@ -82,13 +82,18 @@ export class WSGameService {
 			socket.emit("gameWaiting", room_id);
 	}
 
-	gameSearchOpponent(player: PlayerSockI, game_opt: any, socket: Socket) {
+	gameSearchOpponent(
+		server: Server,
+		player: PlayerSockI,
+		game_opt: any,
+		socket: Socket
+	) {
 		const room_id = this.gameSearchRoom(player, game_opt);
 
 		if (room_id !== "" && !game_opt.is_private) {
-			this.addPlayerToRoom(player, room_id, socket);
+			this.addPlayerToRoom(server, player, room_id, socket);
 		} else {
-			return this.createRoom(player, game_opt, socket);
+			return this.createRoom(server, player, game_opt, socket);
 		}
 		return room_id;
 	}
@@ -125,13 +130,19 @@ export class WSGameService {
 		return nb_player >= max_player;
 	}
 
-	addPlayerToRoom(player_sock: PlayerSockI, room_id: string, socket: Socket) {
+	addPlayerToRoom(
+		server: Server,
+		player_sock: PlayerSockI,
+		room_id: string,
+		socket: Socket
+	) {
 		const current_lobby: LobbyI = this.rooms.get(room_id);
 		for (const player_id in current_lobby.players) {
 			if (
 				current_lobby.players[player_id].user.id === player_sock.user.id
 			) {
 				current_lobby.players[player_id].socket = player_sock.socket;
+				this.setStatusUserInRoom(server, current_lobby, Status.INGAME);
 				socket.emit(
 					"gameReconnect",
 					current_lobby.state,
@@ -155,7 +166,12 @@ export class WSGameService {
 		current_lobby.state.players.push(player);
 	}
 
-	createRoom(player: PlayerSockI, game_opt: GameOptionI, socket: Socket) {
+	createRoom(
+		server: Server,
+		player: PlayerSockI,
+		game_opt: GameOptionI,
+		socket: Socket
+	) {
 		let room_id = `${this.getUidPart(8)}-`;
 
 		for (let i = 0; i < 4; i++) room_id += `${this.getUidPart(4)}-`;
@@ -194,7 +210,7 @@ export class WSGameService {
 			},
 			players: [],
 		} as LobbyI);
-		this.addPlayerToRoom(player, room_id, socket);
+		this.addPlayerToRoom(server, player, room_id, socket);
 		return room_id;
 	}
 
@@ -268,9 +284,23 @@ export class WSGameService {
 		else socket.emit("gameWaiting");
 	}
 
+	async setStatusUserInRoom(server: Server, room: LobbyI, status: Status)
+	{
+		for (var i in room.players)
+		{
+			await this.userService.setStatus(room.players[i].user.id, status);
+			const friends = await this.userService.getAllFriend(room.players[i].user.id);
+			this.wsSocket.sendToUsersInfo(server, friends, "getNewStatusFriend", {
+				user_id: room.players[i].user.id,
+				status: status,
+			});
+		}
+	}
+
 	async startGame(server: Server, room_id: string) {
 		const room = this.rooms.get(room_id);
 
+		this.setStatusUserInRoom(server, room, Status.INGAME);
 		if (!this.canStartGame(room)) return;
 
 		try {
@@ -315,6 +345,7 @@ export class WSGameService {
 		 * it will be handled by gameJoin() which wont be able to find the room
 		 * and thus will do nothing
 		 */
+		this.setStatusUserInRoom(server, room, Status.CONNECTED);
 		console.log("game ended");
 	}
 
