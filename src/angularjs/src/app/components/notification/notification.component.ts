@@ -65,6 +65,8 @@ export class NotificationComponent{
 				component = this.container.createComponent(NotifAchievementComponent);
 				break;
 			case NotificationType.FRIEND_REQ_RECEIVED:
+				component = this.container.createComponent(NotifFriendReqReceivedComponent);
+				break;
 			case NotificationType.FRIEND_REQ_DENIED_TO:
 			case NotificationType.FRIEND_REQ_SENT:
 			case NotificationType.FRIEND_REQ_ACCEPTED:
