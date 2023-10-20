@@ -45,7 +45,6 @@ import { CustomReuseStrategy } from './reuse-strategy';
 import {  MatBadgeModule  } from '@angular/material/badge';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 // WEBSOCKET
-import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
 import { GlobalErrorHandlerService } from './services/global-error-handler.service';
 import { environment } from './environments/environment';
 import { TextNotificationComponent } from './components/text-notification/text-notification.component';
@@ -111,10 +110,8 @@ const config: SocketIoConfig = {
 		ProfileComponent,
 		ErrordialogComponent,
 		FlatListComponent,
-		WSChatChannelComponent,
 		NotificationComponent,
 		TextNotificationComponent,
-		WSChatChannelComponent,
 		NotifFriendReqSentComponent,
 		NotifFriendReqReceivedComponent,
 		NotifFriendReqAcceptedComponent,
@@ -142,7 +139,7 @@ const config: SocketIoConfig = {
 		JoinChatRoomComponent,
 		ProtectedRoomPasswordComponent,
 		AchievementsComponent,
-  MutedTimeComponentComponent,
+		MutedTimeComponentComponent,
 	],
 	imports: [
 		BrowserModule,
