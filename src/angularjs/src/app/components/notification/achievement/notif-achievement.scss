@@ -1,18 +1,26 @@
 .container {
-	// display: flex;
-	// justify-content: center;
-	// align-items: center;
 
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 	p {
 		margin: 0;
 		font-size: 1em;
 		text-shadow: 0 0 5px rgb(83, 83, 83);
 		text-align: center;
-		span {
-			font-size: 1.5em;
-			font-weight: bold;
-			color: #fff;
-			text-shadow: 0 0 5px rgb(83, 83, 83);
-		}
+	}
+
+	span {
+		font-size: 1.5em;
+		font-weight: bold;
+		text-shadow: 0 0 5px rgb(83, 83, 83);
+	}
+
+	img {
+		max-height: 50%;
+		max-width: 50%;
+		margin: 0;
+		padding: 0;
 	}
 }
