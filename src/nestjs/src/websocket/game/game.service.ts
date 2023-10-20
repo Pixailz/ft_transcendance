@@ -15,7 +15,7 @@ import {
 	GameOptionI,
 	PowerUpI,
 } from "./game.interface";
-import { UserEntity } from "../../modules/database/user/entity";
+import { Status, UserEntity } from "../../modules/database/user/entity";
 import { DBGameInfoService } from "../../modules/database/game/gameInfo/service";
 import { GameInfoEntity } from "../../modules/database/game/gameInfo/entity";
 import { DBPlayerScoreService } from "../../modules/database/game/playerScore/service";
@@ -268,9 +268,23 @@ export class WSGameService {
 		else socket.emit("gameWaiting");
 	}
 
+	async setStatusUserInRoom(server: Server, room: LobbyI, status: Status)
+	{
+		for (var i in room.players)
+		{
+			await this.userService.setStatus(room.players[i].user.id, status);
+			const friends = await this.userService.getAllFriend(room.players[i].user.id);
+			this.wsSocket.sendToUsersInfo(server, friends, "getNewStatusFriend", {
+				user_id: room.players[i].user.id,
+				status: status,
+			});
+		}
+	}
+
 	async startGame(server: Server, room_id: string) {
 		const room = this.rooms.get(room_id);
 
+		this.setStatusUserInRoom(server, room, Status.INGAME);
 		if (!this.canStartGame(room)) return;
 
 		try {
@@ -315,6 +329,7 @@ export class WSGameService {
 		 * it will be handled by gameJoin() which wont be able to find the room
 		 * and thus will do nothing
 		 */
+		this.setStatusUserInRoom(server, room, Status.CONNECTED);
 		console.log("game ended");
 	}
 

@@ -159,9 +159,10 @@ export class DBUserService {
 
 	async getOnlineUsers(): Promise<UserEntity[]> {
 		const users = await this.userRepo.find({
-			where: {
-				status: Status.CONNECTED,
-			},
+			where: [
+				{ status: Status.CONNECTED },
+				{ status: Status.INGAME },
+			]
 		});
 		return this.sanitize.Users(users);
 	}

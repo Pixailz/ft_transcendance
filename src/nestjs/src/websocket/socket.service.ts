@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { Server } from "socket.io";
 import { ChatRoomEntity } from "../modules/database/chatRoom/entity";
 import { UserEntity } from "../modules/database/user/entity";
-import { GameStateI, LobbyI } from "./game/game.interface";
+import { LobbyI } from "./game/game.interface";
 
 @Injectable()
 export class WSSocket {

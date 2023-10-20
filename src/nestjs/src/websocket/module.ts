@@ -17,7 +17,10 @@ import { BrcyptWrap } from "../addons/bcrypt.wrapper";
 
 
 @Module({
-	imports: [AuthModule, forwardRef(() => DBModule)],
+	imports: [
+		AuthModule,
+		forwardRef(() => DBModule),
+	],
 	providers: [
 		Sanitize,
 		UserService,
