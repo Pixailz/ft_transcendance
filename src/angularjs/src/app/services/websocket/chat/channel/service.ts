@@ -10,6 +10,7 @@ import { WSService } from "../../service";
 import { DefChatChannelI, RoomAction } from "src/app/interfaces/chat/channel.interface";
 import { ChatRoomI, DefChatRoomI } from "src/app/interfaces/chat/chat-room.interface";
 import { UserChatRoomI } from "src/app/interfaces/chat/user-chat-room.interface";
+import { MessageContentI } from "src/app/interfaces/chat/message.inteface";
 
 @Injectable({
 	providedIn: "root",
@@ -461,7 +462,7 @@ export class ChatChannelService {
 	isSameUser(i: number)
 	{ return (this.chatRoomService.isSameUser(this.getSelectedRoom(), i)); }
 
-	sendMessage(message: string) {
+	sendMessage(message: MessageContentI[]) {
 		const selected_room = this.getSelectedRoom();
 
 		if (selected_room.id === -1) return ;

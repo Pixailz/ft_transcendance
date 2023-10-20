@@ -1,0 +1,60 @@
+form {
+	max-width: 25vw;
+	max-height: 50vh;
+	display: flex;
+	flex-direction: column;
+	gap: .5em;
+
+	.input-container {
+		position: relative;
+		
+		input {
+			background-color: transparent;
+			color: white;
+			padding: .5em;
+			border-radius: 9999px;
+		}
+		
+		mat-icon {
+			position: absolute;
+			top: 50%;
+			right: 1em;
+			transform: translateY(-50%);
+			color: white;
+			font-size: 1.2em;
+			height: fit-content;
+			width: fit-content;
+			text-align: center;
+			font-size: 1.2em;
+		}
+	}
+
+	ol {
+		padding: 0;
+		margin: 0;
+		list-style-type: none;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: .5em;
+
+		li {
+			max-width: 100%;
+			box-sizing: border-box;
+			padding: .5em;
+			cursor: pointer;
+			border-radius: .5em;
+			transition: all .1s linear;
+			
+			&:hover {
+				background-color: rgba(192, 192, 192, 0.3);
+			}
+			&.added {
+				background-color: rgba(79, 135, 255, 0.3);
+			}
+		}
+	}
+}

@@ -1,0 +1,96 @@
+<ng-template #notOwner>
+	<div class="info">
+		<div class="title">
+			<h4>{{room.name}}</h4><span class="id">#{{room.id}}</span>
+			<span class="type">{{chatRoomService.getRoomTypeStr(room)}}</span>
+		</div>
+		<div class="line">
+			<mat-icon fontIcon="key"></mat-icon><span>{{chatRoomService.getOwner(room).nickname }}</span>
+		</div>
+		<p>ADMIN :</p>
+		<p *ngFor="let user of chatRoomService.getAdmin(room)">{{user.nickname}}</p>
+		<h4>USERS ({{chatRoomService.getUserInRoom(room).length}}/40)</h4>
+		<p *ngFor="let user of chatRoomService.getUserInRoom(room)">{{user.nickname}}</p>
+	</div>
+</ng-template>
+
+<ng-container *ngIf="chatRoomService.isOwner(room, userService.user.id) else notOwner">
+	<form [formGroup]="roomForm">
+		<input value="{{room.name}}" class="glass" id="name" type="text" formControlName="name" required placeholder="Untitled" maxlength="120" autofocus>
+		<input class="glass" [ngClass]="{'disabled': !change_password || room_type === RoomType.PRIVATE}" id="password" type="password" maxlength="120" formControlName="password" placeholder="Password">
+		<span (click)="onActiveChangePassword()" *ngIf="room_type !== RoomType.PRIVATE" class="change-password-link">
+			{{change_password ? 'remove' : this.room_type === RoomType.PROTECTED ? 'change' : 'add'}} password
+		</span>
+		<div class="toggle-container">
+			<label for="private"><mat-icon fontIcon="mail_lock"></mat-icon></label>
+			<input class="toggle-btn" name="private" type="checkbox" formControlName="is_private">
+		</div>
+		<div class="btn-container">
+			<button class="submit-btn"
+			[disabled]="!roomForm.valid"
+			(click)="onChange()"
+			>
+				<div class="icon-container save">
+					<mat-icon fontIcon="chevron_right"></mat-icon>
+				</div>
+				<div class="icon-container close">
+					<mat-icon fontIcon="close"></mat-icon>
+				</div>
+			</button>
+			<button (click)="addFriends()" class="add-friend-btn">
+				<mat-icon fontIcon="forward_to_inbox"></mat-icon>
+			</button>
+		</div>
+	</form>
+</ng-container>
+<ng-container *ngIf="chatRoomService.isAdmin(room, userService.user.id)">
+	<ul>
+		<li *ngFor="let user of chatRoomService.getUserInRoom(room)">
+			<span>
+				{{user.nickname}}
+			</span>
+			<div class="options">
+				<button
+					class="mute"
+					[matTooltip]="chatRoomService.isMuted(room, user.id) ? 'unmute' : 'mute'"
+					[disabled]="user.id === userService.user.id || chatRoomService.isOwner(room, user.id)"
+					(click)="chatRoomService.isMuted(room, user.id) ? onUnmuteUser(room, user) : onMuteUser(room, user)"
+					[ngClass]="{'active': chatRoomService.isMuted(room, user.id)}">
+					<mat-icon fontIcon="volume_off"></mat-icon>
+				</button>
+				<button
+					class="kick"
+					[disabled]="user.id === userService.user.id || chatRoomService.isOwner(room, user.id)"
+					(click)="onKickUser(room, user)"
+					matTooltip="kick">
+					<mat-icon fontIcon="person_remove"></mat-icon>
+				</button>
+				<button
+					class="ban"
+					[matTooltip]="chatRoomService.isBanned(room, user.id) ? 'unban' : 'ban'"
+					[disabled]="user.id === userService.user.id || chatRoomService.isOwner(room, user.id)"
+					(click)="chatRoomService.isBanned(room, user.id) ? onUnBanUser(room, user) : onBanUser(room, user)"
+					[ngClass]="{'active': chatRoomService.isBanned(room, user.id)}">
+					<mat-icon fontIcon="block"></mat-icon>
+				</button>
+				<button
+					class="admin"
+					[matTooltip]="chatRoomService.isAdmin(room, user.id) ? 'demote' : 'promote'"
+					[disabled]="user.id === userService.user.id || !chatRoomService.isOwner(room, userService.user.id)"
+					(click)="chatRoomService.isAdmin(room, user.id) ? onDemoteUser(room, user) : onPromoteUser(room, user)"
+					[ngClass]="{'active': chatRoomService.isAdmin(room, user.id)}">
+					<mat-icon fontIcon="admin_panel_settings"></mat-icon>
+				</button>
+				<button
+					class="owner"
+					matTooltip="give ownership"
+					[disabled]="user.id === userService.user.id || !chatRoomService.isOwner(room, userService.user.id)"
+					(click)="onGiveKrownUser(room, user)"
+					[ngClass]="{'active': chatRoomService.isOwner(room, user.id)}">
+					<mat-icon fontIcon="key"></mat-icon>
+				</button>
+			</div>
+		</li>
+	</ul>
+	
+</ng-container>

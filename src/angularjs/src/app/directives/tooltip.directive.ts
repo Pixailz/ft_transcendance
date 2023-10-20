@@ -18,11 +18,12 @@ export class TooltipDirective {
 
     let tooltip: ComponentRef<UserTooltipComponent>;
 
-    this.el.nativeElement.parentElement.addEventListener("mouseenter", () => {
+    this.el.nativeElement.parentElement.addEventListener("mouseenter", (event) => {
       if (!this.displayTooltip)
       {
         let factory = this.resolver.resolveComponentFactory(UserTooltipComponent);
         tooltip = this.viewContainerRef.createComponent(factory);
+        console.log("X : ", event.clientX, "Y : ", event.clientY);
         tooltip.instance.user = this.user;
         this.displayTooltip = true;
       }

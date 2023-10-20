@@ -1,0 +1,11 @@
+<form [formGroup]="searchFriendForm">
+	<div class="input-container">
+		<input class="glass" formControlName="searchString" type="text" placeholder="Search...">
+		<mat-icon fontIcon="search"></mat-icon>
+	</div>
+	<ol>
+		<li *ngFor="let friend of showed_friends" (click)="toggleFriend(friend)" [ngClass]="{'added': isFriendAdded(friend)}">
+			<span>{{friend.ftLogin}} ({{friend.nickname}})</span>
+		</li>
+	</ol>
+</form>

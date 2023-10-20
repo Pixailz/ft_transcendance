@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional } from "class-validator";
+import { IsNotEmpty, IsOptional, MaxLength} from "class-validator";
 
 export class DBChatRoomTypePost {
 	@IsNotEmpty()
@@ -7,6 +7,7 @@ export class DBChatRoomTypePost {
 
 export class DBChatRoomPost {
 	@IsNotEmpty()
+	@MaxLength(120, {message: "Max len for room name 120"})
 	name?: string;
 
 	@IsOptional()

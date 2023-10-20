@@ -42,7 +42,7 @@
 					<ng-container matColumnDef="avatar">
 						<mat-header-cell *matHeaderCellDef> Avatar </mat-header-cell>
 						<mat-cell *matCellDef="let element">
-							<img [src]="element.picture || '/assets/img/avatar-placeholder.jpg'" alt="avatar" class="avatar">
+							<img appTooltip [user]="element" [src]="element.picture || '/assets/img/avatar-placeholder.jpg'" alt="avatar" class="avatar">
 						</mat-cell>
 					</ng-container>
 					<ng-container matColumnDef="nickname">
@@ -67,7 +67,7 @@
 				</mat-card-title>
 			</mat-card-header>
 			<mat-card-content class="dashboard-card-content">
-				<app-chat-channel></app-chat-channel>
+				<app-chat-page></app-chat-page>
 			</mat-card-content>
 		</mat-card>
 	</mat-grid-tile>
@@ -80,7 +80,6 @@
 			</mat-card-header>
 			<mat-card-content class="dashboard-card-content">
 				<app-priv-chat-page></app-priv-chat-page>
-				<!-- <app-chat-dm></app-chat-dm> -->
 			</mat-card-content>
 		</mat-card>
 	</mat-grid-tile>

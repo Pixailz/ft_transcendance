@@ -45,8 +45,7 @@ export class ChatRoomService {
 
 		if (!this.isGoodRoomInfo(room)) return [];
 		for (var i = 0; i < room.roomInfo.length; i++)
-			if (!room.roomInfo[i].isBanned)
-				user_list.push(room.roomInfo[i].user);
+			user_list.push(room.roomInfo[i].user);
 		return (user_list);
 	}
 
@@ -142,6 +141,15 @@ export class ChatRoomService {
 
 		if (owner.id === -1) return false;
 		if (owner.id === user_id) return (true); return (false);
+	}
+
+	isBanned(room: ChatRoomI, user_id: number): boolean
+	{
+		if (!room.roomInfo.length) return false;
+		for (var i = 0; i < room.roomInfo.length; i++)
+			if (room.roomInfo[i].userId === user_id)
+				return (room.roomInfo[i].isBanned)
+		return (false);
 	}
 
 	isSameUser(room: ChatRoomI, i: number): boolean {

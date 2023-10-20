@@ -1,0 +1,6 @@
+<form [formGroup]="mutedTimeForm">
+	<input formControlName="muted_time" type="number" placeholder="Muted Time">
+	<button (click)="ngOnDestroy()">
+		<mat-icon fontIcon="chevron_right"></mat-icon>
+	</button>
+</form>

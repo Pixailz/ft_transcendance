@@ -98,7 +98,7 @@ export class WSGateway {
 	joinChannelRoom(room_id: number, password: string)
 	{ this.socket.emit("joinChannelRoom", room_id, password); }
 
-	sendGlobalMessage(room_id: any, message: string)
+	sendGlobalMessage(room_id: any, message: MessageContentI[])
 	{ this.socket.emit("sendGlobalMessage", room_id, message); }
 
 	changeRoomDetails(room_id: number, data: any)
