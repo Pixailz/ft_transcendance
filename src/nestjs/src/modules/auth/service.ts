@@ -48,7 +48,7 @@ export class AuthService {
 	}
 
 	async extSignIn(nickname: string, pass: string): Promise<any> {
-		const user = await this.dbUserService.returnOne(null, nickname);
+		const user = await this.dbUserService.returnOne(null, null, nickname);
 		if (!user) return new UnauthorizedException();
 		if (!(await this.bcryptWrap.compare(pass, user.password)))
 			return new UnauthorizedException();
@@ -68,7 +68,7 @@ export class AuthService {
 	}
 
 	async extRegister(nickname: string, pass: string): Promise<any> {
-		const user = await this.dbUserService.returnOne(null, nickname);
+		const user = await this.dbUserService.returnOne(null, null, nickname);
 		if (user) return new UnauthorizedException();
 		const user_id = await this.dbUserService.create({
 			ftLogin: "extern",
@@ -86,29 +86,6 @@ export class AuthService {
 		const payload = { sub: user_id };
 		return {
 			access_token: await this.jwtService.signAsync(payload),
-			status: "oke",
-		};
-	}
-
-	async ftSignInTest(test: number): Promise<any> {
-		let login = "norminet";
-		let nickname = "leSangCho";
-		if (test !== 0) {
-			login += test;
-			nickname += test;
-		}
-		let user = await this.dbUserService.returnOne(null, login);
-		if (!user) {
-			const user_id = await this.dbUserService.create({
-				ftLogin: login,
-			});
-			await this.dbUserService.update(user_id, { nickname: nickname });
-			user = await this.dbUserService.returnOne(user_id);
-		} else return await this.ftSignInTest(test + 1);
-
-		console.log("test user created");
-		return {
-			access_token: await this.jwtService.signAsync({ sub: user.id }),
 			status: "oke",
 		};
 	}
