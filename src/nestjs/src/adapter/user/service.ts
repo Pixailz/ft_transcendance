@@ -62,6 +62,10 @@ export class UserService {
 		return await this.dbUserService.returnOne(null, user_login);
 	}
 
+	async getInfoByNickname(user_nickname: string): Promise<UserEntity> {
+		return await this.dbUserService.returnOne(null, null, user_nickname);
+	}
+
 	async setStatus(user_id: number, status: number) {
 		await this.dbUserService.setStatus(user_id, status);
 	}
@@ -69,4 +73,5 @@ export class UserService {
 	async updateElo(player_1: number, player_2: number, winner: number) {
 		await this.dbUserService.updateElo(player_1, player_2, winner);
 	}
+
 }
