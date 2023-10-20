@@ -49,9 +49,16 @@ export class AuthService {
 
 	async extSignIn(nickname: string, pass: string): Promise<any> {
 		const user = await this.dbUserService.returnOne(null, null, nickname);
-		if (!user) return new UnauthorizedException();
+		if (!user)
+		{
+			await sleep(1000);
+			return new UnauthorizedException("User not found");
+		}
 		if (!(await this.bcryptWrap.compare(pass, user.password)))
-			return new UnauthorizedException();
+		{
+			await sleep(1000);
+			return new UnauthorizedException("Wrong pass");
+		}
 		const payload = { sub: user.id };
 
 		if (user.twoAuthFactor) {
@@ -69,7 +76,11 @@ export class AuthService {
 
 	async extRegister(nickname: string, pass: string): Promise<any> {
 		const user = await this.dbUserService.returnOne(null, null, nickname);
-		if (user) return new UnauthorizedException();
+		if (user)
+		{
+			await sleep(1000);
+			return new UnauthorizedException("User already created");
+		}
 		const user_id = await this.dbUserService.create({
 			ftLogin: "extern",
 		});
@@ -101,3 +112,5 @@ export class AuthService {
 		};
 	}
 }
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
