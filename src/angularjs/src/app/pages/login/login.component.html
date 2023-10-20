@@ -25,12 +25,17 @@
 			<span *ngIf="loginForm.value.login">login</span>
 			<span *ngIf="!loginForm.value.login">register</span>
 		</button>
-		<button class="ft-btn-login" (click)="SignIn()" [disabled]="!isButtonClickable">
-			<div class="btn-content" *ngIf="isButtonClickable">
+		<button class="ft-btn-login" (click)="SignIn()">
+			<div class="btn-content">
 				<img src="./assets/img/42-logo.png" alt="42 logo">
 				<span>Login</span>
 			</div>
-			<span *ngIf="!isButtonClickable" id="message">Please wait...</span>
 		</button>
 	</div>
 </form>
+<div id="wait" *ngIf="!isButtonClickable">
+	<span >Please wait...</span>
+	<svg class="spinner" viewBox="0 0 50 50">
+		<circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+	</svg>
+</div>
