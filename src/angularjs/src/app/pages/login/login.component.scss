@@ -111,6 +111,53 @@ form {
 }	
 
 
+div#wait {
+	display: flex;
+	justify-content: center;
+	gap: 1em;
+	color: white;
+	height: fit-content;
+	font-size: 1.2em;
+
+
+	.spinner {
+		animation: rotate 2s linear infinite;
+		z-index: 2;
+		width: 2em;
+		height: 2em;
+
+		& .path {
+		stroke: hsl(180, 42%, 90%);
+		stroke-linecap: round;
+		animation: dash 1.5s ease-in-out infinite;
+		}
+		
+	}
+	
+	
+}
+
+@keyframes rotate {
+	100% {
+	transform: rotate(360deg);
+	}
+}
+
+@keyframes dash {
+	0% {
+	stroke-dasharray: 1, 150;
+	stroke-dashoffset: 0;
+	}
+	50% {
+	stroke-dasharray: 90, 150;
+	stroke-dashoffset: -35;
+	}
+	100% {
+	stroke-dasharray: 90, 150;
+	stroke-dashoffset: -124;
+	}
+}
+
 .ft-btn-login {
 	background-color: #00BABC;
 	border: none;
@@ -131,8 +178,6 @@ form {
 			font-size: 1.3em;
 		}
 	}
-
-
 	&:hover:not(:disabled) {
 		cursor: pointer;
 		filter: brightness(80%);
