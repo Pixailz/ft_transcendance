@@ -1,7 +1,8 @@
 FROM		alpine:latest	AS base
 
 RUN			apk add --update --virtual base \
-				postgresql15 \
+				-X http://dl-cdn.alpinelinux.org/alpine/edge/main \
+				postgresql16 \
 				dumb-init \
 			&& rm -f /var/cache/apk/*
 

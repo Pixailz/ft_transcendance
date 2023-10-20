@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { registerPopInput, registerSlideInput, resgisterRotateBtn } from 'src/app/animations';
 
+import { ReplaceNickname } from 'src/utils/utils';
+
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -19,6 +21,7 @@ export class RegisterComponent {
 		public userService: UserService,
 		private formBuilder: FormBuilder,
 		private router: Router,
+    private replaceNickname: ReplaceNickname,
 	)
 	{}
 
@@ -39,8 +42,7 @@ export class RegisterComponent {
 
 		this.userForm.valueChanges
 		.subscribe((value: any) => {
-			value.nickname = value.nickname.replace(/ /g, '');
-			value.nickname = value.nickname.replace(/	/g, '');
+      value.nickname = this.replaceNickname.replace_nickname(value.nickname);
 			this.userForm.patchValue({
 				nickname: value.nickname,
 			}, {emitEvent: false, onlySelf: true});

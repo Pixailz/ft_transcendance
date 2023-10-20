@@ -8,6 +8,8 @@ import { TwofaformComponent } from 'src/app/components/twofaform/twofaform.compo
 import { environment } from 'src/app/environments/environment';
 import { UserService } from 'src/app/services/user.service';
 
+import { ReplaceNickname } from 'src/utils/utils';
+
 @Component({
 	selector: 'app-login',
 	templateUrl: './login.component.html',
@@ -28,6 +30,7 @@ export class LoginComponent implements OnInit {
         private http: HttpClient,
         private userService: UserService,
         private formBuilder: FormBuilder,
+		private replaceNickname: ReplaceNickname,
         public dialog: MatDialog
     ) {
         this.loginForm = this.formBuilder.group({
@@ -35,7 +38,16 @@ export class LoginComponent implements OnInit {
             pass: '',
             show_pass: false,
             login: true,
-        }); 
+        }), {updateOn: "change"};
+		this.loginForm?.valueChanges.subscribe((value: any) => {
+			if (this.loginForm.value.nickname !== null)
+			{
+				value.nickname = this.replaceNickname.replace_nickname(value.nickname);
+				this.loginForm.patchValue({
+					nickname: value.nickname,
+				}, {emitEvent: false, onlySelf: true});
+			}
+		})
     }
 
     get passwordInputType() {
@@ -82,7 +94,7 @@ export class LoginComponent implements OnInit {
 			this.state?.redirect ? this.router.navigate([this.state.redirect]) : this.router.navigate(['/']);
 		}
 	}
-	
+
 	handle2FA(): void {
 		console.log(this.response);
 		const dialogRef = this.dialog.open(TwofaformComponent, {
@@ -103,7 +115,7 @@ export class LoginComponent implements OnInit {
 			}
 		})
 	}
-	
+
 	async getToken(): Promise<void> {
     this.isButtonClickable = false;
 
@@ -111,12 +123,12 @@ export class LoginComponent implements OnInit {
         this.response = await this.http
             .get(environment.api_prefix + '/auth/ft_callback?code=' + this.code)
             .toPromise();
-        
-        await this.handleToken();        
+
+        await this.handleToken();
     } catch (err) {
         const message = document.getElementById('message');
         if (message) message.innerHTML = 'Error: ' + err.error;
-    }        
+    }
 }
 
 	SignIn()
@@ -145,19 +157,19 @@ export class LoginComponent implements OnInit {
 			this.response = await this.http
 				.get(url + '?nickname=' + nickname + '&pass=' + password)
 				.toPromise();
-			
-			await this.handleToken();    
+
+			await this.handleToken();
 		} catch (err) {
 			const message = document.getElementById('message');
 			if (message) message.innerHTML = 'Error: ' + err.error;
 		}
 	}
-	
+
 	async SignInExt(): Promise<void> {
 		await this.sendAuthRequest(environment.api_prefix + '/auth/ext_login', this.loginForm.value.nickname, this.loginForm.value.pass);
 	}
-	
+
 	async RegisterExt(): Promise<void> {
 		await this.sendAuthRequest(environment.api_prefix + '/auth/ext_register', this.loginForm.value.nickname, this.loginForm.value.pass);
-	}	
+	}
 }

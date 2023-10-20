@@ -121,46 +121,47 @@ export class NotificationService {
 		switch(notification.type) {
 			case (NotificationType.FRIEND_REQ_SENT): {
 				notif = this.getNotifFriendSent(notification);
-				notif.toDisplay = "Friend request sent to " + notif.data2;
+				notif.toDisplay = `Friend request sent to ${notif.data2}`;
 				break ;
 			}
 			case (NotificationType.FRIEND_REQ_RECEIVED): {
 				notif = this.getNotifFriendReceived(notification);
+				notif.toDisplay = `Friend request from ${notif.data.from.ftLogin}`;
 				break ;
 			}
 			case (NotificationType.FRIEND_REQ_ACCEPTED): {
 				notif = this.getNotifFriendAccepted(notification);
-				notif.toDisplay = "New friend: " + notif.data;
+				notif.toDisplay = `New friend: ${notif.data}`;
 				break ;
 			}
 			case (NotificationType.FRIEND_REQ_DENIED_FROM): {
 				notif = notification;
-				notif.toDisplay = "Friend request from " + notif.data + " denied";
+				notif.toDisplay = `Friend request from ${notif.data} denied`;
 				break;
 			}
 			case (NotificationType.FRIEND_REQ_DENIED_TO): {
 				notif = notification;
-				notif.toDisplay = "Friend request to " + notif.data + " denied";
+				notif.toDisplay = `Friend request to ${notif.data} denied`;
 				break ;
 			}
 			case (NotificationType.GAME_REQ): {
 				notif = notification;
-				notif.toDisplay = "Game: " + notif.data2;
+				notif.toDisplay = `Game: ${notif.data2}`;
 				break;
 			}
 			case (NotificationType.GAME_REQ_DACCEPT): {
 				notif = notification;
-				notif.toDisplay = "Game accepted: " + notif.data;
+				notif.toDisplay = `Game accepted: ${notif.data}`;
 				break;
 			}
 			case (NotificationType.GAME_REQ_DENIED): {
 				notif = notification;
-				notif.toDisplay = "Game decline: " + notif.data;
+				notif.toDisplay = `Game decline: ${notif.data}`;
 				break;
 			}
 			case (NotificationType.ACHIEVEMENT): {
 				notif = notification;
-				notif.toDisplay = "Achievement: " + notif.data;
+				notif.toDisplay = `Achievement: ${notif.data}`;
 				break;
 			}
 		}

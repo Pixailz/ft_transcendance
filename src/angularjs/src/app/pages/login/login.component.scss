@@ -5,28 +5,38 @@
 	height: 100%;
 	width: 100%;
 }
+
 .glass.container {
     display: flex;
     margin: 20px;
     flex-direction: column;
     align-items: center;
+	background-color: transparent;
+	border: none;
 }
 
 .password-container {
     position: relative;
     display: flex;
     align-items: center;
-}
 
+}
 
 .password-container mat-icon {
     position: absolute;
     right: 0;
     cursor: pointer;
+	margin-right: 1em;
+	color: rgba(255, 255, 255, 0.493);
+	transition: color .1s linear;
+}
+
+.password-container mat-icon.visibility {
+	color: rgb(255, 255, 255);
 }
 
 label {
-	color: #00BABC;
+	color: white;
 	font-weight: bold;
 }
 
@@ -39,6 +49,68 @@ label {
 	width: 100%;
 }
 
+button {
+	border: none;
+}
+
+
+form {
+	position: relative;
+	height: fit-content;
+	width: fit-content;
+	input:not(.toggle-btn) {
+		outline: none;
+		border: none;
+		height: 50px;
+		padding: 4px 70px 4px 20px;
+		border-radius: 9999px;
+		font-size: large;
+		border: 2px solid rgba($color: #8f8f8f, $alpha: 0.3);
+		color: white;
+		background: rgba($color: #3a3a3a, $alpha: 0.3);
+	}
+	
+	div {
+		display: flex;
+		justify-content: space-between;
+		&:not(.toggle) {
+			padding-top: 1em;
+			padding-bottom: 1em;
+		}
+
+		&.btn-container {
+			flex-direction: row-reverse;
+		}
+	}
+
+	button:not(.ft-btn-login){
+		padding: 1em 2em;
+		background-color: #ff9999;
+		border-radius: 0.5em;
+		transition: all .1s linear;
+		&:disabled:disabled{
+			background-color:rgb(43, 43, 43);
+			filter: brightness(80%);
+		} 
+		&:not(:disabled) {
+			cursor: pointer;
+		}
+		&:hover:not(:disabled) {
+			filter: brightness(80%);
+		}
+
+		&.login {
+			background-color: #a7dca3;
+		}
+
+		span {
+			font-size: 1.3em;
+			color: white;
+		}
+	}
+}	
+
+
 .ft-btn-login {
 	background-color: #00BABC;
 	border: none;
@@ -46,16 +118,20 @@ label {
 	min-height: 60px;
 	height: 30px;
 	padding: 10px 15px;
-	margin-top: 30px;
 	border-radius: 5px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
 
-	span {
-		font-size: 1.3em;
-		color: white;
+	.btn-content {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0;
+		span {
+			color: white;
+			height: fit-content;
+			font-size: 1.3em;
+		}
 	}
+
 
 	&:hover:not(:disabled) {
 		cursor: pointer;

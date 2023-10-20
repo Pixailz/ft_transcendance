@@ -1,12 +1,12 @@
 .container {
 	display: flex;
 	align-items: center;
-	
+
 	p {
 		margin: 0;
 		flex: auto;
 		text-shadow: 0 0 5px rgb(83, 83, 83);
-		font-size: 1.2em;
+		font-size: 1em;
 	}
 
 	button {
@@ -35,7 +35,7 @@
 
 	button.accept-btn {
 		background-color: #a7dca3;
-		
+
 	}
 
 

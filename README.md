@@ -1,29 +1,73 @@
-# ft_transcendence
+<h1 align="center">ft_transcendence</h1>
 
-[![CI](https://github.com/Pixailz/ft_transcendence/actions/workflows/CI.yaml/badge.svg)](https://github.com/Pixailz/ft_transcendence/actions/workflows/CI.yaml)
+<p align="center">
+	<a href="https://github.com/Pixailz/ft_transcendence/actions/workflows/CI.yaml">
+		<img src="https://github.com/Pixailz/ft_transcendence/actions/workflows/CI.yaml/badge.svg">
+	</a>
+	<a href="https://github.com/Pixailz/ft_transcendence/actions/workflows/CD.yaml">
+		<img src="https://github.com/Pixailz/ft_transcendence/actions/workflows/CD.yaml/badge.svg">
+	</a>
+</p>
 
-[![CD](https://github.com/Pixailz/ft_transcendence/actions/workflows/CD.yaml/badge.svg)](https://github.com/Pixailz/ft_transcendence/actions/workflows/CD.yaml)
+<p align="center">
+	<a href="https://nodejs.org/">
+		<img src="https://img.shields.io/badge/NodeJS-18.17.1-blue">
+	</a>
+	<a href="https://angular.io/">
+		<img src="https://img.shields.io/badge/AngularJS-16.1.0-blue">
+	</a>
+	<a href="https://nestjs.com/">
+		<img src="https://img.shields.io/badge/NestJS-10.2.7-blue">
+	</a>
+	<a href="https://npm.im/npm">
+		<img src="https://img.shields.io/badge/NPM-9.6.6-blue">
+	</a>
+	<a href="https://postgresql.org/">
+		<img src="https://img.shields.io/badge/PostgreSQL-16.0-blue">
+	</a>
+	<a href="https://nginx.com/">
+		<img src="https://img.shields.io/badge/nginx-1.24.0-blue">
+	</a>
+</p>
 
-[![node](https://img.shields.io/badge/node-v18.17.0-blue)](https://npm.im/npm)
-[![npm](https://img.shields.io/npm/v/npm.svg)](https://npm.im/npm)
-[![postgresql](https://img.shields.io/badge/postgresql-15.3-blue)](https://www.postgresql.org/support/versioning/)
+<h1 align="center">Introduction</h1>
 
-# [Wiki Index](https://github.com/Pixailz/ft_transcendence/wiki)
+<p align="center">
+Welcome to our ft_transcendence project, an exciting journey in web development that challenges you to explore new horizons and create a real-time, multiplayer online gaming platform centered around the classic game Pong, all while prioritizing robust security practices.
+</p>
 
-1. [HowTo](https://github.com/Pixailz/ft_transcendence/wiki/1.-HowTo)
-    1. [Run](https://github.com/Pixailz/ft_transcendence/wiki/1.-HowTo#run)
-        1. [Install latest docker engine](https://github.com/Pixailz/ft_transcendence/wiki/1.-HowTo#install-latest-docker-engine)
-        1. [Prod mode](https://github.com/Pixailz/ft_transcendence/wiki/1.-HowTo#prod-mode)
-        1. [Dev mode](https://github.com/Pixailz/ft_transcendence/wiki/1.-HowTo#dev-mode)
-    1. [Commit](https://github.com/Pixailz/ft_transcendence/wiki/1.-HowTo#commit)
-
-1. [Details](https://github.com/Pixailz/ft_transcendence/wiki/2.-Details)
-    1. [Directory Structure](https://github.com/Pixailz/ft_transcendence/wiki/2.-Details#directory-structure)
-    1. [Backend Route](https://github.com/Pixailz/ft_transcendence/wiki/2.-Details#useful-things)
-    1. [Usefull thing](https://github.com/Pixailz/ft_transcendence/wiki/2.-Details#backend-route)
+<p align="center">
+Feel free to explore the detailed project specifications and guidelines in the <a href="https://github.com/Pixailz/ft_transcendence/blob/main/rsc/en.subject.v13.pdf">PDF</a> or you can go to the <a href="https://github.com/Pixailz/ft_transcendence/wiki">wiki</a> page for more information
+</p>
 
 
-# TODO
-|Feature|Branch|Feature Description|
-|:------|:-----|:------------------|
-|Gracefull shutdown nodejs\|angular|main|set up a signal that on receive will close all connection before closing, more [here](https://hackernoon.com/graceful-shutdown-in-nodejs-2f8f59d1c357)|
+<h1 align="center">Author</h1>
+
+<table align="center">
+  <tr>
+    <td align="center" valign="top" width="25%">
+      <a href="https://github.com/clinche">
+        <img src="https://avatars.githubusercontent.com/u/101885891?v=4?s=100"
+            width="100px;" alt="Clinche"/><br/><sub><b>Clinche</b></sub>
+      </a><br/>
+    </td>
+    <td align="center" valign="top" width="25%">
+      <a href="https://github.com/RuBeeN-cmd">
+        <img src="https://avatars.githubusercontent.com/u/63564987?v=4?s=100"
+            width="100px;" alt="Ruben"/><br/><sub><b>Ruben</b></sub>
+      </a><br/>
+    </td>
+    <td align="center" valign="top" width="25%">
+      <a href="https://github.com/Ycaro02">
+        <img src="https://avatars.githubusercontent.com/u/94980706?v=4?s=100"
+            width="100px;" alt="Ycaro"/><br/><sub><b>Ycaro</b></sub>
+      </a><br/>
+    </td>
+    <td align="center" valign="top" width="25%">
+      <a href="https://github.com/Pixailz">
+        <img src="https://avatars.githubusercontent.com/u/35565530?v=4?s=100"
+            width="100px;" alt="Pixailz"/><br/><sub><b>Pixailz</b></sub>
+      </a><br/>
+    </td>
+  </tr>
+</table>

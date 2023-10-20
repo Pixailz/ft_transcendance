@@ -5,7 +5,7 @@ import {
 	InternalServerErrorException,
 	ConflictException,
 } from "@nestjs/common";
-import { Repository } from "typeorm";
+import { ILike, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Elo } from "../elo";
 
@@ -16,6 +16,8 @@ import { DBUserPost, DBUserInfoPost } from "./dto";
 import { Api42Service } from "../../api42/service";
 import { Sanitize } from "../sanitize-object";
 import { UserMetricsEntity } from "../metrics/entity";
+
+
 
 @Injectable()
 export class DBUserService {
@@ -89,13 +91,13 @@ export class DBUserService {
 		if (!user) throw new NotFoundException("User not found");
 		if (userPost.nickname)
 		{
-			let nickname = userPost.nickname.trim();
-			nickname = nickname.replace(/ /g, '');
-			nickname = nickname.replace(/	/g, '');
+			if (userPost.nickname.length > 120)
+				userPost.nickname = userPost.nickname.substring(0, 120);
+			const nickname = this.replace_nickname(userPost.nickname);
 			if (nickname.length <= 2)
 				throw new BadRequestException("Invalid nickname");
 			const check_name = await this.userRepo.findOneBy({
-				nickname: nickname,
+				nickname: ILike(nickname),
 			});
 			if (check_name)
 				throw new ConflictException("Nickname already taken");
@@ -124,7 +126,7 @@ export class DBUserService {
 			if (user) return user;
 		}
 		if (nickname) {
-			const user = await this.userRepo.findOneBy({ nickname: nickname });
+			const user = await this.userRepo.findOneBy({ nickname: ILike(nickname) });
 			if (user) return user;
 		}
 		return null;
@@ -174,4 +176,10 @@ export class DBUserService {
 			console.log("[userService:setStatus]", err.message);
 		});
 	}
+
+    replace_nickname(name: string) : string
+    {
+		const regexp = new RegExp(/(?:[^a-zA-Z0-9-_]*)/g);
+        return name.replaceAll(regexp, '');
+    }
 }
