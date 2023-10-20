@@ -5,6 +5,7 @@
 }
 
 ul {
+	font-size: 1em;
 	height: 100%;
 	max-width: 50%;
 	min-width: fit-content;
@@ -14,6 +15,7 @@ ul {
 	padding-right: 0.5em;
 
 	li {
+		font-size: 1em;
 		width: 100%;
 		margin-bottom: 0.8em;
 		transition: all 0.2s linear;
@@ -70,6 +72,7 @@ ul {
 		&.newRoomBtn {
 			width: 100%;
             z-index: 1;
+			font-size: 1em;
 			display: flex;
 			justify-content: space-evenly;
 			gap: 1em;
@@ -88,5 +91,6 @@ ul {
 
 app-chat-view {
 	flex: auto;
+	font-size: 1em;
 	min-width: 20%;
 }
