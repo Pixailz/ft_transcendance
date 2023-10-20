@@ -26,8 +26,8 @@ export class ChatViewComponent {
 	constructor(
 		private formBuilder: FormBuilder,
 		private chatRoomService: ChatRoomService,
-		public router: Router,
 		public userService: UserService,
+		public router: Router,
 	) {}
 
 	async ngOnInit() {

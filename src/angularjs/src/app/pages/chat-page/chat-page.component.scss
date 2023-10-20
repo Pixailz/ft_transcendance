@@ -1,0 +1,96 @@
+:host {
+	display: flex;
+	height: 100%;
+	gap: 0.75em;
+}
+
+ul {
+	font-size: 1em;
+	height: 100%;
+	max-width: 50%;
+	min-width: fit-content;
+	position: relative;
+	overflow-y: auto;
+	overflow-x: hidden;
+	padding-right: 0.5em;
+
+	li {
+		font-size: 1em;
+		width: 100%;
+		margin-bottom: 0.8em;
+		transition: all 0.2s linear;
+
+		button {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			width: 100%;
+			font-size: 1em;
+			color: white;
+			cursor: pointer;
+			padding: 0 1em;
+			text-align: left;
+			height: 3em;
+			&:active {
+				color: rgb(186, 186, 186);
+			}
+			background: transparent;
+			border: none;
+			
+
+			&:hover > mat-icon {
+				opacity: 0.45;
+			}
+			
+			mat-icon {
+				transform: rotate(0deg);
+				width: fit-content;
+				height: fit-content;
+				font-size: 1.5em;
+				margin-left: 0.5em;
+				opacity: 0;
+				transition: all .2s linear;
+				cursor: pointer;
+
+				&:hover {
+					transform: rotate(45deg);
+					opacity: 0.85;
+				}
+			}
+
+		}
+
+		&:not(.newRoomBtn) &:hover
+		{
+			background-color: rgba(90, 90, 90, 0.6);
+		}
+
+		&:nth-last-child(2) {
+			margin-bottom: 2em;
+		}
+
+		&.newRoomBtn {
+			width: 100%;
+            z-index: 1;
+			font-size: 1em;
+			display: flex;
+			justify-content: space-evenly;
+			gap: 1em;
+
+			& app-flat-button {
+				display: block;
+				position: relative;
+				text-align: center;
+				font-size: 1em;
+				padding: 0;
+				--bg-color: 167, 220, 163;
+			}
+		}
+	}
+}
+
+app-chat-view {
+	flex: auto;
+	font-size: 1em;
+	min-width: 20%;
+}

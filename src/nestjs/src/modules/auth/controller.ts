@@ -6,6 +6,7 @@ import { Public } from "../../decorators/public";
 export class AuthController {
 	constructor(private authService: AuthService) {}
 
+
 	@Public()
 	@Get("ft_callback")
 	async login(@Query("code") code: string) {

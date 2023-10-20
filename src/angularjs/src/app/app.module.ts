@@ -45,7 +45,6 @@ import { CustomReuseStrategy } from './reuse-strategy';
 import {  MatBadgeModule  } from '@angular/material/badge';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 // WEBSOCKET
-import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
 import { GlobalErrorHandlerService } from './services/global-error-handler.service';
 import { environment } from './environments/environment';
 import { TextNotificationComponent } from './components/text-notification/text-notification.component';
@@ -62,16 +61,24 @@ import { ResizableHandleComponent } from './components/resizable-handle/resizabl
 import { NewDmComponent } from './components/new-dm/new-dm.component';
 import { UserTooltipComponent } from './components/user-tooltip/user-tooltip.component';
 import { TooltipDirective } from './directives/tooltip.directive';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 import { GameWaitingComponent } from './components/game/waiting/waiting.component';
 import { GameStartedComponent } from './components/game/started/started.component';
 import { GameComponent } from './pages/game/game.component';
 import { GameLobbyComponent } from './components/game/lobby/lobby.component';
+import { ChatPageComponent } from './pages/chat-page/chat-page.component';
+import { NewChatRoomComponent } from './components/new-chat-room/new-chat-room.component';
+import { ChatChannelFriendListComponent } from './components/chat-channel-friend-list/chat-channel-friend-list.component';
+import { ChatRoomSettingsComponent } from './components/chat-room-settings/chat-room-settings.component';
+import { JoinChatRoomComponent } from './components/join-chat-room/join-chat-room.component';
+import { ProtectedRoomPasswordComponent } from './components/protected-room-password/protected-room-password.component';
 import { GamesHistoryComponent } from './components/game/games-history/game-history.component';
 import { NotifGameInviteComponent } from './components/notification/game-invite/game-invite.component';
 import { GameInviteDialogComponent } from './components/game/invite-dialog/game-invite-dialog.component';
 import { NotifAchievementComponent } from './components/notification/achievement/notif-achievement';
 import { AchievementsComponent } from './pages/achievements/achievements.component';
+import { MutedTimeComponentComponent } from './components/muted-time-component/muted-time-component.component';
 
 import { ReplaceNickname } from 'src/utils/utils';
 
@@ -105,10 +112,8 @@ const config: SocketIoConfig = {
 		ProfileComponent,
 		ErrordialogComponent,
 		FlatListComponent,
-		WSChatChannelComponent,
 		NotificationComponent,
 		TextNotificationComponent,
-		WSChatChannelComponent,
 		NotifFriendReqSentComponent,
 		NotifFriendReqReceivedComponent,
 		NotifFriendReqAcceptedComponent,
@@ -129,8 +134,15 @@ const config: SocketIoConfig = {
 		NewDmComponent,
 		UserTooltipComponent,
 		TooltipDirective,
-	    AchievementsComponent,
-	  ],
+		ChatPageComponent,
+		NewChatRoomComponent,
+		ChatChannelFriendListComponent,
+		ChatRoomSettingsComponent,
+		JoinChatRoomComponent,
+		ProtectedRoomPasswordComponent,
+		AchievementsComponent,
+		MutedTimeComponentComponent,
+	],
 	imports: [
 		BrowserModule,
 		BrowserAnimationsModule,
@@ -158,6 +170,7 @@ const config: SocketIoConfig = {
 		SocketIoModule.forRoot(config),
 		CodeInputModule,
 		MatBadgeModule,
+		MatTooltipModule
 	],
 	providers: [
 		AuthGuardService,

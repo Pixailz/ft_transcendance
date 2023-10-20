@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -14,23 +14,26 @@ export class DBChatRoomService {
 
 	async create(post: DBChatRoomPost) {
 		const room = new ChatRoomEntity();
+		if (post.name.length > 120)
+			post.name = post.name.substring(0, 120);
 		room.name = post.name;
+		if (post.password !== null)
 		room.password = post.password;
-		await this.chatRoomRepo.save(room);
-		return room.id;
-	}
+	await this.chatRoomRepo.save(room);
+	return room.id;
+}
 
-	async returnAll() {
-		return await this.chatRoomRepo.find();
-	}
+async returnAll() {
+	return await this.chatRoomRepo.find();
+}
 
-	async returnOne(chatId: number) {
-		const tmp = await this.chatRoomRepo.findOneBy({ id: chatId });
-		if (tmp) return tmp;
-		else throw new NotFoundException("ChatRoom not found");
-	}
+async returnOne(chatId: number) {
+	const tmp = await this.chatRoomRepo.findOneBy({ id: chatId });
+	if (tmp) return tmp;
+	else throw new NotFoundException("ChatRoom not found");
+}
 
-	async update(chatId: number, post: DBChatRoomPost) {
+async update(chatId: number, post: DBChatRoomPost) {
 		const tmp = await this.chatRoomRepo.findOneBy({ id: chatId });
 		if (tmp) return await this.chatRoomRepo.update(chatId, post);
 		else throw new NotFoundException("ChatRoom not found");
