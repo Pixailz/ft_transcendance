@@ -17,7 +17,7 @@ export class WSNotificationService {
 	constructor(
 		private userService: UserService,
 		private wsChatDmService: WSChatDmService,
-		public wsSocket: WSSocket,
+		public  wsSocket: WSSocket,
 		private dbNotificationService: DBNotificationService,
 		private dbChatRoomService: DBChatRoomService,
 	) {}
@@ -233,8 +233,8 @@ export class WSNotificationService {
 			console.log('Notif not found');
 			return ;
 		}
-		const friend = await this.userService.getInfoByLogin(notif.data2);
-
+					
+		const friend = await this.userService.getInfoByNickname(notif.data2);
 		const user_id = this.wsSocket.getUserId(socket.id);
 		const accept_notif = await this.dbNotificationService.create({
 			type: NotificationType.GAME_REQ_ACCEPTED,
@@ -257,8 +257,7 @@ export class WSNotificationService {
 			console.log('Notif not found');
 			return ;
 		}
-		const friend = await this.userService.getInfoByLogin(notif.data2);
-
+		const friend = await this.userService.getInfoByNickname(notif.data2);
 		const user_id = this.wsSocket.getUserId(socket.id);
 		const decline_notif = await this.dbNotificationService.create({
 			type: NotificationType.GAME_REQ_DENIED,
