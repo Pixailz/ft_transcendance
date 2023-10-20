@@ -9,6 +9,7 @@ import { Sanitize } from "../../modules/database/sanitize-object";
 import { BrcyptWrap } from "../../addons/bcrypt.wrapper";
 import { UserMetricsService } from "../../modules/database/metrics/service";
 import { MessageContentEntity } from "../../modules/database/messageContent/entity";
+import { DBChatRoomService } from "src/modules/database/chatRoom/service";
 
 
 export enum RoomAction {
@@ -26,6 +27,7 @@ export class WSChatChannelService {
 	constructor(
 		private sanitize: Sanitize,
 		private chatRoomService: ChatRoomService,
+		private dbChatRoomService: DBChatRoomService,
 		private userService: UserService,
 		private dbUserChatRoomService: DBUserChatRoomService,
 		private bcryptWrap: BrcyptWrap,
@@ -118,7 +120,7 @@ export class WSChatChannelService {
 		room_id: number,
 		password: string,
 	) {
-		var room = await this.chatRoomService.getJoinedChannelRoom(room_id);
+		var room = await this.dbChatRoomService.getJoinedChannelRoom(room_id);
 		const user_id = this.wsSocket.getUserId(socket.id);
 		const current_user_chatroom = await this.chatRoomService.getUserChatRoom(
 			user_id,

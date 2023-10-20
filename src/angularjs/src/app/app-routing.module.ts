@@ -10,9 +10,9 @@ import { AnonymousLayoutComponent } from './layout/anonymous-layout.component';
 import { AuthenticatedLayoutComponent } from './layout/authenticated-layout.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 
-import { WSChatChannelComponent } from './pages/chat-channel/chat-channel.component';
 import { GameComponent } from './pages/game/game.component';
 import { PrivChatPageComponent } from './pages/priv-chat-page/priv-chat-page.component';
+import { ChatPageComponent } from './pages/chat-page/chat-page.component';
 import { AchievementsComponent } from './pages/achievements/achievements.component';
 
 const routes: Routes = [
@@ -48,7 +48,7 @@ const routes: Routes = [
 			},
 			{
 				path: 'chat/global',
-				component: WSChatChannelComponent,
+				component: ChatPageComponent,
 				data: { animation: 'ChatChannel', reuseRoute: true }
 			},
 			{
@@ -60,10 +60,6 @@ const routes: Routes = [
 				path: 'achievements/:nickname',
 				component: AchievementsComponent,
 				data: { animation: 'Achievements', reuseRoute: true }
-			},
-			{
-				path: 'chat/rub',
-				component: PrivChatPageComponent,
 			},
 			{
 				// throw a 404 error if the route is not found

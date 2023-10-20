@@ -7,5 +7,7 @@ export class BrcyptWrap
 	{ return (await bcrypt.hash(password, await bcrypt.genSalt())); }
 
 	async compare(password: string, hash: string): Promise<boolean>
-	{ return (await bcrypt.compare(password, hash)); }
+	{
+		return (await bcrypt.compare(password, hash));
+	}
 }
