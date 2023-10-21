@@ -1,4 +1,4 @@
-<div class='container'>
+<div class='container glass'>
 	<form [formGroup]="gameOptform">
 		<mat-card>
 			<mat-card-header>
@@ -10,8 +10,8 @@
 			</mat-card-content>
 			<mat-checkbox formControlName="powerUps" >Enable Power-Ups?</mat-checkbox>
 			<mat-checkbox formControlName="is_private" >Disable Public Access?</mat-checkbox>
-			<mat-select formControlName="maps" required>
-				<mat-option *ngFor="let map of gameService.maps" [value]="map.name">
+			<mat-select class='glass' formControlName="maps" required>
+				<mat-option class='glass' *ngFor="let map of gameService.maps" [value]="map.name">
 					<img [src]="map.thumbnail" alt="{{map.name}} thumbnail" width="50" height="50">
 					<span>{{map.name}}</span>
 				</mat-option>
