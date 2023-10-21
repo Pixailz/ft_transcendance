@@ -320,6 +320,7 @@ export class WSGameService {
 	}
 
 	async startGame(server: Server, room_id: string) {
+		console.log("starting game");
 		const room = this.rooms.get(room_id);
 
 		this.setStatusUserInRoom(server, room, Status.INGAME);
@@ -441,7 +442,12 @@ export class WSGameService {
 		if (room.state.gameStatus === GameStatus.STARTED) {
 			this.moveBall(room);
 			this.checkCollisions(room);
-			await this.checkBallLose(server, room);
+			if (this.checkBallLose(server, room) === true) {
+				console.log("ball lost");
+				if (room.state.gameStatus === GameStatus.STARTED)
+					await this.resetBall(server, room);
+				return;
+			}
 			if (room.options.powerUps) {
 				this.powerUpsNurcery(room);
 			}
@@ -588,15 +594,17 @@ export class WSGameService {
 	}
 
 	private maybeKillPowerUps(room: LobbyI, cleanFlag: powerUpMercyFlags) {
-		room.state.powerUps?.forEach((powerUp, index) => {
-			if (
+		room.state.powerUps = room.state.powerUps?.filter((powerUp) => {
+			const powerUpCondition =
 				cleanFlag === powerUpMercyFlags.KILL_THEM_ALL ||
 				(powerUp.appliedAt &&
-					Date.now() - powerUp.appliedAt > powerUp.duration * 1000)
-			) {
+					Date.now() - powerUp.appliedAt > powerUp.duration * 1000);
+
+			if (powerUpCondition) {
 				this.killPowerUp(room, powerUp); // we found a bad boy
-				room.state.powerUps.splice(index, 1);
 			}
+
+			return !powerUpCondition;
 		});
 	}
 
@@ -611,10 +619,12 @@ export class WSGameService {
 			case "size":
 				if (!powerUp.appliedTo) break;
 				player = this.getPlayerBySide(room, powerUp.appliedTo);
+				if (player.paddle.height <= 75) break;
 				player.paddle.height /= 2;
 				break;
 			case "sticky":
-				room.state.ball.vx = Math.random() * 10 - 1;
+				// value between 3 and 5
+				room.state.ball.vx = (Math.random() * 2 + 3) * (Math.random() > 0.5 ? 1 : -1);
 				room.state.ball.vy = Math.random() * 2 - 1;
 				break;
 			case "death":
@@ -686,33 +696,25 @@ export class WSGameService {
 		});
 	}
 
-	private async checkBallLose(server: Server, room: LobbyI) {
+	private checkBallLose(server: Server, room: LobbyI) {
 		if (room.state.ball.x > 800) {
-			await this.ballWon(
-				server,
-				room,
-				this.getPlayerBySide(room, "left"),
-			);
+			this.ballWon(server, room, this.getPlayerBySide(room, "left"));
+			return true;
 		} else if (room.state.ball.x < 0) {
-			await this.ballWon(
-				server,
-				room,
-				this.getPlayerBySide(room, "right"),
-			);
+			this.ballWon(server, room, this.getPlayerBySide(room, "right"));
+			return true;
 		}
+		return false;
 	}
 
-	private async ballWon(
-		server: Server,
-		room: LobbyI,
-		player: PlayerI | undefined,
-	) {
+	private ballWon(server: Server, room: LobbyI, player: PlayerI | undefined) {
 		if (player) {
+			room.state.ball.vx = 0;
+			room.state.ball.vy = 0;
 			this.maybeKillPowerUps(room, powerUpMercyFlags.KILL_THEM_ALL);
 			room.state.ball.lastHit = Date.now();
 			this.playerScoreUpdate(player, room);
 			this.checkGameOver(room);
-			await this.resetBall(server, room);
 		}
 	}
 
@@ -738,16 +740,23 @@ export class WSGameService {
 	}
 
 	private async resetBall(server: Server, room: LobbyI) {
-		// room.state.ball.vx = -3;
-		room.state.ball.vx = 3;
-		room.state.ball.vy = Math.random() * 2 - 1;
+		const futurevx = room.state.ball.vx > 0 ? -1 : 1;
+		room.state.ball.vx = 0;
+		room.state.ball.vy = 0;
 		room.state.ball.x = 400;
 		room.state.ball.y = 300;
+		room.state.players.filter((player) => {
+			player.paddle.y = 300;
+			return true;
+		});
 		this.wsSocket.sendStatusToGame(server, room);
+
 		this.wsSocket.sendToUserInGame(server, room, "gameBall", {
 			delay: 3,
 		});
 		await sleep(3000, this.getRoomIdBySocketId(room.players[0].socket));
+		room.state.ball.vx = (Math.random() * 3 + 2) * futurevx;
+		room.state.ball.vy = Math.random() * 2 + 1;
 	}
 
 	/********** Helpers ***********/
