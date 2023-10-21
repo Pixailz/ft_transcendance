@@ -13,9 +13,13 @@
 						<mat-header-cell *matHeaderCellDef mat-sort-header> Rank </mat-header-cell>
 						<mat-cell *matCellDef="let element"> {{element.rank}} </mat-cell>
 					</ng-container>
-					<ng-container matColumnDef="nickname">
+					<ng-container  matColumnDef="nickname">
 						<mat-header-cell *matHeaderCellDef mat-sort-header> Nickname </mat-header-cell>
-						<mat-cell *matCellDef="let element"> {{element.nickname}} </mat-cell>
+						<mat-cell *matCellDef="let element">
+							<div class="leaderboard-profile-tooltip">
+								<span appTooltip [user]="DefUserI" [nickname]="element.nickname"> {{element.nickname}} </span>
+							</div>
+						</mat-cell>
 					</ng-container>
 					<ng-container matColumnDef="score">
 						<mat-header-cell *matHeaderCellDef mat-sort-header> Score </mat-header-cell>
@@ -47,7 +51,11 @@
 					</ng-container>
 					<ng-container matColumnDef="nickname">
 						<mat-header-cell *matHeaderCellDef mat-sort-header> Nickname </mat-header-cell>
-						<mat-cell *matCellDef="let element"> {{element.nickname}} </mat-cell>
+						<mat-cell *matCellDef="let element">
+							<div class="leaderboard-profile-tooltip">
+								<span appTooltip [user]="DefUserI" [nickname]="element.nickname"> {{element.nickname}} </span>
+							</div>
+						</mat-cell>
 					</ng-container>
 					<ng-container matColumnDef="lastseen">
 						<mat-header-cell *matHeaderCellDef mat-sort-header> Last Seen </mat-header-cell>

@@ -224,6 +224,9 @@ export class WSGateway {
 	listenGameState(): Observable<GameStateI>
 	{ return this.socket.fromEvent<GameStateI>("gameState"); }
 
+	listenGameBall(): Observable<any>
+	{ return this.socket.fromEvent<any>("gameBall"); }
+
 	// EMITER
 	searchGame(game_option: GameOptionI)
 	{ this.socket.emit("gameSearch", game_option); }
@@ -239,6 +242,9 @@ export class WSGateway {
 
 	sendInput(direction: string, type: string, pending_input: number)
 	{ this.socket.emit("gameSendInput", direction, type, pending_input); }
+
+	sendEngineReady()
+	{ this.socket.emit("gameEngineReady"); }
 
 	//GAME REQUEST
 	// LISTENER

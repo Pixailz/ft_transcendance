@@ -210,6 +210,16 @@ mat-option > span.mdc-list-item__primary-text {
 	left: auto;
 }
 
+.leaderboard-profile-tooltip app-user-tooltip{
+	/* border-radius: 0.7em; */
+	/* translate: -50% 100%; */
+	/* gap: 1em; */
+	border-radius: 1.7em !important;
+	translate: -20% 20% !important;
+	left: auto;
+	bottom: auto;
+}
+
 .profile_game_data {
  .mat-mdc-table {
 	background-color: inherit !important;

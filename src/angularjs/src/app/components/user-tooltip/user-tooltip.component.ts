@@ -1,5 +1,6 @@
 import { Component, ElementRef, Input, Renderer2 } from '@angular/core';
 import { Status, UserI } from 'src/app/interfaces/user/user.interface';
+import { BackService } from 'src/app/services/back.service';
 import { FriendService } from 'src/app/services/websocket/friend/service';
 import { WSGateway } from 'src/app/services/websocket/gateway';
 
@@ -10,10 +11,18 @@ import { WSGateway } from 'src/app/services/websocket/gateway';
 })
 export class UserTooltipComponent {
 	@Input() user!: UserI;
+	@Input() nickname!: string;
 	constructor(
 		public friendService: FriendService,
-		private wsGateway: WSGateway
+		private wsGateway: WSGateway,
+		private back: BackService,
 		) {}
+	
+	async ngOnInit(){
+		if (this.nickname && this.user.nickname !== this.nickname) {
+			this.user = await this.back.req("GET", `/user/profile/${this.nickname}`);
+		}
+	}
 
 	doAction() {
 		if (this.friendService.isTargetBlocked(this.user.id)) {

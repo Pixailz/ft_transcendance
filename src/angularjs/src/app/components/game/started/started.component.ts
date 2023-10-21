@@ -108,8 +108,8 @@ export class GameStartedComponent implements OnInit {
 			ex.Keys.D
 		);
 		this.remotePaddle = this.createPaddle(0, ex.Color.fromHex('#999999'));
-		this.localScore = this.createScore(0);
-		this.remoteScore = this.createScore(0);
+		this.localScore = this.createScore(0,0);
+		this.remoteScore = this.createScore(0,0);
 		this.gameStatus = this.createGameStatus();
 		this.ball = this.createBall();
 		this.graphic_sec_prompt = this.createDebugLabel('graphic_ms');
@@ -135,6 +135,11 @@ export class GameStartedComponent implements OnInit {
 			this.obsToDestroy.push(this.wsGateway.listenGameStarting()
 				.subscribe((data: any) => {
 					console.log("[WS:game] GameStarting event")
+				}
+			));
+			this.obsToDestroy.push(this.wsGateway.listenGameBall()
+				.subscribe((data: any) => {
+					console.log("[WS:game] GameBall event")
 					this.handleBallStart(data);
 				}
 			));
@@ -148,6 +153,7 @@ export class GameStartedComponent implements OnInit {
 			this.engine.input.keyboard.on('release', (evt) =>
 				this.handleInputRelease(evt)
 			);
+			if (this.engine.isInitialized) this.gameService.sendLoaded();
 		});
 	}
 
@@ -189,9 +195,9 @@ export class GameStartedComponent implements OnInit {
 				);
 				scoreLabel.text = player.score.toString();
 				scoreLabel.pos.x =
-				player.side_id === 'right' ? this.engine.drawWidth - 100 : 100;
+				player.side_id === 'right' ? 800 - 100 : 100;
 				scoreLabel.pos.y =
-				player.side_id === 'right' ? 100 : this.engine.drawHeight - 100;
+				player.side_id === 'right' ? 100 : 600 - 100;
 			});
 			this.ball.pos.x = this.extrapolate(
 				this.gameService.room.state.ball.x,
@@ -414,20 +420,21 @@ export class GameStartedComponent implements OnInit {
 	}
 
 	private handleBallStart(data): void {
+		console.log("[WS:game] GameStarting event with data:", data)
 		const counter = new ex.Timer({
 			interval: 1000,
 			repeats: true,
-			numberOfRepeats: +data[2],
+			numberOfRepeats: +data.delay,
 			fcn: () => {
 				this.gameStatus.text =
-				'Starts in : ' + (+data[2] - 1 - counter.timesRepeated);
+				'Starts in : ' + (+data.delay - 1 - counter.timesRepeated);
 				this.gameStatus.text =
-				counter.timesRepeated === +data[2] - 1 ? '' : this.gameStatus.text;
-				console.log(counter);
+				counter.timesRepeated === +data.delay - 1 ? '' && counter.stop() : this.gameStatus.text;
 			},
 		});
 		this.game.add(counter);
 		counter.start();
+		console.log(counter);
 	}
 
 	private handleInputHold(evt: ex.Input.KeyEvent): void {
@@ -544,7 +551,7 @@ export class GameStartedComponent implements OnInit {
 	): Paddle {
 		return this.createGameObject(Paddle, [
 			x,
-			this.engine.drawHeight / 2,
+			800 / 2,
 			this.paddleWidth,
 			this.paddleHeight,
 			color,
@@ -555,36 +562,32 @@ export class GameStartedComponent implements OnInit {
 
 	private createBall(): Ball {
 		return this.createGameObject(Ball, [
-			this.engine.drawWidth / 2,
-			this.engine.drawHeight / 2,
+			800 / 2,
+			800 / 2,
 			ex.Color.Green,
 			10,
 		]);
 	}
 
 	private createDebugLabel(model: string) {
-		let x, y;
+		let y;
 		switch (model) {
 			case 'graphic_sec':
-				x = this.engine.drawWidth - 250;
-				y = this.engine.drawHeight - 24;
+				y = 800 - 24;
 				break;
 			case 'graphic_ms':
-				x = this.engine.drawWidth - 250;
-				y = this.engine.drawHeight - 12;
+				y = 800 - 12;
 				break;
 			case 'server_sec':
-				x = this.engine.drawWidth - 250;
-				y = this.engine.drawHeight - 36;
+				y = 800 - 36;
 				break;
 			case 'server_ms':
-				x = this.engine.drawWidth - 250;
-				y = this.engine.drawHeight - 48;
+				y = 800 - 48;
 				break;
 		}
 		return this.createGameObject(ex.Label, [
 			{
-				x: x,
+				x: 800 - 250,
 				y: y,
 				text: "",
 				font: new ex.Font({ size: 14 }),
@@ -593,11 +596,11 @@ export class GameStartedComponent implements OnInit {
 		]);
 	}
 
-	private createScore(x: number): ex.Label {
+	private createScore(x: number, y: number): ex.Label {
 		return this.createGameObject(ex.Label, [
 			{
 				x: x,
-				y: this.engine.drawHeight - 100,
+				y: y,
 				text: '0',
 				font: new ex.Font({ size: 14 }),
 				color: ex.Color.White,
@@ -608,8 +611,8 @@ export class GameStartedComponent implements OnInit {
 	private createGameStatus(): ex.Label {
 		return this.createGameObject(ex.Label, [
 			{
-				x: this.engine.halfDrawWidth - 50,
-				y: this.engine.halfDrawHeight - 50,
+				x: 400,
+				y: 275,
 				text: 'Waiting for players',
 				color: ex.Color.White,
 				font: new ex.Font({ size: 14 }),

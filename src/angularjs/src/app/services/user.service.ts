@@ -96,6 +96,11 @@ export class UserService{
 		return (response.nonce);
 	}
 
+	async getUserFromNickname(nickname: string): Promise<UserI> {
+		const response: UserI = await this.backService.req("GET", "/user/profile/" + nickname);
+		return (response ? response : DefUserI);
+	}
+
 	getUserInfoFormated(user: UserI | undefined) {
 		if (!user)
 			return "";

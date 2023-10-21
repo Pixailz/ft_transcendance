@@ -268,6 +268,11 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.wsGameService.onMove(this.server, socket, status);
 	}
 
+	@SubscribeMessage("gameEngineReady")
+	async handleGameEngineReady(socket: Socket) {
+		this.wsGameService.onEngineReady(this.server, socket);
+	}
+
 	//GAME NOTIFICATION
 	@SubscribeMessage("gameSendInvite")
 	async handleSendGameInvite(socket: Socket, data: any) {
