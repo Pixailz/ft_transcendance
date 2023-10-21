@@ -120,6 +120,7 @@ export class LoginComponent implements OnInit {
 
 	async getToken(): Promise<void> {
 		this.isButtonClickable = false;
+		this.moulining = true;
 
 		try {
 			this.response = await this.http
@@ -127,8 +128,9 @@ export class LoginComponent implements OnInit {
 				.toPromise();
 			await this.handleToken();
 		} catch (err) {
+			this.moulining = false;
 			const message = document.getElementById('message');
-			if (message) message.innerHTML = 'Error: ' + err.error;
+			if (message) message.innerHTML = 'Error: ' + err.error.message;
 		}
 	}
 

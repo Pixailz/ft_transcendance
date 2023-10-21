@@ -126,6 +126,15 @@ div#wait {
 	}
 }
 
+div#notice {
+	display: flex;
+	justify-content: center;
+	gap: 1em;
+	color: red;
+	height: fit-content;
+	font-size: 1.2em;
+}
+
 .ft-btn-login {
 	background-color: #00BABC;
 	border: none;
