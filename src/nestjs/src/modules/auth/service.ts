@@ -49,15 +49,8 @@ export class AuthService {
 
 	async extSignIn(nickname: string, pass: string): Promise<any> {
 		const user = await this.dbUserService.returnOne(null, null, nickname);
-		if (!user)
-		{
-			await sleep(1000);
-			return new UnauthorizedException("User not found");
-		}
-		if (!(await this.bcryptWrap.compare(pass, user.password)))
-		{
-			await sleep(1000);
-			return new UnauthorizedException("Wrong pass");
+		if (!user || !(await this.bcryptWrap.compare(pass, user.password))) {
+			return new UnauthorizedException("Wrong credentials.");
 		}
 		const payload = { sub: user.id };
 
@@ -76,10 +69,8 @@ export class AuthService {
 
 	async extRegister(nickname: string, pass: string): Promise<any> {
 		const user = await this.dbUserService.returnOne(null, null, nickname);
-		if (user)
-		{
-			await sleep(1000);
-			return new UnauthorizedException("User already created");
+		if (user) {
+			return new UnauthorizedException("Username already taken.");
 		}
 		const user_id = await this.dbUserService.create({
 			ftLogin: "extern",
