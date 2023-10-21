@@ -1,5 +1,5 @@
 <h1 class="mat-h1">Dashboard</h1>
-<mat-grid-list cols="3" rowHeight="fit" colsWidth="33%" gutterSize="30px">
+<mat-grid-list class="leaderboard-mat-cards" cols="3" rowHeight="fit" colsWidth="33%" gutterSize="30px">
 	<mat-grid-tile *ngIf="leaderboard" class="leaderboard" [colspan]="leaderboard.cols" [rowspan]="leaderboard.rows">
 		<mat-card class="dashboard-card">
 			<mat-card-header>
@@ -13,16 +13,20 @@
 						<mat-header-cell *matHeaderCellDef mat-sort-header> Rank </mat-header-cell>
 						<mat-cell *matCellDef="let element"> {{element.rank}} </mat-cell>
 					</ng-container>
-					<ng-container matColumnDef="nickname">
+					<ng-container  matColumnDef="nickname">
 						<mat-header-cell *matHeaderCellDef mat-sort-header> Nickname </mat-header-cell>
-						<mat-cell *matCellDef="let element"> {{element.nickname}} </mat-cell>
+						<mat-cell *matCellDef="let element">
+							<div class="leaderboard-profile-tooltip">
+								<span appTooltip [user]="DefUserI" [nickname]="element.nickname"> {{element.nickname}} </span>
+							</div>
+						</mat-cell>
 					</ng-container>
-					<ng-container matColumnDef="score">
-						<mat-header-cell *matHeaderCellDef mat-sort-header> Score </mat-header-cell>
-						<mat-cell *matCellDef="let element"> {{element.score}} </mat-cell>
+					<ng-container matColumnDef="elo">
+						<mat-header-cell *matHeaderCellDef mat-sort-header> Elo </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.elo}} </mat-cell>
 					</ng-container>
-					<mat-header-row *matHeaderRowDef="['rank', 'nickname', 'score']"></mat-header-row>
-					<mat-row *matRowDef="let row; columns: ['rank', 'nickname', 'score'];"></mat-row>
+					<mat-header-row *matHeaderRowDef="['rank', 'nickname', 'elo']"></mat-header-row>
+					<mat-row *matRowDef="let row; columns: ['rank', 'nickname', 'elo'];"></mat-row>
 				</mat-table>
 			</mat-card-content>
 		</mat-card>
@@ -47,7 +51,11 @@
 					</ng-container>
 					<ng-container matColumnDef="nickname">
 						<mat-header-cell *matHeaderCellDef mat-sort-header> Nickname </mat-header-cell>
-						<mat-cell *matCellDef="let element"> {{element.nickname}} </mat-cell>
+						<mat-cell *matCellDef="let element">
+							<div class="leaderboard-profile-tooltip">
+								<span appTooltip [user]="DefUserI" [nickname]="element.nickname"> {{element.nickname}} </span>
+							</div>
+						</mat-cell>
 					</ng-container>
 					<ng-container matColumnDef="lastseen">
 						<mat-header-cell *matHeaderCellDef mat-sort-header> Last Seen </mat-header-cell>

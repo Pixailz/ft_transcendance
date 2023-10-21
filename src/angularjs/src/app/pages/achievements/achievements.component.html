@@ -1,5 +1,5 @@
 <div class="grid">
-  <div class="card" *ngFor="let achievement of achievements" [class.unlocked]="achievement.unlocked">
+  <div class="card glass" *ngFor="let achievement of achievements" [class.unlocked]="achievement.unlocked">
       <span>
       <img [src]="achievement.imageUrl" alt="{{achievement.name}}" >
       <h2>{{achievement.name}}</h2>

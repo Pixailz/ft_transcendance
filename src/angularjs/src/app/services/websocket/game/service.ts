@@ -93,6 +93,9 @@ export class GameService {
 	isInGame()
 	{ this.wsGateway.isInGame(); }
 
+	sendLoaded()
+	{ this.wsGateway.sendEngineReady(); }
+
 	// reconnectGame()
 	// { this.wsGateway.reconnectGame(this.room.id); }
 

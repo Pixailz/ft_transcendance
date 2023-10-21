@@ -1,4 +1,4 @@
-<form class="glass" *ngIf="userForm" [formGroup]="userForm" [ngClass]="{'invalid-nickname': invalidNickname}">
+<form *ngIf="userForm" [formGroup]="userForm" [ngClass]="{'invalid-nickname': invalidNickname}">
 	<div class="row">
 		<form  [formGroup]="pictureForm" class="avatarcontainer">
 			<app-avatar formControlName="picture"></app-avatar>

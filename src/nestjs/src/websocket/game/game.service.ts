@@ -41,6 +41,16 @@ export class WSGameService {
 		this.rooms = new Map();
 	}
 
+	onEngineReady(server: Server, socket: Socket) {
+		const room = this.rooms.get(this.getRoomIdBySocketId(socket.id));
+		if (!room) return;
+		const player = room.players.find(
+			(player) => player.socket === socket.id,
+		);
+		if (!player) return;
+		player.engineReady = true;
+	}
+
 	getInfo() {
 		for (const [room_id, room] of this.rooms) {
 			console.log("room_id ", room_id);
@@ -56,6 +66,7 @@ export class WSGameService {
 				),
 			),
 			socket: socket.id,
+			engineReady: false,
 		};
 		const room = this.rooms.get(room_id);
 		if (room) {
@@ -73,8 +84,14 @@ export class WSGameService {
 				),
 			),
 			socket: socket.id,
+			engineReady: false,
 		};
-		const room_id = this.gameSearchOpponent(server, player, game_opt, socket);
+		const room_id = this.gameSearchOpponent(
+			server,
+			player,
+			game_opt,
+			socket,
+		);
 		const room = this.rooms.get(room_id);
 		if (this.isFullRoom(room) && room.status !== LobbyStatus.STARTED)
 			this.startGame(server, room_id);
@@ -86,7 +103,7 @@ export class WSGameService {
 		server: Server,
 		player: PlayerSockI,
 		game_opt: any,
-		socket: Socket
+		socket: Socket,
 	) {
 		const room_id = this.gameSearchRoom(player, game_opt);
 
@@ -103,9 +120,12 @@ export class WSGameService {
 			if (this.isInRoom(player, room)) return room_id; //we first loop to check if the player is already in a room
 		}
 		for (const [room_id, room] of this.rooms) {
-			if (room.options.powerUps === game_opt.powerUps &&
+			if (
+				room.options.powerUps === game_opt.powerUps &&
 				room.options.maps.name === game_opt.maps.name &&
-				!room.options.is_private && !this.isFullRoom(room))
+				!room.options.is_private &&
+				!this.isFullRoom(room)
+			)
 				return room_id; //then we loop to find a room with the same game type and not full
 		}
 		return "";
@@ -118,7 +138,7 @@ export class WSGameService {
 	}
 
 	isFullRoom(room: LobbyI): boolean {
-		let max_player = 2;
+		const max_player = 2;
 		let nb_player = 0;
 		// switch (room.options.type) {
 		// 	case "normal":
@@ -134,7 +154,7 @@ export class WSGameService {
 		server: Server,
 		player_sock: PlayerSockI,
 		room_id: string,
-		socket: Socket
+		socket: Socket,
 	) {
 		const current_lobby: LobbyI = this.rooms.get(room_id);
 		for (const player_id in current_lobby.players) {
@@ -143,10 +163,7 @@ export class WSGameService {
 			) {
 				current_lobby.players[player_id].socket = player_sock.socket;
 				this.setStatusUserInRoom(server, current_lobby, Status.INGAME);
-				socket.emit(
-					"gameReconnect",
-					current_lobby.state,
-				);
+				socket.emit("gameReconnect", current_lobby.state);
 				return;
 			}
 		}
@@ -170,7 +187,7 @@ export class WSGameService {
 		server: Server,
 		player: PlayerSockI,
 		game_opt: GameOptionI,
-		socket: Socket
+		socket: Socket,
 	) {
 		let room_id = `${this.getUidPart(8)}-`;
 
@@ -284,20 +301,26 @@ export class WSGameService {
 		else socket.emit("gameWaiting");
 	}
 
-	async setStatusUserInRoom(server: Server, room: LobbyI, status: Status)
-	{
-		for (var i in room.players)
-		{
+	async setStatusUserInRoom(server: Server, room: LobbyI, status: Status) {
+		for (const i in room.players) {
 			await this.userService.setStatus(room.players[i].user.id, status);
-			const friends = await this.userService.getAllFriend(room.players[i].user.id);
-			this.wsSocket.sendToUsersInfo(server, friends, "getNewStatusFriend", {
-				user_id: room.players[i].user.id,
-				status: status,
-			});
+			const friends = await this.userService.getAllFriend(
+				room.players[i].user.id,
+			);
+			this.wsSocket.sendToUsersInfo(
+				server,
+				friends,
+				"getNewStatusFriend",
+				{
+					user_id: room.players[i].user.id,
+					status: status,
+				},
+			);
 		}
 	}
 
 	async startGame(server: Server, room_id: string) {
+		console.log("starting game");
 		const room = this.rooms.get(room_id);
 
 		this.setStatusUserInRoom(server, room, Status.INGAME);
@@ -312,9 +335,11 @@ export class WSGameService {
 		}
 
 		this.startGameInRoom(server, room, room_id); //send the game initial state to the players
-		await sleep(500, room_id); //wait for the client to setup the game
+		while (room.players.find((player) => !player.engineReady))
+			await sleep(500, room_id);
+		console.log("all engines ready");
 
-		this.resetBall(server, room); //set the ball position for first serve
+		await this.resetBall(server, room); //set the ball position for first serve
 
 		/**	Main game loop
 		 * 	- update the game state at 64Hz
@@ -351,7 +376,7 @@ export class WSGameService {
 
 	private async mainLoop(server: Server, room: LobbyI, room_id: string) {
 		while (room.status === LobbyStatus.STARTED) {
-			this.update(server, room);
+			await this.update(server, room);
 			await sleep(1000 / 64, room_id);
 		}
 		console.log("quitting main loop");
@@ -411,13 +436,18 @@ export class WSGameService {
 	}
 
 	// /************* Method called at each tick, updates the state *************/
-	private update(server: Server, room: LobbyI) {
+	private async update(server: Server, room: LobbyI) {
 		room.state.serverUpdateTime = Date.now().toString();
 		this.movePaddles(room);
 		if (room.state.gameStatus === GameStatus.STARTED) {
 			this.moveBall(room);
 			this.checkCollisions(room);
-			this.checkBallLose(server, room);
+			if (this.checkBallLose(server, room) === true) {
+				console.log("ball lost");
+				if (room.state.gameStatus === GameStatus.STARTED)
+					await this.resetBall(server, room);
+				return;
+			}
 			if (room.options.powerUps) {
 				this.powerUpsNurcery(room);
 			}
@@ -564,15 +594,17 @@ export class WSGameService {
 	}
 
 	private maybeKillPowerUps(room: LobbyI, cleanFlag: powerUpMercyFlags) {
-		room.state.powerUps?.forEach((powerUp, index) => {
-			if (
+		room.state.powerUps = room.state.powerUps?.filter((powerUp) => {
+			const powerUpCondition =
 				cleanFlag === powerUpMercyFlags.KILL_THEM_ALL ||
 				(powerUp.appliedAt &&
-					Date.now() - powerUp.appliedAt > powerUp.duration * 1000)
-			) {
+					Date.now() - powerUp.appliedAt > powerUp.duration * 1000);
+
+			if (powerUpCondition) {
 				this.killPowerUp(room, powerUp); // we found a bad boy
-				room.state.powerUps.splice(index, 1);
 			}
+
+			return !powerUpCondition;
 		});
 	}
 
@@ -587,10 +619,12 @@ export class WSGameService {
 			case "size":
 				if (!powerUp.appliedTo) break;
 				player = this.getPlayerBySide(room, powerUp.appliedTo);
+				if (player.paddle.height <= 75) break;
 				player.paddle.height /= 2;
 				break;
 			case "sticky":
-				room.state.ball.vx = Math.random() * 10 - 1;
+				// value between 3 and 5
+				room.state.ball.vx = (Math.random() * 2 + 3) * (Math.random() > 0.5 ? 1 : -1);
 				room.state.ball.vy = Math.random() * 2 - 1;
 				break;
 			case "death":
@@ -665,18 +699,22 @@ export class WSGameService {
 	private checkBallLose(server: Server, room: LobbyI) {
 		if (room.state.ball.x > 800) {
 			this.ballWon(server, room, this.getPlayerBySide(room, "left"));
+			return true;
 		} else if (room.state.ball.x < 0) {
 			this.ballWon(server, room, this.getPlayerBySide(room, "right"));
+			return true;
 		}
+		return false;
 	}
 
 	private ballWon(server: Server, room: LobbyI, player: PlayerI | undefined) {
 		if (player) {
+			room.state.ball.vx = 0;
+			room.state.ball.vy = 0;
 			this.maybeKillPowerUps(room, powerUpMercyFlags.KILL_THEM_ALL);
 			room.state.ball.lastHit = Date.now();
 			this.playerScoreUpdate(player, room);
 			this.checkGameOver(room);
-			this.resetBall(server, room);
 		}
 	}
 
@@ -701,13 +739,24 @@ export class WSGameService {
 		});
 	}
 
-	private resetBall(server: Server, room: LobbyI) {
-		// room.state.ball.vx = -3;
-		room.state.ball.vx = 3;
-		room.state.ball.vy = Math.random() * 2 - 1;
+	private async resetBall(server: Server, room: LobbyI) {
+		const futurevx = room.state.ball.vx > 0 ? -1 : 1;
+		room.state.ball.vx = 0;
+		room.state.ball.vy = 0;
 		room.state.ball.x = 400;
 		room.state.ball.y = 300;
+		room.state.players.filter((player) => {
+			player.paddle.y = 300;
+			return true;
+		});
 		this.wsSocket.sendStatusToGame(server, room);
+
+		this.wsSocket.sendToUserInGame(server, room, "gameBall", {
+			delay: 3,
+		});
+		await sleep(3000, this.getRoomIdBySocketId(room.players[0].socket));
+		room.state.ball.vx = (Math.random() * 3 + 2) * futurevx;
+		room.state.ball.vy = Math.random() * 2 + 1;
 	}
 
 	/********** Helpers ***********/

@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
 import { BackService } from 'src/app/services/back.service';
+import { UserService } from 'src/app/services/user.service';
+import { DefUserI } from 'src/app/interfaces/user/user.interface';
 
 @Component({
 	selector: 'app-home-dashboard',
@@ -14,10 +16,12 @@ export class HomeDashboardComponent {
 	onlineusers: any;
 	private: any;
 	global: any;
+	DefUserI = DefUserI;
 
 	constructor(
 		private back: BackService,
-		private breakpointObserver: BreakpointObserver
+		private breakpointObserver: BreakpointObserver,
+		public userService: UserService,
 	) { }
 
 	async ngOnInit() {

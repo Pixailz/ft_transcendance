@@ -7,7 +7,8 @@ import { UserI } from '../interfaces/user/user.interface';
 })
 export class TooltipDirective {
 
-  @Input() user!: UserI
+  @Input() user!: UserI;
+  @Input() nickname: string;
   displayTooltip = false;
 
   constructor(
@@ -24,6 +25,7 @@ export class TooltipDirective {
         let factory = this.resolver.resolveComponentFactory(UserTooltipComponent);
         tooltip = this.viewContainerRef.createComponent(factory);
         console.log("X : ", event.clientX, "Y : ", event.clientY);
+        tooltip.instance.nickname = this.nickname;
         tooltip.instance.user = this.user;
         this.displayTooltip = true;
       }

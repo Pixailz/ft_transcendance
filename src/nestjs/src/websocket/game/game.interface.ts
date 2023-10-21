@@ -129,12 +129,13 @@ export const DefGameStateI: GameStateI = {
 	players: [],
 	ball: DefBallI,
 	serverUpdateTime: Date.now().toString(),
-	powerUps: []
+	powerUps: [],
 };
 
 export interface PlayerSockI {
 	user: any;
 	socket: string;
+	engineReady: boolean;
 }
 
 export const DefPlayerSockI: PlayerSockI = {
@@ -142,6 +143,7 @@ export const DefPlayerSockI: PlayerSockI = {
 		id: -1,
 	},
 	socket: "",
+	engineReady: false,
 };
 
 export interface LobbyI {

@@ -6,6 +6,26 @@
 	padding: 20px;
 	border: 1px solid #e7e7e7;
 	border-radius: 5px;
-	background-color: #f3f3f3;
 	box-shadow: 0 0 10px #e7e7e7;
+	color: white;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	width: 250px;
+}
+
+.actions{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	text-align: center;
+	width: 100%;
+	button{
+		color: white;
+		padding: 5px;
+		margin: 5px;
+	}
 }

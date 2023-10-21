@@ -174,7 +174,7 @@ const config: SocketIoConfig = {
 	],
 	providers: [
 		AuthGuardService,
-		{ provide: ErrorHandler, useClass: GlobalErrorHandlerService },
+		// { provide: ErrorHandler, useClass: GlobalErrorHandlerService },
 		{ provide: RouteReuseStrategy, useClass: CustomReuseStrategy },
 		ReplaceNickname,
 	],

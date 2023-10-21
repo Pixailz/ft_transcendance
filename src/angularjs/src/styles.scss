@@ -112,6 +112,16 @@ ul {
 	background: transparent;
 }
 
+mat-dialog-container {
+	border: 1px solid rgba(90,90,90,0.4);
+	background-color: rgba(90, 90, 90, 0.3);
+	border-radius: 10px;
+	backdrop-filter: blur(10px);
+	.mdc-dialog__surface {
+		background-color: inherit !important;
+	}
+}
+
 
 .notification > div {
     background-color: #001509;
@@ -195,19 +205,23 @@ mat-option > span.mdc-list-item__primary-text {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-  }
+}
 
-
-
+.mat-mdc-select-panel {
+	color: white;
+	background-color: inherit !important;
+}
 
 .user-profile-tooltip app-user-tooltip{
-	/* border-radius: 0.7em; */
-	/* translate: -50% 100%; */
-	/* gap: 1em; */
-	border-radius: 1.7em !important;
 	translate: 0 -65% !important;
 	bottom: auto;
 	left: auto;
+}
+
+.leaderboard-profile-tooltip app-user-tooltip{
+	translate: -20% 20% !important;
+	left: auto;
+	bottom: auto;
 }
 
 .profile_game_data {
@@ -217,4 +231,17 @@ mat-option > span.mdc-list-item__primary-text {
  .mat-mdc-paginator {
 	background-color: inherit !important;
  }
+}
+
+.leaderboard-mat-cards mat-grid-tile {
+	color: white;
+	background-color:rgba($color: #383838, $alpha: 0.4);
+	border-radius: 10px;
+	backdrop-filter: blur(10px);
+	.mat-mdc-card{
+	   background-color: inherit !important;
+	}
+	.mat-mdc-table{
+	   background-color: inherit !important;
+	}
 }
