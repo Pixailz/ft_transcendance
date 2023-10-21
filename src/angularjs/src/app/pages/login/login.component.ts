@@ -17,28 +17,30 @@ import { ReplaceNickname } from 'src/utils/utils';
 })
 
 export class LoginComponent implements OnInit {
-    code: string | null = null;
-    response: any = null;
-    state: any = null;
-    isButtonClickable: boolean = true;
+	code: string | null = null;
+	response: any = null;
+	state: any = null;
+	isButtonClickable: boolean = true;
 
-    loginForm!: FormGroup;
+	loginForm!: FormGroup;
+	failedMessage: string = "";
+	moulining: boolean = false;
 
-    constructor(
-        private route: ActivatedRoute,
-        private router: Router,
-        private http: HttpClient,
-        private userService: UserService,
-        private formBuilder: FormBuilder,
+	constructor(
+		private route: ActivatedRoute,
+		private router: Router,
+		private http: HttpClient,
+		private userService: UserService,
+		private formBuilder: FormBuilder,
 		private replaceNickname: ReplaceNickname,
-        public dialog: MatDialog
-    ) {
-        this.loginForm = this.formBuilder.group({
-            nickname: '',
-            pass: '',
-            show_pass: false,
-            login: true,
-        }), {updateOn: "change"};
+		public dialog: MatDialog
+	) {
+		this.loginForm = this.formBuilder.group({
+			nickname: '',
+			pass: '',
+			show_pass: false,
+			login: true,
+		}), {updateOn: "change"};
 		this.loginForm?.valueChanges.subscribe((value: any) => {
 			if (this.loginForm.value.nickname !== null)
 			{
@@ -48,11 +50,11 @@ export class LoginComponent implements OnInit {
 				}, {emitEvent: false, onlySelf: true});
 			}
 		})
-    }
+	}
 
-    get passwordInputType() {
-        return this.loginForm.value.show_pass ? 'text' : 'password';
-    }
+	get passwordInputType() {
+		return this.loginForm.value.show_pass ? 'text' : 'password';
+	}
 
 	toggle() {
 		this.loginForm.patchValue({
@@ -60,24 +62,24 @@ export class LoginComponent implements OnInit {
 		});
 	}
 
-    async ngOnInit() {
-        if (await this.userService.checkToken()) this.router.navigate(['/']);
-        this.code = this.route.snapshot.queryParamMap.get('code');
-        this.state = this.route.snapshot.queryParamMap.get('state');
+	async ngOnInit() {
+		if (await this.userService.checkToken()) this.router.navigate(['/']);
+		this.code = this.route.snapshot.queryParamMap.get('code');
+		this.state = this.route.snapshot.queryParamMap.get('state');
 
-        if (this.state !== null) {
-            try {
-                this.state = JSON.parse(atob(this.state));
-            } catch (e) {
-                console.log(e);
-                this.state = null;
-            }
-        }
-        if (this.code !== null) {
-            await this.getToken();
-            this.router.navigate([this.state?.redirect || '/']);
-        }
-    }
+		if (this.state !== null) {
+			try {
+				this.state = JSON.parse(atob(this.state));
+			} catch (e) {
+				console.log(e);
+				this.state = null;
+			}
+		}
+		if (this.code !== null) {
+			await this.getToken();
+			this.router.navigate([this.state?.redirect || '/']);
+		}
+	}
 
 	async handleToken(): Promise<void> {
 		if (!this.response || (this.response.access_token === undefined && this.response.status === undefined)) {
@@ -117,19 +119,18 @@ export class LoginComponent implements OnInit {
 	}
 
 	async getToken(): Promise<void> {
-    this.isButtonClickable = false;
+		this.isButtonClickable = false;
 
-    try {
-        this.response = await this.http
-            .get(environment.api_prefix + '/auth/ft_callback?code=' + this.code)
-            .toPromise();
-
-        await this.handleToken();
-    } catch (err) {
-        const message = document.getElementById('message');
-        if (message) message.innerHTML = 'Error: ' + err.error;
-    }
-}
+		try {
+			this.response = await this.http
+				.get(environment.api_prefix + '/auth/ft_callback?code=' + this.code)
+				.toPromise();
+			await this.handleToken();
+		} catch (err) {
+			const message = document.getElementById('message');
+			if (message) message.innerHTML = 'Error: ' + err.error;
+		}
+	}
 
 	SignIn()
 	{
@@ -140,10 +141,12 @@ export class LoginComponent implements OnInit {
 
 	async doAction()
 	{
+		this.moulining = true;
 		if (this.loginForm.value.login)
 			await this.SignInExt()
 		else
 			await this.RegisterExt()
+		this.moulining = false;
 		this.loginForm.reset({
 			nickname: undefined,
 			pass: undefined,
@@ -157,7 +160,8 @@ export class LoginComponent implements OnInit {
 			this.response = await this.http
 				.get(url + '?nickname=' + nickname + '&pass=' + password)
 				.toPromise();
-
+			if (this.response.status === 401)
+				this.failedMessage = this.response.message;
 			await this.handleToken();
 		} catch (err) {
 			const message = document.getElementById('message');
@@ -166,10 +170,18 @@ export class LoginComponent implements OnInit {
 	}
 
 	async SignInExt(): Promise<void> {
-		await this.sendAuthRequest(environment.api_prefix + '/auth/ext_login', this.loginForm.value.nickname, this.loginForm.value.pass);
+		await this.sendAuthRequest(
+			environment.api_prefix + '/auth/ext_login',
+			this.loginForm.value.nickname,
+			this.loginForm.value.pass
+		);
 	}
 
 	async RegisterExt(): Promise<void> {
-		await this.sendAuthRequest(environment.api_prefix + '/auth/ext_register', this.loginForm.value.nickname, this.loginForm.value.pass);
+		await this.sendAuthRequest(
+			environment.api_prefix + '/auth/ext_register',
+			this.loginForm.value.nickname,
+			this.loginForm.value.pass
+		);
 	}
 }

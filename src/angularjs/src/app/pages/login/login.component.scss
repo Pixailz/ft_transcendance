@@ -7,25 +7,25 @@
 }
 
 .glass.container {
-    display: flex;
-    margin: 20px;
-    flex-direction: column;
-    align-items: center;
+	display: flex;
+	margin: 20px;
+	flex-direction: column;
+	align-items: center;
 	background-color: transparent;
 	border: none;
 }
 
 .password-container {
-    position: relative;
-    display: flex;
-    align-items: center;
+	position: relative;
+	display: flex;
+	align-items: center;
 
 }
 
 .password-container mat-icon {
-    position: absolute;
-    right: 0;
-    cursor: pointer;
+	position: absolute;
+	right: 0;
+	cursor: pointer;
 	margin-right: 1em;
 	color: rgba(255, 255, 255, 0.493);
 	transition: color .1s linear;
@@ -69,7 +69,7 @@ form {
 		color: white;
 		background: rgba($color: #3a3a3a, $alpha: 0.3);
 	}
-	
+
 	div {
 		display: flex;
 		justify-content: space-between;
@@ -91,7 +91,7 @@ form {
 		&:disabled:disabled{
 			background-color:rgb(43, 43, 43);
 			filter: brightness(80%);
-		} 
+		}
 		&:not(:disabled) {
 			cursor: pointer;
 		}
@@ -108,7 +108,7 @@ form {
 			color: white;
 		}
 	}
-}	
+}
 
 
 div#wait {
@@ -131,10 +131,7 @@ div#wait {
 		stroke-linecap: round;
 		animation: dash 1.5s ease-in-out infinite;
 		}
-		
 	}
-	
-	
 }
 
 @keyframes rotate {
@@ -187,4 +184,29 @@ div#wait {
 .ft-btn-login img {
 	height: 30px;
 	padding-right: 15px;
+}
+
+.failed-message {
+	outline: none;
+	border: none;
+	height: 25px;
+	padding: 4px 10px 4px 10px;
+	border-radius: 9999px;
+	// font-size: large;
+	border: 2px solid rgba($color: #913f3f, $alpha: 0.3);
+	color: red;
+	background: rgba($color: #330e0e, $alpha: 0.3);
+}
+
+.moulining-spinner {
+	animation: rotate 2s linear infinite;
+	// z-index: 1;
+	width: 1em;
+	height: 1em;
+
+	& .path {
+		stroke: hsl(180, 42%, 90%);
+		stroke-linecap: round;
+		animation: dash 1.5s ease-in-out infinite;
+	}
 }
