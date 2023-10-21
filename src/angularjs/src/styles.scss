@@ -228,3 +228,14 @@ mat-option > span.mdc-list-item__primary-text {
 	background-color: inherit !important;
  }
 }
+
+.leaderboard-mat-cards mat-grid-tile {
+	color: white;
+	background-color:rgba($color: #383838, $alpha: 0.4);
+	.mat-mdc-card{
+	   background-color: inherit !important;
+	}
+	.mat-mdc-table{
+	   background-color: inherit !important;
+	}
+   }

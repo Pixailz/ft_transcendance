@@ -1,5 +1,5 @@
 <h1 class="mat-h1">Dashboard</h1>
-<mat-grid-list cols="3" rowHeight="fit" colsWidth="33%" gutterSize="30px">
+<mat-grid-list class="leaderboard-mat-cards" cols="3" rowHeight="fit" colsWidth="33%" gutterSize="30px">
 	<mat-grid-tile *ngIf="leaderboard" class="leaderboard" [colspan]="leaderboard.cols" [rowspan]="leaderboard.rows">
 		<mat-card class="dashboard-card">
 			<mat-card-header>
@@ -22,7 +22,7 @@
 						</mat-cell>
 					</ng-container>
 					<ng-container matColumnDef="elo">
-						<mat-header-cell *matHeaderCellDef mat-sort-header> Score </mat-header-cell>
+						<mat-header-cell *matHeaderCellDef mat-sort-header> Elo </mat-header-cell>
 						<mat-cell *matCellDef="let element"> {{element.elo}} </mat-cell>
 					</ng-container>
 					<mat-header-row *matHeaderRowDef="['rank', 'nickname', 'elo']"></mat-header-row>
