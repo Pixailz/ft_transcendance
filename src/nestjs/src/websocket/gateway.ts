@@ -78,7 +78,6 @@ export class WSGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage("createChannelRoom")
 	async handleCreateChannelRoom(socket: Socket, data: any) {
-		console.log('in subscribe message create channel: ', data);
 		const name: string = data[0] ? data[0] : "Untitled";
 		const password: string = data[1] ? data[1] : "";
 		const is_private: boolean = data[2] ? data[2]: false;

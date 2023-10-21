@@ -1,14 +1,14 @@
 
 <form [formGroup]="loginForm" class="loginform" *ngIf="isButtonClickable">
-	
+
 	<input type="text"  formControlName="nickname" placeholder="User name" required />
-	
+
 	<div class="password-container">
-		<input 
+		<input
 		[type]="passwordInputType"
 		formControlName="pass"
 		placeholder="User password"
-		required 
+		required
 		/>
 		<mat-icon (click)="toggle()" [ngClass]="{'visibility': loginForm.value.show_pass}">
 			{{loginForm.value.show_pass ? 'visibility_off' : 'visibility'}}
@@ -20,6 +20,13 @@
 		<input class="toggle-btn" type="checkbox" formControlName="login" />
 	</div>
 	<br/>
+	<label class=failed-message *ngIf="failedMessage.length">⚠️ {{failedMessage}} ⚠️</label>
+	<div id="wait" *ngIf="moulining">
+		<span >Please wait...</span>
+		<svg class="moulining-spinner" viewBox="0 0 50 50">
+			<circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+		</svg>
+	</div>
 	<div class="btn-container">
 		<button (click)="doAction()" [disabled]="!loginForm.valid" [ngClass]="{'login': loginForm.value.login}">
 			<span *ngIf="loginForm.value.login">login</span>
