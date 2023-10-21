@@ -21,12 +21,12 @@
 							</div>
 						</mat-cell>
 					</ng-container>
-					<ng-container matColumnDef="score">
+					<ng-container matColumnDef="elo">
 						<mat-header-cell *matHeaderCellDef mat-sort-header> Score </mat-header-cell>
-						<mat-cell *matCellDef="let element"> {{element.score}} </mat-cell>
+						<mat-cell *matCellDef="let element"> {{element.elo}} </mat-cell>
 					</ng-container>
-					<mat-header-row *matHeaderRowDef="['rank', 'nickname', 'score']"></mat-header-row>
-					<mat-row *matRowDef="let row; columns: ['rank', 'nickname', 'score'];"></mat-row>
+					<mat-header-row *matHeaderRowDef="['rank', 'nickname', 'elo']"></mat-header-row>
+					<mat-row *matRowDef="let row; columns: ['rank', 'nickname', 'elo'];"></mat-row>
 				</mat-table>
 			</mat-card-content>
 		</mat-card>
