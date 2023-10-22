@@ -18,9 +18,12 @@ import { PowerUp } from 'src/app/interfaces/game/actors/powerup';
 })
 export class GameStartedComponent implements OnInit {
 	private ball: Ball;
+	private contentArea: ex.BoundingBox;
 	private currentTime: number;
 	private engine: ex.Engine;
 	private game: ex.Scene;
+	private gameFenceActors: ex.Actor[];
+	private gameFenceLines: ex.Line[];
 	private gameStatus: ex.Label;
 	private loader: ex.Loader;
 	private localPaddle: Paddle;
@@ -80,12 +83,11 @@ export class GameStartedComponent implements OnInit {
 		this.engine = new ex.Engine({
 			canvasElementId: 'pong',
 			displayMode: ex.DisplayMode.FitContainerAndFill,
-			backgroundColor: ex.Color.Black,
 			viewport: {height: 600, width: 800},
 		});
 		this.game = new ex.Scene();
 		this.engine.add('game', this.game);
-		this.engine.backgroundColor = ex.Color.Gray;
+		this.engine.backgroundColor = ex.Color.Transparent;
 		this.engine.fixedUpdateFps = 64;
 		this.pwrupImgDeath = new ex.ImageSource('assets/powerups/death.png');
 		this.pwrupImgSpeed = new ex.ImageSource('assets/powerups/speed.png');
@@ -112,6 +114,7 @@ export class GameStartedComponent implements OnInit {
 		this.remoteScore = this.createScore(0,0);
 		this.gameStatus = this.createGameStatus();
 		this.ball = this.createBall();
+		this.contentArea = this.engine.screen.contentArea;
 		this.graphic_sec_prompt = this.createDebugLabel('graphic_ms');
 		this.graphic_ms_prompt = this.createDebugLabel('graphic_sec');
 		this.server_sec_prompt = this.createDebugLabel('server_ms');
@@ -153,7 +156,9 @@ export class GameStartedComponent implements OnInit {
 			this.engine.input.keyboard.on('release', (evt) =>
 				this.handleInputRelease(evt)
 			);
-			if (this.engine.isInitialized) this.gameService.sendLoaded();
+
+			while (!this.engine.isInitialized) ;
+			this.wsGateway.sendEngineReady();
 		});
 	}
 
@@ -173,6 +178,7 @@ export class GameStartedComponent implements OnInit {
 	}
 
 	private postUpdate() {
+		this.updateFence();
 		this.currentTime = window.performance.now();
 		this.serverUpdateTime = this.gameService.room.state.serverUpdateTime;
 		this.interpolateState();
@@ -208,6 +214,59 @@ export class GameStartedComponent implements OnInit {
 				this.gameService.room.previousState.ball.y
 			);
 		}
+	}
+
+	private updateFence(): void {
+		this.contentArea = this.engine.screen.contentArea;
+		this.gameFenceActors?.forEach((actor, index) => { this.engine.remove(actor); });
+		this.gameFenceLines = [
+			new ex.Line({
+				start: new ex.Vector(0, 0),
+				end: new ex.Vector(0, this.contentArea.height),
+				color: ex.Color.White,
+				thickness: 5,
+			}),
+			new ex.Line({
+				start: new ex.Vector(0, 0),
+				end: new ex.Vector(this.contentArea.width, 0),
+				color: ex.Color.White,
+				thickness: 5,
+			}),
+			new ex.Line({
+				start: new ex.Vector(this.contentArea.width, 0),
+				end: new ex.Vector(this.contentArea.width, this.contentArea.height),
+				color: ex.Color.White,
+				thickness: 5,
+			}),
+			new ex.Line({
+				start: new ex.Vector(0, this.contentArea.height),
+				end: new ex.Vector(this.contentArea.width, this.contentArea.height),
+				color: ex.Color.White,
+				thickness: 5,
+			}),
+		];
+		this.gameFenceActors = [
+			new ex.Actor({
+				pos: new ex.Vector(0, 0),
+				anchor: new ex.Vector(0, 0),
+			}),
+			new ex.Actor({
+				pos: new ex.Vector(0, 0),
+				anchor: new ex.Vector(0, 0),
+			}),
+			new ex.Actor({
+				pos: new ex.Vector(0, 0),
+				anchor: new ex.Vector(0, 0),
+			}),
+			new ex.Actor({
+				pos: new ex.Vector(0, 0),
+				anchor: new ex.Vector(0, 0),
+			}),
+		];
+		this.gameFenceActors.forEach((actor, index) => {
+			actor.graphics.use(this.gameFenceLines[index]);
+			this.game.add(actor);
+		});
 	}
 
 	private extrapolate(currentValue: number, previousValue: number): number {
@@ -420,7 +479,6 @@ export class GameStartedComponent implements OnInit {
 	}
 
 	private handleBallStart(data): void {
-		console.log("[WS:game] GameStarting event with data:", data)
 		const counter = new ex.Timer({
 			interval: 1000,
 			repeats: true,
@@ -434,7 +492,6 @@ export class GameStartedComponent implements OnInit {
 		});
 		this.game.add(counter);
 		counter.start();
-		console.log(counter);
 	}
 
 	private handleInputHold(evt: ex.Input.KeyEvent): void {
@@ -573,16 +630,16 @@ export class GameStartedComponent implements OnInit {
 		let y;
 		switch (model) {
 			case 'graphic_sec':
-				y = 800 - 24;
+				y = 600 - 24;
 				break;
 			case 'graphic_ms':
-				y = 800 - 12;
+				y = 600 - 12;
 				break;
 			case 'server_sec':
-				y = 800 - 36;
+				y = 600 - 36;
 				break;
 			case 'server_ms':
-				y = 800 - 48;
+				y = 600 - 48;
 				break;
 		}
 		return this.createGameObject(ex.Label, [
@@ -612,7 +669,7 @@ export class GameStartedComponent implements OnInit {
 		return this.createGameObject(ex.Label, [
 			{
 				x: 400,
-				y: 275,
+				y: 240,
 				text: 'Waiting for players',
 				color: ex.Color.White,
 				font: new ex.Font({ size: 14 }),
