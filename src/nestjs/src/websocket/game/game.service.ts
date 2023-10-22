@@ -740,7 +740,7 @@ export class WSGameService {
 	}
 
 	private async resetBall(server: Server, room: LobbyI) {
-		const futurevx = room.state.ball.vx > 0 ? -1 : 1;
+		const futurevx = room.state.ball.x > 800 ? -1 : 1;
 		room.state.ball.vx = 0;
 		room.state.ball.vy = 0;
 		room.state.ball.x = 400;
