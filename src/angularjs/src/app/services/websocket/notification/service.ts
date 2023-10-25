@@ -243,7 +243,7 @@ export class NotificationService {
 						{
 							if (items[i] === entry.target)
 							{
-								if (this.notif[i].status === NotifStatus.NOTSEEN)
+								if (this.notif[i]?.status === NotifStatus.NOTSEEN)
 								{
 									this.notif_not_seen--;
 									this.wsGateway.updateNotificationStatus(this.notif[i].id, NotifStatus.SEEN);
