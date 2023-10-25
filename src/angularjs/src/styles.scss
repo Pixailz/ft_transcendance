@@ -69,6 +69,10 @@ input:-webkit-autofill:active{
 	}
 }
 
+*::-webkit-scrollbar {
+	display: none;
+}
+
 html,
 body {
 	height: 100%;
