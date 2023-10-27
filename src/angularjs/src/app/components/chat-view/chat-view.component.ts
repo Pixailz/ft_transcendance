@@ -6,6 +6,7 @@ import { MessageContentI, MessageContentType, MessageI } from 'src/app/interface
 import { UserI } from 'src/app/interfaces/user/user.interface';
 import { UserService } from 'src/app/services/user.service';
 import { ChatRoomService } from 'src/app/services/websocket/chat/chatroom.service';
+import { FriendService } from 'src/app/services/websocket/friend/service';
 
 @Component({
 	selector: 'app-chat-view',
@@ -27,6 +28,7 @@ export class ChatViewComponent {
 		private formBuilder: FormBuilder,
 		private chatRoomService: ChatRoomService,
 		public userService: UserService,
+		public friendService: FriendService,
 		public router: Router,
 	) {}
 

@@ -1,27 +1,30 @@
 <ol>
-	<li *ngFor="let _ of room.message; let i=index;" [ngClass]="{'me': getCurrentMessage(i).userId === userService.user.id}">
-		<span class="date" *ngIf="!isFollowingDay(i)">{{getCurrentMessage(i).updateAt | date: 'dd/MM/YYYY'}}</span>
-		<div class="msg-line">
-			<div class="msg">
-				<span class="login" *ngIf="!isSameUser(i)">{{getCurrentMessageUser(i).nickname}}</span>
-				<div *ngFor="let content of getCurrentMessage(i).content">
-					<div *ngIf="content.type == 0">
-						<!-- STRING:<br> -->
-						<span class="content-string">
-							{{content.content.replace(' ', '&nbsp;')}}
-						</span>
-					</div>
-					<div *ngIf="content.type == 1">
-						<!-- GAME-INVITE:<br> -->
-						<button class="content-game-invite" (click)="joinGame(content.content)">
-							<mat-icon fontIcon="videogame_asset"> </mat-icon	>
-						</button>
+	<div *ngFor="let _ of room.message; let i=index;">
+		<li *ngIf="!friendService.isTargetBlocked(getCurrentMessageUser(i).id)"
+		[ngClass]="{'me': getCurrentMessage(i).userId === userService.user.id}">
+			<div class="msg-line">
+				<span class="date" *ngIf="!isFollowingDay(i)">{{getCurrentMessage(i).updateAt | date: 'dd/MM/YYYY'}}</span>
+				<div class="msg">
+					<span class="login" *ngIf="!isSameUser(i)">{{getCurrentMessageUser(i).nickname}}</span>
+					<div *ngFor="let content of getCurrentMessage(i).content">
+						<div *ngIf="content.type == 0">
+							<!-- STRING:<br> -->
+							<span class="content-string">
+								{{content.content.replace(' ', '&nbsp;')}}
+							</span>
+						</div>
+						<div *ngIf="content.type == 1">
+							<!-- GAME-INVITE:<br> -->
+							<button class="content-game-invite" (click)="joinGame(content.content)">
+								<mat-icon fontIcon="videogame_asset"> </mat-icon	>
+							</button>
+						</div>
 					</div>
 				</div>
+				<span class="time">{{getCurrentMessage(i).updateAt | date: 'HH:mm'}}</span>
 			</div>
-			<span class="time">{{getCurrentMessage(i).updateAt | date: 'HH:mm'}}</span>
-		</div>
-	</li>
+		</li>
+	</div>
 </ol>
 
 <span class="char-left" *ngIf="!blocked">{{messageLength}}/120</span>
