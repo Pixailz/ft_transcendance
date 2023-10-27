@@ -114,6 +114,8 @@ export class ChatRoomService {
 	{
 		const	admin = this.getAdmin(room);
 
+		if (this.isOwner(room, user_id))
+			return (true);
 		if (!admin.length || admin.length === 0) return false;
 		for (var i = 0; i < admin.length; i++)
 			if (admin[i].id === user_id)
