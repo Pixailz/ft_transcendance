@@ -98,4 +98,20 @@ export class HomeDashboardComponent {
 		.subscribe((res) => { this.onlineusers = res[0]; });
 	}
 
+	async refLeaderboard() {
+		const leadreq = await this.back.req("GET", "/leaderboard");
+
+		this.breakpointObserver.observe(Breakpoints.Handset).pipe(
+			map(({ matches }) => {
+				if (matches) {
+					return [
+						{ cols: 3, rows: 1, content: leadreq }
+					];
+				}
+				return [
+					{ cols: 2, rows: 2, content: leadreq }
+				];
+			}))
+		.subscribe((res) => { this.leaderboard = res[0]; });
+	}
 }
